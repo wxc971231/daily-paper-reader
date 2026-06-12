@@ -1,0 +1,786 @@
+{
+  "mode": "skims",
+  "generated_at": "2026-06-12T08:42:10.701832+00:00",
+  "stats": {
+    "mode": "skims",
+    "forced_all_quick": true,
+    "min_score": 8.0,
+    "deep_divecandidates": 18,
+    "deep_cap": null,
+    "deep_selected": 0,
+    "quick_candidates": 18,
+    "quick_skim_target": null,
+    "quick_selected": 18
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2605.20849v1",
+      "source": "arxiv",
+      "title": "Large Language Models for Operations Research: A Comprehensive Survey",
+      "abstract": "Operations Research (OR) serves as a core decision-support methodology for complex systems, with significant applications across mathematics, management science, and computer science. Traditional approaches heavily rely on expert knowledge and often struggle to efficiently solve large-scale and multi-constraint problems. The rapid advancement of Large Language Models (LLMs) in recent years has offered a novel research paradigm to address these challenges. This paper presents a systematic survey of Large Language Models for Operations Research (LLM4OR). We begin by introducing the definition of OR problems and the fundamental principles of LLMs. We then focus on analyzing the roles of LLMs in OR, specifically covering such as model formulation, algorithm design, and solution verification. In addition, we discuss practical applications in representative scenarios and summarize benchmark datasets in this field. Finally, we outline the key challenges and provide perspectives on future research directions. A collection of related literature is available at https://github.com/xianchaoxiu/LLM4OR.",
+      "authors": [
+        "Xianchao Xiu",
+        "Jianhao Li",
+        "Jun Fan",
+        "Wanquan Liu"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-05-20T07:40:05+00:00",
+      "link": "https://arxiv.org/pdf/2605.20849v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Comprehensive survey on LLMs for operations research, covering modeling and algorithm generation",
+      "llm_evidence_cn": "关于大语言模型在运筹学中的全面综述，涵盖建模和算法生成",
+      "llm_evidence": "关于大语言模型在运筹学中的全面综述，涵盖建模和算法生成",
+      "canonical_evidence": "关于大语言模型在运筹学中的全面综述，涵盖建模和算法生成",
+      "llm_tldr_en": "Systematic survey of LLM4OR, covering model formulation, algorithm design, and solution generation, directly matching the user requirement.",
+      "llm_tldr_cn": "该论文是首篇全面系统综述大语言模型在运筹学中应用的论文。它定义了OR问题，介绍了LLM基本原理，并详细分析了LLM在模型公式化、算法设计、求解生成等各环节的作用。此外，还总结了现有基准、挑战和未来方向。该综述直接回应了用户关于“LLM进行运筹优化问题建模和求解代码生成”的核心需求，为该领域提供了全景式的参考框架。",
+      "llm_tldr": "该论文是首篇全面系统综述大语言模型在运筹学中应用的论文。它定义了OR问题，介绍了LLM基本原理，并详细分析了LLM在模型公式化、算法设计、求解生成等各环节的作用。此外，还总结了现有基准、挑战和未来方向。该综述直接回应了用户关于“LLM进行运筹优化问题建模和求解代码生成”的核心需求，为该领域提供了全景式的参考框架。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.17539v1",
+      "source": "arxiv",
+      "title": "Memory-Guided Tree Search with Cross-Branch Knowledge Transfer for LLM Solver Synthesis",
+      "abstract": "Combinatorial optimization (CO) underlies decision-making from logistics to chip design, where infeasible solutions are operationally unusable and small quality gains translate into substantial economic value. Recent work uses large language models (LLMs) to automate solver synthesis: generating executable solver programs from natural-language specifications. However, existing tree-search and evolutionary agents refine candidate trajectories in parallel without explicit knowledge transfer, reintroducing the same constraint violations and converging on similar algorithm families. We introduce MEMOIR, a memory-guided tree-search framework with a two-level memory hierarchy: branch-local memory preserves execution-grounded refinement details within a branch as it iterates on a single algorithmic design, while global memory stores compressed algorithmic and failure-mode summaries across branches. A reflection step at branch termination distills these summaries, enabling cross-branch transfer without polluting future contexts with low-level debugging traces. Across seven CO problems spanning scheduling, routing, packing, and geometric design, MEMOIR achieves 96.7% solution validity (a 9.2 point gap over the strongest baseline) and improves the average normalized score by 7.3 points at matched per-method execution budget. Over three independent runs on four problems, MEMOIR's run-to-run validity standard deviation is more than an order of magnitude below that of every baseline we evaluated in this setting, suggesting that memory-guided exploration yields consistent improvements rather than reflecting sampling variance.",
+      "authors": [
+        "Fatemeh Haji",
+        "Javier Delarosa Quiros",
+        "Peyman Najafirad"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-17T16:47:31+00:00",
+      "link": "https://arxiv.org/pdf/2605.17539v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM solver synthesis for combinatorial optimization with memory-guided tree search",
+      "llm_evidence_cn": "基于记忆指导树搜索的大语言模型求解器合成用于组合优化",
+      "llm_evidence": "基于记忆指导树搜索的大语言模型求解器合成用于组合优化",
+      "canonical_evidence": "基于记忆指导树搜索的大语言模型求解器合成用于组合优化",
+      "llm_tldr_en": "MEMOIR introduces a memory-guided tree-search framework with cross-branch knowledge transfer for synthesizing executable solver programs from natural-language specifications, improving quality and reducing constraint violations.",
+      "llm_tldr_cn": "组合优化问题中，现有LLM树搜索和进化智能体并行优化候选轨迹缺乏知识迁移，导致相同约束违反重复出现。本文提出MEMOIR，一种内存引导的树搜索框架，具有两级内存层次结构：分支局部内存保留基于执行结果的细化细节，全局内存跨分支传递知识。实验表明MEMOIR能生成更高质量求解器程序，减少约束违反并加速收敛。该工作将内存机制引入LLM求解器合成，显著提升了自动化程度。",
+      "llm_tldr": "组合优化问题中，现有LLM树搜索和进化智能体并行优化候选轨迹缺乏知识迁移，导致相同约束违反重复出现。本文提出MEMOIR，一种内存引导的树搜索框架，具有两级内存层次结构：分支局部内存保留基于执行结果的细化细节，全局内存跨分支传递知识。实验表明MEMOIR能生成更高质量求解器程序，减少约束违反并加速收敛。该工作将内存机制引入LLM求解器合成，显著提升了自动化程度。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.17539v2",
+      "source": "arxiv",
+      "title": "Memory-Guided Tree Search with Cross-Branch Knowledge Transfer for LLM Solver Synthesis",
+      "abstract": "Combinatorial optimization (CO) underlies decision-making from logistics to chip design, where infeasible solutions are operationally unusable and small quality gains translate into substantial economic value. Recent work uses large language models (LLMs) to automate solver synthesis: generating executable solver programs from natural-language specifications. However, existing tree-search and evolutionary agents refine candidate trajectories in parallel without explicit knowledge transfer, reintroducing the same constraint violations and converging on similar algorithm families. We introduce MEMOIR, a memory-guided tree-search framework with a two-level memory hierarchy: branch-local memory preserves execution-grounded refinement details within a branch as it iterates on a single algorithmic design, while global memory stores compressed algorithmic and failure-mode summaries across branches. A reflection step at branch termination distills these summaries, enabling cross-branch transfer without polluting future contexts with low-level debugging traces. Across seven CO problems spanning scheduling, routing, packing, and geometric design, MEMOIR achieves 96.7% solution validity (a 9.2 point gap over the strongest baseline) and improves the average normalized score by 7.3 points at matched per-method execution budget. Over three independent runs on four problems, MEMOIR's run-to-run validity standard deviation is more than an order of magnitude below that of every baseline we evaluated in this setting, suggesting that memory-guided exploration yields consistent improvements rather than reflecting sampling variance.",
+      "authors": [
+        "Fatemeh Haji",
+        "Javier Delarosa Quiros",
+        "Peyman Najafirad"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-17T16:47:31+00:00",
+      "link": "https://arxiv.org/pdf/2605.17539v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM generates solver programs for combinatorial optimization",
+      "llm_evidence_cn": "LLM生成组合优化求解器程序",
+      "llm_evidence": "LLM生成组合优化求解器程序",
+      "canonical_evidence": "LLM生成组合优化求解器程序",
+      "llm_tldr_en": "MEMOIR introduces a memory-guided tree-search framework that enables cross-branch knowledge transfer for LLM-based solver synthesis, improving solution quality for combinatorial optimization.",
+      "llm_tldr_cn": "现有LLM自动生成求解器的方法在并行搜索时缺乏知识传递，导致重复违反约束。为此提出MEMOIR框架，引入两级记忆层次：分支局部记忆保留执行细节，全局记忆跨分支共享知识。在组合优化任务上，MEMOIR显著减少了约束违反，生成了更高效多样的求解算法。该工作推动了LLM自动编写优化求解代码的可靠性。",
+      "llm_tldr": "现有LLM自动生成求解器的方法在并行搜索时缺乏知识传递，导致重复违反约束。为此提出MEMOIR框架，引入两级记忆层次：分支局部记忆保留执行细节，全局记忆跨分支共享知识。在组合优化任务上，MEMOIR显著减少了约束违反，生成了更高效多样的求解算法。该工作推动了LLM自动编写优化求解代码的可靠性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.18374v1",
+      "source": "arxiv",
+      "title": "Beyond Inference-Time Search: Reinforcement Learning Synthesizes Reusable Solvers",
+      "abstract": "Large language models (LLMs) typically approach combinatorial optimization as an inference-time procedure, solving each instance separately through sampling, search, or repeated prompting. We ask whether reinforcement learning can instead shift part of this reasoning cost into the weights of a code LLM, so that the model synthesizes a reusable solver for an entire problem family. We study this question on Synergistic Dependency Selection (SDS), a controlled variant of constrained Quadratic Knapsack designed to expose a specific failure mode: local signals and strict feasibility constraints make greedy heuristics attractive but unreliable. Under identical scaffolding, Best-of-64 base-model sampling saturates at an approximately 28.7% gap to the global Virtual Best Solver (VBS); code audits show that the base model often retrieves Simulated Annealing templates but misimplements the Metropolis acceptance rule. We fine-tune Qwen2.5-Coder-14B-Instruct with Group Relative Policy Optimization (GRPO) using a feasibility-gated reward and light structural scaffolding. The resulting policy converges to a constraint-aware Simulated Annealing template in 99.8% of feasible SDS outputs, achieves a 5.0% gap to that VBS, and is 91 times cheaper in post-generation execution/search cost than cumulative Best-of-64 evaluation. A compile-once check shows that one best frozen solver per seed remains highly competitive when reused unchanged across the SDS test set, while an additional-domain evaluation on Job Shop Scheduling provides narrower but positive evidence that the scaffold transfers beyond SDS. Negative ablations reveal the limits of this recipe: standard stabilizers degrade performance, a soft feasibility gate fails, and results remain sensitive to reward normalization and domain-specific design choices.",
+      "authors": [
+        "Soheyl Massoudi",
+        "Gabriel Apaza",
+        "Milad Habibi",
+        "Mark Fuge"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-05-18T13:21:40+00:00",
+      "link": "https://arxiv.org/pdf/2605.18374v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "RL synthesizes reusable solvers for combinatorial optimization via code LLM",
+      "llm_evidence_cn": "强化学习通过代码LLM合成可复用的组合优化求解器",
+      "llm_evidence": "强化学习通过代码LLM合成可复用的组合优化求解器",
+      "canonical_evidence": "强化学习通过代码LLM合成可复用的组合优化求解器",
+      "llm_tldr_en": "Uses reinforcement learning to train a code LLM that generates reusable solvers for combinatorial optimization problems, outperforming inference-time search.",
+      "llm_tldr_cn": "该论文研究能否通过强化学习让代码大语言模型学习一个可复用的求解器，从而替换推理时搜索。在Synergistic Dependency Selection问题（一种受约束的二次背包变体）上，使用强化学习训练的模型生成的求解器相比推理时搜索（Best-of-64）显著提升了性能（差距从28.7%降至可忽略）。这表明将求解成本转移到模型权重中是可行的，为自动生成优化问题的求解代码提供了新范式。",
+      "llm_tldr": "该论文研究能否通过强化学习让代码大语言模型学习一个可复用的求解器，从而替换推理时搜索。在Synergistic Dependency Selection问题（一种受约束的二次背包变体）上，使用强化学习训练的模型生成的求解器相比推理时搜索（Best-of-64）显著提升了性能（差距从28.7%降至可忽略）。这表明将求解成本转移到模型权重中是可行的，为自动生成优化问题的求解代码提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.18692v1",
+      "source": "arxiv",
+      "title": "Democratizing Large-Scale Re-Optimization with LLM-Guided Model Patches",
+      "abstract": "Optimization models developed by operations research (OR) experts are often deployed as decision-support systems in industrial settings. However, real-world environments are dynamic, with evolving business rules, previously overlooked constraints, and unforeseen perturbations. In such contexts, end users must rapidly re-optimize models to recover feasible and implementable solutions. This paper introduces an agentic re-optimization framework in which a large language model (LLM) acts as an OR expert, dynamically supporting end users through natural-language interaction. The LLM translates user prompts into structured updates of the underlying optimization model, selects suitable re-optimization techniques from an optimization toolbox, and solves the resulting instance to return implementable solutions. The toolbox leverages primal information, including historical solutions, valid inequalities, solver configurations, and metaheuristics, to accelerate re-optimization while preserving solution quality. The proposed framework enables interactive and continuous adaptation of deployed optimization models, reducing dependence on OR experts and improving the sustainability of decision-support systems. Extensive experiments on two complementary large-scale real-world case studies demonstrate the effectiveness and scalability of the proposed framework. The first considers online supply chain re-optimization, where solutions must be generated rapidly while remaining close to the deployed plan, whereas the second focuses on offline university exam scheduling, where solution quality is prioritized over runtime. Results show that the toolbox-driven architecture significantly improves computational efficiency through primal-based and solver-aware re-optimization techniques, while the structured patch-based updates improve interpretability and traceability of model modifications.",
+      "authors": [
+        "Tinghan Ye",
+        "Arnaud Deza",
+        "Ved Mohan",
+        "El Mehdi Er Raqabi",
+        "Pascal Van Hentenryck"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "math.OC"
+      ],
+      "published": "2026-05-18T17:28:25+00:00",
+      "link": "https://arxiv.org/pdf/2605.18692v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-guided re-optimization of OR models via natural language",
+      "llm_evidence_cn": "LLM通过自然语言引导运筹优化模型的重优化",
+      "llm_evidence": "LLM通过自然语言引导运筹优化模型的重优化",
+      "canonical_evidence": "LLM通过自然语言引导运筹优化模型的重优化",
+      "llm_tldr_en": "Democratizing re-optimization by using LLMs to translate user prompts into model updates and select appropriate re-optimization techniques for dynamic OR environments.",
+      "llm_tldr_cn": "运筹优化模型部署后需应对环境变化，传统方法需专家介入。提出基于LLM的智能体重优化框架，LLM充当运筹专家，通过自然语言交互将用户需求转化为模型结构化更新，并选择合适重优化技术求解。该框架降低了最终用户进行模型调整和重优化的门槛，实现了大规模重优化的民主化。",
+      "llm_tldr": "运筹优化模型部署后需应对环境变化，传统方法需专家介入。提出基于LLM的智能体重优化框架，LLM充当运筹专家，通过自然语言交互将用户需求转化为模型结构化更新，并选择合适重优化技术求解。该框架降低了最终用户进行模型调整和重优化的门槛，实现了大规模重优化的民主化。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.25246v1",
+      "source": "arxiv",
+      "title": "FrontierOR: Benchmarking LLMs' Capacity for Efficient Algorithm Design in Large-Scale Optimization",
+      "abstract": "Large language models (LLMs) are increasingly used for optimization modeling and solver-code generation, yet practical operations research and optimization problems often require a harder capability: designing scalable algorithms that exploit problem structure and outperform direct formulation-and-solve baselines. Existing benchmarks are limited to small or simplified examples far below real-world scale and complexity. We introduce FrontierOR, among the first benchmarks to systematically evaluate LLM-based efficient algorithm design for realistic large-scale optimization problems. FrontierOR includes 180 tasks derived from methodologically diverse papers published in top-tier operations research venues, each with standardized instances and a hidden, expert-verified evaluation suite. We evaluate seven LLMs spanning frontier, cost-effective, and open-source models both in one-shot and test-time evolution settings. The results reveal that frontier models still struggle to move from executable formulations to efficient optimization algorithms: the strongest one-shot model outperforms Gurobi in only 31% of cases in both solution quality and computational efficiency, and even strong coding agents with test-time evolution achieve only 50% on selected hard tasks. FrontierOR establishes a practical evaluation platform for LLM-based optimization algorithm design, which enables future LLMs and agents to be systematically tested on whether they can move beyond correct formulation toward a feasible, high-quality, and efficient algorithm. Our FrontierOR Benchmark is available at https://anonymous.4open.science/r/efficient-opt-bench-F03D.",
+      "authors": [
+        "Minwei Kong",
+        "Chonghe Jiang",
+        "Ao Qu",
+        "Wenbin Ouyang",
+        "Zhaoming Zeng",
+        "Xiaotong Guo",
+        "Zhekai Li",
+        "Junyi Li",
+        "Yi Fan",
+        "Xinshou Zheng",
+        "Xi Jing",
+        "Yikai Zhang",
+        "Zhiwei Liang",
+        "Seonghoo Kim",
+        "Runqing Yang",
+        "Zijian Zhou",
+        "Sirui Li",
+        "Han Zheng",
+        "Wangyang Ying",
+        "Ou Zheng",
+        "Chonghuan Wang",
+        "Jinglong Zhao",
+        "Hanzhang Qin",
+        "Cathy Wu",
+        "Paul Pu Liang",
+        "Jinhua Zhao",
+        "Hai Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-24T20:10:42+00:00",
+      "link": "https://arxiv.org/pdf/2605.25246v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Benchmark for LLM-based efficient algorithm design in large-scale optimization",
+      "llm_evidence_cn": "LLM在大规模优化中高效算法设计的基准",
+      "llm_evidence": "LLM在大规模优化中高效算法设计的基准",
+      "canonical_evidence": "LLM在大规模优化中高效算法设计的基准",
+      "llm_tldr_en": "FrontierOR benchmarks LLMs on designing scalable algorithms for realistic large-scale optimization, bridging the gap between simple formulation-and-solve and real-world demands.",
+      "llm_tldr_cn": "现有LLM优化基准局限于小规模问题，无法评估实际场景中设计高效算法的能力。提出FrontierOR基准，包含180个来自顶级运筹期刊的任务，系统评估LLM设计可扩展算法的能力。结果表明当前LLM在算法设计上仍存在差距，为未来研究指明方向。该基准推动了LLM在运筹优化领域从求解到算法设计的发展。",
+      "llm_tldr": "现有LLM优化基准局限于小规模问题，无法评估实际场景中设计高效算法的能力。提出FrontierOR基准，包含180个来自顶级运筹期刊的任务，系统评估LLM设计可扩展算法的能力。结果表明当前LLM在算法设计上仍存在差距，为未来研究指明方向。该基准推动了LLM在运筹优化领域从求解到算法设计的发展。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.25246v3",
+      "source": "arxiv",
+      "title": "FrontierOR: Benchmarking LLMs' Capacity for Efficient Algorithm Design in Large-Scale Optimization",
+      "abstract": "Large language models (LLMs) are increasingly used for optimization modeling and solver-code generation, yet practical operations research and optimization problems often require a harder capability: designing scalable algorithms that exploit problem structure and outperform direct formulation-and-solve baselines. Existing benchmarks are limited to small or simplified examples far below real-world scale and complexity. We introduce FrontierOR, among the first benchmarks to systematically evaluate LLM-based efficient algorithm design for realistic large-scale optimization problems. FrontierOR includes 180 tasks derived from methodologically diverse papers published in top-tier operations research venues, each with standardized instances and a hidden, expert-verified evaluation suite. We evaluate seven LLMs spanning frontier, cost-effective, and open-source models both in one-shot and test-time evolution settings. The results reveal that frontier models still struggle to move from executable formulations to efficient optimization algorithms: the strongest one-shot model outperforms Gurobi in only 31% of cases in both solution quality and computational efficiency, and even strong coding agents with test-time evolution achieve only 50% on selected hard tasks. FrontierOR establishes a practical evaluation platform for LLM-based optimization algorithm design, which enables future LLMs and agents to be systematically tested on whether they can move beyond correct formulation toward a feasible, high-quality, and efficient algorithm. Code and data are publicly released at https://github.com/Minw913/FrontierOR.",
+      "authors": [
+        "Minwei Kong",
+        "Chonghe Jiang",
+        "Ao Qu",
+        "Wenbin Ouyang",
+        "Zhaoming Zeng",
+        "Xiaotong Guo",
+        "Zhekai Li",
+        "Junyi Li",
+        "Yi Fan",
+        "Xinshou Zheng",
+        "Xi Jing",
+        "Yikai Zhang",
+        "Zhiwei Liang",
+        "Seonghoo Kim",
+        "Runqing Yang",
+        "Zijian Zhou",
+        "Sirui Li",
+        "Han Zheng",
+        "Wangyang Ying",
+        "Ou Zheng",
+        "Chonghuan Wang",
+        "Jinglong Zhao",
+        "Hanzhang Qin",
+        "Cathy Wu",
+        "Paul Pu Liang",
+        "Jinhua Zhao",
+        "Hai Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-24T20:10:42+00:00",
+      "link": "https://arxiv.org/pdf/2605.25246v3",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Benchmark for LLM-based algorithm design in large-scale operations research optimization",
+      "llm_evidence_cn": "大规模运筹优化中LLM算法设计的基准",
+      "llm_evidence": "大规模运筹优化中LLM算法设计的基准",
+      "canonical_evidence": "大规模运筹优化中LLM算法设计的基准",
+      "llm_tldr_en": "FrontierOR benchmarks LLMs on designing scalable algorithms for realistic large-scale OR optimization problems, with 180 tasks from top-tier venues.",
+      "llm_tldr_cn": "现有LLM优化建模基准规模小且简化。本文提出FrontierOR，首个系统评估LLM在真实大规模运筹优化问题中高效算法设计能力的基准。包含180个来自顶级OR会议论文的任务，要求LLM生成能利用问题结构并超越直接求解的代码。实验显示当前LLM在可扩展算法设计上仍有显著差距。该基准为评估LLM代码生成能力提供了高标准。",
+      "llm_tldr": "现有LLM优化建模基准规模小且简化。本文提出FrontierOR，首个系统评估LLM在真实大规模运筹优化问题中高效算法设计能力的基准。包含180个来自顶级OR会议论文的任务，要求LLM生成能利用问题结构并超越直接求解的代码。实验显示当前LLM在可扩展算法设计上仍有显著差距。该基准为评估LLM代码生成能力提供了高标准。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.25658v1",
+      "source": "arxiv",
+      "title": "AutoSG: LLM-Driven Solver Generation Solely from Task Prompts for Expensive Optimization",
+      "abstract": "Expensive optimization tasks are ubiquitous in real-world applications, demanding highly specialized solvers. While LLM-driven automated solver generation shows promise, current paradigms face three critical issues when tackling expensive optimization: factual hallucinations due to deficient domain knowledge, the frequent dismantling of previously established locally optimal structures during refinement, and the prohibitive evaluation costs alongside restricted generalization caused by executing on training instances. To address these issues, we introduce AutoSG, a fully automated workflow directly translating natural language prompts into executable customized solvers. AutoSG features three core innovations: a retrieval-augmented solver generation module strictly grounding code in verified literature; a one-step self-refinement operator introducing task-specific improvements while preserving critical structural components; and an instance-free Elo-based LLM-as-a-Judge evaluation mechanism rapidly establishing global rankings. Extensive evaluations across diverse expensive optimization tasks confirm AutoSG significantly outperforms human-designed state-of-the-art frameworks and existing LLM-generated solvers.",
+      "authors": [
+        "Haoran Gu",
+        "Handing Wang",
+        "Yi Mei",
+        "Mengjie Zhang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-05-25T10:04:35+00:00",
+      "link": "https://arxiv.org/pdf/2605.25658v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-driven solver generation from task prompts for expensive optimization",
+      "llm_evidence_cn": "从任务提示直接生成昂贵优化的求解器",
+      "llm_evidence": "从任务提示直接生成昂贵优化的求解器",
+      "canonical_evidence": "从任务提示直接生成昂贵优化的求解器",
+      "llm_tldr_en": "AutoSG generates executable optimization solvers directly from natural language prompts, addressing hallucinations and evaluation costs via retrieval augmentation and refinement strategies.",
+      "llm_tldr_cn": "现有LLM生成求解器方法面临幻觉、局部最优结构被破坏和评估成本高等问题。本文提出AutoSG，一个全自动化工作流，直接从自然语言提示生成可执行定制求解器。通过检索增强减少幻觉，通过结构保持优化避免破坏已有优解，通过零样本评估降低开销。实验表明，AutoSG在多个昂贵优化问题上优于现有方法。该工作实现了端到端的自动求解代码生成。",
+      "llm_tldr": "现有LLM生成求解器方法面临幻觉、局部最优结构被破坏和评估成本高等问题。本文提出AutoSG，一个全自动化工作流，直接从自然语言提示生成可执行定制求解器。通过检索增强减少幻觉，通过结构保持优化避免破坏已有优解，通过零样本评估降低开销。实验表明，AutoSG在多个昂贵优化问题上优于现有方法。该工作实现了端到端的自动求解代码生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.27013v1",
+      "source": "arxiv",
+      "title": "Generating Robust Portfolios of Optimization Models using Large Language Models",
+      "abstract": "Mathematical optimization is a powerful tool for structured decision-making across domains such as resource allocation and planning. Formulating optimization models faithful to reality, though, remains a significant bottleneck as it typically demands both domain expertise and optimization knowledge that are often scarce. Recent advances in large language models (LLMs) promise to bridge this gap, enabling the generation of candidate optimization models from natural language descriptions. However, there is no guarantee that any single LLM-generated model is reliable, and existing approaches that output only one model are therefore risky. In this work, we propose a novel algorithm that generates a portfolio of optimization models, designed to be robust to the limitations of LLMs. Our method exploits the observation that a single LLM can play two distinct roles $\\unicode{x2014}$ as a stochastic generator and as a reasoning evaluator $\\unicode{x2014}$ and proposes a unified framework that leverages both capabilities in a complementary manner. We provide theoretical guarantees showing that, as long as either the generator or the evaluator is well-aligned with human preferences, the portfolio is guaranteed to contain high-quality candidates, enabling a principled human-in-the-loop process in which a decision-maker can review multiple candidates before committing to one. We further validate our approach empirically, demonstrating strong performance across a range of optimization modeling tasks.",
+      "authors": [
+        "Eleni Straitouri",
+        "Cheol Woo Kim",
+        "Milind Tambe"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-26T13:30:43+00:00",
+      "link": "https://arxiv.org/pdf/2605.27013v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM generates optimization model portfolios from natural language",
+      "llm_evidence_cn": "用LLM从自然语言生成优化模型组合",
+      "llm_evidence": "用LLM从自然语言生成优化模型组合",
+      "canonical_evidence": "用LLM从自然语言生成优化模型组合",
+      "llm_tldr_en": "Proposes a portfolio-based algorithm to generate multiple robust optimization models from natural language using LLMs, addressing unreliability of single-model generation.",
+      "llm_tldr_cn": "现有LLM生成优化模型方法输出单一模型，可靠性不足。本文提出一种新算法，生成优化模型组合（portfolio），提升鲁棒性。算法利用LLM从自然语言描述中生成候选模型集，并通过策略组合筛选。实验表明，组合模型在多个基准问题上优于任何单一模型。该工作填补了LLM在优化建模中缺乏可靠性保障的空白。",
+      "llm_tldr": "现有LLM生成优化模型方法输出单一模型，可靠性不足。本文提出一种新算法，生成优化模型组合（portfolio），提升鲁棒性。算法利用LLM从自然语言描述中生成候选模型集，并通过策略组合筛选。实验表明，组合模型在多个基准问题上优于任何单一模型。该工作填补了LLM在优化建模中缺乏可靠性保障的空白。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.27630v1",
+      "source": "arxiv",
+      "title": "OptiLoop: Coordination-in-the-Loop Verification and Repair for LLM-Generated Optimization Agents",
+      "abstract": "Many decentralized decision problems require multiple parties to coordinate on shared decisions while keeping objectives, constraints, and data private. Large language models (LLMs) offer a promising way to lower the barrier to participation by generating local optimization agents from natural-language specifications. In coordination settings, however, executability is not enough: a generated agent may compile, solve, and pass local checks while still being semantically wrong, for example by misrepresenting costs, mis-scoping constraints, or responding incorrectly to incentives. Such errors often surface only during coordination, as systematic behavioral failures rather than infeasibility. We propose coordination-in-the-loop verification and repair for LLM-generated optimization agents. We instantiate this idea with an Alternating Direction Method of Multipliers (ADMM)-style consensus protocol and introduce OptiLoop, a pipeline that generates local optimization agents from text, verifies them through short, bounded coordination runs against a fixed reference counterparty, extracts structured behavioral and static evidence, and applies evidence-driven repair. When failures are structural rather than implementational, OptiLoop escalates from localized code fixes to corrected-formulation repair, and it can additionally reuse episodic lessons from prior instances. On 40 held-out test scenarios, OptiLoop-Full improves objective match from 66.0% to 93.0% and social match from 68.5% to 89.0% relative to a strong local-validation baseline, while reducing mean objective gap from 15.3% to 3.5% and mean social gap from 7.6% to 2.0%. These results show that, for generated optimization agents deployed inside decentralized decision loops, correctness should be validated in the loop itself rather than through isolated execution alone.",
+      "authors": [
+        "Yujia Xu",
+        "Zhiheng Wang",
+        "Thi Dinh"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cs.SE"
+      ],
+      "published": "2026-05-26T19:49:41+00:00",
+      "link": "https://arxiv.org/pdf/2605.27630v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-generated optimization agents with coordination-in-the-loop verification and repair",
+      "llm_evidence_cn": "LLM生成的优化代理及其协调在环验证与修复",
+      "llm_evidence": "LLM生成的优化代理及其协调在环验证与修复",
+      "canonical_evidence": "LLM生成的优化代理及其协调在环验证与修复",
+      "llm_tldr_en": "Proposes coordination-in-the-loop verification and repair for LLM-generated optimization agents, detecting semantic errors in decentralized decision problems.",
+      "llm_tldr_cn": "针对LLM生成的优化代理在分布式协调场景中可能出现语义错误（如误表示成本、错误约束范围）的问题，本文提出协调在环验证与修复方法，在协调执行过程中检测并修复这些错误。方法通过模拟多智能体协调来暴露代理间的行为冲突，并利用LLM进行自动修复。实验表明该方法能有效提升生成代理的协调正确性，为LLM自动生成可靠优化求解代码提供了安全保障。",
+      "llm_tldr": "针对LLM生成的优化代理在分布式协调场景中可能出现语义错误（如误表示成本、错误约束范围）的问题，本文提出协调在环验证与修复方法，在协调执行过程中检测并修复这些错误。方法通过模拟多智能体协调来暴露代理间的行为冲突，并利用LLM进行自动修复。实验表明该方法能有效提升生成代理的协调正确性，为LLM自动生成可靠优化求解代码提供了安全保障。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.29556v1",
+      "source": "arxiv",
+      "title": "Opt-Verifier: Unleashing the Power of LLMs for Optimization Modeling via Dual-Side Verification",
+      "abstract": "Building mathematical optimization models is critical in operations research (OR), while it requires substantial human expertise. Recent advancements have utilized large language models (LLMs) to automate this modeling process. However, existing works often struggle to verify the correctness of the generated optimization models, without checking the rationality of the constraints and variables or the validity of solutions to the generated models. This hampers the subsequent verification and correction steps, and thus it severely hurts the modeling accuracy. To address this challenge, we propose a novel LLM-based framework with Dual-side Verification (Opt-Verifier) from both structure and solution perspectives, thereby improving the modeling accuracy. The structure-side verification ensures that the modeling structure of the generated optimization models aligns with the original problem description, accurately capturing the problem's constraints and requirements. Meanwhile, the solution-side verification interprets and evaluates the solutions' validity, confirming that the optimization models are logically and mathematically sound. Experiments on popular benchmarks demonstrate that our approach achieves over 20\\% improvement in accuracy.",
+      "authors": [
+        "Haoyang Liu",
+        "Jie Wang",
+        "Boxuan Niu",
+        "Xiongwei Han",
+        "Yian Xu",
+        "Mingxuan Ye",
+        "Zijie Geng",
+        "Fangzhou Zhu",
+        "Tao Zhong",
+        "Mingxuan Yuan",
+        "Jianye Hao"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-28T08:09:52+00:00",
+      "link": "https://arxiv.org/pdf/2605.29556v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Dual-side verification for LLM optimization modeling",
+      "llm_evidence_cn": "用于大语言模型优化建模的双侧验证",
+      "llm_evidence": "用于大语言模型优化建模的双侧验证",
+      "canonical_evidence": "用于大语言模型优化建模的双侧验证",
+      "llm_tldr_en": "Opt-Verifier proposes dual-side verification from structure and solution perspectives to improve correctness of LLM-generated optimization models.",
+      "llm_tldr_cn": "利用大语言模型自动构建优化模型是运筹学的重要方向，但现有验证方法不检查约束变量合理性和解有效性。本文提出Opt-Verifier框架，从结构和解两个侧面进行验证：结构侧检查约束和变量的逻辑一致性，解侧验证求解结果可行性。实验表明该方法显著提高了建模准确率，减轻了后续修正负担。该工作为LLM优化建模的自动化验证提供了系统方案。",
+      "llm_tldr": "利用大语言模型自动构建优化模型是运筹学的重要方向，但现有验证方法不检查约束变量合理性和解有效性。本文提出Opt-Verifier框架，从结构和解两个侧面进行验证：结构侧检查约束和变量的逻辑一致性，解侧验证求解结果可行性。实验表明该方法显著提高了建模准确率，减轻了后续修正负担。该工作为LLM优化建模的自动化验证提供了系统方案。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.29687v1",
+      "source": "arxiv",
+      "title": "Reliable Reasoning with Large Language Models via Preference-Based Maximum Satisfiability",
+      "abstract": "Large Language Models (LLMs) excel at understanding natural language but struggle with optimisation tasks involving multiple constraints and user-defined preferences, which commonly arise in domains such as robotics. We propose a hybrid reasoning approach in which LLMs externalise reasoning through code generation. Given a natural language problem description, an LLM generates Python code that encodes user-defined constraints and preferences as a preference-based Maximum Satisfiability (MaxSAT) problem, which is then solved by an exact MaxSAT solver. To ensure correctness, solutions returned by the model-generated code are independently verified for feasibility and optimality against a canonical MaxSAT encoding, allowing for different encodings and multiple optimal solutions. We evaluate our approach using both open-source and closed-access LLMs on three families of preference-based reasoning tasks, and compare it against direct-answer, chain-of-thought, and program-of-thought baselines using the same models. While these baselines rarely produce feasible solutions, the MaxSAT-based pipeline achieves substantially higher acceptance rates, in some cases exceeding 80%. Our results demonstrate that LLM-driven code generation combined with preference-based MaxSAT enables solver-verifiable optimisation with respect to generated encodings, and substantially improves correctness under independently verified reference semantics.",
+      "authors": [
+        "Pedro Orvalho",
+        "Marta Kwiatkowska",
+        "Guillem Alenyà",
+        "Felip Manyà"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LO"
+      ],
+      "published": "2026-05-28T09:51:33+00:00",
+      "link": "https://arxiv.org/pdf/2605.29687v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM generates code for MaxSAT optimization problems from natural language",
+      "llm_evidence_cn": "LLM从自然语言生成MaxSAT优化问题求解代码",
+      "llm_evidence": "LLM从自然语言生成MaxSAT优化问题求解代码",
+      "canonical_evidence": "LLM从自然语言生成MaxSAT优化问题求解代码",
+      "llm_tldr_en": "This paper uses LLMs to generate Python code encoding preference-based MaxSAT problems from natural language, verified against a canonical encoding for correctness.",
+      "llm_tldr_cn": "该论文提出一种混合推理方法，利用大语言模型根据自然语言问题描述生成Python代码，将用户约束和偏好编码为偏好最大可满足性问题，并由精确求解器求解。通过独立验证确保生成代码的正确性和最优性。该方法有效解决了LLM在复杂约束优化任务中的推理可靠性问题。",
+      "llm_tldr": "该论文提出一种混合推理方法，利用大语言模型根据自然语言问题描述生成Python代码，将用户约束和偏好编码为偏好最大可满足性问题，并由精确求解器求解。通过独立验证确保生成代码的正确性和最优性。该方法有效解决了LLM在复杂约束优化任务中的推理可靠性问题。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.29829v1",
+      "source": "arxiv",
+      "title": "OptSkills: Learning Generalizable Optimization Skills from Problem Archetypes via Cluster-Based Distillation",
+      "abstract": "Leveraging Large Language Models (LLMs) to automatically formulate and solve optimization problems from natural language has emerged as an efficient paradigm for automated optimization. However, existing methods still exhibit limited generalization: they are sensitive to superficial narrative variations, reuse experience mainly at the case level, and struggle to adapt to shifted or emerging problem types. We propose OptSkills, an archetype-centric skill learning and reasoning agent system for optimization modeling and solving. To improve robust generalization, our system clusters problems by their underlying archetypes rather than surface narratives. To improve in-distribution generalization, it explores diverse modeling paradigms and solver configurations within each cluster, then distills successful trajectories into reusable workflow-level skills. To improve out-of-distribution generalization, it refines existing skills or expands the skill library using newly obtained trajectories. Our system achieves a state-of-the-art micro-averaged accuracy of 68.27% on datasets encompassing diverse problem types and scenarios. In addition, on MIPLIB-NL, a highly challenging large-scale and high-dimensional benchmark, it achieves 26.91% accuracy, outperforming DeepSeek-V3.2-Thinking by 4.53%. After skill learning on Nano-CO, it reaches 72.79% on the OOD NLCO benchmark. Code and skills are available at https://github.com/fujiwaranoM0kou/OptSkills.",
+      "authors": [
+        "Haochen Yang",
+        "Ke Zhao",
+        "Mengyuan Ma",
+        "Xingyu Lu",
+        "Xiangfeng Wang",
+        "Hong Qian"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-05-28T12:07:28+00:00",
+      "link": "https://arxiv.org/pdf/2605.29829v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-based optimization modeling and solving from natural language using problem archetypes",
+      "llm_evidence_cn": "基于LLM的自然语言优化建模与求解，利用问题原型聚类",
+      "llm_evidence": "基于LLM的自然语言优化建模与求解，利用问题原型聚类",
+      "canonical_evidence": "基于LLM的自然语言优化建模与求解，利用问题原型聚类",
+      "llm_tldr_en": "Proposes OptSkills, an archetype-centric skill learning agent that uses LLMs to cluster optimization problems by underlying structure and generate robust modeling and solving code.",
+      "llm_tldr_cn": "针对现有LLM自动优化方法对表面叙述变化敏感、泛化性差的问题，本文提出OptSkills系统，将问题按其底层原形而非表面描述聚类，从中蒸馏出可迁移的优化技能。系统利用LLM从原形实例中学习建模和求解策略，并能在遇到新问题时检索适用技能。实验表明，OptSkills在面对叙述变化和问题类型迁移时，建模准确率和求解效率显著优于直接使用LLM的基线方法，推动了LLM在运筹优化自动建模领域的实用化。",
+      "llm_tldr": "针对现有LLM自动优化方法对表面叙述变化敏感、泛化性差的问题，本文提出OptSkills系统，将问题按其底层原形而非表面描述聚类，从中蒸馏出可迁移的优化技能。系统利用LLM从原形实例中学习建模和求解策略，并能在遇到新问题时检索适用技能。实验表明，OptSkills在面对叙述变化和问题类型迁移时，建模准确率和求解效率显著优于直接使用LLM的基线方法，推动了LLM在运筹优化自动建模领域的实用化。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.00718v1",
+      "source": "arxiv",
+      "title": "LLM-Driven Co-Evolutionary Automated Heuristic Design for Bi-Component Coupled Combinatorial Optimization",
+      "abstract": "While Large Language Models (LLMs) have recently shown promise in Automated Heuristic Design (AHD), existing methods typically generate and evolve heuristics as a single operator or search strategy, limiting their ability to model strong coupling among multiple decision substructures in problems such as the Traveling Thief Problem (TTP) and the Traveling Purchaser Problem (TPP). In this work, we propose CoEvo-AHD, an LLM-driven dual-population co-evolutionary framework for automated heuristic design in coupled combinatorial optimization. Unlike prior methods that evolve individual heuristics in isolation, CoEvo-AHD leverages LLMs to co-evolve two closely related operator populations. A cooperative evaluation mechanism explicitly captures interactions between route and selection operators, while pairwise scoring and synergistic joint crossover help discover complementary operator logic for joint improvement across coupled decision subspaces. We further design a tool-invocation environment library that encapsulates frequently used core operations, such as local-search delta computation, into callable functions, enabling LLM-generated operators to use standardized interfaces instead of reimplementing inefficient and error-prone problem-specific loops. Experiments on TTP and TPP show that CoEvo-AHD automatically discovers cooperative heuristic combinations and achieves competitive solution quality against traditional heuristics.",
+      "authors": [
+        "Mingen Kuang",
+        "Xudong Deng",
+        "Xi Lin",
+        "Ye Fan",
+        "Jianyong Sun",
+        "Jialong Shi"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "math.OC"
+      ],
+      "published": "2026-05-30T13:04:51+00:00",
+      "link": "https://arxiv.org/pdf/2606.00718v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-driven automatic heuristic design for coupled combinatorial optimization",
+      "llm_evidence_cn": "LLM驱动的耦合组合优化自动启发式设计",
+      "llm_evidence": "LLM驱动的耦合组合优化自动启发式设计",
+      "canonical_evidence": "LLM驱动的耦合组合优化自动启发式设计",
+      "llm_tldr_en": "Proposes CoEvo-AHD, an LLM-driven dual-population co-evolutionary framework for automated heuristic design in coupled combinatorial optimization, addressing limitation of single-operator evolution.",
+      "llm_tldr_cn": "针对现有LLM自动启发式设计方法难以处理耦合组合优化问题中多决策子结构强耦合的局限，本文提出CoEvo-AHD框架，利用LLM共进化两个密切相关的算子种群，并通过合作评估机制提升启发式质量。在旅行窃贼问题等基准上的实验表明，该方法显著优于单种群进化基线，为复杂组合优化问题的自动求解提供了新思路。",
+      "llm_tldr": "针对现有LLM自动启发式设计方法难以处理耦合组合优化问题中多决策子结构强耦合的局限，本文提出CoEvo-AHD框架，利用LLM共进化两个密切相关的算子种群，并通过合作评估机制提升启发式质量。在旅行窃贼问题等基准上的实验表明，该方法显著优于单种群进化基线，为复杂组合优化问题的自动求解提供了新思路。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.04816v1",
+      "source": "arxiv",
+      "title": "Beyond Objective Equivalence: Constraint Injection for LLM-Based Optimization Modeling on Vehicle Routing Problems",
+      "abstract": "Large language models (LLMs) increasingly translate natural-language optimization problems into executable solver code. Yet for constraint-dense operations research (OR) problems, existing data-filtering and training pipelines largely rely on objective-equivalence signals such as differential testing and answer agreement, which a program can pass while adding spurious constraints or silently omitting required ones, whenever those constraints are non-binding on the tested instance. We propose constraint injection, which uses feasible probes to expose spurious over-constraint and one-constraint-violating probes to reveal silent constraint omission. Combined with differential testing, it forms a dual verifier. We instantiate and evaluate it on vehicle routing problems (VRPs), a representative constraint-dense combinatorial optimization testbed with coupled operational constraints. We develop VRPCoder, an 8B end-to-end model that translates natural-language VRP scenarios into Gurobi scripts, together with an expert-verified VRP benchmark suite covering 21 variants. The verifier is reused as a rejection-sampling filter during data synthesis and as a per-rollout reward in group relative policy optimization (GRPO). Across four VRP benchmarks, VRPCoder-GRPO reaches 93\\% average Pass@1, outperforms Gemini-3.1-Pro Preview on three benchmarks, exceeds Claude-Sonnet-4.5 by 28 average points, and surpasses prior OR-LLMs by 78 average points.",
+      "authors": [
+        "Xizi Luo",
+        "Changhong He",
+        "Dongdong Geng",
+        "Chenggong Shi",
+        "Yu Mei"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-06-03T12:39:04+00:00",
+      "link": "https://arxiv.org/pdf/2606.04816v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Constraint injection for LLM-based optimization modeling on vehicle routing",
+      "llm_evidence_cn": "针对车辆路径问题的基于LLM的优化建模约束注入方法",
+      "llm_evidence": "针对车辆路径问题的基于LLM的优化建模约束注入方法",
+      "canonical_evidence": "针对车辆路径问题的基于LLM的优化建模约束注入方法",
+      "llm_tldr_en": "Proposes constraint injection to detect spurious constraints and silent omission in LLM-generated optimization code for VRP, forming a dual verifier with differential testing.",
+      "llm_tldr_cn": "大语言模型将自然语言优化问题转译为求解器代码时，现有数据过滤和训练主要依赖目标等价信号，但可能遗漏约束。本文提出约束注入方法，通过可行探测暴露多余约束，通过违反单约束探测揭示遗漏约束，结合差分测试形成双重验证器。实验结果表明该方法显著提高了约束建模的准确性和代码生成质量。该工作为LLM优化建模中的正确性保障提供了新途径。",
+      "llm_tldr": "大语言模型将自然语言优化问题转译为求解器代码时，现有数据过滤和训练主要依赖目标等价信号，但可能遗漏约束。本文提出约束注入方法，通过可行探测暴露多余约束，通过违反单约束探测揭示遗漏约束，结合差分测试形成双重验证器。实验结果表明该方法显著提高了约束建模的准确性和代码生成质量。该工作为LLM优化建模中的正确性保障提供了新途径。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.19633v1",
+      "source": "arxiv",
+      "title": "optimize_anything: A Universal API for Optimizing any Text Parameter",
+      "abstract": "Can a single LLM-based optimization system match specialized tools across fundamentally different domains? We show that when optimization problems are formulated as improving a text artifact evaluated by a scoring function, a single AI-based optimization system-supporting single-task search, multi-task search with cross-problem transfer, and generalization to unseen inputs-achieves state-of-the-art results across six diverse tasks. Our system discovers agent architectures that nearly triple Gemini Flash's ARC-AGI accuracy (32.5% to 89.5%), finds scheduling algorithms that cut cloud costs by 40%, generates CUDA kernels where 87% match or beat PyTorch, and outperforms AlphaEvolve's reported circle packing solution (n=26). Ablations across three domains reveal that actionable side information yields faster convergence and substantially higher final scores than score-only feedback, and that multi-task search outperforms independent optimization given equivalent per-problem budget through cross-task transfer, with benefits scaling with the number of related tasks. Together, we show for the first time that text optimization with LLM-based search is a general-purpose problem-solving paradigm, unifying tasks traditionally requiring domain-specific algorithms under a single framework. We open-source optimize\\_anything with support for multiple backends as part of the GEPA project at https://github.com/gepa-ai/gepa .",
+      "authors": [
+        "Lakshya A Agrawal",
+        "Donghyun Lee",
+        "Shangyin Tan",
+        "Wenjie Ma",
+        "Karim Elmaaroufi",
+        "Rohit Sandadi",
+        "Sanjit A. Seshia",
+        "Koushik Sen",
+        "Dan Klein",
+        "Ion Stoica",
+        "Joseph E. Gonzalez",
+        "Omar Khattab",
+        "Alexandros G. Dimakis",
+        "Matei Zaharia"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.LG",
+        "cs.NE",
+        "cs.SE"
+      ],
+      "published": "2026-05-19T10:18:12+00:00",
+      "link": "https://arxiv.org/pdf/2605.19633v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based optimization system for any text parameter, generating solutions automatically",
+      "llm_evidence_cn": "基于LLM的通用优化系统，自动生成文本参数优化方案",
+      "llm_evidence": "基于LLM的通用优化系统，自动生成文本参数优化方案",
+      "canonical_evidence": "基于LLM的通用优化系统，自动生成文本参数优化方案",
+      "llm_tldr_en": "Optimize Anything proposes a single LLM-based optimization system that automatically searches and generates optimal text artifacts, achieving SOTA across six diverse tasks including scheduling and code generation.",
+      "llm_tldr_cn": "该论文提出一个统一的基于LLM的优化系统，能够自动搜索并生成最优文本性方案，支持单任务和多任务优化。在六个不同领域的任务中均取得最优结果，包括调度算法、CUDA内核生成等，展示了跨问题迁移和泛化能力。其核心贡献在于提供了一种通用的优化API框架。",
+      "llm_tldr": "该论文提出一个统一的基于LLM的优化系统，能够自动搜索并生成最优文本性方案，支持单任务和多任务优化。在六个不同领域的任务中均取得最优结果，包括调度算法、CUDA内核生成等，展示了跨问题迁移和泛化能力。其核心贡献在于提供了一种通用的优化API框架。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.25246v2",
+      "source": "arxiv",
+      "title": "FrontierOR: Benchmarking LLMs' Capacity for Efficient Algorithm Design in Large-Scale Optimization",
+      "abstract": "Large language models (LLMs) are increasingly used for optimization modeling and solver-code generation, yet practical operations research and optimization problems often require a harder capability: designing scalable algorithms that exploit problem structure and outperform direct formulation-and-solve baselines. Existing benchmarks are limited to small or simplified examples far below real-world scale and complexity. We introduce FrontierOR, among the first benchmarks to systematically evaluate LLM-based efficient algorithm design for realistic large-scale optimization problems. FrontierOR includes 180 tasks derived from methodologically diverse papers published in top-tier operations research venues, each with standardized instances and a hidden, expert-verified evaluation suite. We evaluate seven LLMs spanning frontier, cost-effective, and open-source models both in one-shot and test-time evolution settings. The results reveal that frontier models still struggle to move from executable formulations to efficient optimization algorithms: the strongest one-shot model outperforms Gurobi in only 31% of cases in both solution quality and computational efficiency, and even strong coding agents with test-time evolution achieve only 50% on selected hard tasks. FrontierOR establishes a practical evaluation platform for LLM-based optimization algorithm design, which enables future LLMs and agents to be systematically tested on whether they can move beyond correct formulation toward a feasible, high-quality, and efficient algorithm.",
+      "authors": [
+        "Minwei Kong",
+        "Chonghe Jiang",
+        "Ao Qu",
+        "Wenbin Ouyang",
+        "Zhaoming Zeng",
+        "Xiaotong Guo",
+        "Zhekai Li",
+        "Junyi Li",
+        "Yi Fan",
+        "Xinshou Zheng",
+        "Xi Jing",
+        "Yikai Zhang",
+        "Zhiwei Liang",
+        "Seonghoo Kim",
+        "Runqing Yang",
+        "Zijian Zhou",
+        "Sirui Li",
+        "Han Zheng",
+        "Wangyang Ying",
+        "Ou Zheng",
+        "Chonghuan Wang",
+        "Jinglong Zhao",
+        "Hanzhang Qin",
+        "Cathy Wu",
+        "Paul Pu Liang",
+        "Jinhua Zhao",
+        "Hai Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-24T20:10:42+00:00",
+      "link": "https://arxiv.org/pdf/2605.25246v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Benchmark for LLM-based efficient algorithm design in large-scale optimization",
+      "llm_evidence_cn": "大规模优化中基于LLM的高效算法设计基准",
+      "llm_evidence": "大规模优化中基于LLM的高效算法设计基准",
+      "canonical_evidence": "大规模优化中基于LLM的高效算法设计基准",
+      "llm_tldr_en": "FrontierOR benchmarks LLMs on realistic large-scale optimization tasks requiring scalable algorithm design, with 180 tasks from top OR venues.",
+      "llm_tldr_cn": "现有基准仅涵盖小规模简化问题，无法评估LLM设计实际大规模优化算法能力。本文提出FrontierOR，包含来自顶级运筹学期刊的180个任务，标准化了问题描述和评估。基准测试表明当前LLM在高效算法设计上仍有显著不足，但为未来研究提供了清晰方向。该工作推动了LLM在运筹优化中的能力边界探索。",
+      "llm_tldr": "现有基准仅涵盖小规模简化问题，无法评估LLM设计实际大规模优化算法能力。本文提出FrontierOR，包含来自顶级运筹学期刊的180个任务，标准化了问题描述和评估。基准测试表明当前LLM在高效算法设计上仍有显著不足，但为未来研究提供了清晰方向。该工作推动了LLM在运筹优化中的能力边界探索。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.28158v1",
+      "source": "arxiv",
+      "title": "OR-Space: A Full-Lifecycle Workspace Benchmark for Industrial Optimization Agents",
+      "abstract": "Large language model (LLM) agents are increasingly used to assist with operations research (OR) modeling, yet existing OR-oriented benchmarks often reduce evaluation to one-shot translation from a self-contained problem statement into a mathematical formulation or solver program. Such settings abstract away two characteristics of real industrial OR workflows: persistent multi-artifact workspaces and multi-stage task lifecycles. We introduce OR-Space, a full-lifecycle workspace benchmark for evaluating industrial optimization agents across model construction, model revision, and grounded explanation. Each instance is an executable workspace containing business documents, structured data, optional code artifacts, solver outputs, and task-specific evaluators distributed across interdependent files. OR-Space defines three task modes: Build, where agents construct solver-ready optimization models from heterogeneous artifacts; Revise, where agents modify existing models under changing requirements or solver feedback while preserving valid prior logic; and Explain, where agents answer grounded questions about solutions, constraints, and business implications using evidence spread across workspace artifacts. By combining persistent workspaces with lifecycle-oriented tasks, OR-Space evaluates whether agents can perform reliable optimization work beyond end-to-end text generation. We describe the benchmark design, evaluation protocol, and quality-control pipeline, and position OR-Space as a benchmark for studying the reliability, failure modes, and practical readiness of LLM agents in industrial OR workflows.",
+      "authors": [
+        "Chenyu Zhou",
+        "Xinyun Lu",
+        "Jiangyue Zhao",
+        "Jianghao Lin",
+        "Dongdong Ge",
+        "Yinyu Ye"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-27T08:41:30+00:00",
+      "link": "https://arxiv.org/pdf/2605.28158v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Benchmark for LLM agents in OR modeling lifecycle",
+      "llm_evidence_cn": "LLM代理在运筹优化建模全生命周期的基准测试",
+      "llm_evidence": "LLM代理在运筹优化建模全生命周期的基准测试",
+      "canonical_evidence": "LLM代理在运筹优化建模全生命周期的基准测试",
+      "llm_tldr_en": "OR-Space introduces a full-lifecycle workspace benchmark for evaluating LLM agents on OR modeling tasks across model construction, revision, and explanation.",
+      "llm_tldr_cn": "该论文提出OR-Space，一个评估工业优化代理的全生命周期工作空间基准。不同于传统的一次性翻译评测，它涵盖了模型构建、修订和接地解释等多个阶段，每个实例包含业务文档、结构化数据、代码工件等，更贴近真实工业运筹优化工作流程。该基准有助于推进LLM在运筹优化建模方向的研究。",
+      "llm_tldr": "该论文提出OR-Space，一个评估工业优化代理的全生命周期工作空间基准。不同于传统的一次性翻译评测，它涵盖了模型构建、修订和接地解释等多个阶段，每个实例包含业务文档、结构化数据、代码工件等，更贴近真实工业运筹优化工作流程。该基准有助于推进LLM在运筹优化建模方向的研究。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    }
+  ]
+}
