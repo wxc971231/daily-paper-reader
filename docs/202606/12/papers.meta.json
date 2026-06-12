@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-12",
+  "date": "2026-06-12",
+  "generated_at": "2026-06-12T20:15:36",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/12/2606.05464v1-step-by-step-optimization-like-reasoning-in-llms-over-expanding-search-spaces",
+      "section": "deep",
+      "title_en": "Step-by-Step Optimization-like Reasoning in LLMs over Expanding Search Spaces",
+      "authors": "Nicolás Astorga, Nabeel Seedat, Mihaela van der Schaar",
+      "date": "2026-06-03",
+      "pdf": "https://arxiv.org/pdf/2606.05464v1",
+      "score": "8.0",
+      "evidence": "LLM优化推理和训练任务",
+      "tldr": "当前LLM推理训练主要针对数学和代码等可验证领域，但现实任务常需在大量可行方案中寻找高价值计划。为此提出OPT*任务族，通过复杂度参数控制搜索空间，无需额外人工标注即可扩展难度。研究了两种训练范式：利用求解器指导在线策略优化，以及无求解器时的离线搜索强化学习。实验表明，OPT*训练能显著提升LLM在扩展搜索空间中的逐步优化推理能力。该工作为LLM适应更广泛的优化型决策任务提供了可扩展的基准和方法。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Verifiable reward training has improved mathematical and coding reasoning, but these domains capture only part of step-by-step decision making. Many real-world tasks require finding a high-value feasible plan among many valid alternatives. We introduce OPT*, a scalable family of optimization-style tasks for training and evaluating LLM step-by-step optimization-like reasoning along a complexity axis: each task provides a feasibility checker and evaluator, while a complexity parameter expands the search space without requiring new human labels. This motivates studying these tasks in two regimes: (i) solver-guided online policy optimization, which uses a solver as a value oracle for partial states and applies rank-based reward shaping to reinforce better next steps, and (ii) search-based offline RL when such solvers are unavailable. Theoretically, we relate success in large search spaces to the information a reasoner extracts per unit of search budget. Empirically, we ablate the ingredients that make search efficient on OPT* and show that training on OPT* improves step-by-step optimization-like reasoning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/12/2606.11113v1-a-neurosymbolic-prolog-skill-for-llm-driven-service-placement",
+      "section": "quick",
+      "title_en": "A Neurosymbolic Prolog Skill for LLM-Driven Service Placement",
+      "authors": "Jacopo Massa, Giuseppe Bisicchia, Patrizio Dazzi, Antonio Brogi",
+      "date": "2026-06-09",
+      "pdf": "https://arxiv.org/pdf/2606.11113v1",
+      "score": "7.0",
+      "evidence": "神经符号Prolog技能用于约束感知放置",
+      "tldr": "云边连续体中的服务放置需满足延迟、位置等多重约束，现有方法依赖显式建模或缺乏透明性。本文提出神经符号Prolog技能，利用LLM将放置意图结构化符号事实与规则，由Prolog推理验证，实现约束感知的可解释放置。该方法桥接高层意图与形式化约束，提升了决策可检查性和策略合规性，为云边环境提供可靠服务放置方案。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Service placement in the cloud-edge continuum requires assigning application components to heterogeneous resources under multiple constraints, including latency, locality, and policy requirements. Existing approaches rely on optimisation models or heuristics that require explicit modelling, while neural methods lack transparency and formal guarantees. This work proposes a neuro-symbolic alternative based on a Prolog skill, a reusable interface for schema-constrained fact generation and querying, for constraint-aware placement. The skill enables a language model to structure placement intent into symbolic facts, rules, and queries, while delegating validation and reasoning to Prolog. This design bridges high-level intent and formal constraint evaluation, enabling inspectable and policy-aware placement decisions in cloud-edge environments.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
