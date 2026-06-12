@@ -25,3 +25,55 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
+  intent_profiles:
+    - tag: llm-opt-code
+      description: 基于LLM进行运筹优化问题建模和求解代码生成的论文
+      enabled: true
+      paper_sources:
+        - arxiv
+      keywords:
+        - keyword: large language model
+          keyword_cn: 大型语言模型
+          query: large language model optimization code generation
+        - keyword: operations research
+          keyword_cn: 运筹学
+          query: operations research optimization modeling
+        - keyword: optimization problem code generation
+          keyword_cn: 优化问题代码生成
+          query: code generation for optimization problems using LLM
+        - keyword: problem modeling
+          keyword_cn: 问题建模
+          query: problem modeling for operations research
+        - keyword: solution generation
+          keyword_cn: 求解方案生成
+          query: automatic solution generation for optimization
+        - keyword: constraint programming
+          keyword_cn: 约束规划
+          query: constraint programming modeling with LLM
+      intent_queries:
+        - query: Large language models for modeling operations research optimization problems
+          query_cn: 大型语言模型对运筹优化问题进行建模
+          enabled: true
+          source: manual
+          note: ''
+        - query: Papers about generating optimization problem solving code using LLMs
+          query_cn: 使用大语言模型生成优化问题求解代码的论文
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-06-12T08:32:58.707Z'
+source_backends:
+  arxiv:
+    papers_table: arxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_arxiv_papers
+    vector_rpc_exact: match_arxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_arxiv_papers_bm25
+    sync_table: arxiv_sync_status
+    sync_success_value: success
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
