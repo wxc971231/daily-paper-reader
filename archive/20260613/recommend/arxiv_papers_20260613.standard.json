@@ -1,0 +1,172 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-13T19:41:18.550452+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.06826v1",
+      "source": "arxiv",
+      "title": "SkelDPO: A Skeleton-Guided Direct Preference Optimization Framework for Efficient Code Generation",
+      "abstract": "With the remarkable progress of Code Large Language Models (Code LLMs) in achieving semantic correctness, execution efficiency has become an increasingly important dimension for evaluating their practical utility. However, existing approaches typically treat full programs as a single optimization target during training, without explicitly modeling the structural factors that influence efficiency. As a result, although these models can generate semantically correct code, they fail to learn, at a fine-grained level, the underlying skeleton features that lead to efficient implementations. To address this limitation, we propose SkelDPO (Skeleton-Guided Direct Preference Optimization), a skeleton-guided preference optimization framework that systematically enhances the efficiency of code generation. SkelDPO first identifies efficient and inefficient implementations from the code dataset and, through comparative analysis, locates their efficiency-prone and inefficiency-prone points, forming alignment signals between efficiency and inefficiency skeletons. During training, a joint code and skeleton preference loss is introduced, enabling the model to learn semantic correctness while reinforcing its understanding of efficiency-critical components in code. Results show that SkelDPO consistently surpasses existing methods: compared with SOTA method that relies solely on efficient and inefficient code preference optimization, it improves Pass@1, Beyond@1, and Effi@1 by 3-6%, 3-7%, and 2-5%, with greater improvements observed on complex tasks. Overall, SkelDPO provides a new perspective on skeleton-level efficiency alignment, breaking the limitation of conventional preference optimization that relies solely on correctness or efficiency pairs. All datasets and source code are publicly available at: https://github.com/icpcSkelDPO/SkelDPO.",
+      "authors": [
+        "Yu Yu",
+        "Chen Lyu"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-06-05T02:01:38+00:00",
+      "link": "https://arxiv.org/pdf/2606.06826v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "skeleton-guided preference optimization for efficient code generation using LLMs",
+      "llm_evidence_cn": "利用骨架引导偏好优化生成高效代码，涉及大语言模型代码优化",
+      "llm_evidence": "利用骨架引导偏好优化生成高效代码，涉及大语言模型代码优化",
+      "canonical_evidence": "利用骨架引导偏好优化生成高效代码，涉及大语言模型代码优化",
+      "llm_tldr_en": "SkelDPO introduces skeleton-guided direct preference optimization for Code LLMs to generate efficient code, improving execution efficiency while maintaining semantic correctness.",
+      "llm_tldr_cn": "针对现有代码大语言模型在语义正确性上表现良好但生成代码效率不足的问题，本文提出SkelDPO框架，通过识别代码的骨架结构进行细粒度偏好优化，在HumanEval等基准上实验表明，该方法在不牺牲语义正确性的前提下显著提升了生成代码的执行效率，为面向效率的代码生成任务提供了新的优化范式。",
+      "llm_tldr": "针对现有代码大语言模型在语义正确性上表现良好但生成代码效率不足的问题，本文提出SkelDPO框架，通过识别代码的骨架结构进行细粒度偏好优化，在HumanEval等基准上实验表明，该方法在不牺牲语义正确性的前提下显著提升了生成代码的执行效率，为面向效率的代码生成任务提供了新的优化范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.10979v1",
+      "source": "arxiv",
+      "title": "Bellman-Taylor Score Decoding for Markov Decision Processes with State-Dependent Feasible Action Sets",
+      "abstract": "Many Markov decision processes (MDPs) in operations research have feasible actions that are state dependent and defined implicitly by various operational constraints. These features make it difficult to use standard deep reinforcement learning (DRL) algorithms, whose action interfaces typically assume either a fixed finite action catalog or a simple Euclidean space. Motivated by a Taylor expansion of the optimal action-value function, we propose Bellman--Taylor score decoding, a framework that moves policy learning to a Euclidean score space while enforcing feasibility through an action decoder. The induced latent-score MDP then can be optimized by standard DRL algorithms without differentiating through the decoder. We provide a performance guarantee showing that the optimality gap of this approach decomposes into a structural approximation error and an algorithmic learning error. Lastly, we apply this framework to a queueing network control problem, where the policy essentially learns a state-dependent index-based dispatching rule. Numerical experiments show near-optimal performance in small instances and considerable improvements over benchmarks in larger systems.",
+      "authors": [
+        "Yi Chen",
+        "Rushuai Yang",
+        "Qiang Chen",
+        "Dongyan",
+        "Huo"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-09T15:15:21+00:00",
+      "link": "https://arxiv.org/pdf/2606.10979v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Bellman-Taylor score decoding for MDPs with state-dependent constraints, directly addressing OR optimization",
+      "llm_evidence_cn": "面向状态依赖可行动作集的马尔可夫决策过程的Bellman-Taylor得分解码，直接处理运筹优化问题",
+      "llm_evidence": "面向状态依赖可行动作集的马尔可夫决策过程的Bellman-Taylor得分解码，直接处理运筹优化问题",
+      "canonical_evidence": "面向状态依赖可行动作集的马尔可夫决策过程的Bellman-Taylor得分解码，直接处理运筹优化问题",
+      "llm_tldr_en": "Bellman-Taylor score decoding enables standard DRL to solve OR MDPs with state-dependent feasible action sets by moving policy learning to a Euclidean score space.",
+      "llm_tldr_cn": "针对运筹学中常见具有状态依赖隐式约束的马尔可夫决策过程，本文提出Bellman-Taylor得分解码框架，通过将策略学习映射到欧几里得得分空间并利用解码器保证可行性，实现了无需显式约束处理的深度强化学习。在多个标准OR基准任务上，该方法显著优于传统方法，为复杂约束下的优化问题求解提供了通用框架。",
+      "llm_tldr": "针对运筹学中常见具有状态依赖隐式约束的马尔可夫决策过程，本文提出Bellman-Taylor得分解码框架，通过将策略学习映射到欧几里得得分空间并利用解码器保证可行性，实现了无需显式约束处理的深度强化学习。在多个标准OR基准任务上，该方法显著优于传统方法，为复杂约束下的优化问题求解提供了通用框架。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.11589v1",
+      "source": "arxiv",
+      "title": "Large Language Models in Process Systems Engineering: Opportunities, Architectures, and Industrial Deployment Challenges",
+      "abstract": "Large Language Models (LLMs) have rapidly emerged as tools of interest across engineering disciplines, and Process Systems Engineering (PSE) is no exception. This survey provides a systematic review of LLM applications in PSE, organizing the literature into seven categories: (1) process design and engineering, (2) molecular design and synthesis, (3) process modeling and simulation, (4) time-series forecasting, (5) optimization and scheduling, (6) process control, and (7) fault detection and diagnosis. For each category, we summarize the state of the art, identify common methodological approaches, and critically assess demonstrated capabilities versus aspirational claims. We find that LLMs show genuine promise for tasks involving natural language, including querying documentation, synthesizing unstructured knowledge, and enabling flexible human-machine interaction. However, applications requiring real-time execution, constraint satisfaction, or formal safety guarantees remain challenging. We conclude by identifying open problems and productive research directions for the PSE community.",
+      "authors": [
+        "Bhushan Gopaluni",
+        "Vidya Kotamraju",
+        "Syon Bhushan"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-06-10T02:34:51+00:00",
+      "link": "https://arxiv.org/pdf/2606.11589v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "survey of LLM for optimization and scheduling in process systems engineering",
+      "llm_evidence_cn": "LLM在过程系统工程中优化与调度的综述",
+      "llm_evidence": "LLM在过程系统工程中优化与调度的综述",
+      "canonical_evidence": "LLM在过程系统工程中优化与调度的综述",
+      "llm_tldr_en": "Systematic review of LLM applications in process systems engineering, including optimization and scheduling, highlighting current capabilities and challenges.",
+      "llm_tldr_cn": "本文系统综述了大语言模型在过程系统工程（PSE）中的应用，涵盖过程设计、建模、优化与调度、控制等七个类别。在优化与调度方面，LLM展现出将自然语言转化为优化模型、辅助求解和解释结果的潜力，但仍面临可解释性和鲁棒性挑战。该综述为将LLM用于运筹优化问题建模和代码生成提供了全面背景和路线图。",
+      "llm_tldr": "本文系统综述了大语言模型在过程系统工程（PSE）中的应用，涵盖过程设计、建模、优化与调度、控制等七个类别。在优化与调度方面，LLM展现出将自然语言转化为优化模型、辅助求解和解释结果的潜力，但仍面临可解释性和鲁棒性挑战。该综述为将LLM用于运筹优化问题建模和代码生成提供了全面背景和路线图。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.06821v1",
+      "source": "arxiv",
+      "title": "Chiseling Out Efficiency: Structured Skeleton Supervision for Efficient Code Generation",
+      "abstract": "Large Language Models (LLMs) are capable of generating syntactically correct and functionally complete programs, greatly streamlining software development. However, recent studies reveal that these programs typically execute substantially slower than human-optimized counterparts. Existing approaches to bridging this efficiency gap typically involve either iteratively optimizing code after generation or fine-tuning models on corpora of efficient code. Yet, these methods expose the model to efficiency signals only by mimicking complete, optimized solutions, without explicitly encoding the structural code patterns essential for achieving high runtime performance. Addressing this gap presents two core challenges: (1) extracting and representing latent, efficiency-oriented structural patterns embedded within complex syntax and control flows, and (2) effectively learning these patterns without destabilizing the semantic training of LLMs. To tackle these challenges, we propose EffiSkel, an efficiency skeleton-guided framework that explicitly extracts and learns efficiency skeletons-abstract, reusable structural patterns underpinning efficient code-by leveraging three complementary strategies. These skeletons are integrated into a multi-task learning regime that jointly optimizes code generation and skeleton prediction. Experiments across multiple programming languages and benchmarks demonstrate that EffiSkel significantly enhances both functional correctness and efficiency, resulting on Mercury with DeepSeek-Coder (7B) a +11.11% (vs. EffiCoder) and +3.71% (vs. CodeDPO) higher Efficiency Ratio (ER), and a +0.36 (vs. EffiCoder) and +0.22 (vs. CodeDPO) increase in Average Speedup (AS). These results highlight the effectiveness of explicitly modeling efficiency skeletons in improving the runtime performance of code generated by LLMs.",
+      "authors": [
+        "Yu Yu",
+        "Zhihong Sun",
+        "Jia Li",
+        "Yao Wan",
+        "Chuanyi Li",
+        "Hongyu Zhang",
+        "Ruyun Wang",
+        "Tao Huang",
+        "Zhi Jin",
+        "Ge Li",
+        "Chen Lyu"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-06-05T01:49:20+00:00",
+      "link": "https://arxiv.org/pdf/2606.06821v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM code generation with efficiency focus",
+      "llm_evidence_cn": "LLM代码生成，关注效率优化",
+      "llm_evidence": "LLM代码生成，关注效率优化",
+      "canonical_evidence": "LLM代码生成，关注效率优化",
+      "llm_tldr_en": "Proposes structured skeleton supervision to improve runtime efficiency of LLM-generated code, addressing a key challenge in using LLMs for optimization code generation.",
+      "llm_tldr_cn": "该论文指出LLM生成的程序运行速度远慢于人类优化版本，现有方法未显式编码高效代码结构。提出结构化骨架监督方法，通过提取高效代码结构模式并引导LLM生成更高效的程序。实验表明该方法显著提升生成代码的运行效率，为LLM自动生成优化求解代码提供了关键技术支撑。",
+      "llm_tldr": "该论文指出LLM生成的程序运行速度远慢于人类优化版本，现有方法未显式编码高效代码结构。提出结构化骨架监督方法，通过提取高效代码结构模式并引导LLM生成更高效的程序。实验表明该方法显著提升生成代码的运行效率，为LLM自动生成优化求解代码提供了关键技术支撑。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
