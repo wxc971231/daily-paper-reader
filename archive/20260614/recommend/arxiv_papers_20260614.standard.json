@@ -1,0 +1,204 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-14T19:07:01.935939+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2606.09278v1",
+      "source": "arxiv",
+      "title": "Internalizing Geometric Law: Learning from Solver Residuals for Precision-Critical Generation",
+      "abstract": "Large Language Models frequently hallucinate in precision-critical domains such as technical diagramming and mechanical design, where outputs must satisfy strict geometric constraints. We study open-ended geometric synthesis from natural language: translating free-form descriptions into precise constructions whose entities must simultaneously satisfy dozens of interacting constraints. To make this tractable, we release PyGeoX, a programmable geometric DSL that compiles declarative constraints into a differentiable loss, and PyGeoX-Bench, a stratified suite of 300 problems with per-constraint verifiable rewards. Using PyGeoX as a verifier, we identify a failure mode we call Outlier Gradient Masking: under global-norm rewards (any scheme that aggregates residuals through a single norm, for example, $\\exp(-\\mathrm{MSE})$), a single outlier constraint can nullify the learning signal across all others. To address this, we propose Saturating Additive Rewards (SAR), which decompose the reward into bounded per-constraint terms, preserving partial progress and ensuring consistent gradients even under severe violations. Against MSE-based rewards, the natural baseline for geometry solvers, SAR improves the hard-tier solving rate by $2.3\\times$, and the resulting 8B model is competitive with much larger frontier systems on this benchmark. We release the engine, benchmark, and data at https://github.com/Huawei-AI4Math/PyGeoX.",
+      "authors": [
+        "Rafael Cabral",
+        "Pang Zixi",
+        "Ziyi Shou",
+        "Shen Xin"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-06-08T09:44:31+00:00",
+      "link": "https://arxiv.org/pdf/2606.09278v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based constraint programming with differentiable DSL for geometric synthesis",
+      "llm_evidence_cn": "使用可微分DSL进行LLM几何约束生成",
+      "llm_evidence": "使用可微分DSL进行LLM几何约束生成",
+      "canonical_evidence": "使用可微分DSL进行LLM几何约束生成",
+      "llm_tldr_en": "LLMs hallucinate in precision-critical domains; this paper proposes PyGeoX, a differentiable DSL for geometric constraints, and uses it as a verifier to train LLMs for constraint-aware generation. Outperforms baselines on geometric synthesis benchmarks.",
+      "llm_tldr_cn": "大型语言模型在需要精确满足几何约束的图形合成中常产生幻觉。本文提出PyGeoX，一个可编程几何领域专用语言（DSL），可将声明式约束编译为可微损失函数，并利用其作为验证器训练LLM生成满足约束的几何体。实验表明该方法能有效缓解“异常梯度遮蔽”问题，在300个问题测试集上显著提升约束满足率。该工作为约束编程与LLM结合提供了新范式。",
+      "llm_tldr": "大型语言模型在需要精确满足几何约束的图形合成中常产生幻觉。本文提出PyGeoX，一个可编程几何领域专用语言（DSL），可将声明式约束编译为可微损失函数，并利用其作为验证器训练LLM生成满足约束的几何体。实验表明该方法能有效缓解“异常梯度遮蔽”问题，在300个问题测试集上显著提升约束满足率。该工作为约束编程与LLM结合提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "constraint programming modeling with LLM",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.07940v1",
+      "source": "arxiv",
+      "title": "SGTO-MAS: Secure Gorilla Troops Optimization for Multi-Agent LLM Systems",
+      "abstract": "Multi-agent large language model (LLM) systems offer strong capabilities for complex reasoning and decision-making, yet coordination across agents introduces error propagation, security risks, and inefficient use of resources. Existing methods often rely on heuristic, static strategies and lack a principled mechanism for balancing performance, security, and computational cost. This paper formulates multi-agent LLM coordination as a constrained optimization problem and proposes a security-aware method for adaptive agent selection. The method integrates trust modeling, risk-aware evaluation, and collective intelligence within a unified optimization objective. To solve the problem efficiently, we use a swarm-intelligence strategy inspired by Gorilla Troops Optimization (GTO), enabling adaptive coordination under varying threat conditions. Controlled experiments across 500 independent runs demonstrate the effectiveness of the proposed method. The system achieves a stable average performance score of 0.5281, with high consensus (0.8764), controlled risk (0.3000), and compact agent subsets averaging 4.04 selected agents. The optimization process converges efficiently, with an average runtime of 24.09 seconds per run and low score variability (standard deviation = 0.0173). Robustness analysis indicates graceful degradation under perturbations, with performance drops limited to 2.5% under agent removal and 5.3% under consensus disruption. These results show that effective multi-agent coordination can be achieved through structured optimization that jointly manages performance, security, and efficiency. The proposed method provides a practical security-aware solution for coordinating multi-agent LLM systems in complex adversarial settings.",
+      "authors": [
+        "Saeid Jamshidi"
+      ],
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR"
+      ],
+      "published": "2026-06-06T02:00:36+00:00",
+      "link": "https://arxiv.org/pdf/2606.07940v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses optimization for multi-agent LLM coordination",
+      "llm_evidence_cn": "使用优化方法协调多智能体LLM系统",
+      "llm_evidence": "使用优化方法协调多智能体LLM系统",
+      "canonical_evidence": "使用优化方法协调多智能体LLM系统",
+      "llm_tldr_en": "Formulates multi-agent LLM coordination as constrained optimization and uses Gorilla Troops Optimization for security-aware agent selection.",
+      "llm_tldr_cn": "该论文将多智能体LLM系统的协调问题形式化为约束优化问题，提出安全感知的Gorilla Troops优化算法进行自适应智能体选择，在信任建模、风险评估与集体智能之间平衡。虽然涉及LLM系统优化，但面向安全协调而非运筹建模或代码生成。",
+      "llm_tldr": "该论文将多智能体LLM系统的协调问题形式化为约束优化问题，提出安全感知的Gorilla Troops优化算法进行自适应智能体选择，在信任建模、风险评估与集体智能之间平衡。虽然涉及LLM系统优化，但面向安全协调而非运筹建模或代码生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.08620v1",
+      "source": "arxiv",
+      "title": "SPA: A SQL-Plan-Aware Reinforcement Learning Framework for Query Rewriting with LLMs",
+      "abstract": "SQL query rewriting is a well-established technique for improving database performance without schema or index changes, yet finding effective rewrites for modern analytical workloads remains difficult: rule-based methods are limited to predefined transformations, while LLM-based approaches often produce rewrites that are semantically valid but compile to equivalent physical plans or degrade runtime performance. We present SPA, a SQL-Plan-Aware reinforcement learning framework that trains LLMs to rewrite queries using physical execution feedback. SPA formulates rewriting as a policy optimization problem and extends GRPO with rewards spanning semantic equivalence, textual rewrite distance, physical-plan divergence, and runtime speedup. To handle reward sparsity across query difficulty, SPA introduces Probability-Gated Adaptive Reward Shaping, a query-level curriculum that unlocks higher-level rewards only once a rollout group achieves sufficient mastery of lower-level objectives, and further improves sample efficiency through on-policy self-improvement by recycling slowdown rewrites from the current policy as targeted training signals. On both IID and OOD workloads, SPA outperforms rule-based and strong LLM baselines in end-to-end runtime, substantially reduces harmful slowdown rewrites, and yields strong tail-latency gains.",
+      "authors": [
+        "Xinyi Huang",
+        "Zhengjie Miao"
+      ],
+      "primary_category": "cs.DB",
+      "categories": [
+        "cs.DB"
+      ],
+      "published": "2026-06-07T13:12:46+00:00",
+      "link": "https://arxiv.org/pdf/2606.08620v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-based reinforcement learning for SQL query rewriting to optimize performance, generating semantically and plan-equivalent code.",
+      "llm_evidence_cn": "基于LLM的强化学习用于SQL查询重写以优化性能，生成语义和计划等效的代码。",
+      "llm_evidence": "基于LLM的强化学习用于SQL查询重写以优化性能，生成语义和计划等效的代码。",
+      "canonical_evidence": "基于LLM的强化学习用于SQL查询重写以优化性能，生成语义和计划等效的代码。",
+      "llm_tldr_en": "SPA uses reinforcement learning to train LLMs to generate optimized SQL query rewrites, considering semantic equivalence, plan divergence, and runtime speedup.",
+      "llm_tldr_cn": "针对LLM在SQL重写中常生成等价但低效物理计划的缺陷，本文提出SPA框架，将重写形式化为策略优化问题，扩展GRPO以融入语义等价、文本距离、物理计划差异和运行时加速等多重奖励。实验表明SPA能有效生成带来实际性能提升的重写，为LLM在查询优化代码生成领域提供了新范式。",
+      "llm_tldr": "针对LLM在SQL重写中常生成等价但低效物理计划的缺陷，本文提出SPA框架，将重写形式化为策略优化问题，扩展GRPO以融入语义等价、文本距离、物理计划差异和运行时加速等多重奖励。实验表明SPA能有效生成带来实际性能提升的重写，为LLM在查询优化代码生成领域提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.12563v1",
+      "source": "arxiv",
+      "title": "Arbor: Tree Search as a Cognition Layer for Autonomous Agents",
+      "abstract": "Arbor is a multi-agent framework that introduces structured tree search as a cognition layer for autonomous agents operating in large, stateful action spaces. Prior autonomous optimization systems operate on isolated targets with stateless evaluation. Arbor instead maintains an explicit search tree of scored hypotheses that serves as the shared working memory across agents, evolving with every measurement, treating failures as diagnostic signal that reshapes subsequent exploration, and expanding as prior successes shift the bottleneck distribution.   We validate Arbor on full-stack LLM inference optimization, a domain where achieving peak performance has historically required coordinated effort from engineering teams across the application, framework, compiler, kernel, and hardware stack. Arbor pairs an Orchestrator agent, which drives optimization by delegating to Domain Specialists across the inference stack, with a Critic agent that safeguards stability through root-cause analysis, introspection, and measurement validation -- a checks-and-balances architecture where neither agent can unilaterally drive the system. Agent capabilities are decomposed into hard skills (domain expertise) and soft skills (coordination protocols that determine how contributions compose), enabling fully autonomous multi-day campaigns. Arbor achieves up to 193% inference throughput-latency Pareto improvement over vendor-optimized baselines, while a single agent without the harness plateaus at +33% throughput improvement and crashes irrecoverably within hours. Arbor generalizes to multiple generations of hardware platform, and run-to-run variance is within 2 percentage points demonstrating that the method is hardware-agnostic and reproducible.",
+      "authors": [
+        "Neha Prakriya",
+        "Chaojun Hou",
+        "Zheng Gong",
+        "Huasha Zhao",
+        "Xi Zhao",
+        "Mou Li",
+        "Zhenyu Gu",
+        "Emad Barsoum"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-10T18:14:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.12563v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Multi-agent framework using tree search for autonomous optimization, validated on LLM inference optimization.",
+      "llm_evidence_cn": "利用树搜索进行自主优化的多智能体框架，在LLM推理优化上验证。",
+      "llm_evidence": "利用树搜索进行自主优化的多智能体框架，在LLM推理优化上验证。",
+      "canonical_evidence": "利用树搜索进行自主优化的多智能体框架，在LLM推理优化上验证。",
+      "llm_tldr_en": "Arbor introduces structured tree search as a cognition layer for multi-agent autonomous optimization, validated on full-stack LLM inference optimization.",
+      "llm_tldr_cn": "针对自主优化系统在大型有状态动作空间中的困难，本文提出Arbor框架，通过在多个智能体间共享维护显式搜索树（记录假设评分）来引导探索。该方法将失败视为诊断信号，逐步优化探索方向。在全栈LLM推理优化任务上的实验表明，Arbor能够自动达到此前需工程团队协作才能实现的性能峰值。",
+      "llm_tldr": "针对自主优化系统在大型有状态动作空间中的困难，本文提出Arbor框架，通过在多个智能体间共享维护显式搜索树（记录假设评分）来引导探索。该方法将失败视为诊断信号，逐步优化探索方向。在全栈LLM推理优化任务上的实验表明，Arbor能够自动达到此前需工程团队协作才能实现的性能峰值。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.13031v1",
+      "source": "arxiv",
+      "title": "A Survey of Community Detection from an Operations Research Perspective: Taxonomy, Mathematical Formulations, Modularity Functions, and Benchmark Datasets",
+      "abstract": "Community detection is a fundamental problem in network science that consists of identifying groups of vertices exhibiting stronger internal connectivity than external connectivity. From an Operations Research perspective, the problem can be interpreted as a family of combinatorial optimization and clustering models defined over network structures. This survey provides a unified framework for the study of community detection, with particular emphasis on modularity-based approaches. We first review existing surveys and analyze the taxonomic criteria used to classify the literature, highlighting the absence of a common conceptual framework. Based on this analysis, we propose a multidimensional taxonomy that organizes community detection methods according to network characteristics, community structure, objective functions, methodological paradigms, evaluation criteria, and application domains. We then introduce a general mathematical formalization of the Community Detection Problem that accommodates disjoint, overlapping, and fuzzy community structures within a unified assignment framework. Building on this formalization, we review representative modularity functions, discussing their underlying assumptions, null models, and known limitations. We also survey modularity-based community detection methods, distinguishing between algorithmic and mathematical programming approaches. Finally, we review commonly used benchmark datasets and discuss their role in evaluation and reproducibility. By integrating taxonomy, mathematical modeling, modularity analysis, and benchmarking practices, this survey provides a structured reference for researchers and practitioners working on community detection and related network optimization problems.",
+      "authors": [
+        "Miguel A. Pozo Montaño",
+        "Sebastián V Taboh"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-06-11T08:05:26+00:00",
+      "link": "https://arxiv.org/pdf/2606.13031v1",
+      "tags": [
+        "keyword:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Survey of community detection as combinatorial optimization from OR perspective",
+      "llm_evidence_cn": "从运筹学视角将社区检测视为组合优化问题的综述",
+      "llm_evidence": "从运筹学视角将社区检测视为组合优化问题的综述",
+      "canonical_evidence": "从运筹学视角将社区检测视为组合优化问题的综述",
+      "llm_tldr_en": "A comprehensive survey of community detection from an OR perspective, unifying combinatorial optimization models, modularity functions, and benchmarks.",
+      "llm_tldr_cn": "社区检测是网络科学中的基本问题，在运筹学视角下可视为一类组合优化和聚类模型。现有文献缺乏统一的概念框架，分类准则不一致。本文从运筹学角度对社区检测进行系统性综述，提出了一个统一的分类体系，重点强调了基于模块度的方法，并总结了相关的数学公式和基准数据集。该综述为社区检测的运筹学研究提供了全面参考，并指出了未来研究方向。",
+      "llm_tldr": "社区检测是网络科学中的基本问题，在运筹学视角下可视为一类组合优化和聚类模型。现有文献缺乏统一的概念框架，分类准则不一致。本文从运筹学角度对社区检测进行系统性综述，提出了一个统一的分类体系，重点强调了基于模块度的方法，并总结了相关的数学公式和基准数据集。该综述为社区检测的运筹学研究提供了全面参考，并指出了未来研究方向。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
