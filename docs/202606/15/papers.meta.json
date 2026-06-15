@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-15",
+  "date": "2026-06-15",
+  "generated_at": "2026-06-15T20:38:10",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/15/2606.14202v1-meevo-metacognitive-evolution-combined-with-natural-evolution-for-automatic-heuristic-design",
+      "section": "deep",
+      "title_en": "MeEvo: Metacognitive Evolution Combined with Natural Evolution for Automatic Heuristic Design",
+      "authors": "Zishang Qiu, Xinan Chen, Rong Qu, Ruibin Bai",
+      "date": "2026-06-12",
+      "pdf": "https://arxiv.org/pdf/2606.14202v1",
+      "score": "8.0",
+      "evidence": "基于LLM的自动启发式设计，通过代码合成为优化问题生成求解算法",
+      "tldr": "现有自动启发式设计方法中，自然进化丢弃推理痕迹，元认知进化缺乏种群重组，导致搜索效率低、易早熟收敛。为此提出MeEvo框架，循环耦合自然进化和元认知进化，自然进化探索代码并记录推理历史，元认知进化反思历史生成改进启发式。在五个优化问题两个LLM骨干上，MeEvo比现有方法性能更强且更稳定，尤其复杂约束任务。该方法实现了种群探索与反思精炼的相互增强，提升了搜索效率和解决方案质量。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large Language Models (LLMs) have advanced Automatic Heuristic Design (AHD) by enabling heuristic generation through reasoning and code synthesis. Existing LLM-based AHD architectures mainly follow two paradigms: Natural Evolution, which uses crossover and mutation to explore heuristic programs, and Metacognitive Evolution, which refines reasoning through reflection. However, Natural Evolution discards reasoning traces, weakening knowledge inheritance and exploitation, while Metacognitive Evolution lacks population-level recombination, limiting exploration and increasing the risk of premature convergence. These limitations reduce search efficiency, stability, and solution quality on complex problems. To address this gap, we propose MeEvo, a dual-layer AHD framework that cyclically couples Natural Evolution and Metacognitive Evolution. Natural Evolution explores heuristic code while recording reasoning traces, fitness values, and errors into a shared history; Metacognitive Evolution then reflects on this history to generate improved heuristics that re-enter the parent pool for the next cycle. This design enables population-driven exploration and reflection-driven refinement to reinforce each other. Experiments on five optimization problems with two LLM backbones show that MeEvo achieves stronger and more stable performance than existing LLM-based AHD architectures, especially on complex constrained tasks.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/15/2606.13089v1-multi-objective-coevolution-of-prompts-and-templates-for-circuit-approximation",
+      "section": "quick",
+      "title_en": "Multi-Objective Coevolution of Prompts and Templates for Circuit Approximation",
+      "authors": "Martin Tomasovic, Lukas Sekanina",
+      "date": "2026-06-11",
+      "pdf": "https://arxiv.org/pdf/2606.13089v1",
+      "score": "7.0",
+      "evidence": "利用LLM通过提示与模板协同进化自动生成优化电路设计",
+      "tldr": "近似乘法器通过牺牲精度换取功耗、延迟和面积优势，适用于容错应用如神经网络。本文提出一种协同进化算法，利用现成的大语言模型（无需领域训练）自动设计优化的8位近似乘法器。该算法同时进化电路种群和提示模板种群，引导LLM进行电路修改。实验表明，该方法发现的近似乘法器在误差-面积权衡上优于EvoApproxLib库中的高度优化电路。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Approximate multipliers deliberately relax computational accuracy to achieve gains in power efficiency, latency, and silicon area, which makes them well-suited for error-resilient applications such as neural networks. In this work, we introduce a co-evolutionary algorithm that leverages an off-the-shelf large language model (LLM) without requiring domain-specific training to automate the design of optimized 8-bit approximate multipliers. The approach simultaneously evolves a population of candidate circuits and a population of prompt templates that steer LLM-driven modifications. Experimental results for several target design objectives demonstrate that the proposed method discovers approximate multipliers with improved error-area trade-offs compared to highly optimized circuits from the EvoApproxLib library.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/15/2606.09577v1-code-is-more-than-text-uncertainty-estimation-for-code-generation",
+      "section": "quick",
+      "title_en": "Code Is More Than Text: Uncertainty Estimation for Code Generation",
+      "authors": "Yuling Shi, Caiqi Zhang, Yuexian Li, Haopeng Wang, Yeheng Chen, Nigel Collier, Xiaodong Gu",
+      "date": "2026-06-08",
+      "pdf": "https://arxiv.org/pdf/2606.09577v1",
+      "score": "6.0",
+      "evidence": "针对LLM生成代码的不确定性估计，考虑代码的脆弱性和可执行性",
+      "tldr": "针对大模型代码生成的不可靠问题，现有不确定性估计方法多直接迁移自自然语言领域，忽略了代码独有的特性。本文提出代码特有的三个不确定性轴：词汇、算法和功能，通过集成三轴信号将AUROC从0.696提升至0.776。其中单次Top-K词元熵在Qwen3-14B上匹敌最强多基线，成本降低3倍以上，证明代码不确定性估计需要代码专属设计。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language models (LLMs) are increasingly deployed as code generators, where silently wrong programs pose real safety and reliability risks. Reliable uncertainty estimation (UE) is essential for selective prediction, human-in-the-loop review, and downstream agentic decisions. Yet most existing code UE methods are inherited from natural language (NL) generation and ignore properties that make code distinct. We argue that code differs from NL in three ways: a single wrong token can break an entire program (token fragility); algorithmic intent and concrete implementation can disagree independently (intent-code gap); and programs can be executed (executability). We instantiate these properties as three orthogonal uncertainty axes: lexical (Top-K token entropy), algorithmic (pseudo-code consistency), and functional (behavioral consistency). Across five code LLMs, our three-axis ensemble improves average AUROC from 0.696 for the strongest NL-derived baseline to 0.776 (+8.1 points). Notably, on Qwen3-14B, our single-pass Top-K token entropy matches the strongest multi-pass baseline while being over 3x cheaper; across models, it remains a competitive low-cost signal. These results suggest that code UE deserves code-specific design rather than direct NL ports.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/15/2606.14266v1-large-language-model-based-agent-for-automated-discovery-in-computational-physics",
+      "section": "quick",
+      "title_en": "Large Language Model Based Agent for Automated Discovery in Computational Physics",
+      "authors": "Hang Lin, Chongwen Liu, Gang Yan",
+      "date": "2026-06-12",
+      "pdf": "https://arxiv.org/pdf/2606.14266v1",
+      "score": "6.0",
+      "evidence": "LLM智能体用于自动科学发现，将问题框架为约束下的目标优化",
+      "tldr": "计算物理中的科学发现常需优化目标并满足物理约束，研究者花费大量精力迭代方法。为此提出PhyNex，一个基于大语言模型的自主代理，通过LLM引导搜索与领域工具结合，进行渐进局部搜索并积累成功与失败经验。在半导体介电谱预测、Max-Cut图启发式、量子电池充电优化三个任务上，PhyNex自动找到超越或匹敌人类专家设计的方案，搜索平均改进达3.8%、15.0%、5.9%。该工作表明LLM代理可显著加速从问题定义到有效实现的路径，实现科学家与自动化系统的分工。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Scientific discovery in computational physics can often be framed as the optimization of quantitatively evaluable objectives subject to physical constraints. While researchers excel at formulating such problems, they frequently devote substantial effort to iterative refinement of methods and solution strategies. To accelerate this process, we introduce PhyNex, an autonomous agent that systematically explores the solution space of scorable scientific tasks by coupling large language model (LLM)-guided search with domain-specific computational tools that enforce physical consistency. PhyNex operates via progressive local search, accumulates reusable knowledge from both successful and failed attempts, and produces interpretable exploration trajectories that reveal which algorithmic components drive performance improvements. We validate PhyNex on three representative and scientifically important problems: predicting frequency-dependent dielectric spectra of semiconductors from crystal structure, designing probabilistic-circuit heuristics for Max-Cut on graphs, and optimizing charging protocols for Dicke quantum batteries in the chaotic coupling regime. Across the three tasks, PhyNex autonomously identifies solutions that match or exceed state-of-the-art approaches designed by human scientists, yielding search-averaged improvements of up to 3.8\\% in spectral similarity, up to 15.0\\% in normalized mean cut for Max-Cut, and 5.9\\% in ergotropy at the $80\\mathrm{k}$ training checkpoint in open exploration. These findings demonstrate that LLM-based agents with structured, feedback-driven exploration can substantially accelerate the path from problem specification to effective implementation, suggesting a practical division of labor in which scientists define objectives and constraints while automated systems navigate the methodological search space.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

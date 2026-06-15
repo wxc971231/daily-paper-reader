@@ -6,35 +6,34 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-14
-- 运行时间：2026-06-14 19:11:14 UTC
+- 最新运行日期：2026-06-15
+- 运行时间：2026-06-15 20:38:00 UTC
 - 运行状态：成功
-- 本次总论文数：5
+- 本次总论文数：4
 - 精读区：1
-- 速读区：4
+- 速读区：3
 
 ### 今日简报（AI）
-今日共5篇论文，精读1篇关于从求解器残差学习几何规律以实现高精度生成，速读涵盖多智能体安全优化、树搜索增强自主代理及社区检测运筹学综述。最值得关注的是精读论文中残差学习几何规律的方法，适用于精密制造领域；Arbor将树搜索作为自主代理认知层也有实用价值。建议优先阅读精读论文，其次浏览Arbor了解树搜索在代理决策中的应用。
-- 详情：[/202606/14/README](/202606/14/README)
+1) 今日精选4篇论文，精读主推进化算法结合元认知的自动启发式设计，速读覆盖电路近似提示模板共进化与代码不确定性估计。  
+2) 最值得看MeEvo的元认知+自然进化框架（8.0分），以及多目标共进化下提示与模板协同优化（7.0分）。  
+3) 建议读者优先精读MeEvo学习自动化启发式设计思路，速读两篇高分解读进化与LLM的交叉应用。
+- 详情：[/202606/15/README](/202606/15/README)
 
 ### 精读区论文标签
-1. [Internalizing Geometric Law: Learning from Solver Residuals for Precision-Critical Generation](/202606/14/2606.09278v1-internalizing-geometric-law-learning-from-solver-residuals-for-precision-critical-generation)  
+1. [MeEvo: Metacognitive Evolution Combined with Natural Evolution for Automatic Heuristic Design](/202606/15/2606.14202v1-meevo-metacognitive-evolution-combined-with-natural-evolution-for-automatic-heuristic-design)  
    标签：评分：8.0/10、query:llm-opt-code
-   evidence：使用可微分DSL进行LLM几何约束生成
+   evidence：基于LLM的自动启发式设计，通过代码合成为优化问题生成求解算法
 
 ### 速读区论文标签
-1. [SGTO-MAS: Secure Gorilla Troops Optimization for Multi-Agent LLM Systems](/202606/14/2606.07940v1-sgto-mas-secure-gorilla-troops-optimization-for-multi-agent-llm-systems)  
+1. [Multi-Objective Coevolution of Prompts and Templates for Circuit Approximation](/202606/15/2606.13089v1-multi-objective-coevolution-of-prompts-and-templates-for-circuit-approximation)  
    标签：评分：7.0/10、query:llm-opt-code
-   evidence：使用优化方法协调多智能体LLM系统
-2. [Arbor: Tree Search as a Cognition Layer for Autonomous Agents](/202606/14/2606.12563v1-arbor-tree-search-as-a-cognition-layer-for-autonomous-agents)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：利用树搜索进行自主优化的多智能体框架，在LLM推理优化上验证。
-3. [A Survey of Community Detection from an Operations Research Perspective: Taxonomy, Mathematical Formulations, Modularity Functions, and Benchmark Datasets](/202606/14/2606.13031v1-a-survey-of-community-detection-from-an-operations-research-perspective-taxonomy-mathematical-formulations-modularity-functions-and-benchmark-datasets)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：从运筹学视角将社区检测视为组合优化问题的综述
-4. [SPA: A SQL-Plan-Aware Reinforcement Learning Framework for Query Rewriting with LLMs](/202606/14/2606.08620v1-spa-a-sql-plan-aware-reinforcement-learning-framework-for-query-rewriting-with-llms)  
+   evidence：利用LLM通过提示与模板协同进化自动生成优化电路设计
+2. [Code Is More Than Text: Uncertainty Estimation for Code Generation](/202606/15/2606.09577v1-code-is-more-than-text-uncertainty-estimation-for-code-generation)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：基于LLM的强化学习用于SQL查询重写以优化性能，生成语义和计划等效的代码。
+   evidence：针对LLM生成代码的不确定性估计，考虑代码的脆弱性和可执行性
+3. [Large Language Model Based Agent for Automated Discovery in Computational Physics](/202606/15/2606.14266v1-large-language-model-based-agent-for-automated-discovery-in-computational-physics)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：LLM智能体用于自动科学发现，将问题框架为约束下的目标优化
 
 
 <div class="dpr-home-promo-card">

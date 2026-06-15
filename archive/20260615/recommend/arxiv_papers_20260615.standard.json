@@ -1,0 +1,172 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-15T20:34:52.403946+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2606.14202v1",
+      "source": "arxiv",
+      "title": "MeEvo: Metacognitive Evolution Combined with Natural Evolution for Automatic Heuristic Design",
+      "abstract": "Large Language Models (LLMs) have advanced Automatic Heuristic Design (AHD) by enabling heuristic generation through reasoning and code synthesis. Existing LLM-based AHD architectures mainly follow two paradigms: Natural Evolution, which uses crossover and mutation to explore heuristic programs, and Metacognitive Evolution, which refines reasoning through reflection. However, Natural Evolution discards reasoning traces, weakening knowledge inheritance and exploitation, while Metacognitive Evolution lacks population-level recombination, limiting exploration and increasing the risk of premature convergence. These limitations reduce search efficiency, stability, and solution quality on complex problems. To address this gap, we propose MeEvo, a dual-layer AHD framework that cyclically couples Natural Evolution and Metacognitive Evolution. Natural Evolution explores heuristic code while recording reasoning traces, fitness values, and errors into a shared history; Metacognitive Evolution then reflects on this history to generate improved heuristics that re-enter the parent pool for the next cycle. This design enables population-driven exploration and reflection-driven refinement to reinforce each other. Experiments on five optimization problems with two LLM backbones show that MeEvo achieves stronger and more stable performance than existing LLM-based AHD architectures, especially on complex constrained tasks.",
+      "authors": [
+        "Zishang Qiu",
+        "Xinan Chen",
+        "Rong Qu",
+        "Ruibin Bai"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE",
+        "cs.AI"
+      ],
+      "published": "2026-06-12T07:36:38+00:00",
+      "link": "https://arxiv.org/pdf/2606.14202v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based automatic heuristic design for optimization problems via code synthesis",
+      "llm_evidence_cn": "基于LLM的自动启发式设计，通过代码合成为优化问题生成求解算法",
+      "llm_evidence": "基于LLM的自动启发式设计，通过代码合成为优化问题生成求解算法",
+      "canonical_evidence": "基于LLM的自动启发式设计，通过代码合成为优化问题生成求解算法",
+      "llm_tldr_en": "MeEvo combines metacognitive evolution with natural evolution for automatic heuristic design using LLM-generated code, improving search efficiency and solution quality on complex optimization problems.",
+      "llm_tldr_cn": "针对现有LLM自动启发式设计方法中自然进化丢弃推理轨迹、元认知进化缺乏种群重组的问题，本文提出MeEvo，将元认知反思与种群进化融合，通过LLM生成启发式代码并利用推理痕迹指导进化。实验表明，该方法在多种复杂优化问题上提升了搜索效率和求解质量，为LLM驱动的优化求解代码生成提供了新范式。",
+      "llm_tldr": "针对现有LLM自动启发式设计方法中自然进化丢弃推理轨迹、元认知进化缺乏种群重组的问题，本文提出MeEvo，将元认知反思与种群进化融合，通过LLM生成启发式代码并利用推理痕迹指导进化。实验表明，该方法在多种复杂优化问题上提升了搜索效率和求解质量，为LLM驱动的优化求解代码生成提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.13089v1",
+      "source": "arxiv",
+      "title": "Multi-Objective Coevolution of Prompts and Templates for Circuit Approximation",
+      "abstract": "Approximate multipliers deliberately relax computational accuracy to achieve gains in power efficiency, latency, and silicon area, which makes them well-suited for error-resilient applications such as neural networks. In this work, we introduce a co-evolutionary algorithm that leverages an off-the-shelf large language model (LLM) without requiring domain-specific training to automate the design of optimized 8-bit approximate multipliers. The approach simultaneously evolves a population of candidate circuits and a population of prompt templates that steer LLM-driven modifications. Experimental results for several target design objectives demonstrate that the proposed method discovers approximate multipliers with improved error-area trade-offs compared to highly optimized circuits from the EvoApproxLib library.",
+      "authors": [
+        "Martin Tomasovic",
+        "Lukas Sekanina"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE"
+      ],
+      "published": "2026-06-11T09:14:37+00:00",
+      "link": "https://arxiv.org/pdf/2606.13089v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses LLM to automatically generate optimized circuit designs via coevolution of prompts and templates",
+      "llm_evidence_cn": "利用LLM通过提示与模板协同进化自动生成优化电路设计",
+      "llm_evidence": "利用LLM通过提示与模板协同进化自动生成优化电路设计",
+      "canonical_evidence": "利用LLM通过提示与模板协同进化自动生成优化电路设计",
+      "llm_tldr_en": "Proposes a co-evolutionary algorithm using off-the-shelf LLM to automatically generate optimized approximate multipliers, achieving improved error-area trade-offs without domain-specific training.",
+      "llm_tldr_cn": "针对近似乘法器设计需要手动权衡精度与功耗的问题，提出一种协同进化算法，利用预训练LLM自动生成优化电路。该方法同时进化候选电路种群和提示模板种群，引导LLM修改。实验发现更优的误差-面积折衷方案。展示了LLM在硬件优化代码生成中的潜力，可迁移至运筹优化问题。",
+      "llm_tldr": "针对近似乘法器设计需要手动权衡精度与功耗的问题，提出一种协同进化算法，利用预训练LLM自动生成优化电路。该方法同时进化候选电路种群和提示模板种群，引导LLM修改。实验发现更优的误差-面积折衷方案。展示了LLM在硬件优化代码生成中的潜力，可迁移至运筹优化问题。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.09577v1",
+      "source": "arxiv",
+      "title": "Code Is More Than Text: Uncertainty Estimation for Code Generation",
+      "abstract": "Large language models (LLMs) are increasingly deployed as code generators, where silently wrong programs pose real safety and reliability risks. Reliable uncertainty estimation (UE) is essential for selective prediction, human-in-the-loop review, and downstream agentic decisions. Yet most existing code UE methods are inherited from natural language (NL) generation and ignore properties that make code distinct. We argue that code differs from NL in three ways: a single wrong token can break an entire program (token fragility); algorithmic intent and concrete implementation can disagree independently (intent-code gap); and programs can be executed (executability). We instantiate these properties as three orthogonal uncertainty axes: lexical (Top-K token entropy), algorithmic (pseudo-code consistency), and functional (behavioral consistency). Across five code LLMs, our three-axis ensemble improves average AUROC from 0.696 for the strongest NL-derived baseline to 0.776 (+8.1 points). Notably, on Qwen3-14B, our single-pass Top-K token entropy matches the strongest multi-pass baseline while being over 3x cheaper; across models, it remains a competitive low-cost signal. These results suggest that code UE deserves code-specific design rather than direct NL ports.",
+      "authors": [
+        "Yuling Shi",
+        "Caiqi Zhang",
+        "Yuexian Li",
+        "Haopeng Wang",
+        "Yeheng Chen",
+        "Nigel Collier",
+        "Xiaodong Gu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG",
+        "cs.SE"
+      ],
+      "published": "2026-06-08T14:52:43+00:00",
+      "link": "https://arxiv.org/pdf/2606.09577v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uncertainty estimation specifically for LLM-generated code, properties like token fragility and executability",
+      "llm_evidence_cn": "针对LLM生成代码的不确定性估计，考虑代码的脆弱性和可执行性",
+      "llm_evidence": "针对LLM生成代码的不确定性估计，考虑代码的脆弱性和可执行性",
+      "canonical_evidence": "针对LLM生成代码的不确定性估计，考虑代码的脆弱性和可执行性",
+      "llm_tldr_en": "This paper identifies three key properties of code (token fragility, intent-code gap, executability) and proposes an uncertainty estimation framework that combines lexical, semantic, and execution-based signals for LLM code generation.",
+      "llm_tldr_cn": "LLM生成的代码一旦出错可能带来严重风险，但现有不确定性估计方法大多继承自然语言，忽略了代码的特殊性。本文提出代码的三个关键差异：令牌脆弱性、意图-代码鸿沟和可执行性，并据此设计了包含词法、语义和执行三个正交维度的不确定性估计框架。实验表明，该方法在检测错误代码方面优于基线，为安全可靠的LLM代码生成提供了重要基础。",
+      "llm_tldr": "LLM生成的代码一旦出错可能带来严重风险，但现有不确定性估计方法大多继承自然语言，忽略了代码的特殊性。本文提出代码的三个关键差异：令牌脆弱性、意图-代码鸿沟和可执行性，并据此设计了包含词法、语义和执行三个正交维度的不确定性估计框架。实验表明，该方法在检测错误代码方面优于基线，为安全可靠的LLM代码生成提供了重要基础。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.14266v1",
+      "source": "arxiv",
+      "title": "Large Language Model Based Agent for Automated Discovery in Computational Physics",
+      "abstract": "Scientific discovery in computational physics can often be framed as the optimization of quantitatively evaluable objectives subject to physical constraints. While researchers excel at formulating such problems, they frequently devote substantial effort to iterative refinement of methods and solution strategies. To accelerate this process, we introduce PhyNex, an autonomous agent that systematically explores the solution space of scorable scientific tasks by coupling large language model (LLM)-guided search with domain-specific computational tools that enforce physical consistency. PhyNex operates via progressive local search, accumulates reusable knowledge from both successful and failed attempts, and produces interpretable exploration trajectories that reveal which algorithmic components drive performance improvements. We validate PhyNex on three representative and scientifically important problems: predicting frequency-dependent dielectric spectra of semiconductors from crystal structure, designing probabilistic-circuit heuristics for Max-Cut on graphs, and optimizing charging protocols for Dicke quantum batteries in the chaotic coupling regime. Across the three tasks, PhyNex autonomously identifies solutions that match or exceed state-of-the-art approaches designed by human scientists, yielding search-averaged improvements of up to 3.8\\% in spectral similarity, up to 15.0\\% in normalized mean cut for Max-Cut, and 5.9\\% in ergotropy at the $80\\mathrm{k}$ training checkpoint in open exploration. These findings demonstrate that LLM-based agents with structured, feedback-driven exploration can substantially accelerate the path from problem specification to effective implementation, suggesting a practical division of labor in which scientists define objectives and constraints while automated systems navigate the methodological search space.",
+      "authors": [
+        "Hang Lin",
+        "Chongwen Liu",
+        "Gang Yan"
+      ],
+      "primary_category": "physics.comp-ph",
+      "categories": [
+        "physics.comp-ph"
+      ],
+      "published": "2026-06-12T08:49:48+00:00",
+      "link": "https://arxiv.org/pdf/2606.14266v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM agent for automated scientific discovery framed as optimization of objectives under constraints",
+      "llm_evidence_cn": "LLM智能体用于自动科学发现，将问题框架为约束下的目标优化",
+      "llm_evidence": "LLM智能体用于自动科学发现，将问题框架为约束下的目标优化",
+      "canonical_evidence": "LLM智能体用于自动科学发现，将问题框架为约束下的目标优化",
+      "llm_tldr_en": "Introduces PhyNex, an LLM-based autonomous agent that systematically explores solution spaces for optimization tasks in computational physics, achieving efficient discovery with interpretable trajectories.",
+      "llm_tldr_cn": "针对计算物理学中优化问题迭代求解耗时的问题，提出PhyNex自主智能体，耦合LLM引导搜索与领域计算工具。该智能体通过渐进局部搜索，累积成功与失败经验，生成可解释探索轨迹。实验表明能加速优化问题的求解。方法可作为自动求解优化问题的通用框架。",
+      "llm_tldr": "针对计算物理学中优化问题迭代求解耗时的问题，提出PhyNex自主智能体，耦合LLM引导搜索与领域计算工具。该智能体通过渐进局部搜索，累积成功与失败经验，生成可解释探索轨迹。实验表明能加速优化问题的求解。方法可作为自动求解优化问题的通用框架。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
