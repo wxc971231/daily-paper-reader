@@ -1,0 +1,132 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-16T20:47:01.121654+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2606.15334v1",
+      "source": "arxiv",
+      "title": "Large Language Model-Driven Cooperative Operator Ensemble Evolution for Permutation Flow Shop Scheduling",
+      "abstract": "The permutation flow shop scheduling problem (PFSP) is a classical NP-hard combinatorial optimization problem in intelligent manufacturing. In practice, PFSP is commonly addressed using metaheuristic algorithms, among which the iterated greedy (IG) algorithm is widely adopted due to its simplicity and strong empirical performance. However, classical IG relies on a single fixed destruction operator, which often limits exploration and leads to search stagnation on large and complex problem instances. To address this issue, this work proposes a multi-operator IG algorithm, termed IG-DOE, which enhances exploration by switching among heterogeneous destruction operators along a single search trajectory. The core mechanism, called stagnation-triggered sequential switching, activates the next destruction operator in an ordered destruction operator ensemble (DOE) when stagnation is detected, thereby enriching the perturbation behavior of classical IG. Moreover, to reduce reliance on expert-crafted operators, a large language model (LLM)-assisted framework, termed SCOE, is introduced to automatically construct a high-quality DOE through stagewise evolution, state-awareness, and cooperative evaluation. Experiments on the challenging \\textit{VRF-hard-large} benchmark show that the DOE evolved from smaller problem instances generalizes well to larger unseen instances. Under the same CPU-time limit, IG-DOE obtained much better average performance than QIG, a state-of-the-art IG algorithm. Additional experiments on real-world industrial-data-derived instances further show that the evolved DOE can generalize effectively to different data distributions without additional adaptation.",
+      "authors": [
+        "Rui Xu",
+        "Yufan Liao",
+        "Haoze Lv",
+        "Shengcai Liu",
+        "Yi Mei",
+        "Ke Tang"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE"
+      ],
+      "published": "2026-06-13T14:53:19+00:00",
+      "link": "https://arxiv.org/pdf/2606.15334v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-driven operator evolution for flow shop scheduling, an OR optimization problem",
+      "llm_evidence_cn": "LLM驱动的流水车间调度算子进化，属于运筹优化问题",
+      "llm_evidence": "LLM驱动的流水车间调度算子进化，属于运筹优化问题",
+      "canonical_evidence": "LLM驱动的流水车间调度算子进化，属于运筹优化问题",
+      "llm_tldr_en": "Proposes IG-DOE, using LLM to evolve destruction operators for permutation flow shop scheduling, directly addressing code generation for optimization.",
+      "llm_tldr_cn": "置换流水车间调度问题（PFSP）是经典NP难组合优化问题。传统迭代贪心算法因固定破坏算子而搜索停滞。本文提出IG-DOE算法，利用大型语言模型驱动多算子协作进化，通过LLM生成并切换异构破坏算子，在标准算例上显著提升求解质量。该工作直接展示了LLM用于优化问题求解代码（算子策略）的潜力。",
+      "llm_tldr": "置换流水车间调度问题（PFSP）是经典NP难组合优化问题。传统迭代贪心算法因固定破坏算子而搜索停滞。本文提出IG-DOE算法，利用大型语言模型驱动多算子协作进化，通过LLM生成并切换异构破坏算子，在标准算例上显著提升求解质量。该工作直接展示了LLM用于优化问题求解代码（算子策略）的潜力。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.14202v2",
+      "source": "arxiv",
+      "title": "MeEvo: Metacognitive Evolution Combined with Natural Evolution for Automatic Heuristic Design",
+      "abstract": "Large Language Models (LLMs) have advanced Automatic Heuristic Design (AHD) by enabling heuristic generation through reasoning and code synthesis. Existing LLM-based AHD architectures mainly follow two paradigms: Natural Evolution, which uses crossover and mutation to explore heuristic programs, and Metacognitive Evolution, which refines reasoning through reflection. However, Natural Evolution discards reasoning traces, weakening knowledge inheritance and exploitation, while Metacognitive Evolution lacks population-level recombination, limiting exploration and increasing the risk of premature convergence. These limitations reduce search efficiency, stability, and solution quality on complex problems. To address this gap, we propose MeEvo, a dual-layer AHD framework that cyclically couples Natural Evolution and Metacognitive Evolution. Natural Evolution explores heuristic code while recording reasoning traces, fitness values, and errors into a shared history; Metacognitive Evolution then reflects on this history to generate improved heuristics that re-enter the parent pool for the next cycle. This design enables population-driven exploration and reflection-driven refinement to reinforce each other. Experiments on five optimization problems with two LLM backbones show that MeEvo achieves stronger and more stable performance than existing LLM-based AHD architectures, especially on complex constrained tasks.",
+      "authors": [
+        "Zishang Qiu",
+        "Xinan Chen",
+        "Rong Qu",
+        "Ruibin Bai"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE",
+        "cs.AI"
+      ],
+      "published": "2026-06-12T07:36:38+00:00",
+      "link": "https://arxiv.org/pdf/2606.14202v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based automatic heuristic design via code synthesis",
+      "llm_evidence_cn": "基于LLM的通过代码合成自动设计启发式算法",
+      "llm_evidence": "基于LLM的通过代码合成自动设计启发式算法",
+      "canonical_evidence": "基于LLM的通过代码合成自动设计启发式算法",
+      "llm_tldr_en": "Proposes MeEvo combining metacognitive and natural evolution for automatic heuristic design, using LLM to generate and refine heuristic programs via code synthesis, improving search efficiency and solution quality.",
+      "llm_tldr_cn": "针对自动启发式设计（AHD）中现有方法知识继承弱或探索不足的问题，本文提出MeEvo框架，融合元认知进化与自然进化，利用LLM进行启发式程序的推理与代码合成，同时保持推理轨迹和种群重组。实验表明MeEvo在多个复杂优化问题上显著提升搜索效率和解质量，为LLM驱动的优化代码生成提供了有效范式。",
+      "llm_tldr": "针对自动启发式设计（AHD）中现有方法知识继承弱或探索不足的问题，本文提出MeEvo框架，融合元认知进化与自然进化，利用LLM进行启发式程序的推理与代码合成，同时保持推理轨迹和种群重组。实验表明MeEvo在多个复杂优化问题上显著提升搜索效率和解质量，为LLM驱动的优化代码生成提供了有效范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.14935v1",
+      "source": "arxiv",
+      "title": "PrologMCP: A Standardized Prolog Tool Interface for LLM Agents",
+      "abstract": "Frontier reasoning-tuned language models still fail on deductive tasks at depth, and the cost of improved performance through extended internal reasoning scales poorly. Symbolic delegation offers a complementary route: a language model translates the problem, while a solver performs the inference. However, current autoformalization pipelines for logic programming are typically bespoke integrations tied to particular tasks or agents. We introduce PrologMCP, a task-agnostic, open-source server that exposes Prolog as a stateful tool through the Model Context Protocol (MCP). Its compact tool interface, structured error reporting, and per-session isolation make the translate-run-inspect-repair loop a reusable primitive for MCP-capable agents. We evaluate a formalizer agent enhanced with PrologMCP against standard and reasoning LLMs (Claude Sonnet 4.6, GPT-4.1, and o4-mini) on two subsets of PARARULE-Plus: a general-purpose sample and a more challenging one targeting a specific failure mode of natural-language reasoning. On the general sample, the formalizer matches or exceeds reasoning LLMs (accuracy 1.00 vs.\\ 1.00 / 0.998), with the largest gains over standard models (0.762 for GPT-4.1). On the challenging subset, the formalizer remains near-perfect (1.00 / 0.99) while reasoning LLMs drop to 0.95 / 0.94. These results suggest that delegating inference to Prolog via MCP is a robust and inspectable alternative to extended natural-language reasoning.",
+      "authors": [
+        "Agnieszka Mensfelt",
+        "Adarsh Prabhakaran",
+        "Adrian Haret",
+        "Vince Trencsenyi",
+        "Kostas Stathis"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-12T20:14:51+00:00",
+      "link": "https://arxiv.org/pdf/2606.14935v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Proposes PrologMCP enabling LLM agents to use Prolog solver for problem modeling and solving, directly relevant to constraint programming modeling with LLM.",
+      "llm_evidence_cn": "提出PrologMCP，使LLM智能体能够使用Prolog求解器进行问题建模和求解，与基于LLM的约束规划建模直接相关",
+      "llm_evidence": "提出PrologMCP，使LLM智能体能够使用Prolog求解器进行问题建模和求解，与基于LLM的约束规划建模直接相关",
+      "canonical_evidence": "提出PrologMCP，使LLM智能体能够使用Prolog求解器进行问题建模和求解，与基于LLM的约束规划建模直接相关",
+      "llm_tldr_en": "PrologMCP standardizes Prolog as a tool for LLM agents, enabling a translate-run-inspect-repair loop for deductive tasks; bridges LLM and symbolic reasoning for constraint programming.",
+      "llm_tldr_cn": "本文针对当前逻辑编程的自动化形式化管线通常与特定任务或智能体紧密耦合的问题，提出了PrologMCP，一个任务无关的开源服务器，通过模型上下文协议将Prolog暴露为有状态工具。该工具紧凑的接口、结构化的错误报告和每会话隔离机制，使翻译-运行-检查-修复循环成为MCP兼容智能体的可复用原语。实验表明，该方法能够有效处理深度演绎任务，为基于LLM的约束规划建模和代码生成提供标准化接口，降低集成成本，提升求解效率。",
+      "llm_tldr": "本文针对当前逻辑编程的自动化形式化管线通常与特定任务或智能体紧密耦合的问题，提出了PrologMCP，一个任务无关的开源服务器，通过模型上下文协议将Prolog暴露为有状态工具。该工具紧凑的接口、结构化的错误报告和每会话隔离机制，使翻译-运行-检查-修复循环成为MCP兼容智能体的可复用原语。实验表明，该方法能够有效处理深度演绎任务，为基于LLM的约束规划建模和代码生成提供标准化接口，降低集成成本，提升求解效率。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "constraint programming modeling with LLM",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

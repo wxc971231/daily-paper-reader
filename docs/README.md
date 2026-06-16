@@ -6,34 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-15
-- 运行时间：2026-06-15 20:38:00 UTC
+- 最新运行日期：2026-06-16
+- 运行时间：2026-06-16 20:49:27 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：1
-- 速读区：3
+- 本次总论文数：3
+- 精读区：3
+- 速读区：0
 
 ### 今日简报（AI）
-1) 今日精选4篇论文，精读主推进化算法结合元认知的自动启发式设计，速读覆盖电路近似提示模板共进化与代码不确定性估计。  
-2) 最值得看MeEvo的元认知+自然进化框架（8.0分），以及多目标共进化下提示与模板协同优化（7.0分）。  
-3) 建议读者优先精读MeEvo学习自动化启发式设计思路，速读两篇高分解读进化与LLM的交叉应用。
-- 详情：[/202606/15/README](/202606/15/README)
+今日精读3篇，聚焦大语言模型驱动协同进化算法与元认知自动启发式设计两大前沿。
+最值得关注的是LLM协同算子进化在置换流水车间调度中的高分突破，以及MeEvo的元认知+自然进化双框架。
+建议下一步重点关注LLM优化调度方向的实用化落地，并尝试元认知框架迁移到自身问题。
+- 详情：[/202606/16/README](/202606/16/README)
 
 ### 精读区论文标签
-1. [MeEvo: Metacognitive Evolution Combined with Natural Evolution for Automatic Heuristic Design](/202606/15/2606.14202v1-meevo-metacognitive-evolution-combined-with-natural-evolution-for-automatic-heuristic-design)  
+1. [Large Language Model-Driven Cooperative Operator Ensemble Evolution for Permutation Flow Shop Scheduling](/202606/16/2606.15334v1-large-language-model-driven-cooperative-operator-ensemble-evolution-for-permutation-flow-shop-scheduling)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：LLM驱动的流水车间调度算子进化，属于运筹优化问题
+2. [MeEvo: Metacognitive Evolution Combined with Natural Evolution for Automatic Heuristic Design](/202606/16/2606.14202v2-meevo-metacognitive-evolution-combined-with-natural-evolution-for-automatic-heuristic-design)  
    标签：评分：8.0/10、query:llm-opt-code
-   evidence：基于LLM的自动启发式设计，通过代码合成为优化问题生成求解算法
+   evidence：基于LLM的通过代码合成自动设计启发式算法
+3. [PrologMCP: A Standardized Prolog Tool Interface for LLM Agents](/202606/16/2606.14935v1-prologmcp-a-standardized-prolog-tool-interface-for-llm-agents)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：提出PrologMCP，使LLM智能体能够使用Prolog求解器进行问题建模和求解，与基于LLM的约束规划建模直接相关
 
 ### 速读区论文标签
-1. [Multi-Objective Coevolution of Prompts and Templates for Circuit Approximation](/202606/15/2606.13089v1-multi-objective-coevolution-of-prompts-and-templates-for-circuit-approximation)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：利用LLM通过提示与模板协同进化自动生成优化电路设计
-2. [Code Is More Than Text: Uncertainty Estimation for Code Generation](/202606/15/2606.09577v1-code-is-more-than-text-uncertainty-estimation-for-code-generation)  
-   标签：评分：6.0/10、query:llm-opt-code
-   evidence：针对LLM生成代码的不确定性估计，考虑代码的脆弱性和可执行性
-3. [Large Language Model Based Agent for Automated Discovery in Computational Physics](/202606/15/2606.14266v1-large-language-model-based-agent-for-automated-discovery-in-computational-physics)  
-   标签：评分：6.0/10、query:llm-opt-code
-   evidence：LLM智能体用于自动科学发现，将问题框架为约束下的目标优化
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">

@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-16",
+  "date": "2026-06-16",
+  "generated_at": "2026-06-16T20:49:35",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/16/2606.15334v1-large-language-model-driven-cooperative-operator-ensemble-evolution-for-permutation-flow-shop-scheduling",
+      "section": "deep",
+      "title_en": "Large Language Model-Driven Cooperative Operator Ensemble Evolution for Permutation Flow Shop Scheduling",
+      "authors": "Rui Xu, Yufan Liao, Haoze Lv, Shengcai Liu, Yi Mei, Ke Tang",
+      "date": "2026-06-13",
+      "pdf": "https://arxiv.org/pdf/2606.15334v1",
+      "score": "9.0",
+      "evidence": "LLM驱动的流水车间调度算子进化，属于运筹优化问题",
+      "tldr": "排列流水车间调度问题（PFSP）是制造业中的NP难问题，经典迭代贪婪（IG）算法因使用单一破坏算子易陷入搜索停滞。本文提出多算子IG算法IG-DOE，通过停滞触发的顺序切换在破坏算子集成间切换以增强探索。进一步引入LLM辅助框架SCOE自动演化高质量算子集成。实验表明，在VRF-hard-large基准上，IG-DOE在同等时间下显著优于前沿算法QIG，且演化出的算子能泛化至更大规模实例和工业数据。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "The permutation flow shop scheduling problem (PFSP) is a classical NP-hard combinatorial optimization problem in intelligent manufacturing. In practice, PFSP is commonly addressed using metaheuristic algorithms, among which the iterated greedy (IG) algorithm is widely adopted due to its simplicity and strong empirical performance. However, classical IG relies on a single fixed destruction operator, which often limits exploration and leads to search stagnation on large and complex problem instances. To address this issue, this work proposes a multi-operator IG algorithm, termed IG-DOE, which enhances exploration by switching among heterogeneous destruction operators along a single search trajectory. The core mechanism, called stagnation-triggered sequential switching, activates the next destruction operator in an ordered destruction operator ensemble (DOE) when stagnation is detected, thereby enriching the perturbation behavior of classical IG. Moreover, to reduce reliance on expert-crafted operators, a large language model (LLM)-assisted framework, termed SCOE, is introduced to automatically construct a high-quality DOE through stagewise evolution, state-awareness, and cooperative evaluation. Experiments on the challenging \\textit{VRF-hard-large} benchmark show that the DOE evolved from smaller problem instances generalizes well to larger unseen instances. Under the same CPU-time limit, IG-DOE obtained much better average performance than QIG, a state-of-the-art IG algorithm. Additional experiments on real-world industrial-data-derived instances further show that the evolved DOE can generalize effectively to different data distributions without additional adaptation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/16/2606.14202v2-meevo-metacognitive-evolution-combined-with-natural-evolution-for-automatic-heuristic-design",
+      "section": "deep",
+      "title_en": "MeEvo: Metacognitive Evolution Combined with Natural Evolution for Automatic Heuristic Design",
+      "authors": "Zishang Qiu, Xinan Chen, Rong Qu, Ruibin Bai",
+      "date": "2026-06-12",
+      "pdf": "https://arxiv.org/pdf/2606.14202v2",
+      "score": "8.0",
+      "evidence": "基于LLM的通过代码合成自动设计启发式算法",
+      "tldr": "自动启发式设计中，自然进化丢弃推理轨迹导致知识利用不足，元认知进化缺乏种群重组导致探索受限。提出MeEvo框架，循环耦合自然进化与元认知进化：自然进化探索启发式代码并记录历史，元认知进化基于历史推理生成改进启发式。在五个优化问题上的实验表明，MeEvo比现有方法更稳定且性能更强，尤其适用于复杂约束任务。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large Language Models (LLMs) have advanced Automatic Heuristic Design (AHD) by enabling heuristic generation through reasoning and code synthesis. Existing LLM-based AHD architectures mainly follow two paradigms: Natural Evolution, which uses crossover and mutation to explore heuristic programs, and Metacognitive Evolution, which refines reasoning through reflection. However, Natural Evolution discards reasoning traces, weakening knowledge inheritance and exploitation, while Metacognitive Evolution lacks population-level recombination, limiting exploration and increasing the risk of premature convergence. These limitations reduce search efficiency, stability, and solution quality on complex problems. To address this gap, we propose MeEvo, a dual-layer AHD framework that cyclically couples Natural Evolution and Metacognitive Evolution. Natural Evolution explores heuristic code while recording reasoning traces, fitness values, and errors into a shared history; Metacognitive Evolution then reflects on this history to generate improved heuristics that re-enter the parent pool for the next cycle. This design enables population-driven exploration and reflection-driven refinement to reinforce each other. Experiments on five optimization problems with two LLM backbones show that MeEvo achieves stronger and more stable performance than existing LLM-based AHD architectures, especially on complex constrained tasks.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/16/2606.14935v1-prologmcp-a-standardized-prolog-tool-interface-for-llm-agents",
+      "section": "deep",
+      "title_en": "PrologMCP: A Standardized Prolog Tool Interface for LLM Agents",
+      "authors": "Agnieszka Mensfelt, Adarsh Prabhakaran, Adrian Haret, Vince Trencsenyi, Kostas Stathis",
+      "date": "2026-06-12",
+      "pdf": "https://arxiv.org/pdf/2606.14935v1",
+      "score": "8.0",
+      "evidence": "提出PrologMCP，使LLM智能体能够使用Prolog求解器进行问题建模和求解，与基于LLM的约束规划建模直接相关",
+      "tldr": "前沿推理语言模型在深度演绎任务上仍会失败，扩展内部推理成本高。PrologMCP通过MCP协议将Prolog暴露为有状态工具，支持翻译-运行-检查-修复的委托循环。在PARARULE-Plus通用样本上，形式化Agent准确率达1.00，匹配或超越推理LLM；在挑战性子集上保持0.99。结果表明符号委托是稳健且可检查的替代方案。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Frontier reasoning-tuned language models still fail on deductive tasks at depth, and the cost of improved performance through extended internal reasoning scales poorly. Symbolic delegation offers a complementary route: a language model translates the problem, while a solver performs the inference. However, current autoformalization pipelines for logic programming are typically bespoke integrations tied to particular tasks or agents. We introduce PrologMCP, a task-agnostic, open-source server that exposes Prolog as a stateful tool through the Model Context Protocol (MCP). Its compact tool interface, structured error reporting, and per-session isolation make the translate-run-inspect-repair loop a reusable primitive for MCP-capable agents. We evaluate a formalizer agent enhanced with PrologMCP against standard and reasoning LLMs (Claude Sonnet 4.6, GPT-4.1, and o4-mini) on two subsets of PARARULE-Plus: a general-purpose sample and a more challenging one targeting a specific failure mode of natural-language reasoning. On the general sample, the formalizer matches or exceeds reasoning LLMs (accuracy 1.00 vs.\\ 1.00 / 0.998), with the largest gains over standard models (0.762 for GPT-4.1). On the challenging subset, the formalizer remains near-perfect (1.00 / 0.99) while reasoning LLMs drop to 0.95 / 0.94. These results suggest that delegating inference to Prolog via MCP is a robust and inspectable alternative to extended natural-language reasoning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
