@@ -1,0 +1,169 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-17T19:45:28.721172+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.15334v2",
+      "source": "arxiv",
+      "title": "Large Language Model-Driven Cooperative Operator Ensemble Evolution for Permutation Flow Shop Scheduling",
+      "abstract": "The permutation flow shop scheduling problem (PFSP) is a classical NP-hard combinatorial optimization problem in intelligent manufacturing. In practice, PFSP is commonly addressed using metaheuristic algorithms, among which the iterated greedy (IG) algorithm is widely adopted due to its simplicity and strong empirical performance. However, classical IG relies on a single fixed destruction operator, which often limits exploration and leads to search stagnation on large and complex problem instances. To address this issue, this work proposes a multi-operator IG algorithm, termed IG-DOE, which enhances exploration by switching among heterogeneous destruction operators along a single search trajectory. The core mechanism, called stagnation-triggered sequential switching, activates the next destruction operator in an ordered destruction operator ensemble (DOE) when stagnation is detected, thereby enriching the perturbation behavior of classical IG. Moreover, to reduce reliance on expert-crafted operators, a large language model (LLM)-assisted framework, termed SCOE, is introduced to automatically construct a high-quality DOE through stagewise evolution, state-awareness, and cooperative evaluation. Experiments on the challenging VRF-hard-large benchmark show that the DOE evolved from smaller problem instances generalizes well to larger unseen instances. Under the same CPU-time limit, IG-DOE obtained much better average performance than QIG, a state-of-the-art IG algorithm. Additional experiments on real-world industrial-data-derived instances further show that the evolved DOE can generalize effectively to different data distributions without additional adaptation.",
+      "authors": [
+        "Rui Xu",
+        "Yufan Liao",
+        "Haoze Lv",
+        "Shengcai Liu",
+        "Yi Mei",
+        "Ke Tang"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE"
+      ],
+      "published": "2026-06-13T14:53:19+00:00",
+      "link": "https://arxiv.org/pdf/2606.15334v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-driven operator evolution for permutation flow shop scheduling",
+      "llm_evidence_cn": "LLM驱动的置换流水车间调度算子进化",
+      "llm_evidence": "LLM驱动的置换流水车间调度算子进化",
+      "canonical_evidence": "LLM驱动的置换流水车间调度算子进化",
+      "llm_tldr_en": "Proposes IG-DOE, a multi-operator iterated greedy algorithm driven by large language models for permutation flow shop scheduling, enhancing exploration via heterogeneous destruction operators.",
+      "llm_tldr_cn": "针对置换流水车间调度问题中传统迭代贪心算法因单一算子导致搜索停滞的局限，提出LLM驱动的多算子迭代贪心算法IG-DOE，利用大语言模型动态协调异构破坏算子，显著提升探索能力，在复杂实例上表现优异。",
+      "llm_tldr": "针对置换流水车间调度问题中传统迭代贪心算法因单一算子导致搜索停滞的局限，提出LLM驱动的多算子迭代贪心算法IG-DOE，利用大语言模型动态协调异构破坏算子，显著提升探索能力，在复杂实例上表现优异。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.15197v1",
+      "source": "arxiv",
+      "title": "StarOR: Synergizing Tree Search and Test-Time Reinforcement Learning for Optimization Modeling",
+      "abstract": "Optimization modeling is inherently hierarchical, requiring a precise sequence of symbolic commitments. Traditional learning-based automated optimization modeling methods improve modeling policies through large-scale annotated or curated training data, but are costly to adapt to new problem distributions. Meanwhile, one-shot generation remains brittle in hierarchical modeling, where early symbolic errors can propagate into invalid formulations. Test-time scaling offers a promising alternative by enabling structural exploration with additional instance-level computation; however, existing search-based methods typically rely on a fixed policy, causing repeated rollouts to inherit similar modeling biases and providing limited credit assignment for intermediate decisions. To address these limitations, we propose StarOR, a synergistic search-and-adaptation framework that couples MCTS with Test-Time Reinforcement Learning for optimization modeling. StarOR decomposes the modeling process into four stages and updates a transient LoRA adapter via GRPO at each non-terminal node. By using MCTS-generated siblings as local comparison sets, StarOR transforms search-time exploration into instance-specific policy refinement. Moreover, an unsupervised multi-faceted reward system provides fine-grained feedback for intermediate formulation decisions without ground-truth labels. Experiments across five optimization benchmarks show that StarOR achieves state-of-the-art performance even with a 4B backbone, outperforming existing methods and the frontier LLMs.",
+      "authors": [
+        "Jiajun Li",
+        "Yu Ding",
+        "Shisi Guan",
+        "Ran Hou",
+        "Wanyuan Wang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-06-13T08:46:13+00:00",
+      "link": "https://arxiv.org/pdf/2606.15197v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Synergizing tree search and test-time RL for optimization modeling",
+      "llm_evidence_cn": "协同树搜索与测试时强化学习的优化建模",
+      "llm_evidence": "协同树搜索与测试时强化学习的优化建模",
+      "canonical_evidence": "协同树搜索与测试时强化学习的优化建模",
+      "llm_tldr_en": "Proposes StarOR, combining tree search with test-time reinforcement learning for automated optimization modeling, improving robustness over one-shot generation.",
+      "llm_tldr_cn": "针对传统优化建模方法依赖大规模标注数据且一次性生成易出错的问题，提出StarOR框架，协同树搜索与测试时强化学习，在推理阶段进行结构化探索，修正早期符号错误，生成有效优化模型，提高建模鲁棒性与适应性。",
+      "llm_tldr": "针对传统优化建模方法依赖大规模标注数据且一次性生成易出错的问题，提出StarOR框架，协同树搜索与测试时强化学习，在推理阶段进行结构化探索，修正早期符号错误，生成有效优化模型，提高建模鲁棒性与适应性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "problem modeling for operations research",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.17466v1",
+      "source": "arxiv",
+      "title": "Contextual Robust Optimization for AI Data Center Scheduling with Statistical Guarantees",
+      "abstract": "The rapid growth of AI workloads is substantially increasing data center electricity demand and carbon emissions, motivating the development of carbon-aware scheduling methods. However, effective scheduling is challenging because renewable generation and AI workloads are subject to forecast errors, while training and inference workloads exhibit heterogeneity in computational characteristics. This paper proposes a contextual robust optimization framework for AI data center operation. The proposed model explicitly captures the heterogeneous computational characteristics of AI training and inference workloads. To deal with renewable generation and workload forecast errors, we develop loss-based uncertainty learning models that directly map contextual features to covariate-dependent uncertainty sets. The resulting contextual joint chance-constrained scheduling problem is reformulated into a tractable robust optimization problem, and a calibration algorithm is developed to provide finite-sample probabilistic feasibility guarantees for multiple joint chance constraints. Numerical experiments based on real-world AI workload traces and renewable generation data show that the proposed method reduces operating costs by an average of 5.57% compared to benchmark methods while maintaining reliable feasibility and strong computational scalability.",
+      "authors": [
+        "Yijie Yang",
+        "Xi Weng",
+        "Yue Chen"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-06-16T03:27:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.17466v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Contextual robust optimization for AI data center scheduling",
+      "llm_evidence_cn": "针对AI数据中心调度的上下文鲁棒优化",
+      "llm_evidence": "针对AI数据中心调度的上下文鲁棒优化",
+      "canonical_evidence": "针对AI数据中心调度的上下文鲁棒优化",
+      "llm_tldr_en": "Proposes contextual robust optimization framework for AI data center scheduling with loss-based uncertainty learning models, capturing heterogeneous workloads.",
+      "llm_tldr_cn": "针对AI数据中心调度中的可再生能源和负载预测误差，提出上下文鲁棒优化框架，显式建模AI训练和推理负载的异构计算特征，并开发基于损失的模型来学习不确定性，提供统计保证，实现碳感知调度。",
+      "llm_tldr": "针对AI数据中心调度中的可再生能源和负载预测误差，提出上下文鲁棒优化框架，显式建模AI训练和推理负载的异构计算特征，并开发基于损失的模型来学习不确定性，提供统计保证，实现碳感知调度。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.17514v1",
+      "source": "arxiv",
+      "title": "Unlocking LLM Code Correction with Iterative Feedback Loops",
+      "abstract": "Large Language Models have shown remarkable capabilities in code generation. However, most existing evaluations focus only on single-attempt accuracy and overlook the iterative refinement process that is central to real-world programming. This study presents a systematic investigation of LLMs' ability to rectify their own code through execution feedback. Using real-world programming problems across four models and two major programming languages, this study evaluates performance using iterative refinement framework where LLMs receive compiler error messages and testcase feedback after each attempt. This study introduces metrics to evaluate code failures, analyze rectification patterns, and compare the effectiveness of reasoning and non-reasoning models, offering actionable insights into both the understanding and practical application of feedback loops in LLM-driven code generation systems. Results show that reasoning models consistently improve over iterations, substantially outperforming non-reasoning models in leveraging feedback, while syntactic and runtime errors are far more tractable than logical or algorithmic failures.",
+      "authors": [
+        "Le Zhang",
+        "Suresh Kothari"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI"
+      ],
+      "published": "2026-06-16T04:47:42+00:00",
+      "link": "https://arxiv.org/pdf/2606.17514v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM code correction with iterative feedback loops for code generation",
+      "llm_evidence_cn": "通过迭代反馈循环进行LLM代码修正",
+      "llm_evidence": "通过迭代反馈循环进行LLM代码修正",
+      "canonical_evidence": "通过迭代反馈循环进行LLM代码修正",
+      "llm_tldr_en": "Studies LLMs' ability to rectify code via execution feedback, introducing metrics for code failures and comparing reasoning models, which is relevant to generating correct optimization code.",
+      "llm_tldr_cn": "本论文系统研究了大语言模型通过执行反馈迭代修正自身代码的能力，使用了编译器错误消息和测试用例反馈。在多个模型和语言上评估，提出了评估代码失败和修正模式的指标。研究结果强调了迭代细化在代码生成中的重要性，对于生成正确的优化求解代码具有参考价值，但未专门针对优化问题。",
+      "llm_tldr": "本论文系统研究了大语言模型通过执行反馈迭代修正自身代码的能力，使用了编译器错误消息和测试用例反馈。在多个模型和语言上评估，提出了评估代码失败和修正模式的指标。研究结果强调了迭代细化在代码生成中的重要性，对于生成正确的优化求解代码具有参考价值，但未专门针对优化问题。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

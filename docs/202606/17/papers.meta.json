@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-17",
+  "date": "2026-06-17",
+  "generated_at": "2026-06-17T19:49:30",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/17/2606.15334v2-large-language-model-driven-cooperative-operator-ensemble-evolution-for-permutation-flow-shop-scheduling",
+      "section": "deep",
+      "title_en": "Large Language Model-Driven Cooperative Operator Ensemble Evolution for Permutation Flow Shop Scheduling",
+      "authors": "Rui Xu, Yufan Liao, Haoze Lv, Shengcai Liu, Yi Mei, Ke Tang",
+      "date": "2026-06-13",
+      "pdf": "https://arxiv.org/pdf/2606.15334v2",
+      "score": "9.0",
+      "evidence": "LLM驱动的置换流水车间调度算子进化",
+      "tldr": "排列流水车间调度问题是NP难组合优化问题，经典迭代贪婪算法因单一破坏算子导致搜索停滞。本文提出多算子IG算法IG-DOE，采用停滞触发顺序切换机制切换异构破坏算子，并引入LLM辅助框架SCOE自动演化高质量破坏算子集。在VRF-hard-large基准上，从较小实例演化的算子集能泛化到更大实例，平均性能远超先进算法QIG。在工业数据上同样泛化良好，展示了LLM驱动自动设计的有效性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "The permutation flow shop scheduling problem (PFSP) is a classical NP-hard combinatorial optimization problem in intelligent manufacturing. In practice, PFSP is commonly addressed using metaheuristic algorithms, among which the iterated greedy (IG) algorithm is widely adopted due to its simplicity and strong empirical performance. However, classical IG relies on a single fixed destruction operator, which often limits exploration and leads to search stagnation on large and complex problem instances. To address this issue, this work proposes a multi-operator IG algorithm, termed IG-DOE, which enhances exploration by switching among heterogeneous destruction operators along a single search trajectory. The core mechanism, called stagnation-triggered sequential switching, activates the next destruction operator in an ordered destruction operator ensemble (DOE) when stagnation is detected, thereby enriching the perturbation behavior of classical IG. Moreover, to reduce reliance on expert-crafted operators, a large language model (LLM)-assisted framework, termed SCOE, is introduced to automatically construct a high-quality DOE through stagewise evolution, state-awareness, and cooperative evaluation. Experiments on the challenging VRF-hard-large benchmark show that the DOE evolved from smaller problem instances generalizes well to larger unseen instances. Under the same CPU-time limit, IG-DOE obtained much better average performance than QIG, a state-of-the-art IG algorithm. Additional experiments on real-world industrial-data-derived instances further show that the evolved DOE can generalize effectively to different data distributions without additional adaptation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/17/2606.15197v1-staror-synergizing-tree-search-and-test-time-reinforcement-learning-for-optimization-modeling",
+      "section": "deep",
+      "title_en": "StarOR: Synergizing Tree Search and Test-Time Reinforcement Learning for Optimization Modeling",
+      "authors": "Jiajun Li, Yu Ding, Shisi Guan, Ran Hou, Wanyuan Wang",
+      "date": "2026-06-13",
+      "pdf": "https://arxiv.org/pdf/2606.15197v1",
+      "score": "8.0",
+      "evidence": "协同树搜索与测试时强化学习的优化建模",
+      "tldr": "优化建模是层次化任务，传统方法依赖大规模标注数据或固定策略，成本高且易出错。StarOR将蒙特卡洛树搜索与测试时强化学习结合，在非终端节点通过GRPO更新LoRA适配器，利用搜索生成的兄弟节点作为局部比较集进行实例级策略细化，并设计无监督多面奖励系统。在五个优化基准上，以4B骨干模型超越现有方法和前沿LLM，达到最优性能。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Optimization modeling is inherently hierarchical, requiring a precise sequence of symbolic commitments. Traditional learning-based automated optimization modeling methods improve modeling policies through large-scale annotated or curated training data, but are costly to adapt to new problem distributions. Meanwhile, one-shot generation remains brittle in hierarchical modeling, where early symbolic errors can propagate into invalid formulations. Test-time scaling offers a promising alternative by enabling structural exploration with additional instance-level computation; however, existing search-based methods typically rely on a fixed policy, causing repeated rollouts to inherit similar modeling biases and providing limited credit assignment for intermediate decisions. To address these limitations, we propose StarOR, a synergistic search-and-adaptation framework that couples MCTS with Test-Time Reinforcement Learning for optimization modeling. StarOR decomposes the modeling process into four stages and updates a transient LoRA adapter via GRPO at each non-terminal node. By using MCTS-generated siblings as local comparison sets, StarOR transforms search-time exploration into instance-specific policy refinement. Moreover, an unsupervised multi-faceted reward system provides fine-grained feedback for intermediate formulation decisions without ground-truth labels. Experiments across five optimization benchmarks show that StarOR achieves state-of-the-art performance even with a 4B backbone, outperforming existing methods and the frontier LLMs.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/17/2606.17466v1-contextual-robust-optimization-for-ai-data-center-scheduling-with-statistical-guarantees",
+      "section": "deep",
+      "title_en": "Contextual Robust Optimization for AI Data Center Scheduling with Statistical Guarantees",
+      "authors": "Yijie Yang, Xi Weng, Yue Chen",
+      "date": "2026-06-16",
+      "pdf": "https://arxiv.org/pdf/2606.17466v1",
+      "score": "8.0",
+      "evidence": "针对AI数据中心调度的上下文鲁棒优化",
+      "tldr": "AI数据中心调度面临可再生能源与工作负载预测误差以及训练/推理任务异构性的挑战。本文提出上下文鲁棒优化框架，通过基于损失的不确定性学习将上下文特征映射为不确定集，并将联合机会约束问题转化为可处理鲁棒优化。在真实数据上平均降低5.57%运行成本，同时提供有限样本概率可行性保证并保持计算高效。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "The rapid growth of AI workloads is substantially increasing data center electricity demand and carbon emissions, motivating the development of carbon-aware scheduling methods. However, effective scheduling is challenging because renewable generation and AI workloads are subject to forecast errors, while training and inference workloads exhibit heterogeneity in computational characteristics. This paper proposes a contextual robust optimization framework for AI data center operation. The proposed model explicitly captures the heterogeneous computational characteristics of AI training and inference workloads. To deal with renewable generation and workload forecast errors, we develop loss-based uncertainty learning models that directly map contextual features to covariate-dependent uncertainty sets. The resulting contextual joint chance-constrained scheduling problem is reformulated into a tractable robust optimization problem, and a calibration algorithm is developed to provide finite-sample probabilistic feasibility guarantees for multiple joint chance constraints. Numerical experiments based on real-world AI workload traces and renewable generation data show that the proposed method reduces operating costs by an average of 5.57% compared to benchmark methods while maintaining reliable feasibility and strong computational scalability.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/17/2606.17514v1-unlocking-llm-code-correction-with-iterative-feedback-loops",
+      "section": "quick",
+      "title_en": "Unlocking LLM Code Correction with Iterative Feedback Loops",
+      "authors": "Le Zhang, Suresh Kothari",
+      "date": "2026-06-16",
+      "pdf": "https://arxiv.org/pdf/2606.17514v1",
+      "score": "6.0",
+      "evidence": "通过迭代反馈循环进行LLM代码修正",
+      "tldr": "现有代码生成评估忽视迭代精炼过程，本研究系统探究LLM通过执行反馈自我修正代码的能力。采用迭代框架让模型接收编译器错误和测试反馈，引入多维度度量分析四个模型在两类语言上的表现。结果表明推理模型持续改进且显著优于非推理模型，语法与运行时错误更易修复，而逻辑与算法失败更具挑战。研究为理解反馈循环在LLM驱动代码生成中的作用提供了可操作的见解。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large Language Models have shown remarkable capabilities in code generation. However, most existing evaluations focus only on single-attempt accuracy and overlook the iterative refinement process that is central to real-world programming. This study presents a systematic investigation of LLMs' ability to rectify their own code through execution feedback. Using real-world programming problems across four models and two major programming languages, this study evaluates performance using iterative refinement framework where LLMs receive compiler error messages and testcase feedback after each attempt. This study introduces metrics to evaluate code failures, analyze rectification patterns, and compare the effectiveness of reasoning and non-reasoning models, offering actionable insights into both the understanding and practical application of feedback loops in LLM-driven code generation systems. Results show that reasoning models consistently improve over iterations, substantially outperforming non-reasoning models in leveraging feedback, while syntactic and runtime errors are far more tractable than logical or algorithmic failures.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

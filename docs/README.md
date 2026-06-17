@@ -6,32 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-16
-- 运行时间：2026-06-16 20:49:27 UTC
+- 最新运行日期：2026-06-17
+- 运行时间：2026-06-17 19:49:23 UTC
 - 运行状态：成功
-- 本次总论文数：3
+- 本次总论文数：4
 - 精读区：3
-- 速读区：0
+- 速读区：1
 
 ### 今日简报（AI）
-今日精读3篇，聚焦大语言模型驱动协同进化算法与元认知自动启发式设计两大前沿。
-最值得关注的是LLM协同算子进化在置换流水车间调度中的高分突破，以及MeEvo的元认知+自然进化双框架。
-建议下一步重点关注LLM优化调度方向的实用化落地，并尝试元认知框架迁移到自身问题。
-- 详情：[/202606/16/README](/202606/16/README)
+今日精选1篇9分和1篇8分精读论文，速读1篇6分论文，覆盖LLM驱动调度优化、树搜索强化学习建模及代码纠错反馈循环。重点推荐《Large Language Model-Driven Cooperative Operator Ensemble Evolution》与《StarOR》，分别展示LLM在组合优化中的协同进化能力和测试时强化学习提升建模效率。后续可聚焦这两篇深入探索LLM与优化算法结合的实现细节及实验设置。
+- 详情：[/202606/17/README](/202606/17/README)
 
 ### 精读区论文标签
-1. [Large Language Model-Driven Cooperative Operator Ensemble Evolution for Permutation Flow Shop Scheduling](/202606/16/2606.15334v1-large-language-model-driven-cooperative-operator-ensemble-evolution-for-permutation-flow-shop-scheduling)  
+1. [Large Language Model-Driven Cooperative Operator Ensemble Evolution for Permutation Flow Shop Scheduling](/202606/17/2606.15334v2-large-language-model-driven-cooperative-operator-ensemble-evolution-for-permutation-flow-shop-scheduling)  
    标签：评分：9.0/10、query:llm-opt-code
-   evidence：LLM驱动的流水车间调度算子进化，属于运筹优化问题
-2. [MeEvo: Metacognitive Evolution Combined with Natural Evolution for Automatic Heuristic Design](/202606/16/2606.14202v2-meevo-metacognitive-evolution-combined-with-natural-evolution-for-automatic-heuristic-design)  
+   evidence：LLM驱动的置换流水车间调度算子进化
+2. [StarOR: Synergizing Tree Search and Test-Time Reinforcement Learning for Optimization Modeling](/202606/17/2606.15197v1-staror-synergizing-tree-search-and-test-time-reinforcement-learning-for-optimization-modeling)  
    标签：评分：8.0/10、query:llm-opt-code
-   evidence：基于LLM的通过代码合成自动设计启发式算法
-3. [PrologMCP: A Standardized Prolog Tool Interface for LLM Agents](/202606/16/2606.14935v1-prologmcp-a-standardized-prolog-tool-interface-for-llm-agents)  
+   evidence：协同树搜索与测试时强化学习的优化建模
+3. [Contextual Robust Optimization for AI Data Center Scheduling with Statistical Guarantees](/202606/17/2606.17466v1-contextual-robust-optimization-for-ai-data-center-scheduling-with-statistical-guarantees)  
    标签：评分：8.0/10、query:llm-opt-code
-   evidence：提出PrologMCP，使LLM智能体能够使用Prolog求解器进行问题建模和求解，与基于LLM的约束规划建模直接相关
+   evidence：针对AI数据中心调度的上下文鲁棒优化
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [Unlocking LLM Code Correction with Iterative Feedback Loops](/202606/17/2606.17514v1-unlocking-llm-code-correction-with-iterative-feedback-loops)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：通过迭代反馈循环进行LLM代码修正
 
 
 <div class="dpr-home-promo-card">
