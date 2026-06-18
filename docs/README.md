@@ -6,32 +6,33 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-17
-- 运行时间：2026-06-17 19:49:23 UTC
+- 最新运行日期：2026-06-18
+- 运行时间：2026-06-18 20:17:14 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：3
+- 本次总论文数：3
+- 精读区：2
 - 速读区：1
 
 ### 今日简报（AI）
-今日精选1篇9分和1篇8分精读论文，速读1篇6分论文，覆盖LLM驱动调度优化、树搜索强化学习建模及代码纠错反馈循环。重点推荐《Large Language Model-Driven Cooperative Operator Ensemble Evolution》与《StarOR》，分别展示LLM在组合优化中的协同进化能力和测试时强化学习提升建模效率。后续可聚焦这两篇深入探索LLM与优化算法结合的实现细节及实验设置。
-- 详情：[/202606/17/README](/202606/17/README)
+今日精读两篇高分论文，聚焦调度优化与自动启发式设计。
+
+最值得看：学习增强的无关联机器调度近似算法，以及元认知与自然进化融合的启发式自动生成。
+
+建议优先深读这两篇前沿方法，再快速浏览百事可乐AI定价优化的工业案例。
+- 详情：[/202606/18/README](/202606/18/README)
 
 ### 精读区论文标签
-1. [Large Language Model-Driven Cooperative Operator Ensemble Evolution for Permutation Flow Shop Scheduling](/202606/17/2606.15334v2-large-language-model-driven-cooperative-operator-ensemble-evolution-for-permutation-flow-shop-scheduling)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：LLM驱动的置换流水车间调度算子进化
-2. [StarOR: Synergizing Tree Search and Test-Time Reinforcement Learning for Optimization Modeling](/202606/17/2606.15197v1-staror-synergizing-tree-search-and-test-time-reinforcement-learning-for-optimization-modeling)  
+1. [Learning-Augmented Approximation for Unrelated-Machines Makespan Scheduling](/202606/18/2606.13133v1-learning-augmented-approximation-for-unrelated-machines-makespan-scheduling)  
    标签：评分：8.0/10、query:llm-opt-code
-   evidence：协同树搜索与测试时强化学习的优化建模
-3. [Contextual Robust Optimization for AI Data Center Scheduling with Statistical Guarantees](/202606/17/2606.17466v1-contextual-robust-optimization-for-ai-data-center-scheduling-with-statistical-guarantees)  
+   evidence：面向无关机调度最小化最大完工时间的学习增强算法
+2. [MeEvo: Metacognitive Evolution Combined with Natural Evolution for Automatic Heuristic Design](/202606/18/2606.14202v3-meevo-metacognitive-evolution-combined-with-natural-evolution-for-automatic-heuristic-design)  
    标签：评分：8.0/10、query:llm-opt-code
-   evidence：针对AI数据中心调度的上下文鲁棒优化
+   evidence：基于LLM的自动启发式设计，面向优化问题
 
 ### 速读区论文标签
-1. [Unlocking LLM Code Correction with Iterative Feedback Loops](/202606/17/2606.17514v1-unlocking-llm-code-correction-with-iterative-feedback-loops)  
+1. [PepsiCo Deploys AI-Driven Pricing and Promotion Optimization at Scale](/202606/18/2606.17941v1-pepsico-deploys-ai-driven-pricing-and-promotion-optimization-at-scale)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：通过迭代反馈循环进行LLM代码修正
+   evidence：大规模运筹优化建模应用于定价与促销
 
 
 <div class="dpr-home-promo-card">

@@ -1,0 +1,135 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-18T20:13:33.457352+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.13133v1",
+      "source": "arxiv",
+      "title": "Learning-Augmented Approximation for Unrelated-Machines Makespan Scheduling",
+      "abstract": "Recently, Antoniadis et al. (ICLR 2025) proposed a framework for incorporating predictions to approximate NP-hard selection problems. Despite its simplicity, this approach tightly matches theoretical lower bounds, making its generalization highly compelling. We address an open question raised in the work of Antoniadis et al., concerning the extension of this approach to other important problems outside the class of selection problems, such as scheduling. We develop a learning-augmented algorithm for the makespan minimization problem on unrelated machines, denoted by $R\\|C_{\\max}$. By using predictions of heavy job assignments, we achieve a polynomial-time $(1+\\varepsilon)$-approximation for accurate predictions that smoothly degrades to a worst-case 2-approximation as the error increases. We conclude our work with an empirical analysis of our method.",
+      "authors": [
+        "Kaito Baba",
+        "Evripidis Bampis",
+        "Giorgos Mitropoulos"
+      ],
+      "primary_category": "cs.DS",
+      "categories": [
+        "cs.DS",
+        "cs.LG"
+      ],
+      "published": "2026-06-11T09:55:33+00:00",
+      "link": "https://arxiv.org/pdf/2606.13133v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "learning-augmented algorithm for makespan scheduling on unrelated machines",
+      "llm_evidence_cn": "面向无关机调度最小化最大完工时间的学习增强算法",
+      "llm_evidence": "面向无关机调度最小化最大完工时间的学习增强算法",
+      "canonical_evidence": "面向无关机调度最小化最大完工时间的学习增强算法",
+      "llm_tldr_en": "Develops a learning-augmented approximation algorithm for unrelated-machines makespan scheduling, achieving (1+epsilon)-approximation with accurate predictions.",
+      "llm_tldr_cn": "运筹优化中的调度问题传统上缺乏与预测相结合的方法。本文针对无关机调度问题，提出一种学习增强算法，利用重任务分配的预测信息，在预测准确时达到(1+ε)近似比，且性能平滑退化至最坏情况。该工作将机器学习与运筹优化建模紧密结合，为调度优化问题提供了新思路。",
+      "llm_tldr": "运筹优化中的调度问题传统上缺乏与预测相结合的方法。本文针对无关机调度问题，提出一种学习增强算法，利用重任务分配的预测信息，在预测准确时达到(1+ε)近似比，且性能平滑退化至最坏情况。该工作将机器学习与运筹优化建模紧密结合，为调度优化问题提供了新思路。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.14202v3",
+      "source": "arxiv",
+      "title": "MeEvo: Metacognitive Evolution Combined with Natural Evolution for Automatic Heuristic Design",
+      "abstract": "Large Language Models (LLMs) have advanced Automatic Heuristic Design (AHD) by enabling heuristic generation through reasoning and code synthesis. Existing LLM-based AHD architectures mainly follow two paradigms: Natural Evolution, which uses crossover and mutation to explore heuristic programs, and Metacognitive Evolution, which refines reasoning through reflection. However, Natural Evolution discards reasoning traces, weakening knowledge inheritance and exploitation, while Metacognitive Evolution lacks population-level recombination, limiting exploration and increasing the risk of premature convergence. These limitations reduce search efficiency, stability, and solution quality on complex problems. To address this gap, we propose MeEvo, a dual-layer AHD framework that cyclically couples Natural Evolution and Metacognitive Evolution. Natural Evolution explores heuristic code while recording reasoning traces, fitness values, and errors into a shared history; Metacognitive Evolution then reflects on this history to generate improved heuristics that re-enter the parent pool for the next cycle. This design enables population-driven exploration and reflection-driven refinement to reinforce each other. Experiments on five optimization problems with two LLM backbones show that MeEvo achieves stronger and more stable performance than existing LLM-based AHD architectures, especially on complex constrained tasks.",
+      "authors": [
+        "Zishang Qiu",
+        "Xinan Chen",
+        "Rong Qu",
+        "Ruibin Bai"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE",
+        "cs.AI"
+      ],
+      "published": "2026-06-12T07:36:38+00:00",
+      "link": "https://arxiv.org/pdf/2606.14202v3",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based automatic heuristic design for optimization",
+      "llm_evidence_cn": "基于LLM的自动启发式设计，面向优化问题",
+      "llm_evidence": "基于LLM的自动启发式设计，面向优化问题",
+      "canonical_evidence": "基于LLM的自动启发式设计，面向优化问题",
+      "llm_tldr_en": "Proposes MeEvo combining metacognitive and natural evolution for LLM-based automatic heuristic design, generating optimization code via reasoning and crossover.",
+      "llm_tldr_cn": "现有LLM自动启发式设计方法存在推理知识丢失或探索不足的问题。本文提出MeEvo框架，融合元认知进化与自然进化，通过推理优化和种群交叉生成高质量启发式代码。实验表明，该方法在多个复杂优化问题上相比基线显著提升搜索效率和解质量。该工作为利用LLM自动生成优化求解代码提供了新范式。",
+      "llm_tldr": "现有LLM自动启发式设计方法存在推理知识丢失或探索不足的问题。本文提出MeEvo框架，融合元认知进化与自然进化，通过推理优化和种群交叉生成高质量启发式代码。实验表明，该方法在多个复杂优化问题上相比基线显著提升搜索效率和解质量。该工作为利用LLM自动生成优化求解代码提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.17941v1",
+      "source": "arxiv",
+      "title": "PepsiCo Deploys AI-Driven Pricing and Promotion Optimization at Scale",
+      "abstract": "Effective pricing and promotion planning constitutes a central pillar of strategic revenue management for firms operating in highly competitive and dynamic markets. These planning activities require the simultaneous consideration of demand elasticity, competitor actions, channel and market specific constraints, and financial objectives. As the dimensionality and interdependencies inherent in these problems increase, manual or traditional approaches become suboptimal and insufficient. In this context, Operations Research provides a robust methodological foundation for scalable, data-driven decision support systems that can optimize complex planning processes across large product and customer portfolios.   This paper presents two large-scale optimization systems developed and deployed at PepsiCo to support Revenue Growth Management initiatives: PromoAI and PricingAI. PromoAI couples machine learning-based promotional forecasts with a mixed-integer linear programming model to optimize promotional calendars across trade channels, searching millions of product-promotion-timing combinations for the one that maximizes PepsiCo and retailer revenues subject to customizable business constraints. PricingAI optimizes base prices across product portfolios over multi-period horizons, using Bayesian hierarchical models to estimate own- and cross-price elasticities and competitive interactions, then feeding these into a nonlinear programming engine that recommends price changes aligned with revenue and margin targets under operational constraints.   Together, these systems demonstrate the feasibility and scalability of advanced optimization in large-scale enterprise environments. They highlight the value of integrating statistical learning with mathematical programming to enable enterprise-level, automated decision-making that is both data-informed and aligned with strategic business objectives.",
+      "authors": [
+        "Aleix Llenas",
+        "Eduardo Salazar-Treviño",
+        "Francisco Leskovar",
+        "Francesc Pons-Llopis",
+        "Federico Todeschini",
+        "Deepika Gowda",
+        "David Bofill",
+        "Laxmi Anish",
+        "Michael Cleavinger"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-06-16T13:50:43+00:00",
+      "link": "https://arxiv.org/pdf/2606.17941v1",
+      "tags": [
+        "keyword:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "large-scale operations research optimization modeling for pricing and promotion",
+      "llm_evidence_cn": "大规模运筹优化建模应用于定价与促销",
+      "llm_evidence": "大规模运筹优化建模应用于定价与促销",
+      "canonical_evidence": "大规模运筹优化建模应用于定价与促销",
+      "llm_tldr_en": "Describes PepsiCo's deployment of large-scale optimization models for pricing and promotion planning, leveraging operations research methodology.",
+      "llm_tldr_cn": "本文展示了百事可乐如何利用运筹学方法构建大规模数据驱动的定价与促销优化系统。该系统考虑需求弹性、竞争对手行为等多维约束，在复杂市场环境下实现收入管理优化。实际部署验证了运筹优化在商业决策中的有效性和可扩展性。",
+      "llm_tldr": "本文展示了百事可乐如何利用运筹学方法构建大规模数据驱动的定价与促销优化系统。该系统考虑需求弹性、竞争对手行为等多维约束，在复杂市场环境下实现收入管理优化。实际部署验证了运筹优化在商业决策中的有效性和可扩展性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

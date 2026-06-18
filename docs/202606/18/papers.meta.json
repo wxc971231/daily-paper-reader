@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-18",
+  "date": "2026-06-18",
+  "generated_at": "2026-06-18T20:17:21",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/18/2606.13133v1-learning-augmented-approximation-for-unrelated-machines-makespan-scheduling",
+      "section": "deep",
+      "title_en": "Learning-Augmented Approximation for Unrelated-Machines Makespan Scheduling",
+      "authors": "Kaito Baba, Evripidis Bampis, Giorgos Mitropoulos",
+      "date": "2026-06-11",
+      "pdf": "https://arxiv.org/pdf/2606.13133v1",
+      "score": "8.0",
+      "evidence": "面向无关机调度最小化最大完工时间的学习增强算法",
+      "tldr": "无关机调度最小化makespan是NP难问题。本文采用学习增强方法，利用对重作业分配的预测设计算法。当预测准确时达到(1+ε)-近似，误差增大时平滑退化为2-近似。将学习增强框架从选择问题扩展到调度问题，提供理论保证与实验验证。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Recently, Antoniadis et al. (ICLR 2025) proposed a framework for incorporating predictions to approximate NP-hard selection problems. Despite its simplicity, this approach tightly matches theoretical lower bounds, making its generalization highly compelling. We address an open question raised in the work of Antoniadis et al., concerning the extension of this approach to other important problems outside the class of selection problems, such as scheduling. We develop a learning-augmented algorithm for the makespan minimization problem on unrelated machines, denoted by $R\\|C_{\\max}$. By using predictions of heavy job assignments, we achieve a polynomial-time $(1+\\varepsilon)$-approximation for accurate predictions that smoothly degrades to a worst-case 2-approximation as the error increases. We conclude our work with an empirical analysis of our method.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/18/2606.14202v3-meevo-metacognitive-evolution-combined-with-natural-evolution-for-automatic-heuristic-design",
+      "section": "deep",
+      "title_en": "MeEvo: Metacognitive Evolution Combined with Natural Evolution for Automatic Heuristic Design",
+      "authors": "Zishang Qiu, Xinan Chen, Rong Qu, Ruibin Bai",
+      "date": "2026-06-12",
+      "pdf": "https://arxiv.org/pdf/2606.14202v3",
+      "score": "8.0",
+      "evidence": "基于LLM的自动启发式设计，面向优化问题",
+      "tldr": "现有基于LLM的自动启发式设计架构中，自然进化丢弃推理痕迹导致知识继承不足，元认知进化缺乏种群重组限制探索。MeEvo双框架通过循环耦合两种进化：自然进化探索启发式代码并记录推理痕迹至共享历史，元认知进化基于历史反思生成改进启发式。在五个优化问题上，MeEvo取得更优且更稳定的性能，尤其在复杂约束任务上。该框架实现了种群驱动探索与反思驱动精化的相互增强。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large Language Models (LLMs) have advanced Automatic Heuristic Design (AHD) by enabling heuristic generation through reasoning and code synthesis. Existing LLM-based AHD architectures mainly follow two paradigms: Natural Evolution, which uses crossover and mutation to explore heuristic programs, and Metacognitive Evolution, which refines reasoning through reflection. However, Natural Evolution discards reasoning traces, weakening knowledge inheritance and exploitation, while Metacognitive Evolution lacks population-level recombination, limiting exploration and increasing the risk of premature convergence. These limitations reduce search efficiency, stability, and solution quality on complex problems. To address this gap, we propose MeEvo, a dual-layer AHD framework that cyclically couples Natural Evolution and Metacognitive Evolution. Natural Evolution explores heuristic code while recording reasoning traces, fitness values, and errors into a shared history; Metacognitive Evolution then reflects on this history to generate improved heuristics that re-enter the parent pool for the next cycle. This design enables population-driven exploration and reflection-driven refinement to reinforce each other. Experiments on five optimization problems with two LLM backbones show that MeEvo achieves stronger and more stable performance than existing LLM-based AHD architectures, especially on complex constrained tasks.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/18/2606.17941v1-pepsico-deploys-ai-driven-pricing-and-promotion-optimization-at-scale",
+      "section": "quick",
+      "title_en": "PepsiCo Deploys AI-Driven Pricing and Promotion Optimization at Scale",
+      "authors": "Aleix Llenas, Eduardo Salazar-Treviño, Francisco Leskovar, Francesc Pons-Llopis, Federico Todeschini, Deepika Gowda, David Bofill, Laxmi Anish, Michael Cleavinger",
+      "date": "2026-06-16",
+      "pdf": "https://arxiv.org/pdf/2606.17941v1",
+      "score": "6.0",
+      "evidence": "大规模运筹优化建模应用于定价与促销",
+      "tldr": "定价与促销规划是动态市场中收入管理的核心，但传统方法难以应对高维度和相互依赖的约束。PepsiCo 将机器学习预测与混合整数线性规划结合开发了 PromoAI 优化促销日历，并利用贝叶斯层次模型估计弹性后通过非线性规划优化基础价格（PricingAI）。两个系统在大型产品组合中实现了数百万组合的自动搜索，显著提升了收入与利润。该工作展示了统计学习与数学规划集成在企业级自动化决策中的可行性和战略价值。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Effective pricing and promotion planning constitutes a central pillar of strategic revenue management for firms operating in highly competitive and dynamic markets. These planning activities require the simultaneous consideration of demand elasticity, competitor actions, channel and market specific constraints, and financial objectives. As the dimensionality and interdependencies inherent in these problems increase, manual or traditional approaches become suboptimal and insufficient. In this context, Operations Research provides a robust methodological foundation for scalable, data-driven decision support systems that can optimize complex planning processes across large product and customer portfolios.   This paper presents two large-scale optimization systems developed and deployed at PepsiCo to support Revenue Growth Management initiatives: PromoAI and PricingAI. PromoAI couples machine learning-based promotional forecasts with a mixed-integer linear programming model to optimize promotional calendars across trade channels, searching millions of product-promotion-timing combinations for the one that maximizes PepsiCo and retailer revenues subject to customizable business constraints. PricingAI optimizes base prices across product portfolios over multi-period horizons, using Bayesian hierarchical models to estimate own- and cross-price elasticities and competitive interactions, then feeding these into a nonlinear programming engine that recommends price changes aligned with revenue and margin targets under operational constraints.   Together, these systems demonstrate the feasibility and scalability of advanced optimization in large-scale enterprise environments. They highlight the value of integrating statistical learning with mathematical programming to enable enterprise-level, automated decision-making that is both data-informed and aligned with strategic business objectives.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
