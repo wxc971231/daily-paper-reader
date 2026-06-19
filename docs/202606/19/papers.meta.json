@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-19",
+  "date": "2026-06-19",
+  "generated_at": "2026-06-19T19:22:56",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/19/2606.15197v2-staror-synergizing-tree-search-and-test-time-reinforcement-learning-for-optimization-modeling",
+      "section": "deep",
+      "title_en": "StarOR: Synergizing Tree Search and Test-Time Reinforcement Learning for Optimization Modeling",
+      "authors": "Jiajun Li, Yu Ding, Shisi Guan, Ran Hou, Wanyuan Wang",
+      "date": "2026-06-13",
+      "pdf": "https://arxiv.org/pdf/2606.15197v2",
+      "score": "9.0",
+      "evidence": "使用树搜索和测试时强化学习进行优化建模，直接解决运筹学建模问题",
+      "tldr": "优化建模是层次化的符号决策过程，现有方法依赖大规模标注数据或单次生成，难以适应新分布且易出错。StarOR框架将蒙特卡洛树搜索与测试时强化学习协同，通过GRPO在搜索节点更新LoRA适配器，利用MCTS兄弟节点提供局部对比，实现实例特定的策略优化。无需真实标签的无监督多面奖励系统为中间步骤提供细粒度反馈。在五个优化基准上，仅用4B参数模型即超越现有方法和前沿LLM。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Optimization modeling is inherently hierarchical, requiring a precise sequence of symbolic commitments. Traditional learning-based automated optimization modeling methods improve modeling policies through large-scale annotated or curated training data, but are costly to adapt to new problem distributions. Meanwhile, one-shot generation remains brittle in hierarchical modeling, where early symbolic errors can propagate into invalid formulations. Test-time scaling offers a promising alternative by enabling structural exploration with additional instance-level computation; however, existing search-based methods typically rely on a fixed policy, causing repeated rollouts to inherit similar modeling biases and providing limited credit assignment for intermediate decisions. To address these limitations, we propose StarOR, a synergistic search-and-adaptation framework that couples MCTS with Test-Time Reinforcement Learning for optimization modeling. StarOR decomposes the modeling process into four stages and updates a transient LoRA adapter via GRPO at each non-terminal node. By using MCTS-generated siblings as local comparison sets, StarOR transforms search-time exploration into instance-specific policy refinement. Moreover, an unsupervised multi-faceted reward system provides fine-grained feedback for intermediate formulation decisions without ground-truth labels. Experiments across five optimization benchmarks show that StarOR achieves state-of-the-art performance even with a 4B backbone, outperforming existing methods and the frontier LLMs.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/19/2606.19751v1-deql-a-decision-query-language-for-prescriptive-analytics-over-relational-data",
+      "section": "deep",
+      "title_en": "DeQL: A Decision Query Language for Prescriptive Analytics over Relational Data",
+      "authors": "Matteo Brucato, Fjodor Kholodkov, Soren Little, Jakob Mayer, Duc Nguyen",
+      "date": "2026-06-18",
+      "pdf": "https://arxiv.org/pdf/2606.19751v1",
+      "score": "9.0",
+      "evidence": "使用查询语言进行决策优化建模和自动求解",
+      "tldr": "关系数据库缺乏直接支持决策查询的语言。提出DeQL，通过CREATE CANDIDATES和DECIDE扩展SQL，支持从关系数据中定义选项空间和优化目标。能表达子集选择、分配、调度等多类问题，并支持不确定性优化和模型评分。遵循SQL原则，用户只说明优化目标，引擎自动求解。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "DeQL (Decision Query Language) extends SQL to express decision queries: given options drawn from relational data, constraints from policy, and a measurable objective, a DeQL query computes the best course of action. Two constructs carry the extension: CREATE CANDIDATES, which defines the space of options from relational sources, and DECIDE, which declares decision variables, named constraints, and an objective over them. The design follows SQL's principles: the user states what to optimize while the engine chooses how to solve it, every query consumes and produces relations, and the structure of a problem stays visible to the engine. This document specifies the language (its design principles, syntax, formal grammar, and execution model) with examples spanning subset selection, allocation, assignment, scheduling, and decisions at multiple levels of aggregation, and extensions for optimization under uncertainty, inline model scoring, and time- and quality-bounded solving. It is the first version of the specification; the language is under active development, and this version fixes the core constructs on which later revisions will build.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/19/2606.19787v1-oragentbench-can-llm-agents-solve-challenging-operations-research-tasks-end-to-end",
+      "section": "deep",
+      "title_en": "ORAgentBench: Can LLM Agents Solve Challenging Operations Research Tasks End to End?",
+      "authors": "Jiajun Li, Mingshu Cai, Yixuan Li, Yu Ding, Ran Hou, Guanyu Nie, Xiongwei Han, Wanyuan Wang",
+      "date": "2026-06-18",
+      "pdf": "https://arxiv.org/pdf/2606.19787v1",
+      "score": "9.0",
+      "evidence": "LLM智能体端到端运筹学任务基准，包含建模与求解",
+      "tldr": "现有评估将运筹学建模与求解分离，无法测试端到端流程。ORAgentBench包含107个真实任务，要求代理从自然语言指令出发编写代码并提交方案，由隐藏验证器评估可行性、约束满足度和目标质量。最好代理仅通过35.51%任务，失败主因是策略性弱点如遗漏规则和构建脆弱可行解。该基准揭示了当前LLM代理在可靠运筹决策上的不足，为提升智能推理能力提供新方向。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language models are increasingly deployed as autonomous agents for multi-step tasks in executable environments, yet their ability to perform realistic operations research (OR) work remains unclear. Existing OR evaluations often decouple modeling from solving, rely on pre-formalized or text-only instances, and rarely test the full workflow from operational artifacts to validated decisions. In this work, we introduce ORAgentBench, an execution-grounded benchmark for evaluating autonomous agents on challenging end-to-end operations research tasks. It contains 107 human-reviewed tasks across diverse operational scenarios, each packaged in an isolated environment with a natural-language brief, multi-file data, configuration artifacts, and a required submission schema. Agents must write and run solution code, and their submissions are evaluated by hidden validators for schema validity, hard-constraint feasibility, and normalized objective quality. Experiments with fourteen frontier agent-model configurations show that current agents remain far from reliable OR practice. The best agent passes only 35.51% of all tasks and 20.59% of hard tasks, and many feasible submissions still fall below the required quality threshold. Failure analysis further shows that errors are dominated by strategic weaknesses, including missed operational rules, brittle formulations, weak feasible-solution construction, and insufficient solution improvement. OR-specific procedural skills increase hard-task feasibility, but do not reliably improve solution quality or pass rate. These results suggest that progress in OR agents requires moving beyond plausible optimization code toward dependable, high-quality operational decision-making.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
