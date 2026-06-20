@@ -6,30 +6,38 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-19
-- 运行时间：2026-06-19 19:22:50 UTC
+- 最新运行日期：2026-06-20
+- 运行时间：2026-06-20 20:02:41 UTC
 - 运行状态：成功
-- 本次总论文数：3
-- 精读区：3
-- 速读区：0
+- 本次总论文数：5
+- 精读区：0
+- 速读区：5
 
 ### 今日简报（AI）
-今日精读两篇9分论文：优化建模的树搜索与测试时强化学习融合，以及关系数据上的决策查询语言。值得关注StarOR的树搜索+强化学习协同方案与DeQL的规范性分析新范式。建议探索这两种方法在复杂业务决策系统中的落地可能性。
-- 详情：[/202606/19/README](/202606/19/README)
+1) 今日速读5篇论文，聚焦数据库自动调优与预测优化领域。
+2) 最值得关注PLRTune的预采样与强化学习结合、无求解器的预测优化训练。
+3) 建议普通读者优先了解数据库调优与组合优化的自动化方法进展。
+- 详情：[/202606/20/README](/202606/20/README)
 
 ### 精读区论文标签
-1. [StarOR: Synergizing Tree Search and Test-Time Reinforcement Learning for Optimization Modeling](/202606/19/2606.15197v2-staror-synergizing-tree-search-and-test-time-reinforcement-learning-for-optimization-modeling)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：使用树搜索和测试时强化学习进行优化建模，直接解决运筹学建模问题
-2. [DeQL: A Decision Query Language for Prescriptive Analytics over Relational Data](/202606/19/2606.19751v1-deql-a-decision-query-language-for-prescriptive-analytics-over-relational-data)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：使用查询语言进行决策优化建模和自动求解
-3. [ORAgentBench: Can LLM Agents Solve Challenging Operations Research Tasks End to End?](/202606/19/2606.19787v1-oragentbench-can-llm-agents-solve-challenging-operations-research-tasks-end-to-end)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：LLM智能体端到端运筹学任务基准，包含建模与求解
+- 本次无精读推荐。
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [PLRTune: Importance Pre-Sampling and LLM-Guided Reinforcement Learning for Automatic Database Tuning](/202606/20/2606.14312v1-plrtune-importance-pre-sampling-and-llm-guided-reinforcement-learning-for-automatic-database-tuning)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：LLM引导强化学习进行自动数据库调优（优化）
+2. [A Solver-Free Training Method for Predict-then-Optimize](/202606/20/2606.19587v1-a-solver-free-training-method-for-predict-then-optimize)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：预测后优化线性规划
+3. [Interpreting Neural Combinatorial Optimization via Evolving Programmatic Bottlenecks](/202606/20/2606.19741v1-interpreting-neural-combinatorial-optimization-via-evolving-programmatic-bottlenecks)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：利用LLM演化程序瓶颈来解释神经组合优化
+4. [Bridging Functional Correctness and Runtime Efficiency Gaps in LLM-Based Code Translation](/202606/20/2606.17683v1-bridging-functional-correctness-and-runtime-efficiency-gaps-in-llm-based-code-translation)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：基于LLM的代码翻译，关注运行时效率
+5. [FAPO: Fully Autonomous Prompt Optimization of Multi-Step LLM Pipelines](/202606/20/2606.19605v1-fapo-fully-autonomous-prompt-optimization-of-multi-step-llm-pipelines)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：全自主提示优化多步LLM流水线，可用于自动生成优化解决方案
 
 
 <div class="dpr-home-promo-card">
