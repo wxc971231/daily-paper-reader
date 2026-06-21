@@ -6,38 +6,28 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-20
-- 运行时间：2026-06-20 20:02:41 UTC
+- 最新运行日期：2026-06-21
+- 运行时间：2026-06-21 19:08:52 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：0
-- 速读区：5
+- 本次总论文数：2
+- 精读区：1
+- 速读区：1
 
 ### 今日简报（AI）
-1) 今日速读5篇论文，聚焦数据库自动调优与预测优化领域。
-2) 最值得关注PLRTune的预采样与强化学习结合、无求解器的预测优化训练。
-3) 建议普通读者优先了解数据库调优与组合优化的自动化方法进展。
-- 详情：[/202606/20/README](/202606/20/README)
+今日精读一篇神经网络组合优化可解释性研究，速读一篇结构化推理方法。
+最值得关注的是使用演化编程瓶颈提升组合优化可解释性（评分8.0），以及LLM的吉布斯采样结构化推理。
+普通读者可优先了解如何将黑箱优化模型转化为可解析的程序化表达。
+- 详情：[/202606/21/README](/202606/21/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Interpreting Neural Combinatorial Optimization via Evolving Programmatic Bottlenecks](/202606/21/2606.19741v1-interpreting-neural-combinatorial-optimization-via-evolving-programmatic-bottlenecks)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：利用大语言模型解释组合优化策略，生成可读程序
 
 ### 速读区论文标签
-1. [PLRTune: Importance Pre-Sampling and LLM-Guided Reinforcement Learning for Automatic Database Tuning](/202606/20/2606.14312v1-plrtune-importance-pre-sampling-and-llm-guided-reinforcement-learning-for-automatic-database-tuning)  
+1. [Structured Inference with Large Language Gibbs](/202606/21/2606.19264v1-structured-inference-with-large-language-gibbs)  
    标签：评分：7.0/10、query:llm-opt-code
-   evidence：LLM引导强化学习进行自动数据库调优（优化）
-2. [A Solver-Free Training Method for Predict-then-Optimize](/202606/20/2606.19587v1-a-solver-free-training-method-for-predict-then-optimize)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：预测后优化线性规划
-3. [Interpreting Neural Combinatorial Optimization via Evolving Programmatic Bottlenecks](/202606/20/2606.19741v1-interpreting-neural-combinatorial-optimization-via-evolving-programmatic-bottlenecks)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：利用LLM演化程序瓶颈来解释神经组合优化
-4. [Bridging Functional Correctness and Runtime Efficiency Gaps in LLM-Based Code Translation](/202606/20/2606.17683v1-bridging-functional-correctness-and-runtime-efficiency-gaps-in-llm-based-code-translation)  
-   标签：评分：6.0/10、query:llm-opt-code
-   evidence：基于LLM的代码翻译，关注运行时效率
-5. [FAPO: Fully Autonomous Prompt Optimization of Multi-Step LLM Pipelines](/202606/20/2606.19605v1-fapo-fully-autonomous-prompt-optimization-of-multi-step-llm-pipelines)  
-   标签：评分：6.0/10、query:llm-opt-code
-   evidence：全自主提示优化多步LLM流水线，可用于自动生成优化解决方案
+   evidence：利用LLM条件分布进行迭代重采样，类似于约束满足求解
 
 
 <div class="dpr-home-promo-card">

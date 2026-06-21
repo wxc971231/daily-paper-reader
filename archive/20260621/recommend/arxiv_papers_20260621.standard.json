@@ -1,0 +1,97 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-21T19:07:17.378476+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.19741v1",
+      "source": "arxiv",
+      "title": "Interpreting Neural Combinatorial Optimization via Evolving Programmatic Bottlenecks",
+      "abstract": "Neural Combinatorial Optimization (NCO) achieves strong performance, yet its black-box nature remains a key roadblock to deployment and scientific diagnosis. Standard interpretability tools, such as Concept Bottleneck Models (CBMs), are ill-equipped for NCO, whose decisions are dynamic, state-dependent, and lack proper concept vocabulary definition. To close this gap, we introduce Evolving Programmatic Bottlenecks (EPB), to our knowledge, the first framework for interpreting NCO policies by distilling black-box NCO models into human-readable program portfolios. EPB employs an LLM to autonomously evolve a bank of programs, where each program's per-step action distribution serves as the bottleneck. EPB works through an iterative framework: Block I fixes program bank capacity and introduces a hybrid textual-numerical gradient descent scheme that couples numerical gradients for student router updates and textual gradients for LLM-based program revision; Block II dynamically adapts bank capacity via fault-targeted expansion and redundancy pruning. Extensive experiments demonstrate EPB's effectiveness and broad applicability, where the distilled program portfolios largely match original performance. EPB also reveals that NCO behavior shifts across optimization stages and can be approximated as a composition of classic heuristic variants. Our work advances interpretable NCO and establishes EPB as a promising tool for interpreting sequential decision-making models.",
+      "authors": [
+        "Haocheng Duan",
+        "Yuxin Guo",
+        "Jieyi Bi",
+        "Anqi Xie",
+        "Sirui Li",
+        "Yining Ma",
+        "Cathy Wu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-06-18T03:14:10+00:00",
+      "link": "https://arxiv.org/pdf/2606.19741v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based programmatic interpretation of combinatorial optimization",
+      "llm_evidence_cn": "利用大语言模型解释组合优化策略，生成可读程序",
+      "llm_evidence": "利用大语言模型解释组合优化策略，生成可读程序",
+      "canonical_evidence": "利用大语言模型解释组合优化策略，生成可读程序",
+      "llm_tldr_en": "EPB introduces the first framework to interpret Neural Combinatorial Optimization (NCO) policies by distilling them into human-readable program portfolios using an LLM-driven evolutionary process, providing step-level explanations for combinatorial optimization decisions.",
+      "llm_tldr_cn": "神经组合优化（NCO）模型性能优异但黑盒特性阻碍部署。本文提出EPB框架，利用大语言模型自动演化出一组可读程序，每个程序的逐步骤动作分布作为瓶颈，用于解释NCO策略。迭代过程将黑盒模型蒸馏为程序组合，首次实现了NCO决策的可解释性。该方法有望提升组合优化模型的可靠性和科学诊断能力。",
+      "llm_tldr": "神经组合优化（NCO）模型性能优异但黑盒特性阻碍部署。本文提出EPB框架，利用大语言模型自动演化出一组可读程序，每个程序的逐步骤动作分布作为瓶颈，用于解释NCO策略。迭代过程将黑盒模型蒸馏为程序组合，首次实现了NCO决策的可解释性。该方法有望提升组合优化模型的可靠性和科学诊断能力。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.19264v1",
+      "source": "arxiv",
+      "title": "Structured Inference with Large Language Gibbs",
+      "abstract": "The knowledge encoded in large language models (LLMs) can serve as a substrate for structured reasoning over variables describing a complex world, but accessing this knowledge in a probabilistically coherent manner poses a difficult inference problem. We propose Large Language Gibbs, a scheme for structured probabilistic inference that uses conditional distributions of an LLM as transition operators. Rather than sampling structured objects through single-pass autoregressive generation, we iteratively resample individual variables conditioned on others using an LLM's next-token conditionals. This approach avoids order-dependent biases and produces a stationary distribution that reflects a compromise between all local conditionals. We apply this approach to sampling from synthetic distributions, consistent reasoning tasks, and Bayesian structure learning. The results suggest that the use of LLM conditionals in MCMC is a practical alternative to one-pass generation for structured probabilistic inference under a world prior accessible through noisy LLM conditionals.",
+      "authors": [
+        "Sanghyeok Choi",
+        "Henry Gouk",
+        "Esmeralda S. Whitammer"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CL"
+      ],
+      "published": "2026-06-17T16:40:32+00:00",
+      "link": "https://arxiv.org/pdf/2606.19264v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM-based iterative resampling for structured inference akin to constraint satisfaction",
+      "llm_evidence_cn": "利用LLM条件分布进行迭代重采样，类似于约束满足求解",
+      "llm_evidence": "利用LLM条件分布进行迭代重采样，类似于约束满足求解",
+      "canonical_evidence": "利用LLM条件分布进行迭代重采样，类似于约束满足求解",
+      "llm_tldr_en": "Large Language Gibbs uses LLM conditionals as transition operators for iterative resampling of variables, producing stationary distributions for structured probabilistic inference, applicable to constraint programming.",
+      "llm_tldr_cn": "现有LLM在结构化推理中难以保证概率一致性。本文提出Large Language Gibbs方法，将LLM的条件分布作为转移算子，通过迭代重采样变量来生成一致的结构化输出。该方法避免了顺序偏差，在合成数据和真实推理任务上验证了有效性，为约束编程等结构化建模提供了新思路。",
+      "llm_tldr": "现有LLM在结构化推理中难以保证概率一致性。本文提出Large Language Gibbs方法，将LLM的条件分布作为转移算子，通过迭代重采样变量来生成一致的结构化输出。该方法避免了顺序偏差，在合成数据和真实推理任务上验证了有效性，为约束编程等结构化建模提供了新思路。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "constraint programming modeling with LLM",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

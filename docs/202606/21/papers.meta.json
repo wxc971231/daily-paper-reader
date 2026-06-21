@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-21",
+  "date": "2026-06-21",
+  "generated_at": "2026-06-21T19:09:00",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/21/2606.19741v1-interpreting-neural-combinatorial-optimization-via-evolving-programmatic-bottlenecks",
+      "section": "deep",
+      "title_en": "Interpreting Neural Combinatorial Optimization via Evolving Programmatic Bottlenecks",
+      "authors": "Haocheng Duan, Yuxin Guo, Jieyi Bi, Anqi Xie, Sirui Li, Yining Ma, Cathy Wu",
+      "date": "2026-06-18",
+      "pdf": "https://arxiv.org/pdf/2606.19741v1",
+      "score": "8.0",
+      "evidence": "利用大语言模型解释组合优化策略，生成可读程序",
+      "tldr": "神经组合优化（NCO）模型的黑箱特性阻碍其部署与诊断。现有可解释性方法无法处理NCO的动态、状态依赖决策。本文提出演化程序瓶颈（EPB），利用LLM迭代演化可读程序库作为决策瓶颈，结合混合文本-数值梯度与自适应库容量调整。实验表明，蒸馏出的程序组合保持接近原始性能，并揭示NCO行为可分解为经典启发式变体。EPB是首个可解释NCO框架，为顺序决策模型解释提供新工具。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Neural Combinatorial Optimization (NCO) achieves strong performance, yet its black-box nature remains a key roadblock to deployment and scientific diagnosis. Standard interpretability tools, such as Concept Bottleneck Models (CBMs), are ill-equipped for NCO, whose decisions are dynamic, state-dependent, and lack proper concept vocabulary definition. To close this gap, we introduce Evolving Programmatic Bottlenecks (EPB), to our knowledge, the first framework for interpreting NCO policies by distilling black-box NCO models into human-readable program portfolios. EPB employs an LLM to autonomously evolve a bank of programs, where each program's per-step action distribution serves as the bottleneck. EPB works through an iterative framework: Block I fixes program bank capacity and introduces a hybrid textual-numerical gradient descent scheme that couples numerical gradients for student router updates and textual gradients for LLM-based program revision; Block II dynamically adapts bank capacity via fault-targeted expansion and redundancy pruning. Extensive experiments demonstrate EPB's effectiveness and broad applicability, where the distilled program portfolios largely match original performance. EPB also reveals that NCO behavior shifts across optimization stages and can be approximated as a composition of classic heuristic variants. Our work advances interpretable NCO and establishes EPB as a promising tool for interpreting sequential decision-making models.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/21/2606.19264v1-structured-inference-with-large-language-gibbs",
+      "section": "quick",
+      "title_en": "Structured Inference with Large Language Gibbs",
+      "authors": "Sanghyeok Choi, Henry Gouk, Esmeralda S. Whitammer",
+      "date": "2026-06-17",
+      "pdf": "https://arxiv.org/pdf/2606.19264v1",
+      "score": "7.0",
+      "evidence": "利用LLM条件分布进行迭代重采样，类似于约束满足求解",
+      "tldr": "大规模语言模型（LLM）编码的知识可支持结构化推理，但概率一致地访问这些知识面临推断难题。本文提出Large Language Gibbs方法，利用LLM的next-token条件分布作为马尔可夫链转移算子，通过迭代重采样单个变量来避免自回归生成中的顺序偏差，产生的平稳分布反映所有局部条件分布的折中。在合成分布采样、一致推理任务和贝叶斯结构学习上的实验表明，这种方法作为噪声LLM条件分布下结构化概率推断的实用方案，优于单次生成。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "The knowledge encoded in large language models (LLMs) can serve as a substrate for structured reasoning over variables describing a complex world, but accessing this knowledge in a probabilistically coherent manner poses a difficult inference problem. We propose Large Language Gibbs, a scheme for structured probabilistic inference that uses conditional distributions of an LLM as transition operators. Rather than sampling structured objects through single-pass autoregressive generation, we iteratively resample individual variables conditioned on others using an LLM's next-token conditionals. This approach avoids order-dependent biases and produces a stationary distribution that reflects a compromise between all local conditionals. We apply this approach to sampling from synthetic distributions, consistent reasoning tasks, and Bayesian structure learning. The results suggest that the use of LLM conditionals in MCMC is a practical alternative to one-pass generation for structured probabilistic inference under a world prior accessible through noisy LLM conditionals.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
