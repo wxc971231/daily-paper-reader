@@ -1,0 +1,835 @@
+Title: An Optimization Framework for Certain Separable Problems using Neural Networks
+
+URL Source: https://arxiv.org/pdf/2606.19720v1
+
+Published Time: Fri, 19 Jun 2026 00:23:15 GMT
+
+Number of Pages: 15
+
+Markdown Content:
+# An Optimization Framework for Certain Separable Problems using Neural Networks 
+
+## Rohit Negi and Soummya Kar Carnegie Mellon University 
+
+Abstract 
+
+This paper studies a class of parametric constrained optimization problems that are motivated by applications in real time applications. Under a parameter-separable problem structure that naturally arises in these applications, the paper proposes a two phase strategy, based on offline learning and online processing, to address these optimization problems on resource limited devices. Specifically, by exploiting the sep-arable structure, an iterative Alternating Direction Method of Multipliers (ADMM) based solution procedure is developed that enables the use of certain learning based function representations (learned offline but readily computable online) to reduce the overall online on-device implementation complexity. By carefully crafting the ADMM procedure, it is shown that even as the parameters vary, the corresponding instances of the parametric optimization problem may be solved by lightweight online computations in the device with the assistance of a neural network co-processor. 
+
+Keywords: neural networks, optimization, function representations. 
+
+# 1 Introduction 
+
+Consider the constrained convex optimization problem min  
+
+> x
+
+f0(x; c), such that (s.t.) (1) 
+
+fm(x; Am) ≤ bm, m = 1 , 2, . . . , M, (2) with f0, f m being convex functions that depend on multi-dimensional parameters c and 
+
+Am respectively. We allow domain restrictions of the form x ∈ X in this and sub-sequent problems discussed, but do not explicitly write that in the minimization prob-lem. Solving this problem using a standard convex optimization solver results in optimal 
+
+x∗ = x∗(c, A 1, . . . , A m). If this represents a problem being solved in a device, such as a communication device, such a device needs to be powerful enough to run a convex solver, and most likely also needs carefully tuned numerical optimization libraries loaded, to obtain the required solution accuracy. For example, unconstrained minimization using Gradient Descent may be used to minimize the Lagrangian function [5] of (1), which involves cal-culating derivatives of potentially (numerically) complex functions, and evaluating these 1
+
+> arXiv:2606.19720v1 [eess.SP] 18 Jun 2026
+
+functions. Note that even for scalar x, evaluating a function such as f0(x) = log(1 + ex)and its derivative requires numerical computation libraries that can accurately approximate logarithm and exponential functions (such as by using iterative Newton root finding [6]). Further, a domain restriction x ∈ X will potentially make this task even more challenging. This raises an intriguing question: Is it possible to dispense with heavy-duty numerical libraries, relying instead on only simple addition and multiplication operations, but assum-ing there is a neural network co-processor available that can map parameters to functions useful for numerical optimization? The rationale is that deep neural networks have been found to provide accurate representations of fairly complex functions. And yet, their reg-ular architecture allows networks of millions of parameters to be trained offline , so that a device with such a co-processor can quickly compute the (neural network represented) function, without relying on specialized numerical libraries. In essence, the solutions of optimization problems for various parameter values would be done offline (using massive computing power), and only the results of the optimization would be stored as neural network represented functions for online computation. This would allow devices that are unable to run full-fledged numerical libraries to perform complex optimization (aided by the neural network co-processor). An extreme, but naive, application of this idea would be to consider a One shot ap-proximate solution of the parametric optimization problem (1)-(2) by learning the function 
+
+x∗ = x∗(c, A 1, . . . , A m) that maps parameter instances directly to the solution x∗. How-ever, this One shot approach may quickly become practically infeasible as the number of parameters scale up. In fact, in the sample problems that we consider in Section 2.2, the number of parameters may scale up with the number of users, such as in a power allocation problem for cellular users, or with the number of constraints, which could be very many. While neural network type approximators are empirically known to be able to approxi-mate fairly complex functions, the complexity (e.g., the number of neurons) required to carry out an accurate approximation may grow exponentially with the number of input parameters, even for well behaved function classes such as the class of continuous functions (see [1–3]). Additionally, learning or training these approximators would require sampling solutions of the parametric optimization problem at different parameter instances that also grows exponentially in the parameter dimension. This renders the One shot approxima-tion practically infeasible. This curse of dimensionality may be alleviated under certain special scenarios (e.g., more restricted classes of functions with certain smoothness proper-ties [1]). Unfortunately, even under the simplest type of polyhedral constraints, the solution 
+
+x∗ = x∗(c, A 1, . . . , A m) could turn out to be a fairly complex mapping of the parameters, e.g., non-smooth. Thus, theoretical approximation guarantees, say with Rectifier Linear Unit (RELU) based neural networks [3], may not be directly applicable. Therefore, rather than aiming for a One shot neural network approximation, in this paper, we carefully use neural network based representations as helper functions at certain stages of the optimization pipeline with the two-fold objective of using function approxi-mators when the underlying function to be approximated is amenable to lower complexity 
+
+representation (i.e., when the underlying parameter space is low-dimensional) while simul-taneously ensuring that we minimize the dependence on special purpose numerical libraries, and only rely on elementary additions and multiplications for our optimization algorithm. The usefulness of this idea is demonstrated by considering a variety of problems that are 2typically solved by real time devices (see Sections 2.2 and 5). 
+
+# 2 Separable parameters Model 
+
+This paper will focus on a specific convex optimization problem, which we call a Separable parameters problem . To the best of our knowledge, such problems have not been explicitly discussed in previous research. min 
+
+> x1,..., xN
+> N
+
+X
+
+> n=1
+> L
+
+X
+
+> l=1
+
+fn, 0,l (xn; cn,l ) s.t. (3) 
+
+> N
+
+X
+
+> n=1
+> L
+
+X
+
+> l=1
+
+fn,m,l (xn; An,m,l ) ≤ bm, m = 1 , 2, . . . , M, (4) where each fn,m,l , m ≥ 1 function is a vector-valued function whose entries are convex in the argument xn. Further, assume that the fn, 0,l functions are all strictly convex, perhaps by adding a term 12 δ|| xn|| 2 to each function for a small δ > 0. The parameters cn,l and bm are vectors, while parameters An,m,l are matrices. Not all terms in the problem need to appear, since we can always choose certain functions fn,m,l to be identically zero. By separable parameters , we refer to the fact that the parameters of the problem appear separately in individual terms in the sums in the problem. i.e., no single term depends on a large set of parameters - a fact that is crucial for the optimization method we propose in Section 4 to work with low complexity. Denote by || p|| 0 as the dimensionality of a parameter p. For purposes of complex-ity estimation, we assume that the dimensionalities of these parameters are bounded as 
+
+|| cn,l || 0 ≤ || xn|| 0 and || An,m,l || 0 ≤ || xn|| 0 × || fn,m,l || 0, with || bm|| 0 = || fn,m,l || 0. Section 2.2 describes a few sample optimization problems that have separable parameters. 
+
+## 2.1 Discussion 
+
+The optimal solution x∗
+
+> n
+
+, ∀n to the problem can be found by using standard convex solvers. Clearly, this solution depends on all the parameters cn,l , bm and An,m,l . For example, convex duality can be used to form the Lagrangian, 
+
+L =
+
+> N
+
+X
+
+> n=1
+> L
+
+X
+
+> l=1
+
+fn, 0,l (xn; cn,l ) + 
+
+> M
+
+X
+
+> m=1
+
+λTm(
+
+> N
+
+X
+
+> n=1
+> L
+
+X
+
+> l=1
+
+fn,m,l (xn; An,m,l ) − bm)=
+
+> N
+
+X
+
+> n=1
+> L
+
+X
+
+> l=1
+
+fn, 0,l (xn; cn,l )+ 
+
+> M
+
+X
+
+> m=1
+
+λTm(
+
+> L
+
+X
+
+> l=1
+
+fn,m,l (xn; An,m,l ) − 1
+
+N bm)
+
+!
+
+, (5) where λm ≥ 0, m = 1 , . . . , M are the dual variables. The dual function is then obtained by minimizing L over all primal variables xn, resulting in values x†
+
+> n
+
+, which are optimal 3for the given values of the dual variables λm. The optimal solution x∗ 
+
+> n
+
+of problem (3) is then obtained by maximizing the dual function over the dual variables λm, and setting the resulting x† 
+
+> n
+
+corresponding to the optimized dual variables as x∗
+
+> n
+
+.Convex problems which are separable in variables (or where the Lagrangian is separa-ble) are related to but not the same 1 as problem (3). The former problems are popular due to reduced computational burden on the optimizer. In particular, (5) shows that the mini-mization over L reduces to N separate minimizations of the partial sums Ln (the term in the parenthesis in (5)) over individual xn to obtain the x†
+
+> n
+
+, which is computationally cheaper to implement than minimizing simultaneously over all primal variables. However, from the perspective of using a neural network co-processor, each such optimal x† 
+
+> n
+
+is a function of parameters cn,l , λm and An,m,l for that particular value of n. So, a function that maps from the parameter space to x† 
+
+> n
+
+(given those parameter values) will be a high-dimensional func-tion, depending on up to PLl=1 || cn,l || 0 + PMm=1 || λm|| 0 + PMm=1 
+
+PLl=1 || An,m,l || 0 parameters. Due to the high complexity of the required neural network to represent such a function, the co-processor idea described in Section 1 is not directly applicable to the problem, as formulated above, except in the trivial case where the same function fn,m,l and the same parameters cn,l , A n,m,l occur for all m, l for a given n. Section 3 shows a simple trick to allow the use of low-dimensional neural networks to solve (3), which is the primary contribution of this paper. 
+
+## 2.2 Examples 
+
+We list a few optimization problems of interest in real time devices that fall within the formulation (3). 
+
+• Power Control for interference mitigation : Assume that there are N nearby cellular users, each with an adaptable transmit power Pn, n = 1 , 2, . . . , N , transmitting to their respective base stations [7], where the channel power gain between transmitter n and base station m is sn,m , and thermal noise is N0. The signals must be received with a Signal-to-Interference-Noise-Ratio (SINR) of γn for transmitter n. The problem is to minimize a cost based on an arbitrary convex cost functions fn, 0 as follows. min  
+
+> Pn,∀nN
+
+X
+
+> n=1
+
+fn, 0(Pn; cn) s.t. 
+
+N0 + X
+
+> n̸=m
+
+Pnsn,m ≤ 1
+
+γm
+
+Pmsm,m , m = 1 , 2, . . . , N. 
+
+To compare against (3), here N = M and L = 1, so l ≡ 1. The objective function is fn, 0,l = fn, 0(Pn; cn) and the constraint function for m ≥ 1 is fn,m,l = PnAn,m , where 
+
+An,m = sn,m if n̸ = m, and Am,m = − 1 
+
+> γm
+
+sm,m . For future reference, we note that the 
+
+x0-Predictor and x1-Predictor neural networks described in Section 4 only use 2 and 3 scalar features as input, respectively, here.    
+
+> 1In problems that are separable in variables , a large number of parameters may appear in individual terms, which is not allowed in our Separable parameters problem. On the other hand, our problem does not require separability of variables, as seen by the Lterms sharing the same variable.
+
+4• Robust Beam-forming : Assume that a cellular user 0 equipped with a K-antenna array [8] is receiving a signal from its base station at an angle θ0, at received power 
+
+P0. There are L interferers also being received, with interferer l arriving at angle θl and received power Pl. Assume that the interferer angles are measured with an error bound of ±ε, since presumably they may be located in other cells. The robust beam-forming problem is to choose the K dimensional array filter vector w, so as to maximize the array gain towards the user 0 signal, while keeping the worst case received interference plus noise within a bound of unity. min 
+
+> w
+
+ −Real[ wH h(θ0)]  + 12δ|| w|| 2 s.t. 
+
+> L
+
+X
+
+> l=1
+
+
+
+max  
+
+> |e|≤ ε
+
+|wH h(θl + e)|2
+
+ Pl
+
+N0
+
++ || w|| 2 ≤ 1
+
+N0
+
+.
+
+Here, h(θ) is the known antenna array response to a signal arriving at angle θ (which depends on the geometry of the array), N0 is the noise power, and ( ·)H denotes Hermi-tian. To compare against (3), here N = M = 1, L is number of interferers 2. fn, 0,l =
+
+− 1 
+
+> L
+
+Real[ wlH h(θ0)] + 12L δ|| w|| 2 and fn, 1,l =  max |e|≤ ε |wlH h(θl + e)|2 Pl 
+
+> N0
+
++ 1 
+
+> L
+
+|| wl|| 2. Look-ing ahead in this case, the x1-Predictor neural network described in Section 4 uses the features θl, λ Pl 
+
+> N0
+
+, λL , ∆νl, which can be problematic due to the potentially high-dimensional ∆νl. So, a second use of the formulation is required to minimize Ln, 1,l in (13), using the fact that Ln, 1,l here is the maximum of quadratic functions. 
+
+• Generalized waterfilling under uncertainty : In an OFDMA system, each user is al-lotted separate resources (called ‘resource blocks’ in 5G cellular) in downlink transmission, where each resource is a set of carriers and/or an antenna beam [9] over one subframe. The transmit power in each resource can be adapted by the base station based on the channel power gain s in that resource, to minimize a convex function of these powers under a desired user bit rate constraint. However, s is expected to be erroneous due to channel state information (CSI) feedback based on noisy pilot reception. (For example, in 5G, CSI-Reference Signal [10] is transmitted in a few sub-carriers, from which CSI of all sub-carriers is estimated using least squares estimation, using the fact that the channel impulse response is time-limited.) This can be approximately modeled as below. Suppose there are N resources allotted to a user, with nominal power gains sn for the nth resource (as reported by the CSI based on measured reference signals θ), and the base station will allot a transmit power Pn to that resource. Due to erroneous measurement, the actual gain over that subframe are random variables (˜ s1, . . . , ˜sN ) ∈ S (θ). Here, S(θ) is the set of gains close to the nominal gains, but allowing for uncertainty in measured θ. We dis-cretize S(θ) and write it as the finite set of sequences {(s1,m , . . . , s N,m ), m = 1 , . . . , M }.      
+
+> 2While the above problem is stated in terms of complex variables, we can easily reduce it to a real-valued problem by defining variable xas (Real[ wT],Imag[ wT]) T. It is a convex problem because the maximum of convex quadratic functions is convex.
+
+5Then, the cost minimization problem under a worst case desired bit rate constraint C is, min  
+
+> 0≤P1,...,P N≤Pmax
+> N
+
+X
+
+> n=1
+
+fn, 0(Pn; cn) s.t. (6) min  
+
+> (˜ s1,..., ˜sN)∈S (θ)
+> N
+
+X
+
+> n=1
+
+r(Pn; ˜ sn)
+
+!
+
+≥ C. (7) Here, the convex cost functions fn, 0 are arbitrary, such as Pn + cnP 2 
+
+> n
+
+if high power is costly for certain sub-carriers (perhaps due to inter-cell interference considerations). The concave bit rate function r(Pn; ˜ sn) is typically log 2(1 + ˜ sn Pn 
+
+> N0
+
+γc), with γc being the loss due to an imperfect channel code. This problem is a generalization of the standard ‘waterfilling’ problem in communications, since it allows arbitrary costs and models gain uncertainty. The problem can be converted to the form (3) by writing the constraints as − PNn=1 r(Pn; sn,m ) ≤ − C, m = 1 , . . . , M . So, comparing this problem against (3), here M = |S| and L = 1. fn, 0,l = fn, 0(Pn; cn) and for m ≥ 1, fn,m,l = −r(Pn; sn,m ). The 
+
+x0-Predictor and x1-Predictor neural networks described in Section 4 only use 2 and 3 scalar features as input, respectively, here. 
+
+# 3 Duality using Multiple copies 
+
+For the Separable parameters problem (3), let’s reformulate the problem as the following equivalent problem. Make L × (M + 1) additional copies xn,m,l , m = 0 , 1, . . . , M, l =1, 2, . . . , L of each variable xn. In the subsequent discussion, the phrase ∀m is short for 
+
+m = 0 , 1, . . . , M . Then, the problem (3) is equivalent to, min  
+
+> xn,∀n
+> xn,m,l ,∀n,m,l N
+
+X
+
+> n=1
+> L
+
+X
+
+> l=1
+
+fn, 0,l (xn, 0,l ; cn,l ) +
+
+ρ
+
+2
+
+> N
+
+X
+
+> n=1
+> M
+
+X
+
+> m=0
+> L
+
+X
+
+> l=1
+
+|| xn,m,l − xn|| 2 s.t. (8) 
+
+> N
+
+X
+
+> n=1
+> L
+
+X
+
+> l=1
+
+fn,m,l (xn,m,l ; An,m,l ) ≤ bm, m = 1 , . . . , M, (9) 
+
+xn,m,l = xn, ∀n, m, l. (10) Here, the equalities (10) ensure that the copies xn,m,l are all equal to xn for each n.Superfluous quadratic terms weighted by fixed ρ > 0 are added in the objective, because we will use the well known Alternating Direction Method of Multipliers (ADMM) [11] to optimize the obtained dual problem, since it is generally more stable than the simpler Dual Ascent method. For this purpose, we calculate the Lagrangian of this reformulated 6problem, 
+
+L =
+
+> N
+
+X
+
+> n=1
+> M
+
+X
+
+> m=0
+> L
+
+X
+
+> l=1
+
+Ln,m,l (xn,m,l ) −
+
+> M
+
+X
+
+> m=1
+
+λTmbm
+
+− ρ
+
+2
+
+> N
+
+X
+
+> n=1
+> M
+
+X
+
+> m=0
+> L
+
+X
+
+> l=1
+
+|| νn,m,l || 2, where (11) 
+
+Ln, 0,l (xn, 0,l ) .
+
+= fn, 0,l (xn, 0,l ; cn,l )+ ρ
+
+2 || xn, 0,l −xn +νn, 0,l || 2,
+
+Ln,m,l (xn,m,l ) .
+
+= λTmfn,m,l (xn,m,l ; An,m,l )+ 
+
+ρ
+
+2 || xn,m,l − xn + νn,m,l || 2, m = 1 , 2, . . . , M. (12) Here, each Ln,m,l is a partial-Lagrangian function over a single variable xn,m,l but also over the variable xn. The ρνn,m,l , which are of the same dimensionality as xn,m,l , are the (scaled) dual variables corresponding to (10). Note that if the superfluous quadratic terms in the objective (8) are dispensed with, the Lagrangian L in (11) becomes separable (since the coupling variables xn disappear); a standard primal-dual iterative update in this case reduces to the classical Dual Ascent, which is however slow to converge. We thus retain the quadratic terms, to essentially form the augmented Lagrangian, leading to an ADMM update rule (described below), which is known to be more stable and achieve faster convergence. The idea of ADMM is to handle the coupling variables xn by minimizing L in (11) (which includes the quadratic) in two steps. In the first step, L is minimized only over the xn,m,l variables, assuming that xn
+
+variables and the dual variables are fixed. For this step, (11) shows the L is separable in the variables xn,m,l , so that N × (M + 1) × L parallel minimizations can be done to obtain, 
+
+x†
+
+> n,m,l
+
+.
+
+= argmin 
+
+> xn,m,l
+
+Ln,m,l (xn,m,l ), ∀n, m, l. (13) 
+
+x† 
+
+> n,m,l
+
+is unique because the quadratic terms in (12) are strictly convex, since ρ > 0 (which also explains the stability of ADMM). Define ∆ νn,m,l = νn,m,l −xn. Note that x† 
+
+> n, 0,l
+
+depends only on the values of cn,l , ∆νn, 0,l , while for m ≥ 1, x† 
+
+> n,m,l
+
+depends only on the values of 
+
+An,m,l , λm, ∆νn,m,l . In the second step, the minimization over each xn can be done easily because it only appears in the quadratic terms, resulting in the unique closed-form optimal value, 
+
+x† 
+
+> n
+
+= 1(M + 1) L
+
+> M
+
+X
+
+> m=0
+> L
+
+X
+
+> l=1
+
+(x† 
+
+> n,m,l
+
++ νn,m,l ), ∀n. (14) With x† 
+
+> n,m,l
+
+and x† 
+
+> n
+
+obtained, the ADMM increases the dual function using the following 7dual variable updates for an appropriate step size μ > 0. 
+
+λm ← max 0, λm + μ(
+
+> N
+
+X
+
+> n=1
+> L
+
+X
+
+> l=1
+
+fn,m,l (x†
+
+> n,m,l
+
+; An,m,l ) − bm)
+
+
+
+(15) 
+
+νn,m,l ← νn,m,l +
+
+
+
+x† 
+
+> n,m,l
+
+− x†
+
+> n
+
+
+
+. (16) The values x† 
+
+> n
+
+calculated in (14) are used as the known values of xn for the first step in the next iteration. The algorithm is initialized with an appropriate initial choice of xn and dual variables λm, νn,m,l . After the ADMM dual variable updates converge to the optimal values λ∗
+
+> m
+
+, ν∗
+
+> n,m,l
+
+, standard strong duality arguments show that the corresponding optimal 
+
+x† 
+
+> n
+
+is the optimal solution x∗ 
+
+> n
+
+of the problem (8), and thus, of the Separable parameters problem (3). 
+
+# 4 Neural Network aided optimization 
+
+The ADMM algorithm described in Section 3 suggests the following two phase method to solve the main problem (3), by solving the equivalent problem (8) using Neural network representations .
+
+Phase I (Offline) : This offline phase has the following steps, which can be done using large scale computing such as cloud computing, since it is not limited to using the computing power of the real time device. i) Sample the parameters cn,l , A n,m,l , λm, ∆νn,m,l over an appropriate range that covers practical use cases of the problem. For each sample ( c, A, λ, ∆ν), solve the partial Lagrangian problems (13), to obtain the optimal x† 
+
+> n,m,l
+
+and then evaluate the corre-sponding function f †
+
+> n,m,l
+
+.
+
+= fn,m,l (x†
+
+> n,m,l
+
+), for each n, m, l . In the terminology of ma-chine learning, this produces a dataset of potentially millions of data points; each with 
+
+features (c, A, λ, ∆ν) and targets x† 
+
+> n,m,l
+
+or f †
+
+> n,m,l
+
+.ii) From Section 3, it is known that x†
+
+> n, 0,l
+
+, f † 
+
+> n, 0,l
+
+are functions of c, ∆ν and for m ≥ 1, 
+
+x†
+
+> n,m,l
+
+, f † 
+
+> n,m,l
+
+are functions of A, λ, ∆ν. So, using the above dataset, we train deep neural networks with sufficient number of layers and neurons per layer, using inputs (features) (c, ∆ν) to predict x†
+
+> n, 0,l
+
+, f † 
+
+> n, 0,l
+
+and separate deep networks 3 using inputs ( A, λ, ∆ν) to predict x†
+
+> n,m,l
+
+, f †
+
+> n,m,l
+
+, m ≥ 1. We assume that these x† and f † are predicted by separate networks, although a single network predicting both is also possible. In several use cases, such as the problems described in Section 2.2, the objective func-tions are identical, i.e., fn, 0,l = f0, ∀n, l . Similarly, the constraint functions are identi-cal, fn,m,l = f1, ∀m ≥ 1, n, l . For ease of exposition, we will restrict discussion below to such cases only, although the method is applicable to the general case also. In such cases, we only need to obtain neural networks for two cases; m = 0 and m = 1,       
+
+> 3Note that the neural networks are meant to represent the given functions x†,f†, by being trained to
+> predict those functions.
+
+8which we will call x0-Predictor , x1-Predictor , f0-Predictor , f1-Predictor to represent 
+
+x†
+
+> n, 0,l
+
+, x†
+
+> n, 1,l
+
+, f †
+
+> n, 0,l
+
+, f †
+
+> n, 1,l
+
+, respectively. 
+
+Phase II (Online ): This phase is run by the real time device solving the optimization problem (8) in realtime. Given the observed parameters cn,l , A n,m,l , bm in the realtime problem, the ADMM algorithm (15), (16) is run, beginning with appropriate initial values of the dual variables λm, νn,m,l . (15) requires calculation of fn,m,l (x†
+
+> n,m,l
+
+; An,m,l ) for each 
+
+m ≥ 1, n, l , which can be directly obtained as the prediction of neural network f1-Predictor .We also need to calculate x†
+
+> n,m,l
+
+, m ≥ 0, n, l , both, for the update (16) as well as to calculate 
+
+x† 
+
+> n
+
+using the averaging (14). This can be directly obtained as the prediction of neural networks x0-Predictor and x1-Predictor for the parameters corresponding to each n, m, l .After ADMM converges, the final value of x† 
+
+> n
+
+is the solution to the main problem (3). The 
+
+f0-Predictor is only needed to calculate the value of the optimized objective. Notice that the complexity of the critical Online Phase II lies in calculation of the 
+
+x†, f † optimal values, which has been offloaded to a dedicated neural network co-processor in our framework. This leaves only the simple addition and multiplication operations of the ADMM (15), (16) and of the averaging step (14) (with 1(M +1) L in the last part being pre-computed and stored in a table for various values of M, L ). This dispenses of the need for a specialized numerical computation library carefully designed for solving optimization problems, and offloads the complex issues of ensuring convergence of iterative minimization algorithms, such as enforcing domain restrictions x ∈ X or choosing the correct step sizes, to the offline solution, which can be extensively tested to ensure that optimal solutions to (13) are indeed being obtained in forming the dataset. Further, given the regular architecture of deep neural networks, we conjecture that it may be cheaper to use such a co-processor, instead of high-speed Digital Signal Processors capable of handling arbitrary computations, although we acknowledge that the benefit of this substitution needs to be carefully verified by a comprehensive comparison on various axes, such as cost, energy, speed, etc. Note that the neural networks used in realtime for inference (i.e., calculating 
+
+x†, f †) are only trained offline. Therefore, the co-processer, which only runs the neural network in evaluation mode, does not need to be powerful, unlike graphical processor units (GPUs) that are typically used to train such neural networks. To compare the above approach against the more straight-forward approach of using a neural network to directly represent the optimal solution x∗ = x∗(cn,l , A n,m,l , bm∀n, m, l )of (3), notice that the latter neural network, which we refer to as One shot network ,must predict based on an input (feature) of dimensionality PLl=1 || cn,l || 0 + PMm=1 || bm|| 0 +
+
+PMm=1 
+
+PLl=1 || An,m,l || 0, which will likely need a prohibitively complex neural network due to the high input dimensionality. On the other hand, the neural networks in Online Phase II of our formulation has input dimensionality upper bounded by || cn,l || 0 + || An,m,l || 0 +
+
+|| λm|| 0 + || νn,m,l || 0, which will typically be much lower. As an example, in (3), if there are N = 10 variables xn, each of which is a scalar, M = 10 inequalities of scalar valued functions f , and L = 10, the One shot neural network must predict based on an input of 120 dimensions, while the x0-Predictor and x1-Predictor neural networks have an input of only 2 and 3 dimensions, respectively (which is the same for the two f-Predictors .) Finally, it is also clear that the learned neural network in the One shot case requires making assumptions 9about the critical constants M and L (for example, number of transmitters in the Power Control scenario, or number of interferers in the Beam-forming scenario in Section 2.2), with a different network being learned for different values of M, L . On the other hand, the neural networks in the proposed method can be learned without knowing these details about the deployment scenario. 
+
+# 5 Simulations 
+
+In Section 4, we proposed a two phase method for solving the class of separable parameters problems: An Offline Phase I followed by an Online Phase II based on ADMM. The purpose of this section is to illustrate both these phases, using the motivating problems described in Section 2.2. We first present simulation results to illustrate the optimal solution obtained by Phase II (implementing steps (14), (15), (16)) in these problems, assuming that the precise optimal values x†, f † are available. (So, in this part, we do not use neural network representation.) This presentation is for to two reasons. Firstly, since these motivating problems allow more complex variations of classical problems (such as beamforming and waterfilling), these results will show the value of these generalized problems. Secondly, these results will also show that Phase II converges well, despite the multiple copies xn,m,l made of the variables, and even though its steps only use additions and multiplications, and don’t rely on extensive numerical computation libraries. Figure 1 shows the typical convergence of the ADMM in Phase II; specifically for the Power control problem of Section 2.2. All 10 users had equal SINR threshold γn = 10 dB in this example, with N0 = 0 .1. The figure shows that the terminal SIN R of each user does meet that threshold, and further that the (M + 1) L copies x0,m,l for n = 0 do eventually become equal. Figure 2 shows the antenna array pattern obtained due to the Robust beam-forming of Section 2.2 with a 15-antenna linear array, 4 interferers with 2 o angle uncertainties and equal powers Pl. The worst-case SIN R obtained by the robust beam, given the angle uncertainty about the interferers (shown as red bars), is 32 dB, which is 6.5 dB higher than the standard SIN R maximization problem without accounting for angle uncertainty (denoted as ‘standard beam’), that can be calculated by solving a generalized eigenvalue problem. A closer look at the figure reveals that the robust beamformer does not put a null at the nominal location of the interferers (to account for the angle uncertainty), allowing it flexibility to increase the main lobe. Turning now to the Offline Phase I of the proposed method, our results are currently preliminary. Note that this offline phase assumes that sufficient computing power is avail-able, so that the learned neural networks can represent the x†, f † optimal values accurately. As an example, consider the Generalized waterfilling problem (5) of Section 2.2 with 64 sub-carriers and 4 pilots. A quadratic objective function fn, 0(x) = x + cx 2 with c = 2 .5 × 10 −4
+
+was chosen here, to penalize any one sub-carrier receiving too much power allocation, and log-capacity expression was used for r(·) with γc = 0 .5, N 0 = 0 .1. The two x† predic-tors used 20 layer deep neural networks of width 40 with RELU activation and an input normalization layer, for a total of 33000 parameters, while the two f † predictors had 20 layers of width 20 for a total of 8500 parameters. These were trained using an off-the-shelf GPU (GeForce RTX 3060) in a work computer using 10 6 data points. Figures 3 and 4 show a scatter plot of the predictions (represented by hats) made by the x1-Predictor and 
+
+f1-Predictor neural networks versus the true values. The f1-Predictor is more accurate 10 here (Mean Squared Error of 0 .04 versus 0 .01), even though it uses fewer parameters, and despite each f † technically being a function of the corresponding x†.For this same problem, Figure 5 shows the optimization result of the proposed method using both phases; the Offline phase learns the neural network representations first, and then the Online phase runs ADMM to optimize (6). The figure shows that the inverse of channel gains of different sub-carriers are uncertain, due to noise in the measured sub-carrier gains of the pilot tones. The figure also shows that the optimal solution obtained by the proposed method (called ‘robust waterfilling (Neural network)’ in the plot) selects powers for different sub-carriers that are higher for sub-carriers with higher channel gains, as expected. For comparison, a water-filling type solution designed for the worst case is also shown (marked ‘pessimistic waterfilling’), which assumes the worst case sub-carrier gain among allowed values. (It is not exactly water-filling because the objective function here is quadratic.) This water-filling solution is worse (incurs higher cost of 2030 versus 1319) compared to the robust method. This is also clear by noticing that it uses high powers for many sub-carriers compared to the robust method, and thus, is penalized more by the quadratic cost. Finally, it can be seen that running Phase II with exact values of x†, f †
+
+available gives slightly improved result (see plot marked ‘Exact’) with a cost of 1286. The gap can be closed by using larger neural networks, or perhaps by improving training of these networks. 
+
+# 6 Conclusions 
+
+In this paper, we proposed a two phase method based on a reformulation of ADMM, to efficiently solve certain parameter-separable parametric constrained optimization problems. The proposed two phase approach combines neural network based function predictors that are trained offline with relatively lightweight online computing, to obtain solutions of in-stances of the parametric optimization, as parameters vary, on resource limited hardware. Assuming accurate function predictors are available, numerical illustrations show the effi-cacy of the proposed approach with relatively lightweight runtime computing requirements for a number of motivating problems that are of independent interest. The overall accuracy of the two-phase procedure is naturally limited by the accuracy of the function approxi-mators used, which in turn depends on a number of factors in their offline training phase, e.g., size of the training data and the architecture of the neural network being used. Future work will investigate efficient design of such neural network predictors. 
+
+# 7 Acknowledgments 
+
+This material is based upon work supported by the US National Science Foundation under Grant 1422193. 
+
+# References 
+
+[1] Haykin, S. Neural networks: a comprehensive foundation. (Prentice Hall PTR,1998) [2] Telgarsky, M. Benefits of depth in neural networks. Conference On Learning Theory .pp. 1517-1539 (2016) 11 [3] Liang, S. & Srikant, R. Why deep neural networks for function approximation?. ArXiv Preprint ArXiv:1610.04161 . (2016) [4] Still, G. Lectures on parametric optimization: An introduction. Optimization Online .pp. 2 (2018) [5] Boyd, S. & Vandenberghe, L. Convex optimization. (Cambridge university press,2004) [6] Rheinboldt, W. Methods for solving systems of nonlinear equations. (SIAM,1998). [7] Biton E., Cohen A., Reina G., Gurewitz O., Distributed Inter-Cell Interference Miti-gation Via Joint Scheduling and Power Control Under Noise Rise Constraints, IEEE Transactions on Wireless Communications, vol. 13, June 2014. [8] Chen S., Sun S., Gao Q., Su X., Adaptive Beamforming in TDD-Based Mobile Com-munication Systems: State of the Art and 5G Research Directions, IEEE Wireless Communications, vol. 23, December 2016. [9] Shafi, B., et al, 5G: A Tutorial Overview of Standards, Trials, Challenges, Deployment, and Practice, IEEE Journal on Selected Areas in Communications, vol. 35, June 2017. [10] Parkvall, S., et. al, 5G NR Release 16: Start of the 5G Evolution, IEEE Communica-tions Standards Magazine, vol. 4 December 2020. [11] Boyd, S., Parikh, N., Chu, E., Peleato, B., Eckstein, J. & Others Distributed opti-mization and statistical learning via the alternating direction method of multipliers. 
+
+Foundations And Trends ® In Machine Learning . 3, 1-122 (2011) 12 0 1000 2000 3000 4000 5000 
+
+iterations 
+
+10 0
+
+10 1
+
+10 2
+
+> λm
+
+0 1000 2000 3000 4000 5000 
+
+iterations 
+
+10 8
+
+10 6
+
+10 4
+
+10 2
+
+10 0
+
+> |P †
+> 0, m  − P †
+> 0 |
+
+0 1000 2000 3000 4000 5000 
+
+iterations 
+
+10 
+
+5
+
+0
+
+5
+
+10 
+
+> SINR n in dB
+
+Figure 1: Convergence of (left to right): (a) λm, (b) ( M + 1) copies P † 
+
+> 0,m
+
+around P † 
+
+> 0
+
+, and (c) SIN R s. 13 50 0 50 
+
+angle in degrees 
+
+20 
+
+10 
+
+0
+
+10 
+
+20 
+
+30 
+
+40 
+
+> Antenna array gain in dB  robust beam
+> standard beam
+> main user (0)
+> interferers
+
+Figure 2: Antenna array pattern. 4 2 0 2 4
+
+log( x† 
+
+> n, 1, l
+
+)
+
+4
+
+2
+
+0
+
+2
+
+4
+
+> log( ̂ x†
+> n,  1, l )
+
+Figure 3: x1-Predictor accuracy. 10 8 6 4 2 0
+
+f † 
+
+> n, 1, l
+
+10 
+
+8
+
+6
+
+4
+
+2
+
+0̂
+
+> f †
+> n,  1, l
+
+Figure 4: f1-Predictor accuracy. 14 0 10 20 30 40 50 60 
+
+# Sub-carrier n
+
+# 0
+
+# 20 
+
+# 40 
+
+> Power in dB
+
+Inverse of sub-carrier gains sn, m (one line for each m)
+
+Power Pn with robust waterfilling (Exact) 
+
+Power Pn with robust waterfilling (Neural network) 
+
+Power Pn with pessimistic waterfilling Figure 5: Optimal water-filling under uncertainty. 15

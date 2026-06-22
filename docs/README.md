@@ -6,28 +6,34 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-21
-- 运行时间：2026-06-21 19:08:52 UTC
+- 最新运行日期：2026-06-22
+- 运行时间：2026-06-22 20:02:27 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：1
+- 本次总论文数：4
+- 精读区：3
 - 速读区：1
 
 ### 今日简报（AI）
-今日精读一篇神经网络组合优化可解释性研究，速读一篇结构化推理方法。
-最值得关注的是使用演化编程瓶颈提升组合优化可解释性（评分8.0），以及LLM的吉布斯采样结构化推理。
-普通读者可优先了解如何将黑箱优化模型转化为可解析的程序化表达。
-- 详情：[/202606/21/README](/202606/21/README)
+今天聚焦网络规划优化与随机组合优化的新框架，并关注LLM在科学方程生成中的应用。
+最值得精读的两篇8分论文分别是《OmniPlan》的及时近最优网络规划，以及《N(CO)^2》解决带机会约束的随机定向问题。
+建议优先精读这两篇优化方向论文，速读的《SciText2Eq》可作为LLM科学应用拓展参考。
+- 详情：[/202606/22/README](/202606/22/README)
 
 ### 精读区论文标签
-1. [Interpreting Neural Combinatorial Optimization via Evolving Programmatic Bottlenecks](/202606/21/2606.19741v1-interpreting-neural-combinatorial-optimization-via-evolving-programmatic-bottlenecks)  
+1. [OmniPlan: An Adaptive Framework for Timely and Near-Optimal Network Planning Optimization](/202606/22/2606.18105v1-omniplan-an-adaptive-framework-for-timely-and-near-optimal-network-planning-optimization)  
    标签：评分：8.0/10、query:llm-opt-code
-   evidence：利用大语言模型解释组合优化策略，生成可读程序
+   evidence：使用MIP和DRL的网络规划优化
+2. [N(CO)$^2$: Neural Combinatorial Optimization with Chance Constraints to Solve Stochastic Orienteering](/202606/22/2606.18514v1-nco2-neural-combinatorial-optimization-with-chance-constraints-to-solve-stochastic-orienteering)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：使用神经组合优化求解随机定向问题，属于自动生成优化解决方案
+3. [An Optimization Framework for Certain Separable Problems using Neural Networks](/202606/22/2606.19720v1-an-optimization-framework-for-certain-separable-problems-using-neural-networks)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：针对可分离问题的运筹优化建模
 
 ### 速读区论文标签
-1. [Structured Inference with Large Language Gibbs](/202606/21/2606.19264v1-structured-inference-with-large-language-gibbs)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：利用LLM条件分布进行迭代重采样，类似于约束满足求解
+1. [SciText2Eq: Assessing LLMs for Explainable Equation Generation for Scientific Creativity](/202606/22/2606.16003v1-scitext2eq-assessing-llms-for-explainable-equation-generation-for-scientific-creativity)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：LLM从科学文本生成数学方程，可应用于运筹优化问题建模
 
 
 <div class="dpr-home-promo-card">

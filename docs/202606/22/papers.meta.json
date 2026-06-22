@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-22",
+  "date": "2026-06-22",
+  "generated_at": "2026-06-22T20:02:37",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/22/2606.18105v1-omniplan-an-adaptive-framework-for-timely-and-near-optimal-network-planning-optimization",
+      "section": "deep",
+      "title_en": "OmniPlan: An Adaptive Framework for Timely and Near-Optimal Network Planning Optimization",
+      "authors": "Longlong Zhu, Jiashuo Yu, Zedi Chen, Yuhan Wu, Zhifan Jiang, Yuchen Xian, Yimeng Liu, Jiajie Su, Shaopeng Zhou, Xingyuan Li, Hongyan Liu, Xuan Liu, Dong Zhang, Chunming Wu, Xiang Chen",
+      "date": "2026-06-16",
+      "pdf": "https://arxiv.org/pdf/2606.18105v1",
+      "score": "8.0",
+      "evidence": "使用MIP和DRL的网络规划优化",
+      "tldr": "网络规划优化面临多样用户意图与复杂约束，现有框架难以平衡执行时间和最优性。OmniPlan提出自适应框架，利用大语言模型解析自然语言意图为量化偏好，通过混合专家架构动态选择MIP求解器、启发式算法或深度强化学习模型，并结合DRL模块微调优化目标。在分布式机器学习推理卸载任务中，延迟降低97.8%，资源消耗降低11.5%，实现了及时性与接近最优性的统一。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Network planning optimization is a fundamental problem across diverse domains, including transportation systems, communication networks, and power grids. It requires simultaneous optimization of multiple competing objectives under complex constraints. Existing network planning optimization frameworks rely on mixed integer programming (MIP) solvers, heuristics, and deep reinforcement learning (DRL) models to compute planning decisions. However, they lack effective adaptability to diverse and dynamic user intents, thus leading to the trade-off between execution time and optimality. In this paper, we propose OmniPlan, an adaptive framework that achieves both timeliness and near-optimality in network planning optimization. To achieve the adaptability lacking in existing solutions, OmniPlan employs a large language model (LLM)-based interpreter to convert heterogeneous natural-language intents into a unified and quantifiable user-preference vector. Then it employs a mixture-of-experts architecture that integrates MIP solvers, heuristics, and DRL models as specialized experts, where OmniPlan adapts to diverse intents by dynamically selecting timely and near-optimal experts. Finally, it incorporates a DRL-based expert configuration module that fine-tunes optimization objective weights to align planning decisions with user-specific preferences. We evaluate OmniPlan with a representative real-world workload, i.e., distributed machine learning (ML), where we leverage OmniPlan to offload a wide spectrum of ML inference tasks, e.g., decision trees, SVM, naive Bayes, XGBoost, and random forests, onto a network of hardware devices. Our experiments on a real-world testbed indicate that OmniPlan achieves near-optimal and low-execution-time offloading for real-world ML inference tasks, reducing latency by up to 97.8\\% and network device resource consumption by up to 11.5\\%.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/22/2606.18514v1-nco2-neural-combinatorial-optimization-with-chance-constraints-to-solve-stochastic-orienteering",
+      "section": "deep",
+      "title_en": "N(CO)$^2$: Neural Combinatorial Optimization with Chance Constraints to Solve Stochastic Orienteering",
+      "authors": "Anas Saeed, Marcos Abel Zuzuárregui, Stefano Carpin",
+      "date": "2026-06-16",
+      "pdf": "https://arxiv.org/pdf/2606.18514v1",
+      "score": "8.0",
+      "evidence": "使用神经组合优化求解随机定向问题，属于自动生成优化解决方案",
+      "tldr": "神经组合优化多关注确定性场景，而随机组合优化问题如随机定向问题（SOP）缺乏高效求解方法。本文提出N(CO)^2框架，将强化学习与机会约束结合，在不确定性下优化路径选择。实验表明该方法泛化能力强，在多种SOP实例上达到与先进混合整数线性规划（MILP）相当的竞争性能。该工作减少了人工启发式设计负担，实现了自适应高效决策。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Neural combinatorial optimization (NCO) offers a promising alternative to traditional heuristic-based methods for solving complex graph optimization problems by proposing to learn heuristics through data. This class of problems frequently arises in automation, as it can be used to model a variety of applications. While NCO has been extensively studied for deterministic combinatorial optimization problems, there are only a few works that aim to solve stochastic combinatorial optimization problems. In this work, we present N(CO)$^2$: Neural Combinatorial Optimization with Chance cOnstraints to solve the Stochastic Orienteering Problem (SOP) without the use of hand-crafted heuristics. By integrating a reinforcement learning (RL) framework, the model optimizes path selection under uncertainty, effectively balancing exploration and exploitation. Empirical results demonstrate that our method generalizes well across diverse SOP instances, achieving competitive performance compared to the state-of-the-art mixed-integer linear program (MILP) for the task. The proposed approach reduces human effort in heuristic design while enabling adaptive and efficient decision-making in uncertain environments.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/22/2606.19720v1-an-optimization-framework-for-certain-separable-problems-using-neural-networks",
+      "section": "deep",
+      "title_en": "An Optimization Framework for Certain Separable Problems using Neural Networks",
+      "authors": "Rohit Negi, Soummya Kar",
+      "date": "2026-06-18",
+      "pdf": "https://arxiv.org/pdf/2606.19720v1",
+      "score": "8.0",
+      "evidence": "针对可分离问题的运筹优化建模",
+      "tldr": "针对实时应用中资源受限设备上的参数化可分约束优化问题，提出一种离线学习与在线处理相结合的两阶段策略。利用问题可分结构，开发基于ADMM的迭代求解过程，并借助离线训练的函数表示降低在线计算复杂度。实验表明，即使参数变化，该方法仍能通过轻量在线计算和神经网络协处理器高效求解，显著提升了资源受限设备上的实时优化能力。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "This paper studies a class of parametric constrained optimization problems that are motivated by applications in real time applications. Under a parameter-separable problem structure that naturally arises in these applications, the paper proposes a two phase strategy, based on offline learning and online processing, to address these optimization problems on resource limited devices. Specifically, by exploiting the separable structure, an iterative Alternating Direction Method of Multipliers (ADMM) based solution procedure is developed that enables the use of certain learning based function representations (learned offline but readily computable online) to reduce the overall online on-device implementation complexity. By carefully crafting the ADMM procedure, it is shown that even as the parameters vary, the corresponding instances of the parametric optimization problem may be solved by lightweight online computations in the device with the assistance of a neural network co-processor.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/22/2606.16003v1-scitext2eq-assessing-llms-for-explainable-equation-generation-for-scientific-creativity",
+      "section": "quick",
+      "title_en": "SciText2Eq: Assessing LLMs for Explainable Equation Generation for Scientific Creativity",
+      "authors": "Yifan Mo, Xiao Fu, Yue Su, Qingyu Meng, Koen Hindriks, Qingzhi Liu, Jiahuan Pei",
+      "date": "2026-06-14",
+      "pdf": "https://arxiv.org/pdf/2606.16003v1",
+      "score": "6.0",
+      "evidence": "LLM从科学文本生成数学方程，可应用于运筹优化问题建模",
+      "tldr": "现有LLM从科学文本生成方程面临非结构化grounding、多方程依赖和人类对齐评估难题。为此，构建了AI论文数据集并设计可解释方程生成流程，评估多种开源和闭源LLM。结果显示LLM在词法句法相似性上表现中等，但语义准确性差；LLM评估与人工判断对齐有限。工作为改进方程生成模型和开发更可靠评估方法提供了见解。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "This work investigates the ability of large language models (LLMs) to generate mathematical equations from scientific texts. Prior work faces challenges in unstructured grounding, multi-equation dependency, and humanaligned evaluation. To this end, we construct a dataset of AI research papers, pairing contextual passages with ground-truth equations and variable descriptions. We develop an explainable equation generation workflow and evaluate it across diverse open- and closed-source LLM backbones. We introduce an evaluation protocol combining automatic metrics, LLM-based rubrics, and human judgments to assess accuracy, explainability, and human-LLM alignment. Results indicate that LLMs perform moderately on lexical- and syntactic-based similarity, while struggling with semantic accuracy. Comparisons between LLM-based evaluations and human judgments reveal limited alignment, highlighting challenges in using LLMs to assess equation quality. These findings offer insights for improving equation generation models and developing more reliable evaluation methods for scientific text. We provide code and data for reproducibility.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
