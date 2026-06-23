@@ -1,0 +1,1213 @@
+Title: GRIMIP: A General Framework for Instance-Specific Configuration of MIP Solvers Using LLMs
+
+URL Source: https://arxiv.org/pdf/2606.23299v1
+
+Published Time: Tue, 23 Jun 2026 03:39:33 GMT
+
+Number of Pages: 27
+
+Markdown Content:
+# GRIMIP: A General Framework for Instance-Specific Configuration of MIP Solvers Using LLMs 
+
+Yidong Luo 1, Xuemin Chen 2, Chenguang Wang 1, Fangzhou Zhu 3, Tao Zhong 3, Tianshu Yu 1∗
+
+> 1
+
+School of Data Science, The Chinese University of Hong Kong, Shenzhen 
+
+> 2
+
+School of Science and Engineering, The Chinese University of Hong Kong, Shenzhen 
+
+> 3
+
+Noah’s Ark Lab, Huawei 
+
+{yidongluo,xueminchen,chenguangwang}@link.cuhk.edu.cn, yutianshu@cuhk.edu.cn, {zhufangzhou,zhongtao}@huawei.com 
+
+Abstract 
+
+Configuring the hyperparameters of Mixed-integer programming (MIP) solvers is a high-dimensional, instance-dependent optimization problem where suboptimal settings can degrade solving time by orders of magnitude. Default configurations are often suboptimal, while traditional tuning methods either suffer from the “cold-start” problem and inefficient search or heavily rely on expert experience. This paper introduces GRIMIP (General Reasoning for Instance-specific MIP 
+
+configuration), a novel hybrid intelligence framework that synergistically integrates the semantic reasoning capabilities of Large Language Models (LLMs) with the sample-efficient search of Bayesian Optimization (BO). GRIMIP enables the LLM to function as a complete probabilistic surrogate within the BO loop, significantly improving performance and reducing sampling and evaluation costs. On seven benchmarks including MIPLIB, GRIMIP achieves over 40% reduction in Primal-Dual Integral on hard instances, outperforming SMAC and other LLM-assisted BO methods. By granting LLMs sufficient autonomy, GRIMIP combines the expert-level reasoning of LLMs with the efficient search of BO, achieving state-of-the-art performance. 
+
+1 Introduction 
+
+Mixed-integer programming (MIP) is a widely used optimization framework for solving various important real-world applications, such as supply chain management [ 54 ], production planning [ 35 ]and scheduling [ 16 ]. Solving MIPs is very challenging due to their NP-hard nature [ 10 ]. The efficacy of solving these complex models hinges on the performance of sophisticated MIP solvers, which is, in turn, critically dependent on their internal hyperparameter configurations [ 58 , 52 ]. The default settings of these solvers are often suboptimal for challenging, specific problem instances. Given that modern solvers can feature massive interacting parameters, an exhaustive search for the optimal configuration is computationally prohibitive. This creates a pressing need within both academia and industry for systematic and efficient methods to tune solver parameters for individual, challenging problem instances. The task of tuning these parameters is thus often framed as the optimization of an expensive black-box function. The need to tune these expensive black-box functions has spurred the development of various au-tomated algorithm configuration methods. While earlier works relied on a variety of traditional heuristics, recent studies have shifted towards learning-based approaches. These methods leverage di-verse techniques ranging from mathematical programming [ 33 ] and graph representation learning [ 64 ]to clustering strategies [ 60 ] and specialized component optimization [ 44 ]. What’s more, a particularly prominent and sample-efficient methodology is Bayesian Optimization (BO) [ 48 , 39 , 34 , 59 , 20 ], 
+
+> ∗Corresponding author. Preprint.
+> arXiv:2606.23299v1 [cs.LG] 22 Jun 2026
+
+which is well-suited for tuning complex algorithms like MIP solvers. Powerful BO frameworks, such as SMAC [ 31 , 43 ] and HEBO [ 17 ], serve as versatile optimizers capable of operating at varying granularities. They can be employed to find a robust “one-size-fits-all” configuration for a population of instances [30], or adapted to optimize configurations for individual problem instances. To explic-itly address the heterogeneity of instances, the paradigm of per-instance algorithm configuration (PIAC) [ 28 , 41 , 32 , 67 , 7] has been extensively studied, exemplified by feature-based clustering methods like ISAC [ 36 ] and portfolio approaches like Hydra [ 68 ]. However, regardless of whether one employs a population-based or per-instance strategy, two fundamental challenges persist across these paradigms: (1) Search inefficiency. Traditional surrogate models struggle to navigate the complex, high-dimensional performance landscape within a limited budget of expensive solver evaluations, often converging to suboptimal configurations. (2) Search space definition. Defining an effective search space remains a significant barrier: expert-designed spaces risk omitting impactful parameters, while the full parameter space suffers from the curse of dimensionality. Fundamentally, these methods lack semantic understanding of the problem—a capability that could inform both space selection and search guidance. Large Language Models (LLMs) [ 12 , 51 , 24 ] offer a promising avenue to address this gap. Their capacity for semantic reasoning enables them to interpret problem structure, relate instance features to solver behavior, and transfer optimization knowledge across domains—capabilities that traditional surrogate models fundamentally lack. Early attempts leveraged LLMs for zero-shot optimization via direct prediction or code generation [ 38 , 69 ], but these approaches suffer from over-exploitation and entrapment in local optima due to the absence of principled exploration [62]. Recent work has shifted toward hybrid paradigms that combine LLM reasoning with the theoretical guarantees of BO. Frameworks such as LLAMBO [ 45 ] and BO-ICL [ 57 ] employ LLMs for warm-starting or as surrogate models, while SLLMBO [ 47 ] integrates LLM suggestions with TPE sampling. However, these methods position the LLM as an auxiliary component within conventional BO pipelines—we term this paradigm LLM-assisted BO . By constraining the LLM to isolated subtasks (e.g., initialization or mean prediction), they fail to fully exploit its reasoning capabilities and remain bottlenecked by the limitations of traditional surrogates, particularly in quantifying uncertainty for effective exploration-exploitation trade-offs. In this work, we pioneer the integration of the LLM4BO paradigm into the task of MIP solver tuning. Crucially, GRIMIP positions the LLM as a complete, self-contained probabilistic surrogate within the optimization loop, capable of jointly predicting performance and quantifying uncertainty. To address the inherent curse of dimensionality, we incorporate an Automated Space Selection (ASS) module, which leverages the LLM’s reasoning to intelligently prune the high-dimensional parameter set into a focused, instance-specific search space. Furthermore, we implement an effective Warm-Starting (WS) mechanism that generates an informed initial portfolio based on structural problem properties. This strategy effectively resolves the “cold-start" problem, enabling our method to achieve rapid convergence in the early iterations. Through autonomous exploration and continuous reward feedback from the solver, the LLM dynamically updates its prior beliefs over the parameter space. This iterative refinement enables the model to rapidly map and comprehend the overall performance landscape. Ultimately, this synergistic approach achieves significant performance improvements, exceeding 40% reductions in PDI compared to baseline methods. We summarize our contributions as follows: (1) Methodological: We propose the first framework that positions the LLM as a fully autonomous probabilistic surrogate for MIP solver configuration, moving beyond the prevailing LLM-assisted paradigm. (2) Technical: We introduce three synergistic components: (i) Automated Space Selection for instance-specific search space pruning, (ii) Warm-Starting for informed initialization, and (iii) joint mean-variance prediction for uncertainty-aware acquisition. (3) Empirical: Extensive experiments on seven benchmarks demonstrate state-of-the-art perfor-mance, with over 40% PDI reduction on hard datasets (MIRP, MIPLIB) and consistent improve-ments across 65–99% of instances. 2(4) Practical: By encapsulating domain expertise within LLM reasoning, GRIMIP lowers the barrier to expert-level solver tuning, enabling practitioners without deep optimization knowledge to achieve competitive configurations. 
+
+2 Preliminaries 
+
+2.1 Mixed-Integer Programming 
+
+MIP is a widely used mathematical optimization framework that involves making decisions under a set of constraints, where some decision variables are required to take integer values. A MIP instance (specifically in its canonical linear form) can be expressed as: 
+
+min c⊤x : Ax ≤ b, x ∈ Zp × Rn−p
+
+Here, x is a vector of n decision variables, of which the first p are restricted to be integers ( Zp) and the remaining n − p are continuous ( Rn−p). The objective is to minimize the linear function c⊤x
+
+subject to m linear constraints defined by the coefficient matrix A ∈ Rm×n and the right-hand side vector b ∈ Rm.
+
+2.2 Bayesian Optimization for Hyperparameter Tuning 
+
+We frame the task of finding the optimal configuration for a given problem instance as a complex black-box optimization problem. Let the set of all possible hyperparameter configurations for a solver be the d-dimensional space X .A specific configuration is denoted by a vector c ∈ X , and its performance is measured by a scalar value y ∈ R. The objective is to find the configuration c∗ that minimizes a performance function g:
+
+c∗ = arg min  
+
+> c∈X
+
+g(c)
+
+The function g is treated as a “black box” because its analytical form is unknown, its evaluations are computationally demanding, and its gradients are inaccessible. Given these properties, BO is a highly suitable, sample-efficient methodology. Instead of directly optimizing g, BO builds a probabilistic model to approximate it and guides the search for the optimum. This process involves several key components: • Cold Start : The initial set of evaluated points, which forms the first dataset Dn, significantly influences the BO process. A well-chosen initial set can accelerate convergence by providing the surrogate model with a more informative initial representation of the objective function’s landscape. • Probabilistic Surrogate Model : This is the core of BO. The surrogate model learns the relationship between hyperparameter configurations and their performance scores from a set of previously ob-served data points, Dn = {(ci, y i)}ni=1 . It produces a predictive distribution over the performance 
+
+y for any configuration c:
+
+p(y | c, Dn) = 
+
+Z
+
+> Λ
+
+p(y | c, λ, Dn) p(λ | D n) dλ 
+
+In this formulation, the integration is performed over λ, a latent variable that encapsulates our beliefs about the function’s underlying structure. The term p(λ | D n) ∝ p(Dn | λ) p(λ) represents the posterior distribution of this variable, which is updated from our initial prior beliefs , p(λ). The central challenge, therefore, is to accurately learn this predictive distribution from limited data while incorporating meaningful prior knowledge. • Candidate Sampling : A sampler proposes a set of new candidate points {˜ck}Kk=1 from the search space X that are promising for evaluation by the acquisition function. • Acquisition Function : An acquisition function, such as the Lower Confidence Bound (LCB), evaluates the utility of each candidate point based on the surrogate model’s predictive distribution. It intelligently balances exploitation (choosing points in regions predicted to have good performance) and exploration (choosing points in regions with high uncertainty). 3GRIMIP 
+
+Instance 
+
+ASS: Automated Space Selection 
+
+1. Candidate Generation 
+
+0. Warmstarting 
+
+2. Surrogate Model 
+
+3. Acquisition Function 4. Evaluator  
+
+> Surrogate Prediction Prompt :
+> You are a world-class Gurobi tuning expert acting as Surrogate Model. ... Optimization History: {history_text} New Configuration: {candidate_str} Return JSON with "mean" and "std".
+> .
+> Candidate Generation Prompt:
+> You are a world-class Gurobi tuning expert. ... Optimization History: {history_text} Tunable Parameter Space: {param_space} Propose next configuration (balance Exploration / Exploitation) in JSON.
+> Warmstarting Prompt:
+> You are a world-class Gurobi tuning expert. ... Instance Feature Analysis: {static_features}, {dynamic_features} Tunable Parameter Space: {param_space} Recommend {num_points} diverse configurations in JSON.
+> Evaluator:
+> The quality of configuration is quantitatively measured by PDI or Runtime, with a time limit of 300 seconds .
+> Acquisition Function:
+> Compute Expected Improvement using surrogate
+> predictions (mean μ, std σ) and pick the
+> configuration with maximum EI .
+
+Search Space 
+
+> Static
+> Features
+> Dynamic Features
+
+Modules Inputs 
+
+Prompts Tools Figure 1: Overview of GRIMIP : This framework utilizes LLM-driven candidate generation, surro-gate model prediction, and a lower confidence bound acquisition function to automatically recommend optimal hyperparameter configurations for a given optimization instance. 
+
+3 Methodology 
+
+The proposed GRIMIP framework establishes a methodological synergy between the semantic reasoning capabilities of LLMs and the sequential decision-making structure of BO. By embedding the LLM as a core probabilistic component within the optimization loop, our method constructs a hybrid pipeline designed to leverage high-level pattern recognition for efficient MIP solver configuration. As illustrated in Figure 1, the GRIMIP workflow is organized into three coherent stages to systematically navigate the configuration landscape. 
+
+3.1 Automated Search Space Selection (ASS) 
+
+The Gurobi solver provides over 200 tunable parameters (e.g., MIPFocus , Heuristics , Cuts ), constituting a high-dimensional search space X . Direct optimization within this entire space is highly inefficient and heavily susceptible to the “curse of dimensionality,” which severely diffuses the search focus. To mitigate this issue, our workflow introduces an Automated Space Selection (ASS) module to intelligently prune this space. This module is activated immediately following a 30-second exploratory run, utilizing both static and dynamic instance features FP , which are extracted in the same manner as in the Warm-Starting (WS) module. We supply the LLM with these features 
+
+FP , alongside a comprehensive list of tunable Gurobi parameters, their semantic descriptions (e.g., “MIPFocus : MIP solution strategy”), and their default ranges. By analyzing FP , the LLM identifies a low-dimensional parameter subset (restricted to k = 6 parameters in our default configuration) that it predicts will have the most significant impact on the specific instance. Furthermore, our framework supports a dynamic ASS mode. When enabled, the LLM is queried after each optimization iteration and provided with the cumulative optimization history Dt. Its task is to periodically re-evaluate the search space, enabling the adaptive inclusion of new parameters deemed influential based on historical performance, and the removal of those exhibiting negligible correlation. This progressively refines the search space as more empirical data is accumulated. The output of this stage is an instance-specific, reduced-dimensional parameter space XASS ⊂ X .Ablation studies demonstrate the critical importance of this space-pruning strategy; omitting the ASS module results in the most severe performance degradation among all components. Additionally, a detailed analysis of the rationale behind the LLM’s parameter selections is provided in Section 5 
+
+3.2 Warm-starting (WS) 
+
+Unlike traditional methods that start from random points, our workflow begins with an intelligent, instance-specific warm-starting stage. For each MIP instance P , we first perform a short 30-second preliminary solve using Gurobi’s default parameters. This exploratory run allows us to extract a set of key features, FP , encompassing both static features (e.g., number of variables, types of constraints) 4and dynamic features (e.g., initial dual gap, number of processed nodes, types of cutting planes applied. More information about the features are in Table 4 and Table 5). These features are then incorporated into a detailed prompt instructing the LLM to act as a Gurobi tuning expert. Based on its analysis of FP , the LLM generates an initial, diverse population of N high-potential parameter configurations: {c(0) 1 , . . . , c (0)  
+
+> N
+
+} ∼ LLM (·|F P ). This initial population is then thoroughly evaluated against the true performance function g(·) to obtain their corresponding scores, y(0)  
+
+> i
+
+= g(c(0)  
+
+> i
+
+). This process creates a high-quality starting dataset D0 = {(c(0)  
+
+> i
+
+, y (0)  
+
+> i
+
+)}Ni=1 for the subsequent optimization loop, significantly accelerating the overall search process. 
+
+3.3 LLM Probabilistic Surrogate (LLM-PS) 
+
+After the warm-starting stage, the core of our methodology is an iterative optimization loop in which the LLM fully serves as the surrogate model . At the beginning of each iteration n, we have a dataset of previously evaluated configurations and their observed performance metrics, Dn = {(ci, y i)}ni=1 ,
+
+along with the best performance observed so far, y∗ = min i≤n yi. The loop then unfolds in a sequence of three main steps: Candidate Generation, Performance Prediction, and Acquisition. 
+
+Candidate Generation. Initially, the LLM functions as a candidate sampler. By processing the complete optimization history Dn, the LLM is prompted to propose a novel set of K candidate configurations that exhibit the highest potential for exploration or exploitation. 
+
+˜c1,n +1 , . . . , ˜cK,n +1 ∼ q(· | D n).
+
+where q(· | D n) is the conditional sampling distribution implicitly modeled by the LLM based on the historical data and heuristics learned from its pre-training. 
+
+Performance Prediction with Uncertainty. Next, the LLM directly acts as the surrogate model. For each proposed candidate configuration ˜ck, the LLM is prompted to predict both its expected performance (mean μk) and the uncertainty of that prediction (standard deviation σk). This is a critical step where the LLM simulates a probabilistic model: 
+
+(˜ μk,n +1 , ˜σk,n +1 ) = LLM(˜ ck,n +1 , Dn) , k = 1 , . . . , K. 
+
+Acquisition Function and Point Selection. Finally, using the predicted mean and uncertainty, we compute a classical acquisition function to select the single best candidate for evaluation. We use the Expected Improvement (EI) function, which balances exploitation (favoring candidates with low predicted means) and exploration (favoring candidates with high predictive uncertainty). For a minimization problem, EI is calculated as: 
+
+EI k,n +1 (˜ ck,n +1 ) = ( y∗ − ˜μk,n +1 ) Φ( Zk,n +1 ) + ˜ σk,n +1 ϕ(Zk,n +1 ),
+
+where Zk,n +1 = y∗ − ˜μk,n +1 
+
+˜σk,n +1 
+
+.
+
+where Φ( ·) and ϕ(·) are the CDF and PDF of the standard normal distribution, respectively. The next configuration to evaluate, cn+1 , is chosen by maximizing the acquisition function over the set of candidates: 
+
+cn+1 = arg max  
+
+> k=1 ,...,K
+
+EI(˜ ck,n +1 )
+
+The selected configuration cn+1 is then evaluated on the true perfermance function, yn+1 = g(cn+1 ),and the new pair is added to the dataset for the next iteration: Dn+1 = Dn ∪ { (cn+1 , y n+1 )}.This loop continues until either a predefined maximum number of iterations is reached, or when no improvement in the best-observed performance is made for a specified number of consecutive iterations (early stopping). 
+
+Theoretical implication. Appendix C provides a finite-arm convergence analysis for the above loop. Theorem C.6 shows that the empirically best configuration c+ 
+
+> T
+
+satisfies, with high probability, 
+
+g(c+ 
+
+> T
+
+) − g(c⋆) ≤ ∆ASS + ˜O
+
+
+
+ση
+
+pN/T 
+
+
+
+,
+
+5where ∆ASS is the approximation gap introduced by restricting the original parameter space to XASS .Thus, GRIMIP converges to a ∆ASS -neighborhood of the global optimum at the standard finite-arm 
+
+˜O(pN/T ) rate. This result also clarifies the roles of the three modules: ASS controls both the approximation floor and the effective dimension N , warm-starting reduces the budget needed before the bound becomes informative, and LLM-PS supplies the candidate distribution and EI scores used to guide the search. 
+
+4 Experiments 
+
+4.1 Datasets 
+
+Table 1: Summary of MIP Datasets                           
+
+> Dataset Type Vars Cons
+> MIK aMedium [255, 520] [155, 470] CORAL bMedium [62, 573K] [6, 550K] MIRP cHard [2K, 194K] [1K, 109K] MIPLIB dHard [71, 1.6M] [7, 2.9M] Item Placement Hard 1,083 195 Load Balancing Hard 61,000 64,304 Anonymous Hard 37,881 49,603
+> aMean: Vars=387, Cons=312. bMean: Vars=19,989, Cons=12,482.
+> cMean: Vars=34,193, Cons=16,170. dMean: Vars=116,034, Cons=135,733.
+
+To validate the generalization and effec-tiveness of the proposed algorithms, we adopt a diverse collection of seven MIP in-stance sets, following the dataset selection strategy of Liu et al. [ 44 ]. The complete set of instances is as follows: 1 MIK [6]and 2 CORAL [23 ]: These two medium-difficulty instance sets are well-established benchmarks in the optimization community and have been used in numerous studies [26 , 50 ]. 3 Maritime Inventory Routing 
+
+(MIRP): This challenging set of instances is based on the Maritime Inventory Routing Problem [ 53 ], which involves complex logistical and scheduling decisions. 4 MIPLIB : We select all hard instances from MIPLIB 2017 benchmark library (version 29) [ 22 ], which represents a diverse collection of real-world and academic MIP problems that remain challenging for state-of-the-art solvers. Three additional sets sourced from the NeurIPS 2021 Machine Learning for Combinatorial Optimization Competition [ 21 ]. These include: 5 Item Placement (IP), which pertains to problems with complex spatial and combinatorial constraints; 6 Load Balancing (LB), inspired by the optimal distribution of tasks in large-scale systems; and 7 Anonymous (A), a dataset derived from a large-scale industrial application, providing a robust test for general, complex MIPs. Together, these seven datasets consti-tute a comprehensive and rigorous testbed for evaluating the proposed method. Table 1 summarizes their key structural characteristics. 
+
+4.2 Baseline Methods 
+
+To comprehensively evaluate efficacy, we compare GRIMIP against the following established base-lines: 1⃝ Default : The default Gurobi parameter configuration. 2⃝ SMAC-P [43 ]: A population-based BO approach that seeks a single robust “one-size-fits-all” configuration by minimizing the average PDI across random instance subsets. 3⃝ Random Search : A per-instance baseline that evaluates N
+
+randomly generated configurations, where N matches the total evaluations performed by GRIMIP to ensure a fair budget comparison. 4⃝ SMAC-I : A strong per-instance baseline applying SMAC individually to each problem. Its total tuning time is strictly limited to match GRIMIP’s wall-clock time for a fair comparison. 5⃝ GPTT [ 25 ]: Gurobi’s native tuning tool. 6⃝ LLAMBO [ 45 ]: An LLM-driven BO framework for hyperparameter tuning. 7⃝ ifBO [ 56 ]: A BO baseline that uses a deep surrogate (pre-trained transformer) as a prior over learning curves. 8⃝ TuRBO [19 ]: A BO baseline based on trust regions, maintaining local GP surrogates inside shrinking/expanding regions. Further implementation details are provided in Appendix F. 
+
+4.3 Evaluation Metric 
+
+All of our evaluation experiments were conducted under a strict single-thread constraint (thread = 1) to ensure fair and reproducible comparisons. For a complete description of the hardware and software setup, please refer to Appendix A. Performance is assessed using two primary metrics: the 
+
+Primal-Dual Integral (PDI) and Runtime . The PDI quantifies convergence speed by integrating the primal-dual gap over time within a given time limit, offering a nuanced view of progress on unsolved instances, while Runtime measures the total time to reach optimality . Since the MIK and CORAL instance sets are relatively simple and most instances can quickly reach optimality, we adopt Runtime 6Table 2: Comparison of different tuning methods across datasets . For each dataset, we report the average PDI (lower is better), the percentage improvement over the default configuration (Imp., higher is better), and the percentage of instances where the method outperformed the default (Eff., higher is better).                                                                                                                                                                                                                                                    
+
+> Item Placement [21] Load Balancing [21] Anonymous [21]
+> Method PDI ↓Imp. ↑Eff. ↑PDI ↓Imp. ↑Eff. ↑PDI ↓Imp. ↑Eff. ↑
+> Default 194.95 --2.72 --73.25 --Random 194.96 0.0% 48.6% 6.00 -120.6% 64.6% 79.63 -6.0% 42.2% SMAC-P [43] 161.26 17.3% 90.6% 10.12 -272.1% 76.6% 67.80 5.6% 56.1% SMAC-I 152.28 23.2% 91.6% 1.77 34.9% 76.8% 56.22 23.3% 69.0% GPTT [25] 158.48 18.7% 55.0% 3.11 -14.3% 48.2% 72.63 -0.9% 42.9% LLAMBO [45] 150.29 22.9% 97.0% 1.50 44.9% 82.2% 59.82 18.3% 73.6% ifBO [56] 147.91 24.1% 97.0% 5.84 -114.5% 10.4% 68.73 6.2% 53.1% TuRBO [19] 149.56 23.3% 95.0% 6.40 -135.1% 10.0% 66.55 9.2% 51.0% GRIMIP 133.20 31.7% 99.0% 1.48 45.6% 84.2% 54.67 25.4% 80.6% MIK [6] CORAL [23] MIRP [53] MIPLIB [22]
+> Method Time (s) ↓Imp. ↑Eff. ↑Time (s) ↓Imp. ↑Eff. ↑PDI ↓Imp. ↑Eff. ↑PDI ↓Imp. ↑Eff. ↑
+> Default 0.204 --99.6 --277.24 --197.85 --Random 0.306 -50.4% 22.2% 106.0 -6.5% 56.6% 205.69 25.8% 55.8% 178.21 9.9% 65.9% SMAC-P 0.211 -3.7% 21.1% 145.0 -45.7% 13.1% 208.32 24.9% 64.8% 203.00 -2.6% 24.8% SMAC-I 0.211 -3.5% 40.0% 113.1 -13.6% 66.7% 198.76 28.3% 65.8% 189.53 4.2% 53.5% GPTT 0.208 -2.2% 12.2% 100.1 -0.5% 81.6% 271.85 1.9% 38.0% 191.32 3.3% 58.9% LLAMBO 0.217 -6.6% 26.7% 103.3 -3.7% 69.6% 203.89 26.5% 69.0% 179.06 11.0% 62.0% ifBO 0.435 -113.5% 15.6% 102.9 -3.4% 67.4% 200.92 27.5% 73.0% 173.86 12.1% 63.6% TuRBO 3.160 -1451% 28.9% 107.6 -8.1% 69.4% 195.33 29.5% 71.0% 173.84 12.1% 63.0% GRIMIP 0.205 -0.7% 38.9% 100.2 -0.6% 75.5% 159.99 42.3% 97.4% 172.69 12.7% 69.0%
+
+as the primary evaluation metric for these datasets (see Table. 2). For the final evaluation, we conduct 5 times in-distribution assessments where the parameter configurations obtained from all methods are benchmarked on the original, complete set of instances. More information is in Appendix E. 
+
+4.4 Main Results 
+
+The results summarized in Table 2 demonstrate that GRIMIP consistently outperforms all baselines, achieving PDI reductions between 12.7% and 45.59% on the five most challenging datasets (IP, LB, A, MIRP, MIPLIB). This confirms the framework’s effectiveness on hard problems, which are the primary targets for instance-specific tuning. 
+
+Performance on Hard Datasets. The results summarized in Table 2 demonstrate that GRIMIP consistently outperforms all baselines, achieving PDI reductions between 12.7% and 45.59% on the five most challenging datasets ( IP, LB, A, MIRP, MIPLIB ). This confirms the framework’s effectiveness on hard problems, which are the primary targets for instance-specific tuning. • Surprising Performance on MIPLIB: On the prestigious MIPLIB benchmark—widely considered the gold standard for solver evaluation—GRIMIP achieved a 12.72% PDI reduction. Improving upon the highly-tuned default settings of Gurobi on this specific dataset is notoriously difficult, underscoring the significance of GRIMIP’s gains. • Significant PDI Reduction: On IP and LB , GRIMIP achieved substantial improvements of 31.67% 
+
+and 45.59% over default settings, respectively. It consistently outperformed SMAC-I, securing the lowest average PDI across both sets. • Robustness: The framework exhibited exceptional stability, outperforming default configurations on 84% to 99% of instances across these datasets. 
+
+On Medium Datasets: These simpler datasets were evaluated by total runtime. For simple instances like these, the default parameters are already highly optimized and sufficient, making further improvements difficult to achieve. Critically, the time required for the parameter tuning process itself is many times greater than the few seconds (or less) it takes to solve these instances. In any practical setting, instance-specific tuning would not be applied to problems this simple, as the cost of tuning outweighs any potential benefit. We included these datasets to test the framework’s behavior, but as expected, our attempts did not yield significant performance gains. 7Comparison with SMAC-I Figure 2 visualizes the instance-wise performance gap. GRIMIP demonstrates clear dominance, with points consistently falling below the diagonal. 0 50 100 150 200 250 300 
+
+> SMAC-I Score (PDI)
+> 0
+> 50
+> 100
+> 150
+> 200
+> 250
+> 300
+> GRIMIP Score (PDI)
+
+GRIMIP 
+
+Better 
+
+SMAC-I 
+
+Better       
+
+> Item Placement
+> GRIMIP Win Rate: 88.0%
+> 050 100 150 200 250 300
+> SMAC-I Score (PDI)
+> 0
+> 50
+> 100
+> 150
+> 200
+> 250
+> 300
+> GRIMIP Score (PDI)
+
+GRIMIP 
+
+Better 
+
+SMAC-I 
+
+Better       
+
+> Anonymous
+> GRIMIP Win Rate: 71.4%
+> 0.0 0.5 1.0 1.5 2.0 2.5 3.0
+> SMAC-I Score (PDI)
+> 0.0
+> 0.5
+> 1.0
+> 1.5
+> 2.0
+> 2.5
+> 3.0
+> GRIMIP Score (PDI)
+
+GRIMIP 
+
+Better 
+
+SMAC-I 
+
+Better       
+
+> Load Balancing
+> GRIMIP Win Rate: 73.2%
+> 050 100 150 200 250 300
+> SMAC-I Score (PDI)
+> 0
+> 50
+> 100
+> 150
+> 200
+> 250
+> 300
+> GRIMIP Score (PDI)
+
+GRIMIP 
+
+Better 
+
+SMAC-I 
+
+Better 
+
+> MIPLIB
+> GRIMIP Win Rate: 65.1%
+
+Figure 2: GRIMIP vs SMAC-I PDI Comparison 4.5 Ablation Studies 
+
+Table 3 validates the synergistic contribution of each GRIMIP component. The ASS proves to be the most critical module; its removal causes the most severe performance degradation (PDI rises to 152.45 ). This sharp decline suggests that without instance-specific pruning, the optimizer struggles with the curse of dimensionality and converges prematurely to local optima within a rigid search space. Regarding initialization, the WS phase effectively resolves the cold-start problem, with dynamic features providing a distinct advantage over static-only features ( 133.20 vs. 138.44 ). This indicates that capturing solver behavior allows the LLM to identify superior initial basins of attraction that static attributes alone cannot reveal. Finally, our joint uncertainty prediction 
+
+mechanism significantly outperforms the repeated-sampling baseline (w/o std). Beyond merely reducing computational overhead, this result implies that explicitly querying the LLM for confidence yields a cleaner exploration signal for the acquisition function compared to the noisy variance estimates derived from Monte Carlo sampling. 
+
+5 Discussion 0 2 4 6 8 10 12 14                                             
+
+> Iteration (Number of Evaluations)
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Normalized PDI (lower is better)
+> milo-v12-6-r1-58-1 0246810 12 14 16 18
+> Iteration (Number of Evaluations)
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Normalized PDI (lower is better)
+> nursesched-medium-hint03 0246810 12 14
+> Iteration (Number of Evaluations)
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Normalized PDI (lower is better)
+> ofi2 0246810
+> Iteration (Number of Evaluations)
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Normalized PDI (lower is better)
+> opm2-z10-s4 0246810
+> Iteration (Number of Evaluations)
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Normalized PDI (lower is better)
+> opm2-z12-s8 0246810 12
+> Iteration (Number of Evaluations)
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Normalized PDI (lower is better)
+> shiftreg5-1 0246810 12
+> Iteration (Number of Evaluations)
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Normalized PDI (lower is better)
+> triptim8 0246810 12
+> Iteration (Number of Evaluations)
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Normalized PDI (lower is better)
+> snip10x10-35r1budget17
+
+Figure 3: Convergence trajectories of GRIMIP versus SMAC-I on selected instances from the MIPLIB dataset. The plots illustrate the optimization progress over the iteration budget, comparing 
+
+SMAC-I ( ) and GRIMIP ( ). The y-axis represents the PDI normalized to the [0 , 1] range for visual comparison, where lower values indicate better performance. The x-axis denotes the number of function evaluations. Table 3: Ablation study results for components on the IP dataset. (1) w/o WS : No WS phase; (2) w/o std :Estimates uncertainty via Monte Carlo LLM sampling (5x); (3) w/o WS_Dynamic : Uses only static features for WS; (4) w/o ASS : Disables ASS, using the six most commonly used parameters instead. 
+
+Method Mean PDI Mean Evaluations GRIMIP 133.20 11.30 
+
+GRIMIP w/o WS 140.83 11.36 GRIMIP w/o std 146.72 11.52 GRIMIP w/o WS_Dynamic 138.44 11.56 GRIMIP w/o ASS 152.45 10.59 
+
+Convergence Trajectory Analysis Com-parison of the iteration-wise PDI trajec-tories highlights the clear advantages of GRIMIP over the baseline SMAC-I. First, GRIMIP exhibits a markedly superior ini-tialization, consistently achieving a signif-icantly lower PDI at the very beginning of the search. This indicates that the warm-starting phase successfully transfers se-mantic knowledge, enabling the solver to avoid the blind exploration that typically 80 25 50 75 100 
+
+> Select (%)
+> MIPFocus
+> Heuristics
+> Cuts
+> VarBranch
+> 100
+> 99
+> 100
+> 99
+> 100
+> 100
+> 100
+> 100
+> 100
+> 100
+> 100
+> 95
+
+(a) Core Parameters     
+
+> 025 50 75 100
+> Select (%)
+> Method
+> GomoryPasses
+> MIRCuts
+> CliqueCuts
+> NodeMethod
+> 45
+> 70
+> 51
+> 1
+> 9
+> 2
+> 72
+> 63
+> 24
+> 13
+> 90.2
+> 57.9
+> 10.4
+> 0.6
+> 24.4
+
+(b) Dataset-Specific Parameters     
+
+> 0510 15 20
+> Select (%)
+> Presolve
+> CoverCuts
+> FlowCoverCuts
+> ZeroHalfCuts
+> BranchDir
+> Symmetry
+> 4
+> 14
+> 4
+> 15
+> 1
+> 10
+> 10.4
+> 8.5
+> 0.6
+> 0.6
+> 1.8
+
+(c) Low-Frequency Parameters Figure 4: Preference of Configuration Selection across Different Datasets. Selection frequency (%) of each parameter across three benchmark datasets: A, IP, and LB. characterizes traditional cold-start methods. Moreover, GRIMIP demonstrates substan-tially higher sample efficiency, as evidenced by the steep and rapid decline of its convergence curves within the first few evaluations. In contrast, SMAC-I often displays flat or only gradually decreasing trajectories. Together, these results show that GRIMIP can quickly identify high-impact parameter adjustments without expending valuable budget on low-quality candidates. 
+
+Configuration Selection Analysis. Figure 4 summarizes the parameter subsets selected by DeepSeek-V3.2-Exp. Under a fixed tuning budget, ASS consistently retains a small backbone of high-impact parameters while using instance features such as integrality structure, matrix den-sity, relaxation gaps, and cut activity to allocate the remaining slots. Across datasets, MIPFocus ,
+
+Heuristics , Cuts , and VarBranch are selected most frequently, whereas low-leverage parameters are routinely pruned. The remaining choices vary by problem type: binary-dominated IP instances favour cut families such as GomoryPasses and CliqueCuts ; non-binary LB instances shift toward 
+
+Method or NodeMethod ; and hard MIRP instances emphasize feasibility-oriented parameters such as MIPFocus , Heuristics , Cuts , and Presolve . This pattern suggests that ASS combines a stable default core with instance-specific adjustments rather than relying on a fixed universal subset. 
+
+Cross-Model Validation. To assess generalization, we deployed GRIMIP across seven diverse foundation models. As shown in Figure 5, model scale does not strictly determine tuning performance. This finding highlights the potential of locally deployed smaller models: they enable unlimited iterations without API costs, ensure data privacy for sensitive simulation parameters, and allow offline operation in restricted environments. When integrated with GRIMIP’s structured reasoning framework, these lightweight models can effectively compensate for reduced parameters through domain-specific guidance, making them attractive alternatives for practical deployment. 0           
+
+> 20
+> 40
+> 60
+> 80
+> 100
+> 120
+> 140
+> 160
+> 180
+> PDI Value
+> 133.20
+> 148.59 149.40 145.28
+> 153.97 154.78
+> 163.86
+> Average PDI (Lower is Better)
+> 0
+> 5
+> 10
+> 15
+> 20
+> 25
+> 30
+> Percentage (%)
+> 27%
+> 13%
+> 12%
+> 17%
+> 16%
+> 10%
+> 5%
+> Win Rate (Higher is Better)
+> 0
+> 2000
+> 4000
+> 6000
+> 8000
+> 10000
+> Time (seconds)
+> 3500s
+> 9400s
+> 4610s
+> 5425s
+> 4080s
+> 5287s
+> 3387s
+> Avg. Total Tuning Time (Lower is Better)
+> 0
+> 50
+> 100
+> 150
+> 200
+> 250
+> Cost (USD)
+> $2.11
+> $15.46
+> $224.94
+> $171.22
+> $0.00 $0.00 $0.00
+> Total Cost (Lower is Better)
+> DeepSeek-V3.2-Exp Qwen-3-235B-A22B-Instruct-2507 Gemini 2.5 Flash GPT 5 gpt-oss-20b Qwen3-32B Qwen3-8B
+
+Figure 5: Performance Comparison of LLMs. We benchmarked GRIMIP across seven models including both API-based services and locally deployed open-source models (gpt-oss-20b, Qwen3-32B, Qwen3-8B, marked with $0 cost). Smaller models demonstrate competitive tuning efficiency. 
+
+6 Conclusion 
+
+This paper presents GRIMIP, marking the pioneering introduction of the LLM4BO paradigm to the task of solver configuration. In essence, our framework can be conceptualized as a hybrid tuning system that fuses the systematic search of BO with the reasoning of a domain expert . By granting the LLM sufficient autonomy, we effectively overcome the cold-start problem inherent in traditional 9BO and lower the high barrier typically required for expert-level tuning. Extensive experiments demonstrate that GRIMIP consistently outperforms other strong BO baselines on challenging datasets, achieving superior results with fewer iterations and lower computational costs. Furthermore, with the support of locally deployed LLMs, we believe this method possesses the potential to replace a wide range of BO-based solver tuning methods in the future. More broadly, the strong priors and high search efficiency of LLMs may be valuable for a wider class of exploration-exploitation tasks, opening a promising direction for future research. 10 References 
+
+[1] B. Adenso-Díaz and M. Laguna. Fine-tuning of algorithms using fractional experimental designs and local search. Operations Research , 54:99–114, 2006. [2] T. Akiba, S. Sano, T. Yanase, T. Ohta, and M. Koyama. Optuna: A next-generation hyper-parameter optimization framework. In Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining , 2019. [3] Carlos Ansótegui, Meinolf Sellmann, and Kevin Tierney. A gender-based genetic algorithm for the automatic configuration of algorithms. In Principles and Practice of Constraint Program-ming (CP 2009) , pages 142–157, 2009. [4] Carlos Ansótegui, Youssef Malitsky, Horst Samulowitz, Meinolf Sellmann, and Kevin Tierney. Model-based genetic algorithms for algorithm configuration. In Proceedings of the 24th International Joint Conference on Artificial Intelligence (IJCAI) , 2015. [5] Carlos Ansótegui, Josep Pon Farreny, Meinolf Sellmann, and Kevin Tierney. Pydgga: Dis-tributed gga for automatic configuration. In Proceedings of the 18th International Conference on Integration of Constraint Programming, Artificial Intelligence, and Operations Research (CPAIOR) , pages 11–20, 2021. [6] Alper Atamtürk. On the facets of the mixed-integer knapsack polyhedron. Mathematical Programming , 98(1):145–175, 2003. [7] Nacim Belkhir, Johann Dréo, Pierre Savéant, and Marc Schoenauer. Feature based algorithm configuration: A case study with differential evolution. In Parallel Problem Solving from Nature (PPSN XIV) , pages 156–166. Springer, 2016. [8] J. Bergstra, R. Bardenet, Y. Bengio, and B. Kégl. Algorithms for hyper-parameter optimization. In Advances in Neural Information Processing Systems , volume 24, 2011. [9] Alina Beygelzimer, John Langford, Lihong Li, Lev Reyzin, and Robert E. Schapire. Contextual bandit algorithms with supervised learning guarantees. In International Conference on Artificial Intelligence and Statistics (AISTATS) , pages 19–26, 2011. [10] Robert E. Bixby. Implementing the simplex method: The initial basis. ORSA Journal on Computing , 4(3):267–284, 1992. [11] Stéphane Boucheron, Gábor Lugosi, and Pascal Massart. Concentration Inequalities: A Nonasymptotic Theory of Independence . Oxford University Press, 2013. [12] Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D. Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. Language models are few-shot learners. In Advances in Neural Information Processing Systems , volume 33, pages 1877–1901, 2020. [13] Adam D. Bull. Convergence rates of efficient global optimization algorithms. Journal of Machine Learning Research , 12:2879–2904, 2011. [14] R. Calandra, J. Peters, C. E. Rasmussen, and M. P. Deisenroth. Manifold gaussian processes for regression. In 2016 International Joint Conference on Neural Networks (IJCNN) , pages 3338–3345. IEEE, 2016. [15] Yutong Chen, Xingyou Song, Chris Lee, Ziyu Wang, Ruiyi Zhang, David Dohan, and Nando de Freitas. Towards learning universal hyperparameter optimizers with transformers. In 
+
+Advances in Neural Information Processing Systems , volume 35, pages 32053–32068, 2022. [16] Zhi-Long Chen. Integrated production and outbound distribution scheduling: Review and extensions. Operations Research , 58(1):130–148, 2010. [17] Alexander Cowen-Rivers, Wenlong Lyu, Rasul Tutunov, Zhi Wang, Antoine Grosnit, Ryan-Rhys Griffiths, Alexandre Maravel, Jianye Hao, Jun Wang, Jan Peters, and Haitham Bou Ammar. Hebo: Pushing the limits of sample-efficient hyperparameter optimisation. Journal of Artificial Intelligence Research , 74, 07 2022. 11 [18] Samuel Daulton, David Eriksson, Maximilian Balandat, and Eytan Bakshy. Multi-objective bayesian optimization over high-dimensional search spaces. In Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI) , pages 507–517. PMLR, 2022. [19] David Eriksson, Michael Pearce, Jacob Gardner, Ryan D Turner, and Matthias Poloczek. Scalable global optimization via local Bayesian optimization. In Advances in Neural Information Processing Systems (NeurIPS) , 2019. [20] Roman Garnett. Bayesian Optimization . Cambridge University Press, 2023. [21] Maxime Gasse, Simon Bowly, Quentin Cappart, Jonas Charfreitag, Laurent Charlin, Didier Chételat, Antonia Chmiela, Justin Dumouchelle, Ambros Gleixner, Aleksandr M. Kazachkov, Elias Khalil, Pawel Lichocki, Andrea Lodi, Miles Lubin, Chris J. Maddison, Morris Christopher, Dimitri J. Papageorgiou, Augustin Parjadis, Sebastian Pokutta, Antoine Prouvost, Lara Scavuzzo, Giulia Zarpellon, Linxin Yang, Sha Lai, Akang Wang, Xiaodong Luo, Xiang Zhou, Haohan Huang, Shengcheng Shao, Yuanming Zhu, Dong Zhang, Tao Quan, Zixuan Cao, Yang Xu, Zhewei Huang, Shuchang Zhou, Chen Binbin, He Minggui, Hao Hao, Zhang Zhiyu, An Zhiwu, and Mao Kun. The machine learning for combinatorial optimization competition (ml4co): Results and insights. In Douwe Kiela, Marco Ciccone, and Barbara Caputo, editors, Proceedings of the NeurIPS 2021 Competitions and Demonstrations Track , volume 176 of Proceedings of Machine Learning Research , pages 220–231. PMLR, Dec 2022. URL https://proceedings. mlr.press/v176/gasse22a.html .[22] Ambros Gleixner, Gregor Hendel, Gerald Gamrath, Tobias Achterberg, Michael Bastubbe, Timo Berthold, Philipp Christophel, Kati Jarck, Thorsten Koch, Jeff Linderoth, et al. Miplib 2017: Data-driven compilation of the 6th mixed-integer programming library. Mathematical Programming Computation , 13(3):443–490, 2021. doi: 10.1007/s12532-020-00194-3. [23] Carla P. Gomes, Willem-Jan van Hoeve, and Ashish Sabharwal. Connections in networks: A hybrid approach. In International Conference on Integration of Artificial Intelligence (AI) and Operations Research (OR) Techniques in Constraint Programming , pages 303–307. Springer, 2008. [24] Dan Guo, Dong Yang, Haoran Zhang, Jiaming Song, Rui Zhang, Runpeng Xu, Qingyang Zhu, Shuai Ma, Peng Wang, Xiaoyu Bi, and Xue Zhang. Deepseek-r1: Incentivizing reasoning capability in llms via reinforcement learning. arXiv preprint arXiv:2501.12948 , 2025. [25] Gurobi Optimization, LLC. Gurobi Optimizer Reference Manual , 2024. URL https://www. gurobi.com . Accessed: 2024-01-01. [26] He He, Hal Daume III, and Jason M. Eisner. Learning to search in branch and bound algorithms. In Advances in Neural Information Processing Systems , volume 27, 2014. [27] A. Hebbal, L. Brevault, M. Balesdent, E.-G. Taibi, and N. Melab. Efficient global optimization using deep gaussian processes. In 2018 IEEE Congress on Evolutionary Computation (CEC) ,pages 1–8. IEEE, 2018. [28] Frank Hutter, Youssef Hamadi, Holger H. Hoos, and Kevin Leyton-Brown. Performance prediction and automated tuning of randomized and parametric algorithms. In Proceedings of the Twelfth International Conference on Principles and Practice of Constraint Programming (CP 2006) , pages 213–228. Springer, 2006. [29] Frank Hutter, Holger H. Hoos, Kevin Leyton-Brown, and Thomas Stützle. Paramils: An automatic algorithm configuration framework. Journal of Artificial Intelligence Research , 36: 267–306, 2009. [30] Frank Hutter, Holger H. Hoos, and Kevin Leyton-Brown. Automated configuration of mixed integer programming solvers. In Integration of Artificial Intelligence (AI) and Operations Research (OR) Techniques in Constraint Programming , volume 6140 of Lecture Notes in Computer Science , pages 186–202, Berlin, Heidelberg, June 2010. Springer. [31] Frank Hutter, Holger H. Hoos, and Kevin Leyton-Brown. Sequential model-based optimization for general algorithm configuration. In International Conference on Learning and Intelligent Optimization , Berlin, Heidelberg, 2011. Springer. 12 [32] Frank Hutter, Lin Xu, Holger H. Hoos, and Kevin Leyton-Brown. Algorithm runtime prediction: Methods & evaluation. Artificial Intelligence , 206:79–111, 2014. [33] Gabriele Iommazzo, Claudia D’Ambrosio, Antonio Frangioni, and Leo Liberti. A Learning-Based Mathematical Programming Formulation for the Automatic Configuration of Op-timization Solvers , pages 700–712. Springer International Publishing, 2020. ISBN 9783030645830. doi: 10.1007/978-3-030-64583-0_61. URL http://dx.doi.org/10. 1007/978-3-030-64583-0_61 .[34] D. R. Jones, M. Schonlau, and W. J. Welch. Efficient global optimization of expensive black-box functions. Journal of Global Optimization , 13:455–492, 1998. [35] Michael Jünger, Thomas M. Liebling, Denis Naddef, George L. Nemhauser, William R. Pul-leyblank, Gerhard Reinelt, Giovanni Rinaldi, and Laurence A. Wolsey. 50 Years of Integer Programming 1958–2008: From the Early Years to the State-of-the-Art . Springer Science & Business Media, 2009. [36] Serdar Kadioglu, Yury Malitsky, Meinolf Sellmann, and Kevin Tierney. Isac–instance-specific algorithm configuration. In ECAI 2010 , pages 751–756. IOS Press, 2010. [37] Aaron Klein, Stefan Falkner, Simon Bartels, Philipp Hennig, and Frank Hutter. Fast bayesian optimization of machine learning hyperparameters on large datasets. In Proceedings of the 20th International Conference on Artificial Intelligence and Statistics (AISTATS) , pages 528–536. PMLR, 2017. [38] Roman Kochnev, Ali Tahan Goodarzi, Zofia A. Bentyn, Dmitry Ignatov, and Radu Timofte. Optuna vs code llama: Are llms a new paradigm for hyperparameter tuning? arXiv preprint arXiv:2504.06006 , 2025. [39] H. Kushner. A new method of locating the maximum point of an arbitrary multipeak curve in the presence of noise. Journal of Basic Engineering , 86(1):97–106, 1964. [40] Tor Lattimore and Csaba Szepesvári. Bandit Algorithms . Cambridge University Press, 2020. [41] Kevin Leyton-Brown, Eugene Nudelman, and Yoav Shoham. Learning the empirical hardness of optimization problems: The case of combinatorial auctions. In Proceedings of the 8th International Conference on Principles and Practice of Constraint Programming (CP 2002) ,pages 556–572. Springer, 2002. [42] Lisha Li, Kevin Jamieson, Giulia DeSalvo, Afshin Rostamizadeh, and Ameet Talwalkar. Hy-perband: A novel bandit-based approach to hyperparameter optimization. Journal of Machine Learning Research , 18(1):6765–6816, 2017. [43] M. Lindauer, K. Eggensperger, M. Feurer, A. Biedenkapp, D. Deng, C. Benjamins, T. Ruhkopf, R. Sass, and F. Hutter. Smac3: A versatile bayesian optimization package for hyperparameter optimization. Journal of Machine Learning Research , 23(1):2475–2483, 2022. [44] Chang Liu, Zhipeng Dong, Hao Ma, Wei Luo, Xiang Li, Bo Pang, and Junchi Yan. L2p-mip: Learning to presolve for mixed integer programming. In The Twelfth International Conference on Learning Representations , 2024. [45] Tennison Liu, Nicolás Astorga, Nabeel Seedat, and Mihaela van der Schaar. Large language models to enhance bayesian optimization. arXiv preprint arXiv:2402.03921 , 2024. [46] Manuel López-Ibáñez, Jérémie Dubois-Lacoste, Leslie Pérez Cáceres, Mauro Birattari, and Thomas Stützle. The irace package: Iterated racing for automatic algorithm configuration. 
+
+Operations Research Perspectives , 3:43–58, 2016. [47] Kamran Mahammadli and Seyda Ertekin. Sequential large language model-based hyper-parameter optimization. arXiv preprint arXiv:2410.20302 , 2024. [48] Jonas Mockus. The application of bayesian methods for seeking the extremum. In Towards Global Optimization , volume 2, pages 117–129. North-Holland, 1998. 13 [49] S. Müller, M. Feurer, N. Hollmann, and F. Hutter. Pfns4bo: In-context learning for bayesian optimization. arXiv preprint arXiv:2305.17535 , 2023. [50] Vinod Nair, Sergey Bartunov, Felix Gimeno, Ingrid von Glehn, Pawel Lichocki, Ivan Lobov, Brendan O’Donoghue, et al. Solving mixed integer programs using neural networks. arXiv preprint arXiv:2012.13349 , 2020. [51] OpenAI. Gpt-4 technical report. Technical report, OpenAI, 2023. [52] Xinkai Pan, Chenglong Wang, Chenyu Ying, Yuhui Xue, and Tian Yu. Beyond the heatmap: A rigorous evaluation of component impact in mcts-based tsp solvers. arXiv preprint arXiv:2411.09238 , 2024. [53] Dimitri J. Papageorgiou, George L. Nemhauser, Joel Sokol, Myun-Seok Cheon, and Ahmet B. Keha. Mirplib–a library of maritime inventory routing problem instances: Survey, core model, and benchmark results. European Journal of Operational Research , 235(2):350–366, 2014. [54] Vangelis Th. Paschos. Applications of Combinatorial Optimization , volume 3. John Wiley & Sons, 2014. [55] Yury Pushak and Holger H. Hoos. Golden parameter search: Exploiting structure to quickly configure parameters in parallel. In Proceedings of the Genetic and Evolutionary Computation Conference (GECCO) , pages 245–253, 2020. [56] Herilalaina Rakotoarison, Steven Adriaensen, Neeratyoy Mallik, Samir Garibov, Edward Bergman, and Frank Hutter. In-context freeze-thaw Bayesian optimization for hyperparameter optimization. In International Conference on Machine Learning (ICML) , 2024. [57] M. C. Ramos, S. S. Michtavy, M. D. Porosoff, and A. D. White. Bayesian optimization of catalysts with in-context learning. arXiv preprint arXiv:2304.05341 , 2023. [58] Elias Schede et al. A survey of methods for automated algorithm configuration. Journal of Artificial Intelligence Research , 75:425–487, 2022. [59] Bobak Shahriari, Kevin Swersky, Ziyu Wang, Ryan P. Adams, and Nando De Freitas. Taking the human out of the loop: A review of bayesian optimization. Proceedings of the IEEE , 104 (1):148–175, 2015. [60] Wen Song, Yi Liu, Zhiguang Cao, Yaoxin Wu, and Qiqiang Li. Instance-specific algorithm configuration via unsupervised deep graph clustering. Engineering Applications of Artificial Intelligence , 125:106740, 2023. doi: 10.1016/j.engappai.2023.106740. [61] T. P. Sorrell. Tuning Optimization Software Parameters for Mixed Integer Programming Problems . Doctoral dissertation, Virginia Commonwealth University, 2017. [62] Jiaqi Sun, Zihang Wang, Runpeng Yang, Chenkai Xiao, John Lui, and Ziheng Dai. Large language model-enhanced multi-armed bandits. arXiv preprint arXiv:2502.01118 , 2025. [63] Kevin Swersky, Jasper Snoek, and Ryan P. Adams. Multi-task bayesian optimization. In 
+
+Advances in Neural Information Processing Systems , volume 26, 2013. [64] Romeo Valentin, Claudio Ferrari, Jérémy Scheurer, Andisheh Amrollahi, Chris Wendler, and Max B. Paulus. Instance-wise algorithm configuration with graph neural networks. arXiv preprint arXiv:2202.04910 , 2022. [65] A. G. Wilson, Z. Hu, R. Salakhutdinov, and E. P. Xing. Deep kernel learning. In Proceedings of the 19th International Conference on Artificial Intelligence and Statistics , volume 51 of 
+
+Proceedings of Machine Learning Research , pages 370–378, Cadiz, Spain, 2016. PMLR. [66] Xuan Wu et al. Efficient heuristics generation for solving combinatorial optimization prob-lems using large language models. In Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining , volume 2, 2025. [67] Lin Xu, Frank Hutter, Holger H. Hoos, and Kevin Leyton-Brown. Satzilla: Portfolio-based algorithm selection for sat. Journal of Artificial Intelligence Research , 32:565–606, 2008. 14 [68] Lin Xu, Holger Hoos, and Kevin Leyton-Brown. Hydra: Automatically configuring algorithms for portfolio-based selection. In Proceedings of the AAAI Conference on Artificial Intelligence ,volume 24, pages 210–216, 2010. [69] Michael R. Zhang, Nikhil Desai, Joonho Bae, Jonathan Lorraine, and Jimmy Ba. Using large language models for hyperparameter optimization. arXiv preprint arXiv:2312.04528 , 2023. 15 Appendix Contents 
+
+A Experiment Enviroment 17 B More Related Work 17 C Theoretical Convergence Analysis 18 
+
+C.1 Problem formulation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18 C.2 Assumptions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18 C.3 Regret decomposition . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19 C.4 Bounding the search residual . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19 C.5 Main result . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20 C.6 What the theorem says about each module of GRIMIP . . . . . . . . . . . . . . . 20 C.7 Remarks and extensions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21 
+
+D Warm-starting Features 21 E Evaluation Metrics 21 
+
+E.1 Primal-Dual Integral . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21 E.2 Solving Time . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22 
+
+F Baseline Methods 23 
+
+F.1 Random Search (Random) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23 F.2 SMAC-Population (SMAC-P) . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24 F.3 SMAC-Individual (SMAC-I) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24 F.4 Gurobi Parameter Tuning Tool (GPTT) . . . . . . . . . . . . . . . . . . . . . . . . 24 F.5 LLAMBO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24 F.6 ifBO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25 F.7 TuRBO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25 
+
+G Algorithms 25 H Ablation Experiments 25 
+
+H.1 The Role of Uncertainty . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25 H.2 The Role of Warm-starting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26 H.3 The Role of ASS . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27 16 A Experiment Enviroment 
+
+All computational experiments were performed on a high-performance server running a Linux-based operating system (Ubuntu 20.04.6 LTS). The system was powered by an AMD EPYC 9754 processor, featuring 128 cores capable of handling 256 simultaneous threads, with a standard clock speed of approximately 3.1 GHz. This CPU is equipped with 256 MiB of L3 cache. The server was configured with 251 GiB of system RAM. To ensure fair and reproducible comparisons, all evaluation tasks were strictly limited to a single execution thread. For tasks requiring hardware acceleration, we used a single GPU-class accelerator with 24 GiB of dedicated memory and a vendor-provided software stack. The primary software used for the experiments included Python version 3.8.20 and Gurobi Optimizer version 11.0.1. 
+
+B More Related Work 
+
+Advanced Surrogate Models for Hyperparameter Optimization While standard Bayesian Opti-mization relies on Gaussian Processes (GPs), recent research has sought to enhance expressiveness for complex landscapes. Techniques include Deep Kernel GPs [ 65 , 27 ] and Manifold GPs [ 14 ]to better capture non-stationary behaviors. Beyond GPs, Tree-structured Parzen Estimators (TPE) offer a generative approach, modeling p(h | s) and p(h) directly, which often scales better to high-dimensional spaces [ 8 , 2]. A more recent trend involves leveraging Transformer architectures as pre-trained priors for BO, such as Prior-Data Fitted Networks (PFNs), which allow for in-context learning of the surrogate surface [ 15 , 49 ]. These advanced surrogates aim to refine the trade-off between exploring uncertain regions and exploiting known high-performing parameters. 
+
+HPO under Complex Constraints and Objectives Standard HPO often assumes a single objective with uniform evaluation costs, but practical solver tuning is more nuanced. To address finite com-putational budgets, multi-fidelity approximations like Hyperband [ 42 ] and FABOLAS [ 37 ] allocate resources dynamically, discarding poor configurations early. For problems requiring simultaneous optimization of conflicting metrics (e.g., solution quality vs. runtime), multi-objective optimization techniques have been integrated into BO frameworks [ 18 ]. Additionally, Multi-task learning [ 63 ]allows information transfer across related tuning tasks. In the context of MIP specifically, Sorrell [61] applied statistical experimental design to isolate influential parameters for specific problem classes, though such methods typically lack the flexibility to adapt to new instances without retraining. 
+
+LLM-Driven Mechanisms for Optimization While the Introduction outlines the general use of LLMs in optimization, recent works have proposed specific mechanisms to ground LLM reasoning. For instance, Zhang et al. [69] utilize LLMs in a conversational format, iteratively refining suggestions based on feedback history. To tackle the specific challenges of combinatorial optimization, the Hercules framework introduces specialized prompting strategies: “Core Abstraction Prompting” to distill knowledge from elite heuristics, and “Performance Prediction Prompting” to estimate solution quality before expensive evaluations [ 66 ]. Other approaches focus on the surrogate role, such as using LLMs to model the probability of improvement in molecular optimization tasks [ 57 ]. These methods highlight the potential of structured prompting and hybrid architectures in enhancing the reliability of LLM-based optimizers. 
+
+Traditional Heuristic Methods. Standard automated algorithm configuration methods include fractional factorial design, local search strategies, genetic algorithms, and racing procedures. CALI-BRA combines Taguchi’s fractional experimental designs with local search to find optimal values for up to five search parameters [ 1]. ParamILS employs iterated local search in the parameter con-figuration space with adaptive capping techniques to accelerate runtime optimization [ 29 ]. Golden Parameter Search (GPS) exploits the unimodal structure of configuration landscapes to optimize parameters semi-independently in parallel [ 55 ]. GGA introduces a gender-based selection mechanism with AND-OR tree representations to capture parameter dependencies [ 3]. GGA++ extends this by incorporating random forest surrogate models to predict high-performance parameter regions [ 4]. PyDGGA further distributes GGA across computing clusters using an event-driven architecture [ 5]. The irace package implements iterated racing procedures that use statistical tests to progressively eliminate underperforming configurations [46]. 17 C Theoretical Convergence Analysis 
+
+Although GRIMIP is primarily designed for methodological efficiency and practical utility, we also provide an initial theoretical analysis to better understand its convergence behavior. As before, the regret decomposes into an approximation floor ∆ASS (how well ASS covers the optimum) and a 
+
+search term that decays at the standard finite-arm ˜O(pN/T ) rate. 
+
+C.1 Problem formulation Arm set. The LLM proposer emits configurations on a small fixed grid—continuous parameters at two-decimal precision (often on a 0.05 step, e.g. Heuristics ∈ { 0.00 , 0.05 , . . . , 1.00 }) and discrete parameters on their native integer ranges. Combined with ASS—which prunes both irrelevant dimen-sions and infeasible parameter combinations (e.g. conflicting MIPFocus /Heuristics settings)—this yields a finite, instance-specific active set 
+
+XASS ⊆ X , N := |X ASS |,
+
+typically of order 10 2–10 3. Let g : X → [0 , B ] denote the true PDI map for a fixed MIP instance and 
+
+c⋆ ∈ arg min c∈X g(c) the overall best configuration. 
+
+Feedback model. At round n, evaluating arm cn returns 
+
+yn = g(cn) + ηn, ηn zero-mean, ση -sub-Gaussian , σ η ≤ B/ 2,
+
+capturing the run-to-run variance of Gurobi’s single-thread execution. 
+
+Algorithm. At round n, GRIMIP queries the LLM for K candidate configurations {˜ck,n +1 }Kk=1 
+
+from the conditional sampler q(· | D n), then asks the LLM to predict for each candidate a mean ˜μk,n +1 
+
+and standard deviation ˜σk,n +1 . With y⋆ = min i≤n yi, the EI acquisition score (for a minimisation objective) is 
+
+EI k,n +1 =  y⋆ − ˜μk,n +1 
+
+Φ( Zk,n +1 ) + ˜ σk,n +1 ϕ(Zk,n +1 ), Zk,n +1 = y⋆−˜μk,n +1  
+
+> ˜σk,n +1
+
+,
+
+where Φ, ϕ are the standard normal CDF and PDF. GRIMIP evaluates 
+
+cn+1 = arg max  
+
+> k=1 ,...,K
+
+EI k,n +1 .
+
+Let Nn(c) := P 
+
+> i≤n
+
+1{ci = c} be the empirical count and bgn(c) := Nn(c)−1 P 
+
+> i≤n
+
+yi1{ci = c}
+
+the empirical mean for arms with Nn(c) ≥ 1. Define the empirically-best-observed configuration 
+
+c+ 
+
+> T
+
+∈ arg min bgT (c) : c ∈ X ASS , N T (c) ≥ 1 , (1) which matches what the GRIMIP code returns at termination. We study the simple regret rT =
+
+g(c+ 
+
+> T
+
+) − g(c⋆), which is the practically relevant metric for solver tuning. 
+
+C.2 Assumptions Assumption C.1 (Bounded PDI) . g(c) ∈ [0 , B ] for all c ∈ X , for a known constant B > 0.
+
+Assumption C.2 (Sub-Gaussian noise) . The noises {ηn}n≥1 are zero-mean and ση -sub-Gaussian conditional on Fn−1, with ση ≤ B/ 2.
+
+Assumption C.3 (Operational pmin selection floor) . There exists pmin ∈ (0 , 1] such that, for every history Fn and every c ∈ X ASS ,
+
+Pr  cn+1 = c Fn
+
+ ≥ pmin .
+
+Assumption C.1 is standard. Assumption C.3 is a single, operational floor on the combined mapping 
+
+Fn 7 → cn+1 produced by the LLM proposer plus the EI argmax over the K-batch. It absorbs three independent sources of stochasticity into one constant: (i) the proposer’s temperature-based sampling of candidates from q(· | D n), (ii) the LLM’s intrinsic non-determinism in producing (˜ μk, ˜σk) for each candidate, and (iii) tie-breaking inside arg max k EI k,n +1 . Because the support of q lives on the finite grid XASS by design (Remark (e)), pmin > 0 is a structural property of finite-support temperature sampling rather than an additional modelling assumption. 18 What we explicitly do not assume. We make no calibration assumption on the LLM’s predictive distribution. In particular, we do not require ˜μk ≈ g(ck), nor do we require ˜σk to contract at any rate. The bound below holds even when (˜ μk, ˜σk) are arbitrarily miscalibrated, which we take as the honest stance towards LLM predictions in the absence of an explicit calibration mechanism. 
+
+C.3 Regret decomposition 
+
+Let c⋆ 
+
+> ASS
+
+∈ arg min c∈X ASS g(c) and define the ASS approximation gap 
+
+∆ASS := g(c⋆
+
+> ASS
+
+) − g(c⋆) ∈ [0 , B ],
+
+which is automatically bounded by B via Assumption C.1. Add and subtract g(c⋆
+
+> ASS
+
+) inside the simple regret: 
+
+g(c+ 
+
+> T
+
+) − g(c⋆) = g(c⋆
+
+> ASS
+
+) − g(c⋆)| {z }
+
+> = ∆ ASS
+
++ g(c+ 
+
+> T
+
+) − g(c⋆
+
+> ASS
+
+)| {z }
+
+> search residual
+
+. (2) The first summand is the approximation residual contributed by ASS; it is independent of T . The second is the search residual inside XASS , which we bound at the ˜O(1 /√T ) rate below. The approximation residual ∆ASS is an instance-dependent measure of how well ASS places a near-optimum inside the active subspace. A subspace that contains c⋆ gives ∆ASS = 0 ; the generic shared parameter subset used by the ablation “w/o ASS” gives a strictly larger ∆ASS , which forms the unavoidable approximation floor of the theorem. Defined directly in objective space, ∆ASS is in principle estimable from data (by comparing GRIMIP’s best configuration against a reference best over X ). 
+
+C.4 Bounding the search residual 
+
+The search residual is controlled by two ingredients: a uniform concentration bound on the empirical means bgT (·), and a uniform coverage bound that lower-bounds min c NT (c) via Assumption C.3. 
+
+Lemma C.4 (Concentration on evaluated arms) . Under Assumptions C.1–C.2, for any δ ∈ (0 , 1) ,with probability at least 1 − δ, for all c ∈ X ASS and all n ≤ T with Nn(c) ≥ 1,
+
+bgn(c) − g(c) ≤ ση
+
+q 2 log(2 N T /δ ) 
+
+> Nn(c)
+
+.
+
+Proof. For each fixed c ∈ X ASS and each fixed sample size m ∈ { 1, . . . , T }, the sub-Gaussian Hoeffding bound [11, Thm. 2.1] applied to the m noises collected for arm c gives 
+
+Pr 
+
+
+
+|bgn(c) − g(c)| > σ η
+
+p2 log(2 /δ ′)/m Nn(c) = m
+
+
+
+≤ δ′.
+
+Setting δ′ = δ/ (N T ) and union-bounding over (c, m ) ∈ X ASS × { 1, . . . , T } yields the claim. The union over m is what makes the bound hold uniformly for the random (stopping-time) value of 
+
+Nn(c); see e.g. Lattimore and Szepesvári [40, Ch. 7]. 
+
+Lemma C.5 (Coverage via pmin ). Under Assumption C.3, for any δ ∈ (0 , 1) , with probability at least 1 − δ,
+
+min 
+
+> c∈X ASS
+
+NT (c) ≥ pmin T 
+
+> 2
+
+provided T ≥ 8 
+
+> pmin
+
+log Nδ .
+
+Proof. Fix c ∈ X ASS . The indicators Xn = 1{cn = c} satisfy E[Xn | F n−1] ≥ pmin by Assump-tion C.3, so Xn stochastically dominates a Bernoulli (pmin ) random variable conditional on the past, and NT (c) = PTn=1 Xn stochastically dominates Bin( T, p min ) [ 9, Lemma 1]. The multiplicative-Chernoff lower-tail bound applied with θ = 1 /2 gives 
+
+Pr  NT (c) ≤ pmin T
+
+> 2
+
+ ≤ exp  − pmin T
+
+> 8
+
+.
+
+Union-bounding over N arms, the failure probability is at most N exp( −pmin T / 8) , which is ≤ δ as soon as T ≥ (8 /p min ) log( N/δ ).19 C.5 Main result Theorem C.6 (Simple regret of GRIMIP) . Let Assumptions C.1–C.3 hold and let N = |X ASS |. For any δ ∈ (0 , 1) and any T satisfying T ≥ (8 /p min ) log( N/δ ), with probability at least 1 − 2δ,
+
+g(c+ 
+
+> T
+
+) − g(c⋆) ≤ ∆ASS 
+
+| {z } 
+
+> ASS approximation
+
++ 2 ση
+
+q 4 log(2 N T /δ ) 
+
+> pmin T
+
+| {z }
+
+> search residual
+
+. (3) 
+
+Equivalently, since pmin ≤ 1/N holds structurally (because P 
+
+> c
+
+Pr( cn+1 = c | F n) = 1 and Assumption C.3 is uniform over c), 
+
+g(c+ 
+
+> T
+
+) − g(c⋆) ≤ ∆ASS + ˜O
+
+
+
+ση
+
+pN/T 
+
+
+
+. (4) 
+
+GRIMIP therefore converges to a ∆ASS -neighbourhood of the global optimum at the standard finite-arm ˜O(pN/T ) rate. Proof. Let EA be the concentration event of Lemma C.4 (with confidence parameter δ) and EB the coverage event of Lemma C.5 (with confidence parameter δ). A union bound gives Pr( EA ∩ E B ) ≥
+
+1 − 2δ, and we work on EA ∩ E B throughout. On EB , every arm satisfies NT (c) ≥ pmin T / 2 ≥ 1, so the empirical-argmin in (1) ranges over the full XASS . Set 
+
+r := ση
+
+q 4 log(2 N T /δ ) 
+
+> pmin T
+
+≥ ση
+
+q 2 log(2 N T /δ )  
+
+> NT(c)
+
+for every c ∈ X ASS ,
+
+where the inequality uses NT (c) ≥ pmin T / 2. Hence on EA ∩E B , Lemma C.4 gives |bgT (c)−g(c)| ≤ r
+
+uniformly over c ∈ X ASS . Apply this to c⋆ 
+
+> ASS
+
+and c+ 
+
+> T
+
+:
+
+bgT (c⋆
+
+> ASS
+
+) ≤ g(c⋆
+
+> ASS
+
+) + r, g(c+ 
+
+> T
+
+) ≤ bgT (c+ 
+
+> T
+
+) + r. 
+
+By the empirical-argmin definition of c+ 
+
+> T
+
+, bgT (c+ 
+
+> T
+
+) ≤ bgT (c⋆
+
+> ASS
+
+). Chaining gives 
+
+g(c+ 
+
+> T
+
+) ≤ bgT (c⋆
+
+> ASS
+
+) + r ≤ g(c⋆
+
+> ASS
+
+) + 2 r. 
+
+Subtracting g(c⋆) and substituting ∆ASS = g(c⋆
+
+> ASS
+
+) − g(c⋆) yields (3). 
+
+C.6 What the theorem says about each module of GRIMIP (ASS) controls both the approximation floor and the arm count. The first term ∆ASS measures how well the instance-specific subspace covers c⋆: a good ASS yields ∆ASS ≈ 0, whereas the “w/o ASS” ablation suffers a strictly larger residual error. ASS also shrinks N = |X ASS | by pruning irrelevant dimensions and infeasible parameter combinations, directly tightening the √N factor in the search residual. The dynamic-ASS variant further reduces ∆ASS as data accumulates. 
+
+(WS) lowers the activation threshold of the bound. The bound activates only after the coverage threshold T0 := (8 /p min ) log( N/δ ) is reached. Warm-starting seeds D0 with N0 informed evalua-tions whose configurations cover a non-trivial subset of XASS , so the effective number of additional rounds needed to reach min c NT (c) ≥ pmin T / 2 is reduced by N0. WS does not change the asymp-totic rate, but it appreciably shrinks the regret consumed before the bound becomes informative—a non-trivial benefit under the tight MIP-tuning budget. 
+
+(LLM-PS) supplies the proposer and the EI scorer. The LLM provides both the conditional sampler q(· | D n) from which candidates are drawn and the predictive distribution (˜ μk, ˜σk) used to score them via EI. Assumption C.3 is the only requirement on this combined mapping; calibration is not assumed. Empirically, EI’s localised exploitation behaviour drives GRIMIP’s strong constants in the experiments; the theorem certifies that even under the worst-case uncalibrated regime, the simple regret still decays at the standard rate. 20 C.7 Remarks and extensions (a) Why 1/p min is benign in practice. The worst-case pmin = 1 /N is achieved only by an LLM proposer that distributes its mass uniformly on XASS . In practice, q(· | D n) concentrates on configurations consistent with the instance prior FP and the observed history Dn, so the effective 
+
+number of arms for which pmin is tight is far smaller than N . The bound is therefore conservative; experimentally observed convergence is markedly faster than pN/T .
+
+(b) Comparison with calibrated GP-EI. Bull [13] shows that EI on a Matérn-ν Gaussian-process surrogate with a properly calibrated posterior achieves simple regret ˜O(T − min( ν/d, 1/2) ). Our bound trades that exponent for 1/2, paying for the absence of any LLM calibration assumption. For short MIP-tuning horizons ( T ≤ 30 ) the leading constants—driven by ∆ASS , the LLM’s prior knowledge of solver internals, and instance-conditioning of the proposer—dominate the rate, which is consistent with our experimental observation that uncalibrated LLM-EI outperforms calibrated GP-EI within the tuning budget, as well as GRIMIP variants that perform online calibration from the observed optimization trajectory. 
+
+(c) No theory–practice gap on the candidate batch. Theorem C.6 analyses the operational mapping 
+
+Fn 7 → cn+1 produced by the actual implementation (proposer of K candidates plus EI argmax). Because Assumption C.3 is stated at the level of this combined mapping, the bound applies directly to the batched algorithm, with no idealised full-arm-set variant required. 
+
+(d) Comparison with the continuous optimum. Comparing g(c+ 
+
+> T
+
+) against the continuous optimum 
+
+c⋆ 
+
+> cont
+
+∈ arg min c∈Q 
+
+> i[ai,b i]
+
+g(c) introduces an additional grid-approximation term of at most L ·
+
+max i ρi · √d (for a Lipschitz constant L of g and number of continuous parameters d); finer resolutions ρi shrink this floor at the cost of increasing N logarithmically. 
+
+D Warm-starting Features 
+
+Warm-starting uses instance-level features to construct an informative initial configuration set before the Bayesian optimization loop. We collect static features directly from the MIP model and dynamic features from a 30-second preliminary run with Gurobi’s default settings. The exact feature sets used by WS are listed below. 
+
+E Evaluation Metrics 
+
+E.1 Primal-Dual Integral 
+
+Figure 6: PDI Illustration When evaluating the performance of a MIP solver, relying solely on the total solution time is insufficient, especially for difficult instances that are not solved to optimality within a given time limit T . A more informative metric in this con-text is the Primal-Dual Integral (PDI) , which quantifies the solver’s overall progress by mea-suring the area between the primal bound and the dual bound over the entire solution process. Specifically, let Zprimal (t) be the objective value of the best-known integer feasible solution at time t (the primal bound), and let Zdual (t) be the best known dual bound at time t (the proof of optimality). For a minimization problem, we always have Zprimal (t) ≥ Zdual (t). The PDI is defined as: PDI =
+
+Z T
+
+> 0
+
+ Zprimal (t) − Zdual (t) dt. 
+
+The advantage of this metric is that it rewards improvements from both sides: 21 Table 4: Static Features of MIP Instances 
+
+Category Feature Description 
+
+Variable-related Total number of variables The total scale of decision variables in the problem. Number of integer variables The count of variables restricted to integer values. Number of binary variables The count of 0-1 variables, a subset of in-teger variables. Number of continuous variables The count of variables that can take any real value. Ratios of variable types Proportion of binary variables to total vari-ables. Proportion of integer (incl. binary) vari-ables to total. Constraint-related Total number of constraints The total number of constraint equations in the problem. Constraint types Number of equality (=) constraints. Number of less-than-or-equal-to ( ≤) con-straints. Number of greater-than-or-equal-to ( ≥)constraints. Constraint matrix (A) features Number of non-zero elements and matrix density. Statistics on non-zeros per row/column (mean, std, etc.). Statistics on coefficient values (mean, vari-ance, etc.). Objective Function Number of non-zero coefficients Number of variables directly impacting the objective value. Statistics on coefficients Distribution (mean, variance, etc.) of ob-jective coefficients. • Primal Side : Finding better feasible solutions (lowering Zprimal (t)). • Dual Side : Tightening the optimality bound (increasing Zdual (t)). In our framework, the PDI is calculated numerically using the left Riemann sum. A callback function is implemented to record a series of timestamps, primal bounds, and dual bounds throughout the Gurobi optimization process. The PDI is then computed by summing the areas of the rectangular regions formed by consecutive gap measurements over time intervals, as formulated below: 
+
+PDI =  
+
+> N−1
+
+X
+
+> i=0
+
+Gap( ti) × (ti+1 − ti),
+
+where N is the total number of recorded data points and Gap( ti) = Zprimal (ti) − Zdual (ti).The PDI is a metric to be minimized . A smaller value indicates that the solver was able to close the primal-dual gap more rapidly. The PDI achieves its optimal value of 0 if the gap is closed at t = 0 or any time before T .
+
+E.2 Solving Time 
+
+In the domain of mathematical optimization, solution speed is a metric of paramount importance. We define Solving Time as the wall-clock time required by the Gurobi solver to find a proven optimal solution for a given problem instance. The solver’s execution for any single run terminates under one of two conditions: • Optimality: The solver finds a solution and successfully proves its optimality. 22 Table 5: Dynamic Features of MIP Instances (from a 30-second run) 
+
+Category Feature Description 
+
+Root Node / LP Relaxation Initial dual gap Gap between root LP objective and initial feasible solution. Time to solve root relaxation Time required to solve the initial LP relaxation. Objective value of root relaxation The initial value of the dual bound. Number of simplex iterations Simplex iterations needed for the root relaxation. Branch-and-Bound Tree Number of processed nodes Total B&B nodes explored within the time limit. Number of open nodes left Unprocessed nodes in the B&B tree at the time limit. Maximum depth of the tree The greatest branching depth reached during the run. Cutting Planes & Presolve Types & counts of cuts Number of specific cuts applied (Gomory, MIR, Cover, etc.). Total number of all generated cut-ting planes. Presolve effectiveness Number of variables removed by presolve. Number of constraints removed by presolve. Time spent in the presolve phase. Heuristics & Solutions Number of feasible solutions Count of integer-feasible solu-tions found. Objective of first solution Quality of the first solution found by heuristics. Objective of best solution Quality of the best solution (pri-mal bound) found. • Time Limit: The solver exhausts a predefined computational budget before optimality is proven. For our evaluation, particularly on the MIK and CORAL datasets, this metric is the primary per-formance indicator. The objective of any tuning method is to find a parameter configuration that minimizes this solving time. 
+
+F Baseline Methods 
+
+To comprehensively evaluate efficacy, we compare GRIMIP against a suite of established baselines. To ensure a strictly fair comparison regarding the search landscape, all baseline methods are configured to explore the exact same hyperparameter space Θ, consisting of 6 high-impact parameters (detailed in Section F.1). This focused selection reflects realistic operational constraints, ensuring that the optimization process remains tractable and avoids the risk of the curse of dimensionality associated with navigating high-dimensional configuration spaces. 
+
+F.1 Random Search (Random) 
+
+To rigorously assess the necessity of intelligent optimization strategies, we include Random Search 
+
+as a fundamental baseline. It explores the hyperparameter space without any learning mechanism or historical guidance. 
+
+Configuration Space To eliminate discrepancies in the accessible solution space, we define a standardized configuration space Θ used by all baselines (including SMAC-I, SMAC-P, LLAMBO, 23 ifBO, and TuRBO). Instead of exploring the full set of available Gurobi parameters, we focus on the 
+
+6 most influential parameters to prevent high-dimensional sparsity issues. The space Θ comprises: • MIPFocus (int, 0 − 3): Controls the high-level solution strategy (e.g., focusing on feasibility vs. optimality). • Heuristics (float, 0.0 − 1.0): Determines the percentage of time spent on primal heuristics. • Cuts (int, −1 to 3): Global aggressiveness of cutting plane generation. • Presolve (int, −1 to 2): Controls the level of presolving applied before the branch-and-bound search. • Method (int, −1 to 2): Selects the specific algorithm used to solve the root relaxation (e.g., primal/dual simplex, barrier). • VarBranch (int, −1 to 3): Determines the variable branching strategy within the search tree. 
+
+Setup The evaluation budget is coupled to GRIMIP’s computational effort. For each instance, Random Search samples K = Niter + Ninit configurations uniformly at random from this 6-parameter space. The configuration yielding the minimum Primal-Dual Integral (PDI) is selected as the final solution. 
+
+F.2 SMAC-Population (SMAC-P) SMAC-P serves as a global baseline, seeking a single “one-size-fits-all” configuration that minimizes the average PDI across the entire instance distribution. 
+
+Setup Operating within the identical 6-parameter space Θ, SMAC-P is constrained by a strict budget of 500 trials or 7200 seconds . In each iteration, the optimizer evaluates a candidate configura-tion on a stochastic subset of 10 instances (single-threaded). The process terminates when the budget is exhausted, returning the incumbent configuration with the best average performance. 
+
+F.3 SMAC-Individual (SMAC-I) SMAC-I acts as the rigorous per-instance baseline, executing an independent configuration process for each specific MIP instance. 
+
+Setup SMAC-I seeks the optimal configuration θ∗ ∈ Θ to minimize the instance-specific PDI. It explicitly operates within the same 6-parameter search space Θ defined for all other baselines. To ensure a strictly fair comparison, the total wall-clock tuning budget for each instance is aligned with the time consumed by GRIMIP. Additionally, all evaluations are conducted on a single thread to eliminate variance arising from parallelism. 
+
+F.4 Gurobi Parameter Tuning Tool (GPTT) 
+
+We incorporate GPTT , Gurobi’s native automated tuning utility. 
+
+Setup GPTT is configured to operate within the identical parameter space Θ as the other methods, restricted to the 6 high-impact parameters. We set TuneTrials=3 to perform 3 independent runs per candidate. To ensure fairness, the tuning budget passed to GPTT ( T (i)
+
+> tune
+
+) is dynamically derived from GRIMIP’s total wall-clock time ( T (i)
+
+> total
+
+), reserving a fixed duration ( Teval = 300 s ) for the final validation run: 
+
+T (i) 
+
+> tune
+
+= max 
+
+
+
+T (i) 
+
+> total
+
+− Teval , 300 s
+
+
+
+F.5 LLAMBO LLAMBO [45 ] is an LLM-driven framework using Monte Carlo sampling for performance and uncertainty estimation. While the original framework is effective on low-dimensional spaces, we ensure a fair comparison by configuring LLAMBO to explore the exact same 6-parameter space 
+
+24 Θ as the other baselines. This dimensionality aligns well with LLAMBO’s typical operating range, avoiding the inefficiencies often observed in higher-dimensional tasks. We set the Monte Carlo sampling frequency to 5 independent queries per candidate. The budget is aligned with GRIMIP (20 evaluations total, initial population of 5, patience of 4), ensuring the comparison focuses on the search methodology rather than the search space size. 
+
+F.6 ifBO ifBO [ 56 ] is a recently proposed in-context freeze-thaw Bayesian optimization method. It replaces the hand-crafted Gaussian-process surrogate of classical freeze-thaw BO with a pre-trained transformer (FT-PFN) that acts as a learning-curve prior, enabling the optimizer to adaptively decide whether to continue evaluating a promising configuration or to discard it in favour of a new candidate. This makes ifBO a particularly relevant baseline for solver tuning, where configuration evaluations are expensive and can in principle be terminated early based on partial convergence information. 
+
+Setup ifBO operates within the identical 6-parameter space Θ used by all other baselines, and is 
+
+not allowed to access any parameters outside this set. To guarantee a strictly fair comparison, the total tuning effort for each instance is capped by the same wall-clock time consumed by GRIMIP on that instance (rather than by a fixed number of trials), and all evaluations run single-threaded. The initial design, acquisition function, and FT-PFN surrogate are used as released by the authors; only the budget, search space, and evaluation oracle (Gurobi with single-thread PDI evaluation) are standardised for our experiments. 
+
+F.7 TuRBO TuRBO [19 ] is a trust-region Bayesian optimization method designed to scale classical BO beyond low-dimensional problems. Rather than fitting a single global Gaussian-process surrogate, TuRBO maintains one or more local GP surrogates inside shrinking/expanding trust regions that are restarted when they collapse. We include it as a strong non-LLM , per-instance BO baseline that is known to be competitive on high-dimensional black-box tuning. 
+
+Setup TuRBO is restricted to the same fixed 6-parameter space Θ as the other baselines; no additional Gurobi parameters are exposed to it. As with SMAC-I and ifBO, the per-instance tuning budget is set by matching GRIMIP’s wall-clock time on that instance, and all solver evaluations are executed single-threaded. We use a single trust region (TuRBO-1) with the default initial design size, trust-region expansion/contraction thresholds, and acquisition rule from the original implementation; only the search space and budget are adapted to our benchmark. 
+
+G Algorithms 
+
+Algorithm 1 clearly demonstrates the four core stages of GRIMIP: feature extraction, automatic spatial selection (ASS), Warmstart, and LLM-driven Bayesian optimization loops. 
+
+H Ablation Experiments 
+
+H.1 The Role of Uncertainty 
+
+To quantify the critical role of uncertainty modeling (i.e., predicting the standard deviation std )within our framework, we conducted a rigorous ablation study, comparing two versions of our method: 
+
+> 1
+
+⃝ GRIMIP (Full Version): Leverages a single prompt call for the LLM to simultaneously predict both the performance mean and its uncertainty ( std ). 2⃝ GRIMIP w/o std (Simplified Version): As a control group, this version adopts an approach following the LLAMBO framework [ 45 ] to indirectly acquire uncertainty and performance. Specifically, it only prompts the LLM to predict the performance. To calculate the std required for the Bayesian optimization acquisition function, this method repeatedly calls the LLM for the same candidate point (5 times) to obtain multiple independent performance predictions. The std of these predictions is then calculated and used as the uncertainty estimate. As shown in Table 7 in terms of solution quality, the full GRIMIP version 25 Algorithm 1 GRIMIP: General Reasoning for Instance-specific MIP Configuration 
+
+Require: MIP instance P , LLM, Budget Niter , Time Limit Tlimit 
+
+Ensure: Optimized configuration c∗ 
+
+> 1:
+
+Feature Extraction:  
+
+> 2:
+
+Fstatic ← ExtractStatic (P ) 
+
+> 3:
+
+Fdynamic ← RunTrial (P, 30 s) 
+
+> 4:
+
+FP ← F static ∪ F dynamic  
+
+> 5:
+
+Automated Space Selection (ASS):  
+
+> 6:
+
+S ← LLM (Prompt ASS , FP ) 
+
+> 7:
+
+Warmstart:  
+
+> 8:
+
+Pinit ← LLM (Prompt W S , FP , S) 
+
+> 9:
+
+Evaluate Pinit to initialize history D 
+
+> 10:
+
+Bayesian Optimization Loop:  
+
+> 11:
+
+while n < N iter do  
+
+> 12:
+
+// 1. Candidate Generation  
+
+> 13:
+
+{˜ck}Kk=1 ← LLM (Prompt Gen , D, S) 
+
+> 14:
+
+// 2. Surrogate Modeling (Joint Prediction)  
+
+> 15:
+
+for k = 1 to K do  
+
+> 16:
+
+(μk, σ k) ← LLM (Prompt Surrogate , ˜ck, D) 
+
+> 17:
+
+αk ← AcquisitionFunc (μk, σ k) 
+
+> 18:
+
+end for  
+
+> 19:
+
+// 3. Evaluation & Update  
+
+> 20:
+
+cnew ← arg max k αk 
+
+> 21:
+
+ynew ← Solver (P, c new , T limit ) 
+
+> 22:
+
+D ← D ∪ { (cnew , y new )} 
+
+> 23:
+
+// 4. Dynamic Space Refinement (Optional)  
+
+> 24:
+
+S ← LLM (Prompt U pdate , D) 
+
+> 25:
+
+end while  
+
+> 26:
+
+return Best c∗ in D
+
+demonstrated superior performance with a mean PDI of 133.20 compared to 146.72 for GRIMIP w/o std. This improvement showcases the effectiveness of direct uncertainty modeling in achieving better optimization results. The full GRIMIP version also demonstrated slightly better efficiency, requiring an average of 11.30 evaluations compared to 11.52 evaluations for the simplified version, highlighting the benefits of joint prediction of both mean and uncertainty in a single LLM call. The results confirm that direct uncertainty modeling provides more informed estimates that enable a superior balance between “exploration" and “exploitation" in the Bayesian optimization process. 
+
+H.2 The Role of Warm-starting 
+
+To isolate and quantify the contribution of our instance-aware intelligent initialization, we conducted an ablation study comparing three versions: the full GRIMIP framework (which uses both static and dynamic features for warm-starting), GRIMIP w/o WS_Dynamic (which uses only static features for warm-starting), and GRIMIP w/o WS (which uses no warm-starting phase at all). The results in Table 7 highlight the critical role of this stage. The full GRIMIP framework achieved the best average PDI of 133.20 . This represents a notable improvement over the static-only warmstart (138.44 PDI) and is significantly better than having no warmstart ( 140.83 PDI). This demonstrates that warm-starting is effective, and that incorporating dynamic features provides an additional performance boost. This performance boost confirms that the warm-starting phase effectively addresses the “cold-start" problem. Furthermore, the comparison between GRIMIP and GRIMIP w/o WS_Dynamic demon-strates that leveraging dynamic features, in addition to static ones, provides a distinct and valuable advantage. This allows the framework to provide a more informed and strategically advantageous starting point, leading to a more robust and efficient search. 26 GRIMIP (Full) w/o WS_Dynamic w/o WS w/o std w/o ASS 
+
+> 120
+> 125
+> 130
+> 135
+> 140
+> 145
+> 150
+> 155
+> 160
+> Mean PDI (Lower is Better)
+> 133.20
+> 138.44
+> 140.83
+> 146.72
+> 152.45
+
+Figure 7: Ablation study of GRIMIP components on the IP dataset. The bar chart compares the Mean Primal-Dual Integral (PDI) of the full framework against variants with specific modules removed. The results demonstrate that the full GRIMIP framework achieves superior performance compared to all ablated versions. 
+
+H.3 The Role of ASS 
+
+To validate the effectiveness of the ASS module, we conducted an ablation study comparing the full GRIMIP framework against a variant named “GRIMIP w/o ASS". The full GRIMIP utilizes an LLM to analyze instance features and dynamically select a low-dimensional (k=6) instance-specific parameter subset for each problem. In contrast, the “GRIMIP w/o ASS" variant bypasses this step entirely; it does not use the LLM for space selection and instead operates on a fixed, predefined “one-size-fits-all" search space composed of the six most primary parameters (MIPFocus, Heuristics, Cuts, Presolve, Method, and VarBranch). As shown in Table 7, the results clearly demonstrate the significant advantage of the ASS module. The full GRIMIP framework achieved a mean PDI of 133.20, the lowest among all methods. Conversely, “GRIMIP w/o ASS" performed much worse, with a mean PDI of 152.45. Interestingly, “GRIMIP w/o ASS" used slightly fewer average evaluations (10.59) than the full GRIMIP (11.30). This does not imply greater efficiency but rather suggests a problem of premature convergence. Because “GRIMIP w/o ASS" was confined to a fixed space that was likely suboptimal for the specific instance, the Bayesian optimization search probably exhausted the potential for improvement within that space quickly, converging prematurely to a local optimum. Once trapped in this local optimum, subsequent evaluations failed to yield significant performance gains, causing the optimization loop to terminate early due to “no observed improvement". This performance disparity highlights the importance of LLM-driven, instance-specific search space selection. Gurobi has over 50 tunable parameters, and using a fixed subset is too rigid. The ASS module addresses this by having the LLM reason over instance features to select the parameter subset predicted to have the most impact. This focuses the search on the most relevant parameters, making the subsequent Bayesian optimization process more efficient and effective. 27

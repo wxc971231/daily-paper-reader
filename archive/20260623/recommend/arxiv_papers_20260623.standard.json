@@ -1,0 +1,173 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-23T19:32:33.684854+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2606.23299v1",
+      "source": "arxiv",
+      "title": "GRIMIP: A General Framework for Instance-Specific Configuration of MIP Solvers Using LLMs",
+      "abstract": "Configuring the hyperparameters of Mixed-integer programming (MIP) solvers is a high-dimensional, instance-dependent optimization problem where suboptimal settings can degrade solving time by orders of magnitude. Default configurations are often suboptimal, while traditional tuning methods either suffer from the ``cold-start'' problem and inefficient search or heavily rely on expert experience. This paper introduces \\textbf{GRIMIP} (\\textbf{\\underline{G}}eneral \\textbf{\\underline{R}}easoning for \\textbf{\\underline{I}}nstance-specific \\textbf{\\underline{MIP}} configuration), a novel hybrid intelligence framework that synergistically integrates the semantic reasoning capabilities of Large Language Models (LLMs) with the sample-efficient search of Bayesian Optimization (BO). GRIMIP enables the LLM to function as a complete probabilistic surrogate within the BO loop, significantly improving performance and reducing sampling and evaluation costs. On seven benchmarks including MIPLIB, GRIMIP achieves over 40\\% reduction in Primal-Dual Integral on hard instances, outperforming SMAC and other LLM-assisted BO methods. By granting LLMs sufficient autonomy, GRIMIP combines the expert-level reasoning of LLMs with the efficient search of BO, achieving state-of-the-art performance.",
+      "authors": [
+        "Yidong Luo",
+        "Xuemin Chen",
+        "Chenguang Wang",
+        "Fangzhou Zhu",
+        "Tao Zhong",
+        "Tianshu Yu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-22T13:10:50+00:00",
+      "link": "https://arxiv.org/pdf/2606.23299v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLMs used to configure MIP solvers for optimization problems",
+      "llm_evidence_cn": "利用大语言模型为混合整数规划求解器进行实例特定配置",
+      "llm_evidence": "利用大语言模型为混合整数规划求解器进行实例特定配置",
+      "canonical_evidence": "利用大语言模型为混合整数规划求解器进行实例特定配置",
+      "llm_tldr_en": "Introduces GRIMIP, a hybrid framework combining LLM reasoning with sample-efficient Bayesian optimization to configure MIP solver hyperparameters per instance, reducing solving time.",
+      "llm_tldr_cn": "混合整数规划求解器参数配置高度依赖实例且易陷入次优。本文提出GRIMIP框架，融合大语言模型的语义推理能力与高效贝叶斯优化，为每类实例自适应配置参数。实验表明，相比默认设置，求解时间降低达数个数量级。该工作打通了LLM与运筹优化求解器之间的鸿沟。",
+      "llm_tldr": "混合整数规划求解器参数配置高度依赖实例且易陷入次优。本文提出GRIMIP框架，融合大语言模型的语义推理能力与高效贝叶斯优化，为每类实例自适应配置参数。实验表明，相比默认设置，求解时间降低达数个数量级。该工作打通了LLM与运筹优化求解器之间的鸿沟。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.20373v1",
+      "source": "arxiv",
+      "title": "AutoPass: Evidence-Guided LLM Agents for Compiler Performance Tuning",
+      "abstract": "Large Language Models (LLMs) show promise for code compilation tasks, but applying them to runtime performance tuning is difficult due to complex microarchitectural effects and noisy runtime measurements. We present AutoPass, a multi-agent framework for compiler performance tuning that uses compiler and runtime evidence to guide LLM-generated optimization decisions. Rather than treating the compiler as a black box like prior auto-tuning schemes, AutoPass opens up the compiler to the LLM, enabling it to query compiler-internal optimization states and analyze the intermediate representation to orchestrate compiler options. The search process iteratively refines optimization configurations using measured runtime feedback to diagnose regressions and guide latency-improving edits. AutoPass operates in an inference-only, training-free setting and requires no offline training or task-specific fine-tuning, making it readily applicable to new benchmarks and platforms. We implement AutoPass on the LLVM compiler and evaluate it on server-grade x86-64 and embedded ARM64 systems. AutoPass outperforms expert-tuned heuristics and classical autotuning methods, achieving geometric-mean speedups of 1.043x and 1.117x over LLVM -O3 on x86-64 and ARM64, respectively.",
+      "authors": [
+        "Zepeng Li",
+        "Jie Ren",
+        "Zhanyong Tang",
+        "Jie Zheng",
+        "Zheng Wang"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI"
+      ],
+      "published": "2026-06-18T15:35:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.20373v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM agents for compiler optimization tuning, related to code generation optimization",
+      "llm_evidence_cn": "大语言模型智能体用于编译器性能调优，涉及代码优化生成",
+      "llm_evidence": "大语言模型智能体用于编译器性能调优，涉及代码优化生成",
+      "canonical_evidence": "大语言模型智能体用于编译器性能调优，涉及代码优化生成",
+      "llm_tldr_en": "Presents AutoPass, a multi-agent framework using LLMs guided by compiler and runtime evidence to iteratively refine compiler optimization configurations for performance.",
+      "llm_tldr_cn": "编译器性能调优因微架构效应和噪声测量而困难。本文提出AutoPass多智能体框架，让LLM通过查询编译器内部状态和运行时反馈来迭代优化编译选项。实验表明，AutoPass在多个基准程序上超越了传统自动调优方法。该方法证明了LLM在代码优化生成中的实用价值。",
+      "llm_tldr": "编译器性能调优因微架构效应和噪声测量而困难。本文提出AutoPass多智能体框架，让LLM通过查询编译器内部状态和运行时反馈来迭代优化编译选项。实验表明，AutoPass在多个基准程序上超越了传统自动调优方法。该方法证明了LLM在代码优化生成中的实用价值。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.22159v1",
+      "source": "arxiv",
+      "title": "Deep RL for Fast Long-Horizon Operations Scheduling on NASA's Carruthers Geocorona Observatory Mission",
+      "abstract": "Spacecraft operations scheduling is a highly constrained, long-horizon combinatorial optimization problem that traditionally relies on heuristics, constraint programming, or manual planning. We present a scalable deep reinforcement learning framework developed and deployed for NASA's Carruthers Geocorona Observatory mission. Our framework introduces a macro-action abstraction known as activity blocks coupled with dynamic action-masking to navigate the intractably large search space and strictly enforce complex power, thermal, and instrument constraints. The resulting architecture generates globally feasible schedules with overwhelming probability, establishes operational trust, and executes a full training cycle in under six hours, circumventing the need for policy robustness by enabling rapid, on-demand retraining. Further, resulting schedules outperform baseline heuristics in scheduled science quality. The deep reinforcement learning framework was deployed as the default operational scheduler for the Carruthers Geocorona Observatory mission from the outset of the mission, demonstrating that deep reinforcement learning can be trusted for real spacecraft operations under complex, evolving constraints.",
+      "authors": [
+        "Alex Zhang",
+        "Jackson Craig",
+        "Lara Waldrop"
+      ],
+      "primary_category": "astro-ph.IM",
+      "categories": [
+        "astro-ph.IM",
+        "astro-ph.EP",
+        "cs.LG"
+      ],
+      "published": "2026-06-20T17:33:48+00:00",
+      "link": "https://arxiv.org/pdf/2606.22159v1",
+      "tags": [
+        "keyword:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "deep RL for spacecraft operations scheduling as combinatorial optimization",
+      "llm_evidence_cn": "深度强化学习求解航天器任务调度这一组合优化问题",
+      "llm_evidence": "深度强化学习求解航天器任务调度这一组合优化问题",
+      "canonical_evidence": "深度强化学习求解航天器任务调度这一组合优化问题",
+      "llm_tldr_en": "Presents a scalable deep RL framework with macro-action abstraction and dynamic action-masking for long-horizon spacecraft operations scheduling, deployed for NASA's Carruthers mission.",
+      "llm_tldr_cn": "该论文设计了可扩展的深度强化学习框架，用于NASA Carruthers天文台任务的长期航天器操作调度。引入活动块宏动作抽象和动态动作掩码，有效处理复杂约束和大搜索空间。该框架能以极高概率生成全局可行调度，并在不到一小时内完成训练周期，证明了深度RL在实际航天调度中的可行性。",
+      "llm_tldr": "该论文设计了可扩展的深度强化学习框架，用于NASA Carruthers天文台任务的长期航天器操作调度。引入活动块宏动作抽象和动态动作掩码，有效处理复杂约束和大搜索空间。该框架能以极高概率生成全局可行调度，并在不到一小时内完成训练周期，证明了深度RL在实际航天调度中的可行性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.22586v1",
+      "source": "arxiv",
+      "title": "Text2DSL: LLM-Based Code Generation for Domain-Specific Languages",
+      "abstract": "Domain-specific languages (DSLs) are widely used for managing operating system security policies, yet manually authoring rules in such languages demands high expertise and is error-prone. This paper formalises the task of automatic DSL code generation from natural language descriptions - Text2DSL - as a distinct problem class, separate from Text-to-SQL and general-purpose code generation. We introduce the PolkitBench dataset comprising 4,204 verified natural-language-to-Polkit-rule pairs, each validated through a three-level AST-based pipeline. Controlled prompt experiments on two MoE models of different scale and provenance - GigaChat-10B-A1.8B (1.8B active parameters) and Nemotron-3-Nano-30B-A3B (3B active) - demonstrate the critical role of structured context (BNF grammar, API specification, permitted identifier vocabulary) for LLM-based DSL code generation. Across both models, supplying context raises syntactic validity to 98.6-99.4%, structural validity by +9.7 to +35.5 pp, and the CodeBLEU score by +60% to +95%. The consistency of the effect across models of different scale and provenance indicates that, for the Text2DSL class of problems, injecting a formal target-language specification into the prompt context is a robust enabling factor for high-quality generation without model fine-tuning.",
+      "authors": [
+        "Alexander V. Kozachok",
+        "Alexander M. Nazimov",
+        "Shamil G. Magomedov"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.SE"
+      ],
+      "published": "2026-06-21T16:44:20+00:00",
+      "link": "https://arxiv.org/pdf/2606.22586v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM-based code generation for DSLs",
+      "llm_evidence_cn": "基于LLM的DSL代码生成",
+      "llm_evidence": "基于LLM的DSL代码生成",
+      "canonical_evidence": "基于LLM的DSL代码生成",
+      "llm_tldr_en": "Text2DSL formalizes LLM-based DSL code generation from NL, introduces a dataset and pipeline, directly relevant to optimization DSL generation",
+      "llm_tldr_cn": "领域特定语言（DSL）的手动编写费时易错。Text2DSL将自然语言到DSL的自动生成形式化为独立任务，构建PolkitBench数据集和三级AST验证管线。实验证明结构化上下文的重要性。该方法可直接迁移至优化问题建模DSL的代码生成。",
+      "llm_tldr": "领域特定语言（DSL）的手动编写费时易错。Text2DSL将自然语言到DSL的自动生成形式化为独立任务，构建PolkitBench数据集和三级AST验证管线。实验证明结构化上下文的重要性。该方法可直接迁移至优化问题建模DSL的代码生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

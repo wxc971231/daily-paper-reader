@@ -6,34 +6,36 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-22
-- 运行时间：2026-06-22 20:02:27 UTC
+- 最新运行日期：2026-06-23
+- 运行时间：2026-06-23 19:35:31 UTC
 - 运行状态：成功
 - 本次总论文数：4
-- 精读区：3
-- 速读区：1
+- 精读区：1
+- 速读区：3
 
 ### 今日简报（AI）
-今天聚焦网络规划优化与随机组合优化的新框架，并关注LLM在科学方程生成中的应用。
-最值得精读的两篇8分论文分别是《OmniPlan》的及时近最优网络规划，以及《N(CO)^2》解决带机会约束的随机定向问题。
-建议优先精读这两篇优化方向论文，速读的《SciText2Eq》可作为LLM科学应用拓展参考。
-- 详情：[/202606/22/README](/202606/22/README)
+今日精读高影响力论文《GRIMIP》，用LLM为MIP求解器实现实例级自动调参，另速读三篇涉及编译器调优、航天任务调度和DSL代码生成。
+
+最推荐《GRIMIP》（9分）和《Text2DSL》（7分），前者开创了LLM定制求解器配置的新范式，后者展示了用自然语言生成领域特定代码的实用路径。
+
+建议普通读者优先阅读《GRIMIP》理解LLM如何与经典优化算法结合，后续可关注《AutoPass》中证据引导的智能体设计。
+- 详情：[/202606/23/README](/202606/23/README)
 
 ### 精读区论文标签
-1. [OmniPlan: An Adaptive Framework for Timely and Near-Optimal Network Planning Optimization](/202606/22/2606.18105v1-omniplan-an-adaptive-framework-for-timely-and-near-optimal-network-planning-optimization)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：使用MIP和DRL的网络规划优化
-2. [N(CO)$^2$: Neural Combinatorial Optimization with Chance Constraints to Solve Stochastic Orienteering](/202606/22/2606.18514v1-nco2-neural-combinatorial-optimization-with-chance-constraints-to-solve-stochastic-orienteering)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：使用神经组合优化求解随机定向问题，属于自动生成优化解决方案
-3. [An Optimization Framework for Certain Separable Problems using Neural Networks](/202606/22/2606.19720v1-an-optimization-framework-for-certain-separable-problems-using-neural-networks)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：针对可分离问题的运筹优化建模
+1. [GRIMIP: A General Framework for Instance-Specific Configuration of MIP Solvers Using LLMs](/202606/23/2606.23299v1-grimip-a-general-framework-for-instance-specific-configuration-of-mip-solvers-using-llms)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：利用大语言模型为混合整数规划求解器进行实例特定配置
 
 ### 速读区论文标签
-1. [SciText2Eq: Assessing LLMs for Explainable Equation Generation for Scientific Creativity](/202606/22/2606.16003v1-scitext2eq-assessing-llms-for-explainable-equation-generation-for-scientific-creativity)  
-   标签：评分：6.0/10、query:llm-opt-code
-   evidence：LLM从科学文本生成数学方程，可应用于运筹优化问题建模
+1. [AutoPass: Evidence-Guided LLM Agents for Compiler Performance Tuning](/202606/23/2606.20373v1-autopass-evidence-guided-llm-agents-for-compiler-performance-tuning)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：大语言模型智能体用于编译器性能调优，涉及代码优化生成
+2. [Deep RL for Fast Long-Horizon Operations Scheduling on NASA's Carruthers Geocorona Observatory Mission](/202606/23/2606.22159v1-deep-rl-for-fast-long-horizon-operations-scheduling-on-nasas-carruthers-geocorona-observatory-mission)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：深度强化学习求解航天器任务调度这一组合优化问题
+3. [Text2DSL: LLM-Based Code Generation for Domain-Specific Languages](/202606/23/2606.22586v1-text2dsl-llm-based-code-generation-for-domain-specific-languages)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：基于LLM的DSL代码生成
 
 
 <div class="dpr-home-promo-card">
