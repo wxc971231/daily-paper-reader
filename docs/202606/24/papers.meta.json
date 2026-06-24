@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-24",
+  "date": "2026-06-24",
+  "generated_at": "2026-06-24T19:11:52",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/24/2606.22402v1-reinforcement-learning-to-improve-large-language-model-based-automated-code-compliance-systems",
+      "section": "deep",
+      "title_en": "Reinforcement learning to improve large language model-based automated code compliance systems",
+      "authors": "Jack Wei Lun Shi, Minghao Dang, Wawan Solihin, Leong Hien Poh, Justin K. W. Yeoh",
+      "date": "2026-06-21",
+      "pdf": "https://arxiv.org/pdf/2606.22402v1",
+      "score": "8.0",
+      "evidence": "基于LLM的合规代码生成与强化学习优化",
+      "tldr": "基于大语言模型的建筑规范自动合规常生成错误和幻觉规则。本文提出P4IR两阶段框架：先通过监督微调注入领域知识，再使用GRPO优化高层代码骨架中间表示。相比SFT基线，树编辑距离降低23.8%，Levenshtein距离降低38.6%；零样本下性能超越Claude Opus、GPT-5.2等模型，并显著减少虚假阳性。该工作结合SFT与GRPO直接优化领域目标，提升了LLM自动合规系统的准确性和可靠性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language model (LLM)-based approaches for automated code compliance (ACC) of building regulations are prone to generating incorrect and hallucinated computer-processable rules. This paper introduces P4IR, a two-stage framework that uses supervised fine-tuning (SFT) to instill domain knowledge in an LLM, followed by Group Relative Policy Optimization (GRPO) to improve the accuracy of the generated intermediate representations in the form of high-level code skeletons. The framework achieved reductions of up to 23.8% and 38.6% in tree edit distance and token-level Levenshtein distance respectively, relative to the SFT baselines. Comparative analysis demonstrates that this approach in a zero-shot setting outperforms leading LLMs in both code structure and semantics, specifically Claude Opus and Sonnet 4.5, GPT-5.2, Qwen-3-Max, and GLM-4.7, evaluated via few-shot prompting. Additionally, the GRPO stage produced a small yet statistically significant reduction in false positives. By combining SFT with GRPO to optimize directly for domain-specific objectives, this approach offers a path toward more accurate and reliable LLM-based ACC systems.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/24/2606.22536v1-generative-robust-optimisation",
+      "section": "deep",
+      "title_en": "Generative Robust Optimisation",
+      "authors": "Yuhui Yin, Vassilis M. Charitopoulos",
+      "date": "2026-06-21",
+      "pdf": "https://arxiv.org/pdf/2606.22536v1",
+      "score": "8.0",
+      "evidence": "提出生成式鲁棒优化框架，用深度生成模型定义不确定集",
+      "tldr": "经典鲁棒优化的不确定集形状固定，无法刻画真实数据的复杂依赖。本文提出生成鲁棒优化框架，用深度生成模型定义不确定集，并建立五点评测标准。采用Wasserstein对抗自编码器结合高斯混合模型训练，解码器用ReLU激活以便通过混合整数规划精确验证最坏情况。实验表明该方法兼顾表达性、校准性和优化可解性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Classical uncertainty sets for robust optimisation impose fixed geometric shapes that cannot represent the complex dependencies present in real-world data. We propose Generative Robust Optimisation (GRO), a framework in which a deep generative model defines the uncertainty set as the image of a neural network decoder over a calibrated latent set, naturally accommodating nonlinear correlations, asymmetry, and multimodality. A five-point evaluation framework (reconstruction fidelity, distribution matching, latent regularity, robust relevance, and computational tractability) provides systematic, model-agnostic criteria for assessing any neural network-based uncertainty set. We instantiate this framework with a Wasserstein Adversarial Autoencoder employing Gaussian mixture model-guided training for latent regularity and constraint-consistency regularisation for robust relevance. Restricting the decoder to ReLU activations enables exact worst-case verification through mixed-integer programming embedding. Extensive experiments on a production planning problem across six uncertainty distributions and six generative architectures, together with a multi-period facility location study, validate the framework and demonstrate that systematic attention to all five criteria yields uncertainty sets that are simultaneously expressive, well-calibrated, and optimisation-tractable.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/24/2606.21773v1-decision-focused-learning-when-and-why-traditional-prediction-models-fail",
+      "section": "quick",
+      "title_en": "Decision-Focused Learning: When and Why Traditional Prediction Models Fail",
+      "authors": "Mo Liu",
+      "date": "2026-06-19",
+      "pdf": "https://arxiv.org/pdf/2606.21773v1",
+      "score": "6.0",
+      "evidence": "关于决策聚焦学习的教程，涉及预测-优化运筹学问题建模",
+      "tldr": "在“预测-优化”范式中，提高预测精度未必能改善下游决策质量，这一矛盾催生了决策导向学习（DFL）。本教程聚焦随机线性规划作为下游问题，指出传统统计学习工具如基于预测不确定性的数据收集策略和Wasserstein距离等在决策导向场景下并不适用。DFL需重新审视这些工具，其核心区别在于直接优化决策目标而非预测损失。该工作为开发新型决策导向工具提供了方法论洞察。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Plugging predictions of unknown parameters into downstream optimization problems, often referred to as the ``predict-then-optimize'' paradigm, has long been a standard approach in decision-making under uncertainty. However, improved predictive accuracy does not, in general, translate into improved decision quality. This disconnect has motivated growing interest in decision-focused learning (DFL) within the operations research community. This tutorial reviews recent developments in DFL and highlights key methodological insights, with a particular focus on stochastic linear programming as the downstream decision-making problem. We discuss why several widely used tools in traditional statistical learning are not directly suited to decision-focused settings and must be rethought, including (i) data collection strategies driven purely by predictive uncertainty and (ii) distributional distance measures such as the Wasserstein distance. We summarize properties of DFL that distinguish it from conventional predictive modeling and provide insights into the development of new decision-focused tools.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

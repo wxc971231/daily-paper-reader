@@ -1,0 +1,1022 @@
+Title: Decision-Focused Learning: When and Why Traditional Prediction Models Fail
+
+URL Source: https://arxiv.org/pdf/2606.21773v1
+
+Published Time: Tue, 23 Jun 2026 01:36:19 GMT
+
+Number of Pages: 38
+
+Markdown Content:
+# Decision-Focused Learning: When and Why Traditional Prediction Models Fail 
+
+Mo Liu 
+
+> Department of Statistics and Operations Research, University of North Carolina at Chapel Hill, mo liu@unc.edu
+
+Abstract. Plugging predictions of unknown parameters into downstream optimization problems, often referred to as the “predict-then-optimize” paradigm, has long been a standard approach in decision-making under uncertainty. However, improved predictive accuracy does not, in general, translate into improved decision quality. This disconnect has motivated growing interest in decision-focused learning (DFL) within the operations research community. This tutorial reviews recent developments in DFL and highlights key methodological insights, with a particular focus on stochastic linear programming as the downstream decision-making problem. We discuss why several widely used tools in traditional statistical learning are not directly suited to decision-focused settings and must be rethought, including (i) data collection strategies driven purely by predictive uncertainty and (ii) distributional distance measures such as the Wasserstein distance. We summarize properties of DFL that distinguish it from conventional predictive modeling and provide insights into the development of new decision-focused tools. 
+
+Key words: decision-focused learning, predict-then-optimize, prescriptive analytics, decision-making under uncertainty 
+
+1. Introduction 
+
+Decision-making typically involves solving an optimization problem. When the optimization prob-lem contains unknown parameters, decision-making under uncertainty generally follows a two-stage pipeline. First, a statistical model is constructed to estimate the unknown quantities, which serve as parameters of the downstream optimization problem. Second, these estimated parameters are plugged into the optimization model to obtain a decision. In the first stage, when contextual data or observable features are available to help predict the uncertainty, the statistical model is typically a predictive model. This “predict-then-optimize” paradigm arises in a wide range of OR applications, including routing, inventory control, recommendation, pricing, matching, and healthcare opera-tions. Although it is intuitive to expect smaller prediction errors to translate into higher-quality decisions, this intuition does not hold in general, either empirically or theoretically. This mismatch between prediction error and decision quality has motivated decision-focused learning (DFL), which incorporates the structure of the downstream decision-making problem into the construction of the prediction model. This tutorial focuses on the geometric and statistical ideas underlying the mismatch between prediction error and decision loss, and illustrates how to leverage this mismatch to study statistical  
+
+> 1
+> arXiv:2606.21773v1 [cs.LG] 19 Jun 2026 Mo Liu: Tutorial for Decision-Focused Learning
+
+2 TutORials in Operations Research 
+
+learning problems, such as data collection and uncertainty quantification. The tutorial is intended for PhD students and researchers who are familiar with either linear programming or statistical learning, and who are interested in research at their intersection. By the end of the tutorial, readers will understand key statistical learning challenges in DFL, gain high-level geometric intuition for analyzing DFL problems, and be introduced to a range of promising research directions. Throughout the tutorial, we use the notation summarized in Table 1. Specifically, 𝑥 ∈ R𝑘 denotes the observable feature vector, 𝑐 ∈ R𝑑 1 denotes the unknown coefficient vector entering the down-stream optimization problem, ℎ(·) : R𝑘 → R𝑑 1 denotes a prediction model, and 𝑤 ∈ R𝑑 2 denotes the decision vector. We use 𝑤 ∗ (𝑐 ) to denote the optimal decision under the realized parameter vector 
+
+𝑐 , where 𝑤 ∗ (·) : R𝑑 1 → R𝑑 2 . The exact form of 𝑤 ∗ (𝑐 ) depends on the downstream decision-making objective, which will be specified later. Some symbols are introduced in later sections, but we include them here in Table 1 for reference.  
+
+> Table 1 Summary of notation
+
+Notation Meaning 
+
+𝑥 ∈ X ⊆ R𝑘 Observable feature vector or contextual information. 
+
+𝑐 ∈ R𝑑 1 Realized uncertain coefficient vector entering the downstream optimization problem, such as a cost vector or a demand vector. ˆ𝑐 = ℎ(𝑥 ) Prediction of the uncertain coefficient vector produced by model ℎ.
+
+H Hypothesis class of prediction models. 
+
+𝑤 ∈ R𝑑 2 Downstream decision vector. 
+
+𝑆 ⊆ R𝑑 2 Known bounded feasible region of the downstream optimization problem. 
+
+𝑤 ∗ (𝑐 ) Optimal decision induced by a plug-in coefficient vector 𝑐 , with a fixed tie-breaking rule when multiple optimizers exist. 
+
+𝑧 (𝑐 ) Optimal value of the linear problem, 𝑧 (𝑐 ) := min 𝑤 ∈𝑆 𝑐 ⊤𝑤 .
+
+ℓdecision ( ˆ𝑐, 𝑐 ) Per-instance decision loss, or SPO loss, defined as 𝑐 ⊤𝑤 ∗ ( ˆ𝑐 ) − 𝑐 ⊤𝑤 ∗ (𝑐 ).
+
+𝑅 ℓ (ℎ), 𝑅 (ℎ) Population risk under a generic loss ℓ; 𝑅 (ℎ) denotes the decision risk under ℓdecision .
+
+D Data-generating distribution of (𝑥, 𝑐 ).
+
+𝑤 ( 𝑗 ) , 𝑁 𝑗 Extreme points of 𝑆 and their associated normal cones in the cost space. diam (𝑆 ) Diameter of the feasible region under the chosen norm. 
+
+1.1. Examples where traditional statistical learning fails 
+
+Consider a shortest path problem with two routes in Figure 1: one route has a fixed cost 1, whereas the other has a feature-dependent random cost 𝑌 . The route choice changes only when the expected cost of the uncertain route crosses the threshold 1. The collected data pairs consisting of the cost 
+
+𝑌 and the feature variable 𝑋 (e.g., weather and travel conditions) are shown in the right panel of Figure 1. Figure 1 can be used to illustrate three cases in which DFL is necessary. Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 3
+
+1
+
+𝑌 =? 
+
+> Figure 1 A shortest-path toy example showing that better prediction fit need not imply better decisions.
+
+• Smaller prediction error does not imply better decisions. In the right panel of Figure 1, the blue least-squares fit achieves a much higher 𝑅 2. However, the induced decision rule is suboptimal: it suggests choosing the upper route when 𝑥 < 4, whereas the true threshold is around 𝑥 < 1. In contrast, the dashed orange fit, despite having worse prediction accuracy, places the threshold correctly and therefore yields near-optimal decisions. 
+
+• Uniform data collection can be inefficient. When collecting data, we should focus on the region 𝑥 ∈ [ 0, 2], rather than the entire space [0, 8]. Data with 𝑥 > 4 primarily improve prediction accuracy on 𝑌 , while the optimal decision is already clear. In contrast, observations of 𝑌 near 𝑥 = 1 are much more informative, as they directly reduce decision errors. This suggests that data collection should prioritize decision-relevant regions rather than uniformly covering the feature space. 
+
+• Decision-relevant distributional differences require new metrics. Quantifying distribution shifts or discrepancies is important for clustering, kernel regression, and decision robustness. Consider modifying the data distribution by shifting 𝑦 upward by 5 when 𝑥 < 1. Although this modification creates a large discrepancy under standard metrics such as KL divergence or Wasserstein distance, the optimal decision rule remains unchanged. Hence, geometric distances between distributions may fail to capture the differences that matter for decision-making. These examples highlight a central theme of this tutorial: classical statistical learning tools, such as model training, data collection, and uncertainty quantification, should be reexamined from a decision-focused perspective. We study these questions in a broader class of decision-making problems, such as contextual linear programming. 
+
+1.2. Formulation and setup 
+
+The tractability of DFL depends on the structure of the downstream decision-making problem and how uncertainty enters the model. When the downstream problem has a nonlinear objective Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 4TutORials in Operations Research
+
+function or an uncertain feasible region, the statistical analysis of DFL becomes nontrivial. These challenges will be discussed in detail in Sections 3.1 and 3.2. We begin with a common setting studied in Elmachtoub and Grigas [17]. A more general setting and formulation will be discussed in Section 3. Suppose that we do not observe the true cost vector 
+
+𝑐 directly, but instead observe a feature vector 𝑥 ∈ X that can be used to predict 𝑐 . A prediction model ℎ ∈ H outputs ˆ 𝑐 = ℎ(𝑥 ), and the downstream decision is obtained by solving 
+
+𝑤 ∗ ( ˆ𝑐 ) ∈ arg min 
+
+> 𝑤 ∈𝑆
+
+ˆ𝑐 ⊤𝑤, 𝑆 := {𝑤 ∈ R𝑑 : 𝐴𝑤 ≤ 𝑏 }. (1) The matrix 𝐴 and the right-hand-side (RHS) vector 𝑏 are known parameters that define the constraints. The formulation in (1) has wide applications in OR, including shortest path, bipartite matching, sorting and ranking, top-𝑘 selection, and max-flow/min-cut problems .If the conditional distribution of 𝑐 given 𝑥 were known, the Bayes-optimal decision would be obtained by solving 
+
+𝑤 ∗ (𝑥 ) ∈ arg min 
+
+> 𝑤 ∈𝑆
+
+E[𝑐 ⊤𝑤 | 𝑥 ] = arg min 
+
+> 𝑤 ∈𝑆
+
+E[𝑐 | 𝑥 ]⊤𝑤. (2) Equation (2) reveals a key simplification of stochastic linear optimization: because the objective is linear in 𝑐 , the entire conditional distribution enters only through the conditional mean E[𝑐 | 𝑥 ]. This implies that an accurate point estimate of the conditional mean suffices to yield optimal decisions that minimize the risk for a given feature 𝑥 . This property later helps explain why stochastic linear programs are statistically more tractable than problems with nonlinear objectives or uncertain feasible regions. Given a hypothesis class of prediction models H , statistical learning aims to identify the best model ℎ ∈ H using data. Evaluating predictive performance of a prediction model ℎ requires comparing the predicted value ˆ 𝑐 ← ℎ(𝑥 ) with the true value 𝑐 under a loss function ℓ(· , ·) : R𝑑 1 ×
+
+R𝑑 1 → R. The most common prediction-focused loss is the squared error, ℓ22 (ℎ(𝑥 ), 𝑐 ) = ∥ℎ(𝑥 ) − 𝑐 ∥22.This choice is natural when the goal is accurate estimation of E[𝑐 | 𝑥 ] itself. In predict-then-optimize settings, however, the final performance is determined not by ℎ(𝑥 )
+
+directly but by the decision induced by ℎ(𝑥 ). To capture this, Elmachtoub and Grigas [17] introduced a decision-focused loss. Given a sample (𝑥, 𝑐 ), the per-instance decision loss is defined as 
+
+ℓdecision (ℎ(𝑥 ), 𝑐 ) := 𝑐 ⊤𝑤 ∗ (ℎ(𝑥 )) − 𝑐 ⊤𝑤 ∗ (𝑐 ). (3) Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 5
+
+This loss, ℓdecision (ℎ(𝑥 ), 𝑐 ), is referred to as the Smart Predict-then-Optimize (SPO) loss. In (3), the first term represents the realized cost of the decision 𝑤 ∗ (ℎ(𝑥 )) under the true cost vector 𝑐 , while the second term corresponds to the minimum cost achievable if the true cost vector 𝑐 were known in advance. Suppose that (𝑥, 𝑐 ) are sampled from a fixed but unknown distribution D. The corresponding population risk under a loss function ℓ is defined as 
+
+𝑅 ℓ (ℎ) := E(𝑥,𝑐 )∼D [ℓ(ℎ(𝑥 ), 𝑐 )] . (4) In DFL, we evaluate prediction models using the decision loss in (3). For simplicity, we denote the corresponding risk 𝑅 ℓdecision (ℎ) in (4) by 𝑅 (ℎ). The goal of DFL is therefore to select a prediction model ℎ ∈ H that minimizes 𝑅 (ℎ).Given a training set {( 𝑥 𝑖 , 𝑐 𝑖 )} 𝑛 𝑖 =1, a straightforward DFL approach is to directly minimize the empirical decision risk: min 
+
+> ℎ∈H
+
+1
+
+𝑛 
+
+> 𝑛
+
+∑︁ 
+
+> 𝑖 =1
+
+ℓdecision (ℎ(𝑥 𝑖 ), 𝑐 𝑖 ). (5) When the true cost vector 𝑐 𝑖 is fully observed, the second term in (3), 𝑐 ⊤ 
+
+> 𝑖
+
+𝑤 ∗ (𝑐 𝑖 ), is independent of the prediction ℎ(𝑥 𝑖 ). Consequently, it can be omitted from the optimization problem in (5), which reduces to min 
+
+> ℎ∈H
+
+1
+
+𝑛 
+
+> 𝑛
+
+∑︁ 
+
+> 𝑖 =1
+
+𝑐 ⊤ 
+
+> 𝑖
+
+𝑤 ∗ (ℎ(𝑥 𝑖 )) . (6) Note that this reduction is valid only when 𝑐 𝑖 is fully observed. If the true cost vector is only partially observed, lies within an uncertainty set, or is chosen adversarially as a function of the decision, then the prediction model ℎ may depend on the choice of 𝑐 𝑖 . In such cases, we must work with the original decision loss ℓdecision .When minimizing (5) or (6), the resulting optimization problem remains computationally chal-lenging. These challenges arise from the three steps shown in Figure 2: 
+
+• Step (i): The prediction model (e.g., a neural network) may be nonconvex or nondifferentiable; 
+
+• Step (ii): The optimization solver 𝑤 ∗ may be computationally expensive, especially when the numbers of variables and constraints are large, and the mapping ℎ(𝑥 ) ↦ → 𝑤 ∗ (ℎ(𝑥 )) may be discontinuous and nondifferentiable; 
+
+• Step (iii): The true cost vector 𝑐 may not be fully observable. Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 6TutORials in Operations Research
+
+𝑥 ℎ(𝑥 ) 𝑤 ∗  ℎ(𝑥 ) 𝑐 ⊤𝑤 ∗  ℎ(𝑥 )ℎ
+
+(i) 
+
+𝑤 ∗
+
+(ii) 
+
+𝑐 
+
+(iii)  
+
+> Figure 2 Three steps of evaluating the decision loss
+
+Section 2 briefly reviews these challenges, along with the main computational approaches in the literature for minimizing the decision loss in (5) or its reduced form in (6). Because of these computational challenges, minimizing prediction error remains appealing in practice. The main focus of this tutorial is therefore to understand when the minimizer of the decision risk, min ℎ∈H 𝑅 (ℎ), differs from the minimizer of the prediction risk, min ℎ∈H 𝑅 ℓ22
+
+(ℎ), and how this mismatch can be exploited to address statistical learning questions in DFL. 
+
+Roadmap. The remainder of the tutorial is organized as follows. Section 2 briefly reviews computational methods for decision-focused learning and explains why directly optimizing decision loss can be difficult. Section 3 focuses on stochastic linear programming, first contrasting it with nonlinear objectives and stochastic feasible regions, and then summarizing the geometry and risk properties of the decision loss. Section 4 uses this geometry to revisit data collection and explains why decision-relevant samples are often concentrated near cone boundaries. Section 5 turns to uncertainty quantification and distributional comparison, showing why classical distances such as KL divergence and Wasserstein distance can be decision-blind and introducing a decision-focused alternative. The final sections discuss open statistical learning questions in DFL and conclude. 
+
+2. Computational Methods for DFL 
+
+In this section, we briefly review computational methods for DFL. DFL can be viewed as an approach to solving contextual stochastic optimization problems. In the literature, related terms include task-based learning , decision-aware learning , end-to-end learning , operational statistics ,
+
+predict+optimize , and smart predict-then-optimize (Bertsimas and Kallus [6], Chu et al. [12], Donti et al. [15], Elmachtoub and Grigas [17], Feng et al. [21], Ho-Nguyen and Kılınc ¸-Karzan [23]). See the forthcoming textbook by Gupta [22] for a more detailed discussion. The computational literature on DFL has grown rapidly. We refer readers to the recent surveys by Mandi et al. [38] and Sadana et al. [42] for comprehensive overviews. Here, we highlight several representative approaches to illustrate that computational challenges remain central to DFL, before turning to the statistical analysis in Sections 3, 4, and 5. Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 7 
+
+> 2.1. Decision loss as the training objective: benefits and limitations
+
+In DFL, the most straightforward approach is to minimize the decision loss in (5) or (6), or a generalized version of these objectives in contextual stochastic optimization. This empirical risk is attractive because it naturally integrates the decision loss into the training process. In particular, this approach can outperform prediction-focused training when the hypothesis class is misspecified, meaning that it does not contain the true underlying model that generates the data (e.g., using linear regression to fit a nonlinear trend). However, this integrated training approach has limitations from both computational and statistical perspectives. Computationally, as shown in Figure 2, all three steps can be intractable because of nonconvexity or unobservability. By the chain rule, direct gradient descent may thereby be inefficient. Statistically, the second and third steps in Figure 2 involve mappings from the coefficient space to the decision space and objective values, which filter out much of the information contained in the predictions or observed data; see Section 3.4 for details. Although this loss of information helps focus learning on decision quality in the misspecified case, it can make the learning process less efficient than prediction-focused approaches when the hypothesis class is well specified, that is, when the true underlying model lies within the hypothesis class. This slower statistical convergence rate, reflected in a larger out-of-sample risk bound, is studied in papers such as Elmachtoub et al. [18, 19], Hu et al. [26, 27], Lan et al. [31]. In light of these challenges, Section 2.2 reviews several computational approaches to DFL.  
+
+> 2.2. Reviews of other computational methods
+
+We review computational methods for DFL from the following four perspectives that are related to OR problems, and again refer readers to Mandi et al. [38] for a more detailed review.  
+
+> Surrogate loss approaches.
+
+When the integrated loss is differentiable, for example, when the downstream decision-making problem is unconstrained or smoothly parameterized or regularized, gradient-based methods can be applied; see, for example, Agrawal et al. [1], Amos and Kolter [2]. When the decision loss is nondifferentiable, for instance, because the optimal decisions 𝑤 ∗ may jump between extreme points in linear programming, researchers often use computationally tractable surrogate losses during training. Representative examples include the SPO+ loss of Elmachtoub and Grigas [17], the risk-calibrated losses studied by Ho-Nguyen and Kılınc ¸-Karzan [23], the perturbation-gradient (PG) losses of Huang and Gupta [28], the LAVA loss of Berden et al. [5], the WISE loss of Wan and Liu [47], and the PEAR loss of Lee et al. [32]. In practice, the PyEPO library developed by Tang and Khalil [46] provides a range of common surrogate losses and computational Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 8TutORials in Operations Research
+
+approaches that are readily implemented on a variety of datasets. A recent work, Schneider and Kuhn [43] considers a radial projection method to address the zero gradient issue in neural network training. Instead of predicting every primitive uncertain quantity, the model can target a statistic or repre-sentation that is sufficient, or nearly sufficient, for decision-making. In stochastic linear optimization, the conditional mean E[𝑐 | 𝑥 ] is already a decision-relevant target. In more structured applications, the relevant object may be a threshold, a quantile, or another low-dimensional summary. This viewpoint is especially useful when the raw parameter vector is high-dimensional, but the optimal policy depends only on a small subset of directions. Decision-relevant quantities can be grouped into the following three categories. 
+
+Mapping 𝑥 ↦ → 𝑤 ∗: End-to-end prediction of optimal decisions. A natural simplification is to bypass the optimization layer at deployment and predict the action 𝑤 directly. This can be done through imitation learning, policy learning, or structured prediction of feasible decisions. For instance, Liu et al. [34], Qi et al. [40], Wilder et al. [50] train neural networks to output decisions, such as graph optimization solutions or replenishment decisions, directly from contextual informa-tion and historical data. Despite strong empirical performance, the theoretical guarantees depend heavily on the training loss functions and their alignment with the decision loss. 
+
+Mapping 𝑥 ↦ → ℓ(· , ·) : prediction of decision loss functions. Rather than predicting the uncertain coefficient vector or the optimal decision directly, another line of work learns a surrogate loss that approximates the downstream decision regret and then trains the prediction model using this learned objective. Along this direction, Wang et al. [49] learn a compact, low-dimensional surrogate optimization layer, while Shah et al. [44] propose locally optimized decision losses (LODLs), which fit instance-specific convex losses using decision-loss evaluations from a black-box optimization oracle. Extending this idea, Shah et al. [45] introduce efficient global losses (EGLs), which learn a feature-dependent map from contexts to loss parameters, allowing loss information to be shared across instances. 
+
+Mapping 𝑐 ↦ → 𝑤 ∗ (𝑐 ): Prediction of optimization oracles. Instead of solving the exact downstream problem at every training step, the learner can train a fast neural solver or meta-optimizer to emulate the mapping from problem parameters to near-optimal feasible decisions. Recent work by Cristian et al. [14], Kotary et al. [30] illustrates this approach. The promise is substantial computational savings, especially when the same optimization family is solved repeatedly during training. The Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 9
+
+main caveat is that approximation error in the learned oracle feeds back into the training objective, so theoretical guarantees must control both optimization error and statistical error. Despite the wide range of computational methods developed for diverse decision-making prob-lems and forms of uncertainty, statistical guarantees for DFL remain available only for a much smaller class of problems. These challenges and results are discussed in Section 3. 
+
+3. Decision-Focused Learning for Stochastic Linear Programming 
+
+This section explains why stochastic linear programs with uncertain objective coefficients have become the canonical setting for statistical analyses of DFL. Let’s go back to the linear formulation introduced in Section 1.2, and discuss why statistical analysis becomes increasingly difficult when we have nonlinear objective functions or uncertain constraints. The following two sections illustrate why predicting the conditional mean of uncertainty does not minimize the decision risk 𝑅 (ℎ) when the objective is nonlinear or when the uncertainty is in the feasible region. Since the classical newsvendor problem admits two equivalent formulations, one with a piecewise-linear objective and one with an uncertain right-hand-side, we use it repeatedly in Sections 3.1 and 3.2 to illustrate these challenges. 
+
+3.1. Statistical challenge for nonlinear objective 
+
+Recall that for a linear objective, the decision is obtained by (2), i.e., 𝑤 ∗ (𝑥 ) ∈ arg min 𝑤 ∈𝑆 E[𝑐 ⊤𝑤 |
+
+𝑥 ] = arg min 𝑤 ∈𝑆 E[𝑐 | 𝑥 ]⊤𝑤 . Suppose we generalize the objective function from 𝑐 ⊤𝑤 to nonlinear function 𝜙 (· , ·) : R𝑑 2 × R𝑑 1 ↦ → R, then the optimal decision should be obtained by 
+
+𝑤 ∗ (𝑥 ) ∈ arg min 
+
+> 𝑤 ∈𝑆
+
+E[𝜙 (𝑤, 𝑐 ) | 𝑥 ]. (7) This nonlinear objective can be motivated by the newsvendor cost, e.g., 
+
+𝜙 (𝑤, 𝑐 ) =
+
+> 𝑑
+
+∑︁ 
+
+> 𝑙 =1
+
+𝑜 𝑙 (𝑤 𝑙 − 𝑐 𝑙 )+ + 𝑏 𝑙 (𝑐 𝑙 − 𝑤 𝑙 )+, (8) where 𝑜 𝑙 and 𝑏 𝑙 denote the unit overstock and stockout costs, respectively, which may vary across products 𝑙 . Another example of a nonlinear 𝜙 is the mean-variance portfolio optimization. The mean-variance portfolio optimization problem aims to maximize expected return while controlling risk. Suppose there are 𝑑 possible assets to invest in, and let 𝑐 ∈ R𝑑 denote the random return vector of the assets. The portfolio 𝑤 ∈ R𝑑 represents the percentage of total capital invested in each asset. The mean-variance objective can be written as min   
+
+> 𝑤 ∈𝑆, 𝑤 0∈R
+
+E
+
+
+
+−𝜌𝑐 ⊤𝑤 + 𝛿 
+
+2
+
+ 𝑐 ⊤𝑤 − 𝑤 0
+
+2
+
+
+
+,Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 10 TutORials in Operations Research
+
+where 𝑤 0 is an auxiliary decision variable, 𝜌 > 0 and 𝛿 > 0 balance expected return and risk, and 𝑆 
+
+denotes the feasible set of portfolios. For nonlinear objectives, since E[𝜙 (𝑤, 𝑐 )] ≠ 𝜙 (𝑤, E[𝑐 ]) , predicting the conditional mean gen-erally does not lead to the optimal decision. Consequently, a statistically consistent approach is to estimate the full conditional distribution of 𝑐 and minimize the expected cost E[𝜙 (𝑤, 𝑐 )] directly. This estimation task can be simplified when the distribution is parameterized by some parameter 
+
+𝜃 ∈ Θ, that is, when the data pair (𝑥, 𝑐 ) is drawn from some distribution D𝜃 . In this case, the integrated estimation-and-optimization approach studied by Elmachtoub et al. [19], Qi et al. [39] can be written as min 
+
+> 𝜃 ∈Θ
+
+1
+
+𝑛 
+
+> 𝑛
+
+∑︁ 
+
+> 𝑖 =1
+
+𝜙 (𝑤 𝜃 , 𝑐 𝑖 ),
+
+where the optimization oracle 𝑤 𝜃 is defined by 
+
+𝑤 𝜃 ∈ arg min  
+
+> 𝑤 ∈𝑆
+
+{𝑣 (𝑤, 𝜃 ) := E𝜃 [𝜙 (𝑤, 𝑐 )]} .
+
+Although the integrated approach above is statistically consistent, in the sense that it converges to the best in-class parameter 𝜃 , estimating the full distribution and minimizing E𝜃 [𝜙 (𝑤, 𝑐 )] can be computationally intractable. To address this issue, we note that in some special problems, a point prediction of the uncertainty is sufficient for optimal decision-making. A classical example is the newsvendor problem, in which the optimal order quantity is given by the conditional quantile; see Example 1 for details. Such point predictions can significantly simplify the learning stage; see Ban and Rudin [3], for example. When a decision-corrected point forecast exists, Homem-de Mello et al. [24] study how to generate such forecasts. In general, however, one cannot expect a decision-corrected point prediction to exist for nonlinear objectives. For example, if the uncertainty is represented by a 𝑑 1-dimensional vector, whereas the decision lies in a 𝑑 2-dimensional space with 𝑑 2 > 𝑑 1, then a point prediction in 
+
+R𝑑 1 will generally not be sufficient to determine the optimal decision in R𝑑 2 .A recent study by Er and Liu [20] is the first to consider necessary and sufficient conditions for the existence of a decision-corrected point estimate. They study this question in two related settings: a two-stage multi-item newsvendor problem and capacity design for a multi-period service system. Er and Liu [20] show that the traditional fluid approximation, that is, using time-varying demand as the time-varying Poisson arrival rate, is decision-biased, and they propose conditions for checking the existence of a decision-corrected arrival rate. Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 11 
+
+3.2. Statistical challenge for stochastic feasible region 
+
+Recall that in linear programming in (1), the feasible region is formed by constraints 𝐴𝑤 ≤ 𝑏 . When matrix 𝐴 or RHS 𝑏 is random, in most OR problems, we cannot simply use E[ 𝐴 ]𝑤 ≤ E[𝑏 ], as we need to guarantee the feasibility in each possible scenario or use a chance-constrained version. To illustrate this point, we return to the newsvendor problem in (8). 
+
+EXAMPLE 1 (A LTERNATIVE FORMULATION OF THE NEWSVENDOR PROBLEM ). Consider a simple system with a single customer class, a single resource pool, and a single period. Let 𝑐 be the ordering cost, and 𝑝 be the unit lost sales cost. To avoid triviality, suppose 𝑐 < 𝑝 ; otherwise, purchasing no item would be optimal. Let 𝑤 be the order quantity, and then the traditional newsvendor problem can be written as the following two-stage problem: The first stage minimizes the ordering cost and the expected lost sales cost: min  
+
+> 𝑤
+
+: 𝑐𝑤 + E[𝜋 ∗ (𝑤, 𝐷 )] .
+
+Given random demand 𝐷 , the second-stage problem of minimizing the lost sales (or maximizing the satisfied demand) is 
+
+𝜋 ∗ (𝑤, 𝐷 ) := min  
+
+> 𝑥 ≥0
+
+𝑝 (𝐷 − 𝑥 ) s.t. 𝑥 ≤ 𝐷, 𝑥 ≤ 𝑤, 
+
+where 𝑥 denotes the number of sold items. The optimal recourse is 𝑥 ∗ (𝑤, 𝐷 ) = min (𝐷, 𝑤 ), hence 
+
+𝜋 ∗ (𝑤, 𝐷 ) = 𝑝 (𝐷 − 𝑤 )+. The first-stage problem is min  
+
+> 𝑤 ≥0
+
+𝑐 𝑤 + E𝑝 (𝐷 − 𝑤 )+ .
+
+Denoting 𝐹 as the cumulative distribution function (CDF) of the demand 𝐷 , for continuous 𝐹 , the objective is convex and the first-order optimality gives 𝑤 ∗ = 𝐹 −1  𝑝 −𝑐 𝑝 
+
+. □
+
+Example 1 shows that an uncertain feasible region usually requires a two-stage formulation, rather than replacing both sides of the constraint by their expectations. From the newsvendor example above, we observe that when the right-hand-side is random, the conditional mean E[𝐷 ]
+
+is generally not the optimal point prediction. Instead, a certain conditional quantile serves as the decision-corrected point prediction. This distinction in DFL between uncertainty in the objective vector 𝑐 and uncertainty in the right-hand-side vector 𝑏 may appear counterintuitive from the perspective of strong duality. When Mo Liu: Tutorial for Decision-Focused Learning 
+
+12 TutORials in Operations Research 
+
+the right-hand-side ˜ 𝑏 is stochastic, dualizing the primal recourse problem seems to move the uncertainty from the constraints into the objective of the dual problem: (Primal) min  
+
+> 𝑤
+
+𝑐 ⊤𝑤 
+
+s.t. 𝐴𝑤 ≤ ˜𝑏 
+
+(Dual) max  
+
+> 𝑦
+
+− ˜𝑏 ⊤ 𝑦 
+
+s.t. 𝐴 ⊤ 𝑦 = −𝑐, 𝑦 ≥ 0Since the dual problem appears to fit the canonical DFL form in (2), this distinction may seem puzzling at first glance. In fact, this misunderstanding is referred to as the “pitfall of stochastic right-hand-sides” in Er and Liu [20], and is illustrated below. In particular, consider the following general two-stage optimization problem. We use 𝑤 1st to denote the first-stage decision, and 𝑤 2nd to denote the second-stage decision made after the uncer-tainty is observed. The first-stage cost is given by a deterministic convex function 𝑓 (𝑤 1st ), while 
+
+𝑔 (𝑤 1st , 𝑤 2nd ) denotes the second-stage cost, which depends on the realized uncertainty: min 
+
+> 𝑤 1st
+
+
+
+𝑓 (𝑤 1st ) + E
+
+
+
+min  
+
+> 𝑤 2nd
+
+𝑔 (𝑤 1st , 𝑤 2nd )
+
+  
+
+.
+
+Let 𝐴 1 ∈ R𝑚 ×𝑛 1 and 𝐴 2 ∈ R𝑚 ×𝑛 2 be known constraint matrices, and let 𝑤 1st ∈ R𝑛 1 and 𝑤 2nd ∈ R𝑛 2
+
+denote the first- and second-stage decisions, respectively. We compare the following four stochastic two-stage problems: min  
+
+> 𝑤 1st
+
+𝑓 (𝑤 1st ) + E𝑐 ∼D 𝑐 
+
+h
+
+min  
+
+> 𝑤 2nd
+
+𝑐 ⊤𝑤 1st s.t. 𝐴 1𝑤 1st + 𝐴 2𝑤 2nd ≤ 𝑏 
+
+i
+
+, (SP1) min  
+
+> 𝑤 1st
+
+𝑓 (𝑤 1st ) + E𝑏 ∼D 𝑏 
+
+h
+
+min  
+
+> 𝑤 2nd
+
+𝑐 ⊤𝑤 1st s.t. 𝐴 1𝑤 1st + 𝐴 2𝑤 2nd ≤ 𝑏 
+
+i
+
+, (SP2) min  
+
+> 𝑤 1st
+
+𝑓 (𝑤 1st ) + E𝑐 ∼D 𝑐 
+
+h
+
+min  
+
+> 𝑤 2nd
+
+𝑐 ⊤𝑤 2nd s.t. 𝐴 1𝑤 1st + 𝐴 2𝑤 2nd ≤ 𝑏 
+
+i
+
+, (SP3) min  
+
+> 𝑤 1st
+
+𝑓 (𝑤 1st ) + E𝑏 ∼D 𝑏 
+
+h
+
+min  
+
+> 𝑤 2nd
+
+𝑐 ⊤𝑤 2nd s.t. 𝐴 1𝑤 1st + 𝐴 2𝑤 2nd ≤ 𝑏 
+
+i
+
+. (SP4) Here, 𝑐 has the appropriate dimension depending on whether it multiplies 𝑤 1st or 𝑤 2nd . In (SP1) and (SP3), the uncertainty lies in the objective coefficient vector 𝑐 . In contrast, in (SP2) and (SP4), the uncertainty lies in the right-hand-side vector 𝑏 , and hence affects the feasible region of the second-stage problem. Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 13 
+
+Why is (SP1) easier? In (SP1), the random coefficient 𝑐 multiplies the first-stage decision 𝑤 1st ,while the feasible region of the second-stage problem is deterministic. Thus, whenever the recourse problem is feasible, the inner objective is simply linear in 𝑐 . Consequently, 
+
+E𝑐 ∼D 𝑐 
+
+h
+
+min  
+
+> 𝑤 2nd
+
+𝑐 ⊤𝑤 1st s.t. 𝐴 1𝑤 1st + 𝐴 2𝑤 2nd ≤ 𝑏 
+
+i
+
+= min  
+
+> 𝑤 2nd
+
+E[𝑐 ]⊤𝑤 1st s.t. 𝐴 1𝑤 1st + 𝐴 2𝑤 2nd ≤ 𝑏. 
+
+Therefore, a point prediction ˆ 𝑐 ≈ E[𝑐 ] is sufficient, and (SP1) reduces to a deterministic optimization problem. 
+
+Why is (SP2) harder? Problem (SP2) differs from (SP1) because the uncertainty appears in the RHS of the second-stage constraints. Even though the objective is still linear in 𝑤 1st , the feasibility of 𝑤 1st now depends on the realized value of 𝑏 . Replacing 𝑏 by its mean can therefore be misleading: a decision that is feasible for E[𝑏 ] may be infeasible for many realizations of 𝑏 . Thus, the main difficulty in (SP2) is not the evaluation of a nonlinear recourse cost, but the need to enforce feasibility across scenarios, either almost surely, robustly, or with high probability through a chance constraint. 
+
+Why is (SP3) harder? Problem (SP3) differs from (SP1) because the random coefficient 𝑐 multi-plies the adaptive second-stage decision 𝑤 2nd . For a fixed first-stage decision 𝑤 1st , expectation and minimization generally do not commute: 
+
+E𝑐 ∼D 𝑐 
+
+
+
+min  
+
+> 𝑤 2nd
+
+𝑐 ⊤𝑤 2nd s.t. 𝐴 1𝑤 1st + 𝐴 2𝑤 2nd ≤ 𝑏 
+
+
+
+≤ min  
+
+> 𝑤 2nd
+
+E[𝑐 ]⊤𝑤 2nd s.t. 𝐴 1𝑤 1st + 𝐴 2𝑤 2nd ≤ 𝑏. 
+
+Hence, predicting only the conditional mean of 𝑐 is generally insufficient. The full distribution of 
+
+𝑐 matters because different realizations of 𝑐 may induce different optimal second-stage decisions. Nevertheless, the second-stage value in (SP3) is convex in 𝑤 1st . Therefore, when 𝑓 is convex and the recourse problem is well behaved, (SP3) remains a convex stochastic optimization problem, even though it cannot be reduced to a deterministic problem by a mean plug-in. 
+
+Why is (SP4) harder? Problem (SP4) combines an adaptive second-stage objective with uncer-tainty in the right-hand-side. Let 
+
+𝑣 (𝑏 ; 𝑤 1st ) := min 
+
+> 𝑤 2nd
+
+𝑐 ⊤𝑤 2nd : 𝐴 1𝑤 1st + 𝐴 2𝑤 2nd ≤ 𝑏 
+
+denote the second-stage value function. For fixed 𝑤 1st , the map 𝑏 ↦ → 𝑣 (𝑏 ; 𝑤 1st ) is generally piecewise linear and convex. Therefore, Jensen’s inequality gives 
+
+E𝑏 ∼D 𝑏 
+
+𝑣 (𝑏 ; 𝑤 1st ) ≥ 𝑣  E[𝑏 ]; 𝑤 1st .Mo Liu: Tutorial for Decision-Focused Learning 
+
+14 TutORials in Operations Research                             
+
+> Problem Randomness Entry point Mean plug-in Potential scenario infeasibility Convex in
+> 𝑤 1st Example applications Relation (SP1) 𝑐
+> First- or second-stage objective ✓✗✓Canonical DFL; portfolio; routing; allocation Baseline (SP2) 𝑏 Second-stage RHS ✗✓✓Newsvendor; capacity planning; staffing; service levels Special case of (SP4) (SP3) 𝑐 Second-stage objective ✗✗✓Multistage transportation; dispatch; assignment Dual-related to (SP4) recourse (SP4) 𝑏 Second-stage RHS ✗✓✓Stochastic games; Markov chain steady states; network General RHS-recourse case
+> Table 2 Comparison of four stochastic two-stage formulations.
+
+As a result, minimizing 𝑓 (𝑤 1st ) + 𝑣  E[𝑏 ]; 𝑤 1st  can lead to a suboptimal first-stage decision. Moreover, the active constraints and the associated dual variables depend on the realized scenario 
+
+𝑏 .The comparisons are summarized in Table 2. Because predicting only the conditional mean of the uncertainty is generally insufficient when the feasible region is stochastic, a statistically reliable approach for handling uncertain feasible regions, or uncertain right-hand-sides, is to estimate the full conditional distribution in DFL. In DFL, because the stochastic feasible region forms a two-stage problem, its formulation can be connected to bilevel optimization, e.g., Bucarey et al. [8], Qi et al. [39]. However, estimating the full distribution and solving the recourse problem potentially infinitely many times are computationally inefficient. This motivates the question of whether one can identify a point statistic that replaces the full distribution while still yielding the optimal first-stage decision. Although the single-item newsvendor problem enjoys this property, such decision-corrected point statistics do not extend in general to the multi-item newsvendor problem, as shown by Er and Liu [20]. They provide counterexamples in which no point estimate of the uncertain right-hand-side reproduces the optimal stochastic decision. The broader lesson is that uncertainty in the constraints introduces additional challenges beyond those in (SP1). Duality does not resolve this issue because the dual multipliers depend on the realized scenario, and evaluating the expected recourse value generally requires more than a single plug-in vector. In practice, if one allows a post-projection step to ensure feasibility, some computational methods can still achieve good empirical performance; see, for example, Hu et al. [25]. Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 15 
+
+3.3. Motivation for focusing on stochastic (mixed integer) linear programs 
+
+Because nonlinear objectives and stochastic feasible regions are already difficult at the level of statistical representation, much of the recent theory focuses on the simpler downstream problem in (2), with known feasible region 𝑆 . This model retains the essential predict-then-optimize structure while avoiding the representation problem above: a Bayes-optimal point prediction exists and is simply E[𝑐 | 𝑥 ].Another advantage of (2) is geometric. If 𝑆 is a bounded polyhedron with extreme points 
+
+𝑤 (1) , . . . , 𝑤 (𝑚 ) , then the cost space is partitioned into normal cones 
+
+𝑁 𝑗 := {𝑐 ∈ R𝑑 : 𝑤 ( 𝑗 ) ∈ arg min 
+
+> 𝑤 ∈𝑆
+
+𝑐 ⊤𝑤 }, 𝑗 = 1, . . . , 𝑚. 
+
+This partition is illustrated in Figure 3.     
+
+> Figure 3 Geometric interpretation of 𝑤 ∗(𝑐 )(left) and the partition of the cost space induced by optimal extreme points (right).
+
+In Figure 3, the feasible region 𝑆 is represented by a polyhedron with four extreme points. The reverse directions of four example cost vectors are −𝑐 1, −𝑐 2, −𝑐 3, and −𝑐 4 in two dimensions. Minimizing the objective 𝑐 ⊤𝑤 over 𝑆 intuitively selects the extreme point that lies farthest in the direction −𝑐 within the feasible region. Thus, 𝑤 1, 𝑤 2, 𝑤 3, and 𝑤 4 are the optimal decisions under cost vectors 𝑐 1, 𝑐 2, 𝑐 3, and 𝑐 4, respectively. Accordingly, the entire two-dimensional cost space can be partitioned into four cones, each of which corresponds to one optimal extreme point. Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 16 TutORials in Operations Research
+
+Because the optimal solutions can be generated from a finite set of extreme points, the same partitioning idea continues to hold when this set is extended to feasible integer solutions. Therefore, the analysis in the remainder of this tutorial also applies to (mixed-)integer linear programming. Such integer formulations arise in a broader class of OR problems, including knapsack, the traveling salesperson problem, combinatorial portfolio optimization, diverse bipartite matching, and energy-cost-aware scheduling; see Mandi et al. [38] for additional examples and discussion. Predictions that remain in the same cone induce the same decision, even if they differ substantially in Euclidean distance. Decision errors occur only when the predicted cost vector crosses from one cone to another. This cone geometry turns the downstream optimization problem into a weight-sensitive multiclass classification problem Elmachtoub and Grigas [17], Liu et al. [36], where each feature 𝑥 is classified into the extreme point 𝑤 ∗ (ℎ(𝑥 )) .For these reasons, stochastic linear optimization has become a natural laboratory for studying the basic statistical questions of DFL, including calibration of surrogate losses, generalization bounds, sample complexity, active data collection, and decision-focused measures of distributional discrepancy (El Balghiti et al. [16], Hu et al. [26], Liu et al. [36], Wan et al. [48]). The setting is simple enough to permit sharp theory, yet still rich enough to reveal precisely why classical learning tools can fail. In the next section, we illustrate several key properties of the decision loss function ℓdecision in stochastic linear programming. 
+
+3.4. Properties of the decision loss 
+
+Recall that, for linear-objective uncertainty, the per-instance decision loss is 
+
+ℓdecision ( ˆ𝑐, 𝑐 ) := 𝑐 ⊤𝑤 ∗ ( ˆ𝑐 ) − 𝑐 ⊤𝑤 ∗ (𝑐 )
+
+The purpose of this section is to summarize several useful properties of the decision loss 
+
+ℓdecision (· , ·) . These properties highlight its key differences from standard prediction losses, such as the squared loss, and provide useful tools for statistical analysis. Throughout, let diam (𝑆 ) :=
+
+sup 𝑢,𝑣 ∈𝑆 ∥𝑢 − 𝑣 ∥ denote the size of the feasible region. We impose the following standard and mild assumptions. 
+
+ASSUMPTION 1 (Compact feasible set and fixed tie-breaking) . Throughout this subsection, 
+
+𝑆 ⊆ R𝑑 is nonempty, compact, and has finite extreme points. For each 𝑐 ∈ R𝑑 , 𝑤 ∗ (𝑐 ) denotes a deterministic selection from arg min 𝑤 ∈𝑆 𝑐 ⊤𝑤 , obtained via a fixed tie-breaking rule. Under this assumption, 𝑤 ∗ (𝑐 ) is well defined for every 𝑐 .Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 17 
+
+THEOREM 1 (Properties of ℓdecision ). Under Assumption 1, for any 𝑐, ˆ𝑐 ∈ R𝑑 , the following hold: (1.1) Nonnegativity: 
+
+ℓdecision ( ˆ𝑐, 𝑐 ) ≥ 0.
+
+(1.2) Positive-scale invariance in the prediction: for every 𝛼 > 0,
+
+ℓdecision (𝛼 ˆ𝑐, 𝑐 ) = ℓdecision ( ˆ𝑐, 𝑐 ).
+
+(1.3) Positive homogeneity in the true cost: for every 𝛼 ≥ 0,
+
+ℓdecision ( ˆ𝑐, 𝛼𝑐 ) = 𝛼 ℓ decision ( ˆ𝑐, 𝑐 ).
+
+(1.4) Asymmetry: there exists 𝑐 and ˆ𝑐 ,
+
+ℓdecision ( ˆ𝑐, 𝑐 ) ≠ ℓdecision (𝑐, ˆ𝑐 ).
+
+(1.5) Prediction-to-decision upper bound: for any norm ∥ · ∥ with dual norm ∥ · ∥ ∗,
+
+0 ≤ ℓdecision ( ˆ𝑐, 𝑐 ) ≤ ∥ ˆ𝑐 − 𝑐 ∥∗ ∥𝑤 ∗ ( ˆ𝑐 ) − 𝑤 ∗ (𝑐 )∥ ≤ diam (𝑆 ) ∥ ˆ𝑐 − 𝑐 ∥∗.
+
+(1.6) Dependence on true cost vector for a general convex feasible region. The map 𝑐 ↦ −→ 
+
+ℓdecision ( ˆ𝑐, 𝑐 ) is finite, continuous, convex, and Lipschitz. (1.7) Dependence on true cost vector for a polyhedral feasible regions. The map 𝑐 ↦ −→ ℓdecision ( ˆ𝑐, 𝑐 )
+
+is piecewise linear, and more precisely 
+
+ℓdecision ( ˆ𝑐, 𝑐 ) = 𝑐 ⊤𝑤 ∗ ( ˆ𝑐 ) − min  
+
+> 𝑤 ∈𝑆
+
+𝑐 ⊤𝑤 = max  
+
+> 𝑗 =1,...,𝑚
+
+𝑐 ⊤  𝑤 ∗ ( ˆ𝑐 ) − 𝑤 ( 𝑗 )
+
+.
+
+(1.8) Dependence on prediction. The map ˆ𝑐 ↦ → ℓdecision ( ˆ𝑐, 𝑐 ) is piecewise constant. In particular, its gradient with respect to ˆ𝑐 is zero on each cone interior, while jumps may occur at cone boundaries. Thus, the map ˆ𝑐 ↦ → ℓdecision ( ˆ𝑐, 𝑐 ) is generally nonconvex and discontinuous. 
+
+Note that Theorems (1.2), (1.3) and (1.4) illustrate different geometric properties from the squared loss. The scale-invariant property in (1.2) is the key for designing data collection methods in DFL, shown in Section 4. Theorem (1.5) shows that the decision loss can be well-controlled by either of the two terms, the prediction error ∥ ˆ𝑐 − 𝑐 ∥∗ or the decision error ∥𝑤 ∗ ( ˆ𝑐 ) − 𝑤 ∗ (𝑐 )∥ . Theorems (1.1-1.6) can be generalized to the convex feasible region, not necessarily a polyhedron. Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 18 TutORials in Operations Research
+
+Theorem (1.8) implies that the empirical SPO risk can be flat on large regions and discontinuous at cone boundaries. Consequently, direct gradient-based optimization of the exact loss is difficult, even when the prediction model itself is smooth. Theorems (1.5) and (1.8) imply that zero prediction error implies zero decision loss, but the converse fails. Any prediction ˆ 𝑐 that lies in the same normal cone as 𝑐 induces the same optimizer and therefore incurs zero decision loss. Thus, many predictions with nonzero Euclidean error are decision-equivalent. The proof of most properties in Theorem 1 can be found in El Balghiti et al. [16], Elmachtoub and Grigas [17], Liu et al. [36], Wan et al. [48]. Here, we only provide the proof of Theorem (1.5) for illustration. 
+
+Proof of Theorem (1.5) The proof is by the decomposition of ℓdecision and the Cauchy–Schwarz inequality. 
+
+ℓdecision ( ˆ𝑐, 𝑐 ) = 𝑐 ⊤  𝑤 ∗ ( ˆ𝑐 ) − 𝑤 ∗ (𝑐 )
+
+= (𝑐 − ˆ𝑐 )⊤  𝑤 ∗ ( ˆ𝑐 ) − 𝑤 ∗ (𝑐 ) + ˆ𝑐 ⊤  𝑤 ∗ ( ˆ𝑐 ) − 𝑤 ∗ (𝑐 )
+
+≤ ( 𝑐 − ˆ𝑐 )⊤  𝑤 ∗ ( ˆ𝑐 ) − 𝑤 ∗ (𝑐 )
+
+≤ ∥ ˆ𝑐 − 𝑐 ∥∗ ∥𝑤 ∗ ( ˆ𝑐 ) − 𝑤 ∗ (𝑐 )∥ .
+
+□
+
+3.5. Properties of the expected decision loss 
+
+In this section, we further summarize some properties of ℓdecision under randomness. We ignore the dependence on the contextual information 𝑥 for notational convenience. All the following properties also hold when conditional on feature 𝑥 . Let 
+
+𝑧 (𝑐 ) := min  
+
+> 𝑤 ∈𝑆
+
+𝑐 ⊤𝑤, 𝑅 ( ˆ𝑐 ) := E[ℓdecision ( ˆ𝑐, 𝑐 )] , 𝜇 := E[𝑐 ].
+
+In the stochastic setting, given a prediction ˆ 𝑐 , we cannot simply use the mean 𝜇 to evaluate the decision risk. Indeed, the mean-evaluated risk, ℓdecision ( ˆ𝑐, 𝜇 ), may be smaller than the true risk 
+
+𝑅 ( ˆ𝑐 ), and therefore may underestimate the actual decision risk. Theorem 2 summarizes several properties of ℓdecision under randomness. 
+
+THEOREM 2 (Properties of ℓdecision under uncertainty) . Under Assumption 1, suppose that 𝑐 
+
+follows a fixed distribution. For any ˆ𝑐 ∈ R𝑑 , the following hold: (2.1) Nonnegativity of risk. For every ˆ𝑐 ∈ R𝑑 , we have 𝑅 ( ˆ𝑐 ) ≥ 0.Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 19 
+
+(2.2) Risk decomposition (excess risk identity). 𝑅 ( ˆ𝑐 ) − 𝑅 (𝜇 ) = ℓdecision ( ˆ𝑐, 𝜇 ).(2.3) Plug-in lower bound (Jensen gap characterization). 𝑅 (𝜇 ) = 𝑧 (𝜇 ) − E[𝑧 (𝑐 )] ≥ 0. Equivalently, 
+
+E[ℓdecision (E[𝑐 ], 𝑐 )] ≥ 0.(2.4) Lower bound via plug-in decision loss. 𝑅 ( ˆ𝑐 ) ≥ ℓdecision ( ˆ𝑐, 𝜇 ).(2.5) Flatness of expected loss (a.e., zero gradient). 
+
+∇ ˆ𝑐 E[ℓdecision ( ˆ𝑐, 𝑐 )] = 0 for a.e. ˆ𝑐. 
+
+(2.6) Monotonicity along rays (directional monotonicity). 
+
+ℓdecision (𝑐 + Δ, 𝑐 ) ≤ ℓdecision (𝑐 + 2Δ, 𝑐 ),
+
+and more generally 𝑡 ↦ → ℓdecision (𝑐 + 𝑡 Δ, 𝑐 ) is nondecreasing on [0, ∞) .
+
+Theorem (2.2) shows that the excess risk is the decision loss between the prediction ˆ 𝑐 and the true mean 𝜇 . Theorem (2.3) shows that the Bayesian risk can be nonzero. Theorem (2.4) shows that if we just use the plug-in mean to evaluate the decision risk, this evaluation can be pessimistic in practice. Theorem (2.5) shows that the gradient is zero almost everywhere. Theorem (2.6) shows that in general, when the prediction is further away from the true mean, the decision loss increases. Most of the proof can be found in Liu et al. [36], Wan et al. [48]. Here, we provide the proof of Theorems (2.2), (2.3), and (2.6) for illustration. 
+
+Proof of Theorems (2.2), (2.3), and (2.6). 
+
+Since 𝑧 (𝑐 ) = 𝑐 ⊤𝑤 ∗ (𝑐 ), we have 
+
+𝑅 ( ˆ𝑐 ) = E𝑐 ⊤𝑤 ∗ ( ˆ𝑐 ) − 𝑧 (𝑐 ) = 𝜇 ⊤𝑤 ∗ ( ˆ𝑐 ) − E[𝑧 (𝑐 )] .
+
+Therefore, 
+
+𝑅 ( ˆ𝑐 ) =  𝜇 ⊤𝑤 ∗ ( ˆ𝑐 ) − 𝑧 (𝜇 ) +  𝑧 (𝜇 ) − E[𝑧 (𝑐 )] 
+
+= ℓdecision ( ˆ𝑐, 𝜇 ) +  𝑧 (𝜇 ) − E[𝑧 (𝑐 )] . (9) Because 𝑧 (𝑐 ) = min 𝑤 ∈𝑆 𝑐 ⊤𝑤 is the pointwise minimum of linear functions, it is concave. Hence, by Jensen’s inequality, we have 𝑧 (𝜇 ) ≥ E[𝑧 (𝑐 )] . Equation (9) gives 
+
+𝑅 ( ˆ𝑐 ) = ℓdecision ( ˆ𝑐, 𝜇 ) +  𝑧 (𝜇 ) − E[𝑧 (𝑐 )]  ≥ 0.
+
+Taking ˆ 𝑐 = 𝜇 yields (2.3), and subtracting 𝑅 (𝜇 ) from 𝑅 ( ˆ𝑐 ) gives ((2.2)). Because ℓdecision ( ˆ𝑐, 𝜇 ) ≥ 0, 
+
+𝜇 is a minimizer of 𝑅 .Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 20 TutORials in Operations Research
+
+Next, to prove (2.6), fix 0 ≤ 𝑠 < 𝑡 , and let 
+
+𝑤 𝑠 := 𝑤 ∗ (𝑐 + 𝑠 Δ), 𝑤 𝑡 := 𝑤 ∗ (𝑐 + 𝑡 Δ).
+
+By optimality, 
+
+(𝑐 + 𝑠 Δ)⊤𝑤 𝑠 ≤ ( 𝑐 + 𝑠 Δ)⊤𝑤 𝑡 , (10) 
+
+(𝑐 + 𝑡 Δ)⊤𝑤 𝑡 ≤ ( 𝑐 + 𝑡 Δ)⊤𝑤 𝑠 . (11) Let 
+
+𝐴 := 𝑐 ⊤ (𝑤 𝑡 − 𝑤 𝑠 ), 𝐵 := Δ ⊤ (𝑤 𝑡 − 𝑤 𝑠 ).
+
+Then (10) and (11) become 
+
+𝐴 + 𝑠𝐵 ≥ 0, 𝐴 + 𝑡𝐵 ≤ 0.
+
+Since 𝑡 > 𝑠 , these inequalities imply 𝐵 ≤ 0, and therefore 
+
+𝐴 ≥ − 𝑠𝐵 ≥ 0.
+
+Thus 
+
+𝑐 ⊤𝑤 𝑡 ≥ 𝑐 ⊤𝑤 𝑠 ,
+
+which is equivalent to 
+
+ℓdecision (𝑐 + 𝑠 Δ, 𝑐 ) ≤ ℓdecision (𝑐 + 𝑡 Δ, 𝑐 ).
+
+Taking 𝑠 = 1 and 𝑡 = 2 gives the stated inequality. □
+
+These insights from Theorems 1 and 2 serve as the foundation for addressing statistical learning questions in DFL. The next sections revisit these questions through data collection, uncertainty quantification, and distances between distributions. 
+
+4. Data Collection for Decision-Focused Learning 
+
+Data collection is a central problem in statistical learning, where one studies how many samples, and which kinds of samples, are needed to ensure that prediction quality or decision quality exceeds a desired threshold. When samples are collected i.i.d., the stopping time for data collection follows directly from the sample complexity or generalization error bound. However, as shown in the toy example in Figure 1, collecting data i.i.d. is not efficient for DFL. A more efficient data collection method is to focus on the decision-relevant samples. This sample selection is an important question Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 21 
+
+whenever labels are expensive. In the present setting, a “label” refers to a realization of the uncertain quantity that enters the downstream optimization problem, such as a cost vector or a demand vector. In many applications, observing this quantity requires running a costly experiment, collecting detailed operational data, or waiting for a stochastic outcome to be realized. This naturally leads to 
+
+active-learning and sequential-experimental-design questions: which contexts 𝑥 should we label, and when should we stop collecting data? In traditional statistical learning, data collection usually prioritizes points with higher prediction uncertainty. A key message of DFL, however, is that informative points are not necessarily those with a large prediction uncertainty. Rather, they are the points whose uncertainty is most likely to change the downstream decision. As shown in Figure 3, the decision map 𝑐 ↦ → 𝑤 ∗ (𝑐 ) is constant inside each normal cone and changes only when the predicted cost vector crosses a cone boundary. This geometry motivates two complementary approaches to data collection. The first is the margin-based method in Liu et al. [36]: quantify how far the current prediction is from degeneracy and collect more data only when the current confidence region intersects a cone boundary; see Section 4.2. The second is the direction-based method in Wan et al. [48]: exploit the scale invariance of the decision loss and measure predictive disagreement through normalized directions rather than Euclidean distance; see Section 4.3. 
+
+4.1. Problem setup and motivation 
+
+Let X denote the feature space, or a pool of unlabeled contexts. In the setting of experimental design, these unlabeled features are often called design points. For each 𝑥 ∈ X , we may pay a cost to observe a realization of the uncertain quantity. The goal is to learn a predictor ℎ(𝑥 ) while spending as few labels as possible, subject to achieving low downstream decision loss. This formulation covers pool-based active learning, sequential experimental design, adaptive simulation, and online data-acquisition problems. Let ℎ𝑡 (𝑥 ) be the current estimate after 𝑡 labels. Suppose further that the learner maintains a confidence ball, around ℎ𝑡 (𝑥 ), for example 
+
+B𝑡 (𝑥 ) := {𝑢 ∈ R𝑑 : ∥𝑢 − ℎ𝑡 (𝑥 )∥ ≤ 𝑟 𝑡 (𝑥 )} ,
+
+where 𝑟 𝑡 (𝑥 ) is a radius summarizing the remaining statistical uncertainty. These confidence balls are illustrated by the green circles in Figure 4. Intuitively, each confidence ball is constructed so that the true conditional mean E[𝑐 | 𝑥 ] lies within the ball with high probability. In practice, 𝑟 𝑡 (𝑥 ) can Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 22 TutORials in Operations Research
+
+be derived from concentration inequalities or generalization error bounds, and it typically decays at the rate 𝑂 (1/√𝑛 ) when 𝑛 samples are collected. It can also be obtained through empirical methods or conformal prediction. A prediction-focused strategy would collect labels with the largest radius 𝑟 𝑡 (𝑥 ). In DFL, however, a large radius is important only if it can change the optimal decision induced by the current prediction. This is why uncertainty must be measured relative to the geometry of the feasible region. 
+
+4.2. Margin-based data collection 
+
+The margin-based view quantifies how far a predicted cost vector is from a decision boundary .Recall that when the feasible region 𝑆 is a bounded polyhedron with extreme points 𝑤 (1) , . . . , 𝑤 (𝑚 ) ,the cost space is partitioned into normal cones 
+
+𝑁 𝑗 := {𝑢 ∈ R𝑑 : 𝑤 ( 𝑗 ) ∈ arg min 
+
+> 𝑤 ∈𝑆
+
+𝑢 ⊤𝑤 }, 𝑗 = 1, . . . , 𝑚. 
+
+Inside the interior of each cone, the oracle 𝑤 ∗ (𝑢 ) is constant. Decision uncertainty, therefore, concentrates near the union of cone boundaries. 
+
+DEFINITION 1 (D ISTANCE TO DEGENERACY , ADAPTED FROM EL BALGHITI ET AL . [16]). 
+
+For a prediction ˆ 𝑐 ∈ R𝑑 , define its distance to degeneracy by 
+
+𝑑 deg ( ˆ𝑐 ) := inf ∥Δ∥ : 𝑤 ∗ ( ˆ𝑐 + Δ) ≠ 𝑤 ∗ ( ˆ𝑐 ) .
+
+In particular, 𝑑 deg ( ˆ𝑐 ) = 0 whenever ˆ 𝑐 lies on a cone boundary. When 𝑆 is polyhedral, this quantity admits an explicit formula. Suppose 𝑤 ∗ ( ˆ𝑐 ) = 𝑤 ( 𝑗 ) is unique. Since 
+
+𝑁 𝑗 =
+
+Ù 
+
+> 𝑘 ≠𝑗
+
+{𝑢 ∈ R𝑑 : 𝑢 ⊤ (𝑤 (𝑘 ) − 𝑤 ( 𝑗 ) ) ≥ 0},
+
+the distance from ˆ 𝑐 to the boundary of 𝑁 𝑗 is 
+
+𝑑 deg ( ˆ𝑐 ) = min  
+
+> 𝑘 ≠𝑗
+
+ˆ𝑐 ⊤ (𝑤 (𝑘 ) − 𝑤 ( 𝑗 ) )∥𝑤 (𝑘 ) − 𝑤 ( 𝑗 ) ∥∗
+
+, (12) where ∥ · ∥ ∗ is the dual norm of ∥ · ∥ . Under the Euclidean norm, (12) reduces to the usual perpendicular distance from ˆ 𝑐 to the nearest supporting hyperplane of the cone. The right panel of Figure 4 illustrates the distance to degeneracy for the yellow prediction vector. In this example, the distance to degeneracy is given by the length of the red vector. Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 23  
+
+> Figure 4 Illustration of the margin-based method. Left and middle: Two predictions may have confidence regions of the same size, yet only the prediction near a cone boundary is decision-uncertain. Right: under the Euclidean norm, the distance to degeneracy is the perpendicular distance from the pre-dicted cost direction to the nearest cone boundary.
+
+Definition 1 yields a simple certification principle. If the entire confidence region B𝑡 (𝑥 ) lies inside a single cone, then every plausible cost vector induces the same optimizer, so the decision at 
+
+𝑥 is already certified. A sufficient condition is 
+
+𝑟 𝑡 (𝑥 ) < 𝑑 deg 
+
+ ℎ𝑡 (𝑥 ). (13) Whenever (13) holds, further sampling at 𝑥 may improve prediction accuracy but cannot change the induced decision. It will result in a stopping time for collecting labels of 𝑥 . Conversely, if the radius is comparable to or larger than the distance to degeneracy, then the current uncertainty region intersects a cone boundary, and additional labels at 𝑥 may still be decision-relevant. Despite this intuitive idea, the value of 𝑟 𝑡 (𝑥 ) for each feature point 𝑥 and each time step 𝑡 requires careful design, and depends on both the training loss and the structure of the prediction class. Intuitively, a simpler prediction class, such as a linear model, leads to a faster estimation error rate and therefore a smaller confidence radius. Because adaptive data selection produces non-i.i.d. observations, establishing the convergence of the prediction model requires additional techniques, such as reweighting. We refer readers to Liu et al. [36] for a specific setup and detailed analysis. The effectiveness of this margin-based approach depends on how often the data-generating distribution places mass near cone boundaries. A standard way to quantify this is through a soft-margin condition. Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 24 TutORials in Operations Research
+
+DEFINITION 2 (S OFT -MARGIN CONDITION , L IU ET AL . [36]). We say that the contextual distribution satisfies a soft-margin condition with parameters (𝐾, 𝜅 ) if, for all sufficiently small 
+
+𝑡 > 0, 
+
+P𝑋 
+
+ 𝑑 deg (E[𝑐 |𝑋 ]) ≤ 𝑡  ≤ 𝐾𝑡 𝜅 .
+
+The parameter 𝜅 measures how much probability mass lies near degeneracy. A large value of 𝜅 
+
+means that most contexts are well separated from cone boundaries, in which case many decisions can be certified using only a small number of labels. This is the analogue of Tsybakov’s margin condition in classification. Under such conditions, margin-based active-learning methods can enjoy substantially faster rates than passive data collection, because only near-boundary contexts require intensive sampling; see Liu et al. [36]. Two observations help justify the soft-margin condition in practice. First, this condition is governed by the conditional mean E[𝑐 | 𝑋 ], rather than by the entire conditional distribution of 
+
+𝑐 | 𝑋 . Thus, even if the distribution of 𝑐 | 𝑋 is continuous and places substantial density near the degeneracy set, its conditional mean may still be well separated from degeneracy. Second, any distribution of E[𝑐 | 𝑋 ] can be made to satisfy the soft-margin condition by appropriately stretching the vectors E[𝑐 | 𝑋 ]; see, for example, Example 4 in Liu et al. [36]. 
+
+4.3. Direction-based data collection 
+
+The direction-based approach starts from the scale-invariant property in Theorem (1.2). This property implies that the scale information of the prediction is decision-irrelevant, while small directional errors can move the prediction across a cone boundary and induce positive regret. This suggests that, for data collection, uncertainty should be measured through disagreement in 
+
+direction rather than disagreement in Euclidean norm. This insight can be used to design sequential experiments for data collection. In sequential experimental design, a common strategy is to query the design whose predictive distribution exhibits the largest uncertainty; see, for example, Zhao [52]. A natural, but decision-blind, choice is to measure uncertainty through the ℓ2 spread of the predictions produced by the current candidate models. The following example shows why this can be misleading for DFL. Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 25       
+
+> Figure 5 Predicted cost vectors and their corresponding optimizers.
+> Figure 6 The same predictions viewed through Euclidean spread.
+
+EXAMPLE 2. Consider a two-dimensional setting with two candidate predictors H = {ℎ1, ℎ 2}
+
+and two candidate designs X = {𝑥 1, 𝑥 2}. In Figure 5, red points correspond to predictions at 𝑥 1 and green points correspond to predictions at 𝑥 2. For ease of visualization, each cost vector is represented by its negative direction. Although the two green predictions are farther apart in Euclidean distance, they lie in the same cone and therefore induce the same optimizer, as shown in Figure 6. By contrast, the two red predictions are closer in Euclidean distance but lie in different cones, so they induce different optimizers in Figure 6. Hence, 𝑥 1 is more uncertain from the perspective of decision loss, even though 𝑥 2 has a larger ℓ2 spread. Example 2 shows that the geometry relevant to DFL is angular rather than radial. Motivated by this observation, for a given design 𝑥 and a class of candidate models 𝐻 , consider the following three uncertainty scores: 
+
+Metric 1. Standard Euclidean disagreement: 𝑈 ℓ2 (𝑥 ) := max ℎ1,ℎ 2 ∈𝐻 ∥ℎ1 (𝑥 ) − ℎ2 (𝑥 )∥ ,
+
+Metric 2. Computational intractable decision-loss disagreement: 
+
+𝑈 decision (𝑥 ) := max   
+
+> ℎ1,ℎ 2∈𝐻
+
+max ℓdecision (ℎ1 (𝑥 ), ℎ 2 (𝑥 )) , ℓ decision (ℎ2 (𝑥 ), ℎ 1 (𝑥 )) .
+
+Metric 3. Normalized directional disagreement: 𝑈 dir (𝑥 ) := max ℎ1,ℎ 2 ∈𝐻 ℎ1 (𝑥 )∥ℎ1 (𝑥 )∥ 2 − ℎ2 (𝑥 )∥ℎ2 (𝑥 )∥ 2 2.Metric 3 can also be viewed as an angular disagreement measure since 𝑢  
+
+> ∥𝑢 ∥2
+
+− 𝑣   
+
+> ∥𝑣 ∥22
+
+=
+
+2 sin 
+
+ ∠(𝑢,𝑣 )
+
+> 2
+
+
+
+.Mo Liu: Tutorial for Decision-Focused Learning      
+
+> 26 TutORials in Operations Research
+> Figure 7 Metric 1: ℓ2-based uncertainty. Figure 8 Metric 3: Direction-based uncertainty.
+
+Figures 7 and 8 provide a second illustration of these uncertainty metrics. There are three candi-date designs (red, green, and blue) and four candidate predictors ℎ1, . . . , ℎ 4 ∈ H . Under the ℓ2 metric, the green design has the largest spread and would be selected by a standard uncertainty-sampling rule. Under the directional metric, however, the red design has the largest angular disagreement and is the more decision-relevant query. This reflects the fact that the green predictions mainly differ in magnitude, whereas the red predictions differ in direction and are therefore more likely to cross cone boundaries. Metric 1 is computationally cheap but decision blind. Metric 2 is closely aligned with the decision loss, but evaluating it requires repeated solution of the downstream optimization problem for many pairs of predictions, which can be prohibitive in sequential settings. Metric 3 sits between these extremes: it is computationally lightweight, requires no optimization-oracle calls, and directly exploits the scale invariance of the decision loss. Based on this directional uncertainty metric, Metric 3 , Wan et al. [48] propose a new decision-focused sequential experimental design approach. At each iteration, candidate designs are sampled randomly with probabilities proportional to their directional uncertainty, and the hypothesis class is shrunk appropriately over time. They show that this approach leads to an earlier stopping time and a faster convergence rate. Its theoretical advantage over decision-blind design is further analyzed in Wan et al. [48] under several special noise distributions. They also demonstrate strong empirical performance on real-data experiments. 
+
+Applications of decision-focused data collection methods. Decision-focused data collection is useful whenever costly labels are only intermediate objects and the ultimate objective is to improve Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 27 
+
+downstream actions. In marketing and assortment planning, it prioritizes customer segments for which plausible demand models lead to different stocking or pricing decisions; see, e.g., Liu et al. [35]. In personalized treatment, it targets patient groups whose response uncertainty could change the selected intervention; see, e.g., Chung et al. [13]. In A/B testing for service design, it guides the selection of experimental designs that are most informative for estimating how short-term effects translate into long-term outcomes, thereby supporting better product or service decisions; see, e.g., Chernozhukov et al. [11]. The same principle also appears in modern AI systems: when preference labels or human reward evaluations are expensive, one should prioritize prompts for which plausible models disagree about the induced action, rather than merely about the scale of a score; see, e.g., Wan et al. [48]. 
+
+5. Decision-Focused Distance Between Distributions 
+
+Distances between probability distributions are fundamental tools in statistics and machine learning. They are used for clustering, interpolation, kernel weighting, domain adaptation, and distribution-shift analysis. In DFL, however, a good distance should not only capture geometric discrepancy in the raw outcome space; it should also reflect whether two distributions induce similar decisions .This section discusses why standard distances can be inadequate for that purpose and introduces a coupling-based decision-focused alternative, proposed in Liu and Liu [37]. 
+
+5.1. Why standard distances may be inadequate 
+
+Classical distances compare distributions pointwise. Let 𝑃 and 𝑄 be probability measures on a measurable space (Ω, F ) with densities 𝑝 and 𝑞 with respect to a common dominating measure 𝜇 .The total-variation distance is 
+
+𝑑 TV (𝑃, 𝑄 ) := sup 
+
+> 𝐴 ∈F
+
+|𝑃 ( 𝐴 ) − 𝑄 ( 𝐴 )| = 12
+
+∫
+
+> Ω
+
+| 𝑝 (𝑥 ) − 𝑞 (𝑥 )| 𝑑𝜇 (𝑥 ),
+
+and the Kullback–Leibler divergence is 
+
+𝐷 KL (𝑃 ∥𝑄 ) :=
+
+∫
+
+> Ω
+
+𝑝 (𝑥 ) log 
+
+ 𝑝 (𝑥 )
+
+𝑞 (𝑥 )
+
+
+
+𝑑𝜇 (𝑥 ),
+
+with the usual convention that 𝐷 KL (𝑃 ∥𝑄 ) = +∞ when 𝑃 is not absolutely continuous with respect to 𝑄 .A limitation of these divergences is that they compare mass at the same location . When supports do not overlap, the KL divergence may become infinite, and total variation may saturate, even if Mo Liu: Tutorial for Decision-Focused Learning 
+
+28 TutORials in Operations Research 
+
+the two distributions are close in a geometric sense. This motivates transport-based distances such as the 𝑝 -Wasserstein distance, 
+
+𝑊 𝑝 (𝑃, 𝑄 ) :=
+
+
+
+inf 
+
+> 𝜋 ∈Π(𝑃,𝑄 )
+
+∫
+
+> Ω×Ω
+
+∥𝑥 − 𝑦 ∥ 𝑝 𝑑𝜋 (𝑥, 𝑦 )
+
+1/𝑝 
+
+, (14) where Π(𝑃, 𝑄 ) denotes the set of couplings of 𝑃 and 𝑄 .Wasserstein distance incorporates geometry by asking how far mass must be transported to transform one distribution into the other. But it is still decision blind . In linear optimization, moving a cost vector within the same normal cone may have no effect on the optimizer at all, whereas a tiny perturbation across a cone boundary may change the decision discontinuously. From a decision-making perspective, these two perturbations should be treated very differently, even if their Euclidean size is reversed.  
+
+> Figure 9 Geometric similarity does not imply decision similarity. Left: A polyhedral feasible region (S) with four extreme points and their associated normal cones. Right: Three example groups of cost vec-tors. Groups 1 and 2 lie in the same normal cone and are decision-equivalent, whereas Group 3 lies in a different normal cone and induces a different optimizer.
+
+Figure 9 illustrates this geometry in two dimensions. Let 𝑆 ⊂ R2 be a polyhedral feasible region with extreme points 𝑤 1, . . . , 𝑤 4. The cost space can then be partitioned into four regions according to which extreme point is optimal, as shown in the right panel of Figure 9. Consequently, if two cost vectors 𝑥 and 𝑦 belong to the same cone, then 𝑤 ∗ (𝑥 ) = 𝑤 ∗ (𝑦 ) and the decision loss ℓdecision (𝑥, 𝑦 )
+
+is zero. A decision-focused notion of distance should therefore regard distributions supported in Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 29 
+
+the same cone as close—or even identical from the standpoint of optimization—regardless of their Euclidean separation. This observation already reveals a fundamental distinction from Wasserstein geometry. Groups 1 and 2 in Figure 9 are geometrically separated but decision-equivalent because they lie in the same normal cone. By contrast, Groups 2 and 3 may be geometrically close, yet they induce different decisions because they lie in different normal cones. The use of downstream decision cost to evaluate distributional distance was first studied by Bertsimas and Mundru [7], whose focus is scenario reduction for the SAA method. The idea of an optimal-transport-based decision-focused divergence was later considered by Rodriguez-Diaz et al. [41], primarily from a computational perspective. This divergence was subsequently formalized and rigorously analyzed for linear programs by Liu and Liu [37], where it is called the decision-focused optimistic distance .
+
+5.2. Decision-focused optimistic distance 
+
+Let 𝜇 and 𝜈 be probability measures on R𝑑 with finite first moments, and let Γ(𝜇, 𝜈 ) denote the set of all couplings of 𝜇 and 𝜈 . For any coupling 𝛾 ∈ Γ(𝜇, 𝜈 ), define the decision-focused divergence 
+
+𝑊 SPO (𝜇, 𝜈 ; 𝛾 ) :=
+
+∫ 
+
+> R𝑑 ×R𝑑
+
+ℓdecision (𝑥, 𝑦 ) 𝛾 (𝑑𝑥, 𝑑𝑦 ). (15) Because ℓdecision (𝑥, 𝑦 ) ≤ diam (𝑆 )∥ 𝑥 − 𝑦 ∥∗, the integral in (15) is well defined whenever 𝜇 and 𝜈 
+
+have finite first moments. The quantity (15) depends not only on the marginals but also on the coupling. This dependence is meaningful. If 𝑋 ∼ 𝜇 and 𝑌 ∼ 𝜈 are independent, then 𝛾 = 𝜇 ⊗ 𝜈 and (15) reduces to the familiar expected regret 
+
+𝑅 (𝜇, 𝜈 ) := Eℓdecision (𝑋,𝑌 ) = 𝑊 SPO (𝜇, 𝜈 ; 𝜇 ⊗ 𝜈 ). (16) However, in many applications, independence is unrealistic. If the two distributions describe the same unit observed under different conditions—for instance, the same patient at different ages or the same market before and after a shift—then the way mass is aligned across the two distributions matters. Ignoring this dependence can substantially overestimate or underestimate average decision loss. This motivates the following definition of decision-focused divergence via optimal transport. 
+
+DEFINITION 3 (D ECISION -FOCUSED OPTIMISTIC DIVERGENCE ). For probability measures 
+
+𝜇 and 𝜈 on R𝑑 , define 
+
+𝑊 ODF (𝜇, 𝜈 ) := inf  
+
+> 𝛾 ∈Γ(𝜇,𝜈 )
+
+𝑊 SPO (𝜇, 𝜈 ; 𝛾 ). (17) Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 30 TutORials in Operations Research
+
+This divergence, proposed by Suhan Liu and Mo Liu, is called the decision-focused optimistic divergence because it is defined through the coupling that minimizes the decision loss between two distributions. In some OR settings, the maximum decision loss is also of interest as a pessimistic assessment of risk. For this reason, Liu and Liu [37] also define the decision-focused pessimistic divergence by 
+
+𝑊 RDF (𝜇, 𝜈 ) := sup 
+
+> 𝛾 ∈Γ(𝜇,𝜈 )
+
+𝑊 SPO (𝜇, 𝜈 ; 𝛾 ).
+
+Since the independent coupling 𝜇 ⊗ 𝜈 belongs to Γ(𝜇, 𝜈 ), we always have 0 ≤ 𝑊 ODF (𝜇, 𝜈 ) ≤ 𝑅 (𝜇, 𝜈 ) ≤ 𝑊 RDF (𝜇, 𝜈 ).
+
+The optimistic version gives the most favorable alignment between the two distributions, whereas the pessimistic version gives the least favorable one. Both quantities are generally asymmetric, because evaluating decisions induced by 𝜇 under 𝜈 is different from evaluating decisions induced by 𝜈 under 𝜇 .When symmetry is desirable, one may use standard symmetrizations such as 
+
+𝑊 𝑂  
+
+> sym
+
+(𝜇, 𝜈 ) := 𝑊 ODF (𝜇, 𝜈 ) + 𝑊 ODF (𝜈, 𝜇 ), 𝑊 𝑅  
+
+> sym
+
+(𝜇, 𝜈 ) := 𝑊 RDF (𝜇, 𝜈 ) + 𝑊 RDF (𝜈, 𝜇 ),
+
+or Jensen–Shannon-type variants based on the midpoint mixture 𝑚 := (𝜇 + 𝜈 )/ 2. In many applica-tions, however, the asymmetric form is precisely the quantity of interest because it corresponds to evaluating one distribution through decisions trained on another. Liu and Liu [37] show that the 
+
+decision-focused optimistic divergence 𝑊 ODF (· , ·) has the following favorable properties: 1. Computational efficiency. The quantity 𝑊 ODF (𝜇, 𝜈 ) can be computed efficiently through a transformation of the 𝑊 2 distance between ( ¯𝑤 ∗)# 𝜇 and 𝜈 , where ( ¯𝑤 ∗)# 𝜇 denotes the pushfor-ward of 𝜇 onto the set of optimal extreme points. 2. Statistical efficiency. The estimation error rate for the decision-focused optimistic divergence 
+
+is independent of the dimension of the measure space. By contrast, for many classical distri-butional distances, the estimation error typically decays at the rate 𝑂 (𝑛 −1/𝑑 ), where 𝑑 is the dimension of the measure space. The decision-focused optimistic divergence avoids this curse of dimensionality by exploiting the finite set of extreme points in linear programming. 3. Control by classical metrics. The quantity 𝑊 ODF (𝜇, 𝜈 ) is Lipschitz continuous with respect to total variation distance and the 𝑊 1 distance, and is further controlled by the 𝑊 2 distance after pushforward to the decision space. Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 31  
+
+> Figure 10 Three customer types in a newsvendor problem. The red line marks the same decision-optimal quantile for all three distributions. Although the distributions differ in shape and tail behavior, they induce the same optimal order quantity, equal to 10.
+
+Liu and Liu [37] also consider a regularized version of the decision-focused optimistic divergence 
+
+by adding a KL-divergence penalty to the coupling problem. The weight of this penalty controls the degree of pessimism in the resulting coupling. See Proposition 4 of Liu and Liu [37] for details. 
+
+5.3. Applications to interpolation and clustering 
+
+In the DFL setting, the decision-focused optimistic divergence can naturally replace the Wasserstein 2 distance in various optimal transport problems; see, e.g., Cheng et al. [10]. The resulting decision-focused coupling has a wide range of potential applications in DFL. Here, we use clustering and interpolation as two illustrative examples. 
+
+Decision-aware clustering. Similarity between coefficient distributions does not necessarily imply similarity between the induced optimal decisions. Therefore, when clustering samples, for example, to provide the same service to similar customers and reduce the cost of personalization (or customization), the clustering criterion should account for downstream decisions rather than distributional similarity alone. We use the newsvendor problem as a motivating example. Suppose each observational unit is represented not by a single point, but by an entire distribution, such as a customer-specific demand distribution, a patient-specific response distribution, or a city-level sales distribution. Standard clustering methods based on Euclidean or Wasserstein distance group samples that are geometrically similar. In contrast, decision-focused clustering groups samples according to the similarity of their induced optimal actions. Figure 10 presents a simple newsvendor example. The three customer types have visibly different demand distributions, and standard distributional distances would treat them as distinct. However, Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 32 TutORials in Operations Research
+
+suppose their unit selling price 𝑝 and unit procurement cost 𝑐 are the same across the three customer types. Then all three distributions share the same decision-relevant quantile, 𝐹 −1
+
+ 𝑝 −𝑐 𝑝 
+
+
+
+.In particular, when 𝑝 and 𝑐 are chosen such that ( 𝑝 − 𝑐 )/ 𝑝 = 0.7, this corresponds to the 70% quantile, and the three customer types yield the same optimal order quantity, namely 10. From a decision-focused perspective, these distributions should be regarded as similar. This is exactly the type of structure that a decision-focused distance is designed to preserve. This viewpoint leads naturally to decision-aware barycenters and clustering rules. For example, given distributions 𝜇 1, . . . , 𝜇 𝑛 and kernel weights 𝜔 𝑖 (𝑥 ) centered at a target covariate value 𝑥 , one may define a decision-aware interpolant through ˆ𝜇 𝑥 ∈ arg min 
+
+> 𝜈 𝑛
+
+∑︁ 
+
+> 𝑖 =1
+
+𝜔 𝑖 (𝑥 ) 𝑊 𝑂  
+
+> sym
+
+(𝜇 𝑖 , 𝜈 ),
+
+while a decision-aware clustering rule can be based on medoids or barycenters that minimize within-cluster DF distance. The precise optimization problem depends on the application, but the common principle is simple: group or interpolate distributions according to decision similarity , not merely raw geometric proximity. 
+
+Decision-aware interpolation. Interpolation poses a related challenge. Suppose distributions are indexed by a covariate such as income, age, or time, and we wish to estimate the distribution corresponding to an intermediate covariate value. A naive strategy averages empirical histograms pointwise. When supports are separated, however, this can create unrealistic intermediate distribu-tions. Figures 11 and 12 illustrate the point. When the demand distributions in low- and high-income markets have disjoint or weakly overlapping supports, pointwise averaging yields the bimodal shape in Figure 12 (left), which is often not operationally plausible. In contrast, transport-based interpolation moves mass from one region to another and produces the unimodal intermediate distribution in Figure 12 (right). A decision-focused interpolation goes one step further: it favors interpolants that preserve the downstream action, such as relevant quantiles, optimal stocking decisions, or optimizer cones. Interpolation induced by optimal transport is often referred to as McCann interpolation in statistical learning. In the DFL setting, Liu and Liu [37] apply this idea using the decision-focused optimistic divergence and call the resulting construction decision-focused interpolation . Empirical results on real datasets in Liu and Liu [37] show that this decision-focused interpolation produces distribution forecasts with lower decision cost than decision-blind interpolation methods. Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 33 
+
+Figure 11 Demand distributions of the same product in two endpoint markets. The supports are largely separated, suggesting that interpolation should move mass rather than simply average pointwise frequencies. 
+
+Figure 12 Two candidate interpolations for an intermediate market. Left: naive averaging of endpoint his-tograms produces an artificial bimodal distribution. Right: a transport- or decision-aware interpo-lation yields a smoother intermediate distribution that better reflects a gradual demand shift. 
+
+6. Open Statistical Learning Questions in DFL 
+
+Tailoring traditional statistical learning methods to DFL remains an important and active research direction. Existing work has already begun to address several foundational questions, including statistical learning rates El Balghiti et al. [16], Hu et al. [26], robust optimization Im et al. [29], learning under bandit feedback Hu et al. [27], data collection Bennouna et al. [4], Liu et al. [36], sequential experimental design Wan et al. [48], uncertainty quantification Yeh et al. [51], and Mo Liu: Tutorial for Decision-Focused Learning  
+
+> 34 TutORials in Operations Research
+
+distributional distance quantification Liu and Liu [37]. These works suggest that many classical learning questions can be revisited through a decision-focused lens, often leading to new phenomena that do not appear in prediction-focused learning. At the same time, a broad range of statistical learning problems remains largely unexplored in DFL. Examples include Value-at-Risk (VaR) estimation, offline policy evaluation, denoising, missing-feature completion, clustering, and feature selection. In many of these settings, the key challenge is to identify which aspects of uncertainty matter for downstream decisions and which do not. More generally, an important question is whether one can develop decision-aware versions of classical statistical procedures that retain their computational tractability while achieving stronger downstream guarantees. Another appealing direction is to identify conditions under which faster learning rates can be achieved, for example, under special noise distributions, margin conditions, or structural assumptions on the hypothesis class. A second important direction is to broaden the range of real-world applications. DFL is naturally motivated by problems in service system design, pricing, personalized recommendation, delivery and logistics, energy systems, healthcare, and hospital operations. Many of these applications involve nonlinear objectives, uncertain constraints, or multi-stage uncertainty, and thus fall outside the clean stochastic linear optimization framework emphasized in this tutorial. Nevertheless, when suitable approximations or reformulations reduce these problems to linear or locally linear models, the tools developed here may still provide useful insights. For example, Liu et al. [35] studies assortment optimization through such a perspective. More broadly, going beyond stochastic linear optimization remains a central challenge for the field. Linear optimization provides a particularly tractable setting because the conditional mean is decision sufficient and the geometry of the oracle map is relatively explicit. For nonlinear objectives, however, the relevant decision statistic may be much more complicated, and in many problems, no low-dimensional point prediction is sufficient. Developing statistical theory for such settings, including uncertainty measures and notions of calibration, is an important frontier. Finally, most existing analyses of DFL focus on static, single-period problems, partly because many basic statistical questions remain open even in this setting. Extending these ideas to multi-period decision-making is a natural next step. Once temporal dependence and sequential feedback are introduced, DFL becomes closely connected to reinforcement learning, dynamic programming, and control; see, e.g., Capitaine et al. [9], Liu and Grigas [33]. This connection raises new ques-tions about exploration, partial feedback, state uncertainty, and long run regret, while also creating opportunities to bring decision-focused ideas into broader sequential learning problems. Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 35 
+
+7. Conclusion 
+
+In this tutorial, we reviewed the main tools, challenges, and methods in DFL. We used data collection and distributional distance quantification as illustrative examples to show how traditional statistical learning tools can be adapted to the decision-focused setting. Overall, DFL remains at an early stage of development. The main message of this tutorial is that many classical tools from statistical learning continue to be useful, but they often must be redefined, reanalyzed, or redesigned once the ultimate goal is decision quality rather than prediction accuracy. Developing a more systematic understanding of this gap, both theoretically and computationally, remains one of the most promising directions for future research. 
+
+Acknowledgments 
+
+Mo Liu gratefully acknowledges Erick Delage, Tito Homem-de-Mello, and Vishal Gupta for their valuable feedback. He also thanks the editors and four anonymous reviewers for their helpful comments and suggestions. 
+
+References 
+
+[1] Agrawal A, Amos B, Barratt S, Boyd S, Diamond S, Kolter JZ (2019) Differentiable convex optimization layers. 
+
+Advances in Neural Information Processing Systems , 9558–9570. [2] Amos B, Kolter JZ (2017) OptNet: Differentiable optimization as a layer in neural networks. International Conference on Machine Learning , 136–145. [3] Ban GY, Rudin C (2019) The big data newsvendor: Practical insights from machine learning. Operations Research 
+
+67(1):90–108. [4] Bennouna O, Bennouna A, Amin S, Ozdaglar A (2025) What data enables optimal decisions? An exact charac-terization for linear optimization. arXiv preprint arXiv:2505.21692 .[5] Berden S, Mahmuto˘ gulları A˙ I, Tsouros D, Guns T (2025) Solver-free decision-focused learning for linear opti-mization problems. arXiv preprint arXiv:2505.22224 .[6] Bertsimas D, Kallus N (2020) From predictive to prescriptive analytics. Management Science 66(3):1025–1044. [7] Bertsimas D, Mundru N (2023) Optimization-based scenario reduction for data-driven two-stage stochastic optimization. Operations Research 71(4):1343–1361. [8] Bucarey V, Calder´ on S, Mu˜ noz G, Semet F (2024) Decision-focused predictions via pessimistic bilevel optimiza-tion: a computational study. International Conference on the Integration of Constraint Programming, Artificial Intelligence, and Operations Research , 127–135 (Springer). [9] Capitaine A, Haddouche M, Moulines E, Jordan MI, Boursier E, Durmus A (2026) Online decision-focused learning. Proceedings of the International Conference on Learning Representations , URL http://dx.doi. org/10.48550/arXiv.2505.13564 , arXiv:2505.13564. Mo Liu: Tutorial for Decision-Focused Learning 
+
+36 TutORials in Operations Research 
+
+[10] Cheng X, Zhu Y, Xie Y (2026) Generative models for decision-making under distributional shift. URL http: //dx.doi.org/10.48550/arXiv.2604.04342 .[11] Chernozhukov V, Hansen C, Kallus N, Spindler M, Syrgkanis V (2024) Applied causal inference powered by ml and ai. arXiv preprint arXiv:2403.02467 .[12] Chu LY, Shanthikumar JG, Shen ZJM (2008) Solving operational statistics via a bayesian analysis. Operations research letters 36(1):110–116. [13] Chung ATH, Abdulai J, Bayoh P, Sandi L, Smart F, Bastani H, Bastani O (2026) Improving access to essential medicines via decision-aware machine learning. Nature 1–6. [14] Cristian R, Harsha P, Perakis G, Quanz B (2025) Efficient end-to-end learning for decision-making: A meta-optimization approach. arXiv preprint arXiv:2505.11360 URL http://dx.doi.org/10.48550/arXiv. 2505.11360 .[15] Donti PL, Kolter JZ, Amos B (2017) Task-based end-to-end model learning in stochastic optimization. Advances in Neural Information Processing Systems , 5484–5494. [16] El Balghiti O, Elmachtoub AN, Grigas P, Tewari A (2023) Generalization bounds in the predict-then-optimize framework. Mathematics of Operations Research 48(4):2043–2065, URL http://dx.doi.org/10.1287/ moor.2022.1330 .[17] Elmachtoub AN, Grigas P (2022) Smart “predict, then optimize”. Management Science 68(1):9–26, URL http: //dx.doi.org/10.1287/mnsc.2020.3922 .[18] Elmachtoub AN, Lam H, Lan H, Zhang H (2025) Dissecting the impact of model misspecification in data-driven optimization. arXiv preprint arXiv:2503.00626 .[19] Elmachtoub AN, Lam H, Zhang H, Zhao Y (2023) Estimate-then-optimize versus integrated-estimation-optimization versus sample average approximation: A stochastic dominance perspective. arXiv preprint arXiv:2304.06833 URL http://dx.doi.org/10.48550/arXiv.2304.06833 .[20] Er C, Liu M (2025) Decision-focused bias correction for fluid approximation. arXiv preprint arXiv:2512.15726 
+
+URL http://dx.doi.org/10.48550/arXiv.2512.15726 .[21] Feng Q, Shanthikumar JG, Wu J (2025) Contextual data-integrated newsvendor solution with operational data analytics (oda). Management Science 71(11):9384–9403. [22] Gupta V (2026) End-to-end learning and optimization: Course reader. Course reader, USC Mar-shall School of Business, URL https://www.dropbox.com/scl/fo/hku67dioasy5rz0pxgs08/ AOl182gWOvBUvDujNd8m8f4?dl=0&e=1&rlkey=v0wumq8vbwqe0dia5dk6acw37 , spring 2026. Accessed May 31, 2026. [23] Ho-Nguyen N, Kılınc ¸-Karzan F (2022) Risk guarantees for end-to-end prediction and optimization processes. 
+
+Management Science 68(12):8680–8698, URL http://dx.doi.org/10.1287/mnsc.2022.4321 .Mo Liu: Tutorial for Decision-Focused Learning TutORials in Operations Research 37 [24] Homem-de Mello T, Valencia J, Lagos F, Lagos G (2024) Forecasting outside the box: Application-driven optimal pointwise forecasts for stochastic optimization. arXiv preprint arXiv:2411.03520 .[25] Hu X, Lee J, Lee J (2023) Two-stage predict+ optimize for MILPs with unknown parameters in constraints. 
+
+Advances in neural information processing systems 36:14247–14272. [26] Hu Y, Kallus N, Mao X (2022) Fast rates for contextual linear optimization. Management Science 68(6):4236– 4245, URL http://dx.doi.org/10.1287/mnsc.2022.4383 .[27] Hu Y, Kallus N, Mao X, Wu Y (2025) Contextual linear optimization under partial feedback. Available at SSRN 5724783 .[28] Huang M, Gupta V (2024) Decision-focused learning with directional gradients. Advances in Neural Information Processing Systems 37:79194–79220. [29] Im H, Benslimane W, Grigas P (2025) Smart surrogate losses for contextual stochastic linear optimization with robust constraints. arXiv preprint arXiv:2505.22881 .[30] Kotary J, Di Vito V, Christopher J, Van Hentenryck P, Fioretto F (2023) Predict-then-optimize by proxy: Learning joint models of prediction and optimization. arXiv preprint arXiv:2311.13087 .[31] Lan H, Liao L, Elmachtoub AN, Kroer C, Lam H, Zhang H (2025) The bias-variance tradeoff in data-driven optimization: A local misspecification perspective. arXiv preprint arXiv:2510.18215 .[32] Lee J, Jin S, Lee Y (2026) Decision-focused learning via tangent-space projection of prediction error. Proceedings of the International Conference on Machine Learning , URL https://arxiv.org/abs/2605.01361 .[33] Liu H, Grigas P (2022) Online contextual decision-making with a smart predict-then-optimize method. arXiv preprint arXiv:2206.07316 .[34] Liu M, Bai Y, Qi M, Shen ZJM (2026) Inventory management with transformer: Automated decision making for order timing and quantity. Service Science 0(0), URL http://dx.doi.org/10.1287/serv.2024. 0236 , published online April 7, 2026. [35] Liu M, Cao J, Shen ZJM (2023) Value of one data point: Active label acquisition in assortment optimization. 
+
+Available at SSRN 4487888 .[36] Liu M, Grigas P, Liu H, Shen ZJM (2023) Active learning in the predict-then-optimize framework: A margin-based approach. arXiv preprint arXiv:2305.06584 URL http://dx.doi.org/10.48550/arXiv.2305. 06584 .[37] Liu S, Liu M (2026) Decision-focused optimal transport. arXiv preprint arXiv:2602.02800 .[38] Mandi J, Kotary J, Berden S, Mulamba M, Bucarey V, Guns T, Fioretto F (2024) Decision-focused learning: Foundations, state of the art, benchmark and future opportunities. Journal of Artificial Intelligence Research 
+
+81:1623–1701, URL http://dx.doi.org/10.1613/jair.1.15320 .[39] Qi M, Grigas P, Shen ZJ (2025) Integrated conditional estimation-optimization. Operations Research .Mo Liu: Tutorial for Decision-Focused Learning 
+
+38 TutORials in Operations Research 
+
+[40] Qi M, Shi Y, Qi Y, Ma C, Yuan R, Wu D, Shen ZJ (2023) A practical end-to-end inventory management model with deep learning. Management Science 69(2):759–773. [41] Rodriguez-Diaz P, Kong L, Wang K, Alvarez-Melis D, Tambe M (2024) What is the right notion of distance between predict-then-optimize tasks? arXiv preprint arXiv:2409.06997 .[42] Sadana U, Chenreddy A, Delage E, Forel A, Frejinger E, Vidal T (2025) A survey of contextual optimization methods for decision-making under uncertainty. European Journal of Operational Research 320(2):271–289. [43] Schneider PJ, Kuhn D (2026) Soft-radial projection for constrained end-to-end learning. URL http://dx. doi.org/10.48550/arXiv.2602.03461 .[44] Shah S, Wang K, Wilder B, Perrault A, Tambe M (2022) Decision-focused learning without decision-making: Learning locally optimized decision losses. Advances in Neural Information Processing Systems 35:1320–1332. [45] Shah S, Wilder B, Perrault A, Tambe M (2024) Leaving the nest: Going beyond local loss functions for predict-then-optimize. Proceedings of the AAAI Conference on Artificial Intelligence , volume 38, 14902–14909. [46] Tang B, Khalil EB (2022) PyEPO: A pytorch-based end-to-end predict-then-optimize library with linear objective function. OPT 2022: Optimization for Machine Learning (NeurIPS 2022 Workshop) .[47] Wan B, Liu M (2026) A solver-free training method for predict-then-optimize. Proceedings of the International Conference on Machine Learning , URL https://arxiv.org/abs/2606.19587 .[48] Wan B, Liu M, Grigas P, Shen ZJM (2026) Decision-focused sequential experimental design: A directional uncertainty-guided approach. arXiv preprint arXiv:2602.05340 URL http://dx.doi.org/10.48550/ arXiv.2602.05340 .[49] Wang K, Wilder B, Perrault A, Tambe M (2020) Automatically learning compact quality-aware surrogates for optimization problems. Advances in Neural Information Processing Systems .[50] Wilder B, Ewing E, Dilkina B, Tambe M (2019) End to end learning and optimization on graphs. Advances in Neural Information Processing Systems 32. [51] Yeh C, Christianson N, Wierman A, Yue Y (2025) Conformal risk training: End-to-end optimization of conformal risk control. arXiv preprint arXiv:2510.08748 .[52] Zhao J (2024) Experimental design for causal inference through an optimization lens. Tutorials in Operations Research: Smarter Decisions for a Better World , 146–188 (INFORMS).

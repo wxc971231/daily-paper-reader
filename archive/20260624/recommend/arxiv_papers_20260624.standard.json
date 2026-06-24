@@ -1,0 +1,133 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-24T19:07:39.466602+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.22402v1",
+      "source": "arxiv",
+      "title": "Reinforcement learning to improve large language model-based automated code compliance systems",
+      "abstract": "Large language model (LLM)-based approaches for automated code compliance (ACC) of building regulations are prone to generating incorrect and hallucinated computer-processable rules. This paper introduces P4IR, a two-stage framework that uses supervised fine-tuning (SFT) to instill domain knowledge in an LLM, followed by Group Relative Policy Optimization (GRPO) to improve the accuracy of the generated intermediate representations in the form of high-level code skeletons. The framework achieved reductions of up to 23.8% and 38.6% in tree edit distance and token-level Levenshtein distance respectively, relative to the SFT baselines. Comparative analysis demonstrates that this approach in a zero-shot setting outperforms leading LLMs in both code structure and semantics, specifically Claude Opus and Sonnet 4.5, GPT-5.2, Qwen-3-Max, and GLM-4.7, evaluated via few-shot prompting. Additionally, the GRPO stage produced a small yet statistically significant reduction in false positives. By combining SFT with GRPO to optimize directly for domain-specific objectives, this approach offers a path toward more accurate and reliable LLM-based ACC systems.",
+      "authors": [
+        "Jack Wei Lun Shi",
+        "Minghao Dang",
+        "Wawan Solihin",
+        "Leong Hien Poh",
+        "Justin K. W. Yeoh"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI",
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-06-21T09:17:02+00:00",
+      "link": "https://arxiv.org/pdf/2606.22402v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based code generation for compliance with RL optimization",
+      "llm_evidence_cn": "基于LLM的合规代码生成与强化学习优化",
+      "llm_evidence": "基于LLM的合规代码生成与强化学习优化",
+      "canonical_evidence": "基于LLM的合规代码生成与强化学习优化",
+      "llm_tldr_en": "Proposes P4IR, a two-stage framework combining supervised fine-tuning and group relative policy optimization (GRPO) to improve LLM-generated intermediate code skeletons for building regulation compliance, achieving up to 23.8% reduction in tree edit distance.",
+      "llm_tldr_cn": "基于LLM的建筑法规自动化代码合规方法容易产生错误和幻觉规则。本文提出P4IR两阶段框架，先通过监督微调注入领域知识，再利用分组相对策略优化（GRPO）提高生成高层代码骨架的准确性。实验表明，该方法在零样本设置下相较于基线降低了高达23.8%的树编辑距离和38.6%的标记级编辑距离，在多个指标上优于前沿LLM。该工作展示了强化学习在提升LLM代码生成质量方面的潜力。",
+      "llm_tldr": "基于LLM的建筑法规自动化代码合规方法容易产生错误和幻觉规则。本文提出P4IR两阶段框架，先通过监督微调注入领域知识，再利用分组相对策略优化（GRPO）提高生成高层代码骨架的准确性。实验表明，该方法在零样本设置下相较于基线降低了高达23.8%的树编辑距离和38.6%的标记级编辑距离，在多个指标上优于前沿LLM。该工作展示了强化学习在提升LLM代码生成质量方面的潜力。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.22536v1",
+      "source": "arxiv",
+      "title": "Generative Robust Optimisation",
+      "abstract": "Classical uncertainty sets for robust optimisation impose fixed geometric shapes that cannot represent the complex dependencies present in real-world data. We propose Generative Robust Optimisation (GRO), a framework in which a deep generative model defines the uncertainty set as the image of a neural network decoder over a calibrated latent set, naturally accommodating nonlinear correlations, asymmetry, and multimodality. A five-point evaluation framework (reconstruction fidelity, distribution matching, latent regularity, robust relevance, and computational tractability) provides systematic, model-agnostic criteria for assessing any neural network-based uncertainty set. We instantiate this framework with a Wasserstein Adversarial Autoencoder employing Gaussian mixture model-guided training for latent regularity and constraint-consistency regularisation for robust relevance. Restricting the decoder to ReLU activations enables exact worst-case verification through mixed-integer programming embedding. Extensive experiments on a production planning problem across six uncertainty distributions and six generative architectures, together with a multi-period facility location study, validate the framework and demonstrate that systematic attention to all five criteria yields uncertainty sets that are simultaneously expressive, well-calibrated, and optimisation-tractable.",
+      "authors": [
+        "Yuhui Yin",
+        "Vassilis M. Charitopoulos"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "eess.SY",
+        "math.OC"
+      ],
+      "published": "2026-06-21T14:50:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.22536v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "generative robust optimization framework with deep generative models for uncertainty sets",
+      "llm_evidence_cn": "提出生成式鲁棒优化框架，用深度生成模型定义不确定集",
+      "llm_evidence": "提出生成式鲁棒优化框架，用深度生成模型定义不确定集",
+      "canonical_evidence": "提出生成式鲁棒优化框架，用深度生成模型定义不确定集",
+      "llm_tldr_en": "Proposes Generative Robust Optimisation (GRO) using deep generative models to define complex uncertainty sets, with a five-point evaluation framework, applied via Wasserstein Adversarial Autoencoder.",
+      "llm_tldr_cn": "经典鲁棒优化采用固定几何形状不确定集，无法表示复杂依赖。本文提出生成式鲁棒优化（GRO），用深度生成模型（如Wasserstein对抗自编码器）的神经网络解码器定义不确定集，自动学习非线性、不对称和多模态依赖。同时提出五点评估框架，为基于神经网络的不确定集提供系统评价标准，显著提升鲁棒优化对真实数据分布的适应性。",
+      "llm_tldr": "经典鲁棒优化采用固定几何形状不确定集，无法表示复杂依赖。本文提出生成式鲁棒优化（GRO），用深度生成模型（如Wasserstein对抗自编码器）的神经网络解码器定义不确定集，自动学习非线性、不对称和多模态依赖。同时提出五点评估框架，为基于神经网络的不确定集提供系统评价标准，显著提升鲁棒优化对真实数据分布的适应性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.21773v1",
+      "source": "arxiv",
+      "title": "Decision-Focused Learning: When and Why Traditional Prediction Models Fail",
+      "abstract": "Plugging predictions of unknown parameters into downstream optimization problems, often referred to as the ``predict-then-optimize'' paradigm, has long been a standard approach in decision-making under uncertainty. However, improved predictive accuracy does not, in general, translate into improved decision quality. This disconnect has motivated growing interest in decision-focused learning (DFL) within the operations research community. This tutorial reviews recent developments in DFL and highlights key methodological insights, with a particular focus on stochastic linear programming as the downstream decision-making problem. We discuss why several widely used tools in traditional statistical learning are not directly suited to decision-focused settings and must be rethought, including (i) data collection strategies driven purely by predictive uncertainty and (ii) distributional distance measures such as the Wasserstein distance. We summarize properties of DFL that distinguish it from conventional predictive modeling and provide insights into the development of new decision-focused tools.",
+      "authors": [
+        "Mo Liu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "stat.ME"
+      ],
+      "published": "2026-06-19T21:45:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.21773v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "tutorial on decision-focused learning for predict-then-optimize in operations research",
+      "llm_evidence_cn": "关于决策聚焦学习的教程，涉及预测-优化运筹学问题建模",
+      "llm_evidence": "关于决策聚焦学习的教程，涉及预测-优化运筹学问题建模",
+      "canonical_evidence": "关于决策聚焦学习的教程，涉及预测-优化运筹学问题建模",
+      "llm_tldr_en": "Reviews decision-focused learning in operations research, highlighting why predictive accuracy does not guarantee decision quality, focusing on stochastic linear programming.",
+      "llm_tldr_cn": "现有预测-优化范式下预测精度不保证决策质量。本文以教程形式综述决策聚焦学习（DFL）的最新进展，重点分析以随机线性规划为下游决策问题的场景，指出传统统计学习工具为何不适用于决策聚焦设置，为改进预测建模提供方法论见解。",
+      "llm_tldr": "现有预测-优化范式下预测精度不保证决策质量。本文以教程形式综述决策聚焦学习（DFL）的最新进展，重点分析以随机线性规划为下游决策问题的场景，指出传统统计学习工具为何不适用于决策聚焦设置，为改进预测建模提供方法论见解。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "problem modeling for operations research",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

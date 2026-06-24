@@ -1,0 +1,1533 @@
+Title: Generative Robust Optimisation
+
+URL Source: https://arxiv.org/pdf/2606.22536v1
+
+Published Time: Tue, 23 Jun 2026 02:42:08 GMT
+
+Number of Pages: 46
+
+Markdown Content:
+# Generative Robust Optimisation 
+
+Yuhui Yin 1 and Vassilis M. Charitopoulos 1,* 1Department of Chemical Engineering, Sargent Centre for Process Systems Engineering, UCL (University College London), Torrington Place, London WC1E 7JE, UK 
+
+> *
+
+Corresponding author. v.charitopoulos@ucl.ac.uk 
+
+Abstract 
+
+Classical uncertainty sets for robust optimisation impose fixed geometric shapes that can-not represent the complex dependencies present in real-world data. We propose Generative Robust Optimisation (GRO), a framework in which a deep generative model defines the un-certainty set as the image of a neural network decoder over a calibrated latent set, naturally accommodating nonlinear correlations, asymmetry, and multimodality. A five-point eval-uation framework (reconstruction fidelity, distribution matching, latent regularity, robust relevance, and computational tractability) provides systematic, model-agnostic criteria for assessing any neural network-based uncertainty set. We instantiate this framework with a Wasserstein Adversarial Autoencoder employing Gaussian mixture model-guided training for latent regularity and constraint-consistency regularisation for robust relevance. Restricting the decoder to ReLU activations enables exact worst-case verification through mixed-integer programming embedding. Extensive experiments on a production planning problem across six uncertainty distributions and six generative architectures, together with a multi-period facility location study, validate the framework and demonstrate that systematic attention to all five criteria yields uncertainty sets that are simultaneously expressive, well-calibrated, and optimisation-tractable. 
+
+Keywords: robust optimisation, data-driven uncertainty sets, deep generative models, five-point evaluation framework, Wasserstein autoencoder, MILP 
+
+# 1 Introduction 
+
+Robust optimisation (RO) seeks decisions that remain feasible under all realisations of uncertain parameters within a prescribed uncertainty set [Ben-Tal et al., 2009, Bertsimas et al., 2011]. The geometry of this set governs both the conservatism of the resulting decisions and the computa-tional tractability of the robust counterpart. Box uncertainty sets, introduced by Soyster [1973], preserve the original mathematical nature of the deterministic problem but ignore correlations among uncertain parameters and hence they rank first in terms of conservatism. Ellipsoidal sets [Ben-Tal and Nemirovski, 1998] capture second-order correlations and lead to second-order cone programs, yet impose symmetric, unimodal structure. In order to ameliorate the worst-case orientation of RO problems, polyhedral or budget uncertainty sets were introduced by Bertsi-mas and Sim [2004] to control the number of parameters that simultaneously deviate from their 1
+
+> arXiv:2606.22536v1 [cs.LG] 21 Jun 2026
+
+nominal values, providing an interpretable approach for adjusting conservatism. The robust-optimisation literature shows that this geometry choice fundamentally constrains the trade-off between conservatism, tractability, and probabilistic protection [Ben-Tal and Nemirovski, 1998, Bertsimas and Sim, 2004, Bertsimas et al., 2011, 2018]. Conventional uncertainty sets are broadly applicable and yield tractable robust counterparts [Bertsimas et al., 2011]. How-ever, many practical applications involve uncertainty that can deviate substantially from the assumptions embedded in these geometric shapes. Production costs may show heavy-tailed or multimodal fluctuations, renewable generation varies with weather regimes that induce non-linear correlations, and demand patterns display asymmetric dependencies across time periods and regions. When the true uncertainty resides within an irregularly shaped region, any fixed geometric set must either enclose excessive empty space, which may lead to over-conservatism, or fail to cover critical tail scenarios that cause constraint violations. Data-driven methods have sought to bridge this gap between assumed geometry and ob-served data. Bertsimas et al. [2018] proposed a systematic schema for constructing uncertainty sets from data via statistical hypothesis tests (Kolmogorov–Smirnov, Anderson–Darling, χ2)with finite-sample probabilistic guarantees, representing a major advance in principled set con-struction while retaining geometric shapes. Machine learning methods offer further flexibility. Kernel-learning uncertainty sets capture nonlinear decision boundaries in robust combinator-ial optimisation [Loger et al., 2024]. Learning-based robust-optimisation procedures provide statistical guarantees for data-trained decisions [Hong et al., 2021]. Neural networks extend uncertainty-set learning to nonconvex geometry [Goerigk and Kurtz, 2023]. Ensemble methods also learn set sizes jointly with forecasting models [Andrianesis et al., 2024, Stratigakos and Andrianesis, 2025]. Distributionally robust optimisation (DRO) takes a different approach by hedging against distributional ambiguity via Wasserstein balls [Kuhn et al., 2019, Gao et al., 2024] or moment-based ambiguity sets [Wiesemann et al., 2014]. These methods impose pre-scribed shapes (typically divergence balls or moment polytopes) on the set of possible distri-butions rather than on the parameter space directly. A growing literature develops tractable reformulations for an expanding range of such ambiguity sets [Kuhn et al., 2025]. As in ro-bust optimisation, however, the geometry of the ambiguity set is prescribed a priori rather than learned from the data. Despite this progress, all existing data-driven methods remain discrim-inative : they learn only the boundary of a region (classification surfaces, kernel contours, or convex hulls). Advances in generative modelling, including variational autoencoders [Kingma and Welling, 2014], generative adversarial networks [Goodfellow et al., 2014], normalising flows [Papamakarios et al., 2021], and diffusion models [Ho et al., 2020], have produced flexible models for learning complex distributions from data. These models have been applied to scenario generation and 
+
+distributional modelling in optimisation: producing samples or approximating distributions for stochastic programming or distributionally robust optimisation [Xu et al., 2024, Chenreddy et al., 2022]. However, generating scenarios from a learned distribution is fundamentally different from defining an uncertainty set for robust optimisation: the former produces samples, while the latter requires a bounded region over which worst-case feasibility must be guaranteed. We propose Generative Robust Optimisation (GRO), which bridges this gap by defining the 2uncertainty set as the image of a trained decoder: 
+
+U = {Gθ(z) : z ∈ Z } (1) where Gθ : Rnz → Rnξ is a decoder trained so that Gθ(z), z ∼ N (0, I) approximates the data distribution, and Z ⊂ Rnz is a simple set (box or ball) in the latent space. Concurrent work [Brenner et al., 2025] explores this approach in adaptive robust optimisation, embedding a variational autoencoder (VAE) as a preliminary instantiation. A plain VAE, however, guar-antees neither a calibrated latent-to-data mapping nor exact worst-case verification. This paper proposes a framework and architecture that provide both. By the universal approximation the-orem [Lu and Lu, 2020], a sufficiently expressive decoder can in principle represent complex set geometries (including sets with nonlinear correlations, asymmetric tails, and multimodal structure) that no single geometric shape can capture. The same trained decoder also sup-ports different levels of conservatism by adjusting the latent bounds (box widths, ball radius, or quantile level) without retraining. This representation also yields unified calibration: train-ing transports heterogeneous data-space distributions to a chosen latent reference distribution, here N (0, I). In that standard-normal space, one set of box, ball, or quantile rules applies across cases. The decoder then maps the calibrated latent set back to data space, recovering the case-specific correlations, skewness, and multimodality. However, the practical validity of this construction depends on requirements that go well beyond standard generative-model training, and that to date have not been systematically identified or addressed. Despite the potential of such decoder-based uncertainty sets, no systematic framework exists for evaluating whether a generative model is suitable for deployment in robust optimisation. A model that achieves low reconstruction error may still produce a poorly calibrated latent space, causing the uncertainty set to miss critical tail scenarios. A model with excellent distribution matching may employ architectures that are computationally intractable for worst-case verifica-tion. A model satisfying both reconstruction and distributional criteria may still fail to preserve the constraint-violation structure of the uncertainty that matters for the downstream optim-isation problem. Each of these limitations corresponds to a distinct stage of the pipeline from data to robust decisions, and each requires its own evaluation criterion. We propose a five-point evaluation framework that identifies the jointly necessary conditions a generative model must satisfy to serve as a reliable uncertainty set for robust optimisation: reconstruction fidelity (P1), distribution matching (P2), latent regularity (P3), robust relevance (P4), and computational tractability (P5). We instantiate this framework with the Wasserstein Adversarial Autoencoder with Gaussian mixture model-guided training (WAAE-GMM-RO), an architecture designed to satisfy all five criteria through targeted training objectives. Any encoder–decoder architecture satisfying all five criteria can serve as the generative uncertainty set. 
+
+Contributions. The specific contributions of this paper are as follows. 1. A five-point evaluation framework for generative uncertainty sets in robust optimisation. The framework is model-agnostic and identifies the jointly necessary conditions that any decoder-based uncertainty set must satisfy: reconstruction fidelity (P1), distribution matching (P2), latent regularity (P3), robust relevance (P4), and computational tractability (P5). As part of 3the framework we also develop three latent set constructions with calibration theory linking latent bounds to data-space coverage, with formal statements and proof details collected in Appendix A. 2. A neural-network instantiation, WAAE-GMM-RO, that simultaneously satisfies all five points. 
+
+Key components include an encoder–decoder pair preprocessed by principal component ana-lysis (PCA), a Wasserstein adversarial data critic for (P1)–(P2), a GMM-guided component moment constraint that provides a constructive sufficient condition for (P3), a constraint-consistency loss that teaches the decoder to preserve the constraint-violation structure of the uncertainty distribution in the tails that govern worst-case feasibility (P4), and a single-pass ReLU decoder with skip connection that is exactly MILP-embeddable (P5). 3. A generative robust-optimisation solution pipeline that turns the trained decoder into a de-ployable oracle. We export the ReLU-based decoder in its MILP form, followed by an offline optimality-based bound tightening (OBBT) to obtain an exact MIP worst-case verification of the decoded uncertainty set, and run that verification inside a parallel GRO cutting-plane algorithm [Marousi and Charitopoulos, 2025] with a feasibility check that prunes the bulk of MIP solves. 4. Computational validation. On a production planning problem we evaluate six uncertainty distributions (independent / correlated × normal / skewed / mixture) and five generat-ive architectures (VAE, WAAE, WAAE-GMM-RO, normalising flow, diffusion model), with analytical SOCP ground truth on the independent normal case and empirical worst-case vi-olation matrices on the other five. We further extend the pipeline to combinatorial robust optimisation on a multi-period facility location problem with binary opening decisions and per-constraint MISOCP oracles, demonstrating that the same WAAE-GMM-RO decoder and parallel cutting-plane pipeline carry through to MILP-master settings. 
+
+Paper organisation. The remainder of this paper is organised as follows. Section 2.2 intro-duces the generative uncertainty set construction and the latent calibration theory. Section 2.3 presents the five-point evaluation framework. Section 2.4 describes the proposed WAAE-GMM-RO architecture and Section 2.6 the GMM-guided training with PCA preprocessing and the constraint-consistency (P4) loss. Section 2.7 details the MILP - OBBT steps and the cutting-plane solving pipeline. Section 3 reports the production planning case study (Section 3.1), with analytical SOCP ground-truth comparison on the independent normal distribution and decoder-versus-empirical evaluation on the other five distributions. Section 3.2 extends the same pipeline to the multi-period facility location problem. Finally, in Section 4 we provide concluding remarks and some open research directions. 
+
+# 2 Methodology 
+
+The generative robust set construction follows a two-layer workflow (Fig. 1) that organises the rest of this section. The offline layer (top, Algorithms 1 and 2) produces the trained decoder. It learns the encoder–decoder pair from historical data ξ ∼ P ∗(ξ), preprocessed by PCA and 4Figure 1: Two-layer workflow. Top (offline): WAAE-GMM-RO training pipeline (Algorithms 1–2). Bottom (online): Generative robust optimization pipeline (Algorithm 3). The trained decoder is the shared component reused at inference. standardisation and regularised in latent space by a K-component GMM guide. A second, tail-weighted phase adds robust relevance. Of the whole pipeline, only the trained decoder (yellow box) is reused at inference. The online layer (bottom, Algorithm 3) employs that decoder within a robust cutting planes algorithmic procedure [Marousi and Charitopoulos, 2025]: at each iteration the master proposes a candidate decision x, and the oracle then takes that x as a fixed parameter and searches the calibrated latent ball ∥z∥2 ≤ γ for the worst-case constraint-violating scenario. The oracle runs with a three-phase inner structure: feasibility check, parallel exact-MIP verification, and robust cut generation. Confirmed cuts are added to the master and the algorithm converges when a robust-feasible decision x⋆ is certified or when the computational budget set is exhausted. Sections 2.2–2.6 develop the offline layer and Section 2.7 the online layer. The five-point framework (Section 2.3) is model-agnostic and applies to any encoder–decoder generative model. We instantiate it with the WAAE-GMM-RO architecture (Sections 2.4–2.6), and Section 3 evaluates VAE, normalising-flow, and diffusion alternatives against the same five points. The architecture choice matters most at (P5), where only piecewise-linear decoders admit an exact MILP embedding. 
+
+2.1 Problem Formulation 
+
+Consider a decision-maker who must choose x ∈ X ⊆ Rnx to minimise a cost function subject to constraints that depend on uncertain parameters ξ ∈ Rnξ . The robust optimisation (RO) 5formulation hedges against all realisations within an uncertainty set U:
+
+min  
+
+> x∈X
+
+c(x)
+
+s.t. gi(x, ξ) ≤ 0, ∀ ξ ∈ U , i = 1 , . . . , m 
+
+(2) We assume that the decision-maker has access to historical observations of the uncertain para-meters, S = {ξ(i)}Ni=1 , drawn from an unknown data-generating distribution P ∗. The role of 
+
+P ∗ is therefore not to provide an analytic probability model, but to name the distribution represented by the available data. The generative construction uses an encoder–decoder pair, 
+
+fϕ : Rnξ → Rnz (3) 
+
+Gθ : Rnz → Rnξ (4) Eq. (3) maps a data-space scenario to latent coordinates, and Eq. (4) maps latent coordinates back to data space. The latent coordinates are calibrated against a reference distribution. In this paper we choose it to be the standard normal N (0, I), because its independent, isotropic coordinates give closed-form box and ball quantiles. This choice standardises calibration in latent space. We replace the classical uncertainty set U with the image of the trained decoder over a calibrated latent set: 
+
+UGθ = {Gθ(z) : z ∈ Z } (5) where Z ⊆ Rnz is a bounded calibrated latent set. Training makes Gθ(z), with z ∼ N (0, I),approximate P ∗, while the encoder is used to check and calibrate how historical scenarios occupy latent space. Our goal is to produce a trained decoder Gθ that learns the geometry of P ∗ from data and yields uncertainty sets that adapt to correlations, skewness, and multimodality without requiring a parametric family. The five-point evaluation framework introduced in Section 2.3 establishes the conditions under which this construction is reliable. Under this convention, using the generative set of eq. (5), the constraints of eq. (2) can be recast as eq. (6). 
+
+gi
+
+> (
+
+x, G θ(z)) ≤ 0, ∀ z ∈ Z , i = 1 , . . . , m (6) By reformulating eq. (2) to eq. (6) in the latent space, the worst-case search is carried out over the latent variable z, and Z is a simple set that we construct. 
+
+2.2 Generative Uncertainty Set Construction 
+
+2.2.1 Latent-Space Calibration and Oracle Bounds 
+
+After training, we encode the historical data and calibrate a latent set Z. The calibration is valid when the encoded distribution q(z) is close to N (0, I).6Table 1: Latent calibration radii ( nz = 6 ). Joint box half-width αq, joint ball radius γq, and marginal radius γmarg at representative coverage levels q / p.                 
+
+> q/pJoint box αqJoint ball γqMarginal γmarg
+> 50% 1.60 2.31 0.67 90% 2.38 3.26 1.64 99% 3.14 4.10 2.58
+
+The latent set is a box or a ball of radius γ,
+
+Zbox = {z ∈ Rnz : |zj | ≤ γ, j = 1 , . . . , n z
+
+}, (7) 
+
+Zball = {z ∈ Rnz : ∥z∥2 ≤ γ} (8) For the same radius the ball is inscribed in the box, so Zball ⊊ Zbox .The radius γ is fixed by the calibration convention under N (0, I). A per-coordinate (mar-ginal) level p ∈ (0 , 1) gives 
+
+γmarg = Φ −1( 1 + p
+
+2
+
+)
+
+(9) covering each coordinate with probability p. A joint level q ∈ (0 , 1) gives the box half-width αq
+
+and the ball radius γq,
+
+αq = Φ −1( 1 + q1/n z
+
+2
+
+)
+
+, γq =
+
+√
+
+F −1
+
+> χ2
+> nz
+
+(q) (10) each covering the whole set with probability q. The radius is thus γ = γmarg under marginal calibration (eq. (9)), and γ = αq (box) or γ = γq (ball) under joint calibration (eq. (10)). Here Φ
+
+is the standard normal CDF and Fχ2 
+
+> nz
+
+the chi-squared CDF with nz degrees of freedom. Table 1 lists representative values. Under marginal calibration ( γ = γmarg ), the joint probability mass of the two sets is 
+
+P(z ∈ Z box 
+
+) = p nz , P(z ∈ Z ball 
+
+) = Fχ2
+
+> nz
+
+(γ 2
+
+> marg
+
+) (11) below the per-coordinate level p.When q(z) ≈ N (0, I), the decoded set UGθ inherits the coverage of the latent set. This parallels the calibration schema of [Bertsimas et al., 2018], where Γ is set from data to achieve a desired coverage level. The difference is that our set is the image of a neural network rather than a geometric primitive, so it adapts its shape to distributions that boxes and ellipsoids cannot capture. 
+
+Remark 1 (Nested family across coverage levels) . Applying different coverage levels to the same trained decoder produces a family of nested uncertainty sets, 
+
+U(0 .50)  
+
+> Gθ
+
+⊂ U (0 .90)  
+
+> Gθ
+
+⊂ U (0 .99) 
+
+> Gθ
+
+giving the practitioner a continuum of conservatism levels without retraining .
+
+72.2.2 MILP-embedding of decoded uncertainty sets 
+
+Let Spre denote the data standardisation applied during the training phase (zero mean and unit variance per dimension, with any invertible preprocessing admissible, for example the PCA whitening of Section 2.3). Its inverse S−1 
+
+> pre
+
+maps back to raw units. The trained decoder defines the mapping ξ = S−1
+
+> pre
+
+(Gθ(z)) from latent to data space. When z ranges over the whole space 
+
+Rnz (sampled z ∼ N (0, I)), this mapping induces a generative distribution P G over the data, i.e. the learned approximation of P ∗. However, at this stage its support is generally unbounded. Robust optimisation needs a bounded set whose worst-case constraint violation is finite, so we restrict the domain to the calibrated set z ∈ Z from Section 2.2.1: the mapping is unchanged but its image is now bounded, and that bounded image is the uncertainty set the oracle optimises over. Formally, UGθ = {S −1
+
+> pre
+
+(Gθ(z)) : z ∈ Z} is the decoder image of the calibrated latent set, a bounded subset of the full, unbounded generative support obtained when z ranges over all of 
+
+Rnz . It inherits its shape from Z (marginal box, marginal ball, or joint ball). For the oracle problem induced by the robust constraints in eq. (6), 
+
+vgen (x) = max  
+
+> z∈Z
+
+g(x, S−1
+
+> pre
+
+(Gθ(z)) ) (12) to be tractable as a (mixed-integer) linear program, the decoder must be MILP-representable :composed of piecewise-linear activations whose input–output relation admits a finite disjunctive encoding. For the sake of this work we restrict ourselves to ReLU activation functions. Non-etheless, other piecewise-linear units are also admissible and the proposed framework extends seamlessly. The ReLU decoder used here has the form 
+
+Gθ(z) = WL · σReLU 
+
+> (
+
+WL−1 · · · 
+
+σReLU (W1z + b1) · · · + bL−1 
+
+> )
+
++ bL
+
+(13) where σReLU (x) = max(0 , x ). Eq. (13) is MILP-representable because each scalar ReLU unit is exactly encoded via the Big-M formulation [Tjeng et al., 2019]: 
+
+y = max(0 , x ) ⇐⇒ 
+
+> 
+
+y ≥ x, y ≥ 0,y ≤ x − m(1 − a), y ≤ M a, a ∈ { 0, 1}
+
+(14) where m and M are pre-computed lower and upper bounds on x, and a ∈ { 0, 1} is an activation indicator. When Z is a polytope (marginal box, joint box), the overall oracle is a MILP. When Z is a ball, it is a mixed-integer SOCP (convex quadratic constraint on z, still tractable with modern solvers such as Gurobi [Gurobi Optimization, LLC, 2024]). To export the MIP-representable oracles we employ OMLT [Ceccon et al., 2022] to generate this encoding from an ONNX export of the trained decoder. Nevertheless, custom implementations can also be used. 
+
+Remark 2 (NLP export via global optimisation) . A decoder built from smooth but non-piecewise-linear activations cannot be encoded as a MILP, yet it can be exported as a nonlinear program 
+
+8(NLP) and solved to global optimality. We adopt the MILP route because the exact Big-M en-coding above is solved quickly in practice, whereas global NLP solution times scale poorly with decoder depth. 
+
+2.3 The Five-Point Evaluation Framework 
+
+A generative model intended for robust optimisation should satisfy requirements beyond stand-ard generative quality metrics. We identify five criteria that are jointly necessary : (P1) re-construction fidelity, (P2) distribution matching in data space, (P3) latent regularity, (P4) robust relevance, and (P5) computational tractability. Throughout, we distinguish the prior 
+
+p(z) = N (0, I) from the aggregated posterior q(z) = 1 
+
+> N
+> ∑
+> i
+
+δ(z − fϕ(ξ(i))) , the data-marginal distribution of latent codes across the training set, following the Wasserstein autoencoder frame-work [Tolstikhin et al., 2018]. A model that excels on distribution matching (P2) but has poor latent regularity (P3) will produce miscalibrated uncertainty sets that systematically underes-timate worst-case violations. A model that satisfies (P1)–(P4) but is computationally intractable (P5) cannot be verified. The whole pipeline operates on PCA-preprocessed data. Before training, the data is centred, scaled, and rotated by PCA, giving the concrete preprocessor Spre used throughout this section: 
+
+ξpca = V ⊤((ξ − μ) ⊘ σ) (15) where μ, σ ∈ Rnξ are the marginal training mean and standard deviation, V ∈ Rnξ ×dpca has orthonormal columns (the PCA loading matrix, so V ⊤V = Idpca ), and ⊘ denotes elementwise division. The inverse map back to raw units is the linear head 
+
+h(y) = diag( σ) V y + μ (16) which is the exact inverse of eq. (15) since V ⊤V = Idpca . The head h of eq. (16) is reused as the final linear layer of the decoder. 
+
+2.3.1 Point 1: Reconstruction Fidelity 
+
+The encoder–decoder pair must faithfully reconstruct individual observations: 
+
+Lrecon = 1
+
+N
+
+> N∑
+> i=1
+> ∥∥
+
+ξ(i) − Gθ(fϕ(ξ(i))) ∥∥2 (17) This is essential because the latent calibration (Section 2.2.1) relies on the encoder mapping: if fϕ(ξ) does not map to a region whose decoder image is close to ξ, the calibrated set Z will not correspond to the intended data-space set. Low reconstruction error ensures the fϕ →Z → Gθ pipeline is geometrically faithful. This is a per-sample fidelity requirement on training observations. (P2) and (P3) below prevent overfitting by matching the distribution of generated samples to P ∗.Consider a scenario ξ that causes a constraint violation in the downstream optimisation. If 
+
+Gθ(fϕ(ξ)) ̸ = ξ, then the constraint value g(x, G θ(fϕ(ξ))) may differ from the true value g(x, ξ),9meaning the model may not identify this scenario as infeasibility-inducing during the worst-case search of eq. (12). 
+
+2.3.2 Point 2: Distribution Matching in Data Space 
+
+Generated samples ˆξ = Gθ(z), z ∼ N (0, I), must approximate the data distribution P ∗. We match it with an adversarial Wasserstein critic and a maximum mean discrepancy, and optionally a moment-matching term on the leading marginal statistics. The first mechanism is adversarial. We train two WGAN-GP critics in parallel, one in PCA-standardised coordinates and one in raw standardised coordinates. The overall data-critic loss is the sum of the two, as shown by eq. (18). 
+
+Lcritic = Lpca critic + Lstd critic (18) where each term has the standard WGAN-GP form 
+
+L⋆ 
+
+> critic
+
+= Eˆξ⋆ [D⋆ψ( ˆξ⋆)] − Eξ⋆ [D⋆ψ(ξ⋆)] + λgp E˜ξ⋆
+
+> [
+
+(∥∇ ˜ξ⋆ D⋆ψ( ˜ξ⋆)∥2 − 1) 2] (19) In eq. (19), the index ⋆ ∈ { pca , std } selects the space, where ξpca are samples in PCA coordinates obtained via eq. (15) and ξstd = ( ξ − μ) ⊘ σ are samples in raw standardised coordinates. The coefficient λgp weights the gradient penalty and is held fixed at the standard value λgp = 10 
+
+throughout training [Gulrajani et al., 2017]. The point ˜ξ⋆ = αξ⋆ + (1 − α) ˆξ⋆, with mixing weight 
+
+α ∼ U [0 , 1] , is a random interpolation on the segment joining a real sample and a generated sample, and the penalty term pushes the norm of the critic gradient at these interpolated points towards 1. The gradient penalty replaces weight clipping by soft-constraining each critic to be 1-Lipschitz along these interpolated samples, which stabilises training and prevents mode collapse [Gulrajani et al., 2017]. The adversarial critic gives a strong distributional signal but a noisy gradient, because it depends on a separately optimised network. We therefore add a maximum mean discrepancy (MMD), a kernel two-sample statistic that compares the real and generated samples directly, with no auxiliary network, and that vanishes exactly when the two distributions coincide for a characteristic kernel. In empirical form it is the sum of the within-sample and between-sample kernel averages, as shown by eq. (20). 
+
+Ldata-MMD = MMD 2
+
+> k
+> (
+
+{ξ(i)}, { ˆξ(j)})
+
+= 1
+
+> n2
+> ∑
+> i,i ′
+
+k(ξ(i), ξ(i′)) + 1
+
+> n2
+> ∑
+> j,j ′
+
+k( ˆξ(j), ˆξ(j′))
+
+− 2
+
+> n2
+> ∑
+> i,j
+
+k(ξ(i), ˆξ(j))
+
+(20) where {ξ(i)} and { ˆξ(j)} are the n real and n generated samples in a minibatch and k is an inverse multiquadric (IMQ) or RBF kernel. Both are characteristic kernels, making the MMD a proper distance between distributions [Tolstikhin et al., 2018]. We default to the IMQ for its heavier tails, which preserve a usable gradient when the two empirical distributions are far apart. 10 We optionally add a moment-matching term on the first four marginal moments between real and generated samples, as shown by eq. (21). 
+
+Ldata-mom = ∥μξ − μˆξ∥2 + ∥σ2 
+
+> ξ
+
+− σ2ˆξ ∥2
+
++ ∥sξ − sˆξ∥2 + ∥κξ − κˆξ∥2 (21) where μ, σ2, s, and κ are the marginal mean, variance, skewness, and kurtosis vectors, respect-ively. 
+
+2.3.3 Point 3: Latent Regularity 
+
+The calibration of Z (Section 2.2.1) assumes the encoded data distribution q(z) is close to the prior p(z) = N (0, I). This assumption is critical: if it is violated, the quantile-based bounds in eqs. (7)–(8) do not have their intended coverage, and the uncertainty set UGθ is miscalibrated. It is important to distinguish the per-sample posterior q(z|ξ) from the aggregated posterior 
+
+q(z) introduced above. The per-sample KL divergence KL( q(z|ξ(i))∥p(z)) , used in variational autoencoders, regularises each individual encoding to be close to the prior N (0, I).However, even when every per-sample KL is small, the aggregated posterior can deviate substantially from N (0, I), so the quantile-based bounds in eqs. (7)–(8) underestimate or over-estimate along the directions of deviation. We regularise the aggregated posterior towards N (0, I) with two losses of the same form as their data-space counterparts (eqs. (20)–(21)): a latent MMD loss, as defined by eq. (22), 
+
+Llat-MMD = MMD 2
+
+> k
+> (
+
+{fϕ(ξ(i))}, {zj }), zj ∼ N (0, I) (22) and a latent moment-matching loss, as defined by eq. (23). 
+
+Llat-mom = 1 
+
+> nz
+> (
+
+∥μz ∥2 + ∥ diag( Σz ) − 1∥2
+
++ ∥sz ∥2 + ∥κz − 3 · 1∥2 ) (23) A stronger alternative that decomposes latent matching into K per-component sub-conditions via a data-space Gaussian mixture is presented in Section 2.5. To evaluate the latent regularity, we employ marginal normality tests. Specifically, we report: 
+
+• nnormal : number of latent dimensions passing the Anderson-Darling and Shapiro-Wilk normality tests at α = 0 .01 , a strict significance level chosen so that nnormal only counts dimensions both tests confidently accept as Gaussian 
+
+• Eigenvalue spread: λmax /λ min of Cov( z) (target: 1.0, attained when the latent covariance is isotropic so Cov( z) = I matches the prior) 
+
+• Latent MMD: MMD( {fϕ(ξ(i))}, N (0, I)) .A model with nnormal = nz (every latent marginal passes both normality tests) and eigenvalue spread near 1 (covariance approximately isotropic) is jointly close to N (0, I), so the quantile-based calibration of Section 2.2.1 is statistically meaningful. 11 2.3.4 Point 4: Robust Relevance 
+
+(P1)–(P3) ensure the generative model produces high-quality samples and a well-calibrated latent space. In theory, a model with perfect (P1)–(P3) would capture the full distribution including tails, making (P4) unnecessary. In practice, however, finite data and the limits of a given architecture mean that few generative models simultaneously shape the aggregated latent into a true N (0, I) and reconstruct the data space faithfully, so (P1)–(P3) alone may not capture the specific scenarios that govern worst-case feasibility in the downstream optimisation. For a decision x, define the worst-case violation: 
+
+vgen (x) = max  
+
+> z∈Z
+
+g(x, G θ(z)), (24) 
+
+vref (x) = max  
+
+> n=1 ,...,N
+
+g(x, ξ(n)) (25) The gap between the decoded worst-case of eq. (24) and the reference worst-case of eq. (25), expressed as a pool-aggregated relative error, quantifies the discrepancy: 
+
+∆wc = 
+
+> ∑Kpool
+> k=1
+> ∣∣
+
+vgen (xk) − vref (xk) ∣∣∑Kpool  
+
+> k=1
+> ∣∣
+
+vref (xk) ∣∣ (26) Eq. (26) measures the pool-averaged relative error between generated and reference worst-case violations, a dimensionless ratio of total discrepancy over total reference violation magnitude. In combination with the conservatism ratio , abbreviated conserv and defined as ¯vgen /¯vref 
+
+(bars denote averages over the Kpool pool decisions), ∆wc characterises the magnitude of the gap once the decision is on the safe side. The conservatism ratio is what determines that safe side: conserv ≥ 1 means the decoded worst-case meets or exceeds the reference, so the resulting decision remains robust-feasible. A value of conserv < 1 is the unsafe case, since the decoder underestimates the true worst case and may certify infeasible decisions as feasible. (P4) addresses this gap by directly measuring and training for constraint-violation accuracy in the distributional regions that govern worst-case violations. These regions may correspond to tails in specific dimensions rather than the joint tail of all dimensions, depending on the structure of the constraint function g. Reducing ∆wc towards zero while keeping conserv ≥ 1
+
+(the safe regime for RO) is the primary objective of (P4) training. (P4) is problem-driven: it requires knowledge of the constraint function g and a pool of candidate decisions. We detail the (P4) training procedure in Section 2.6. 
+
+2.3.5 Point 5: Computational Tractability 
+
+Even with perfect (P1)–(P4) scores, a generative model is not useful for robust optimisation unless its decoder can be embedded in the worst-case problem (12). (P5) requires: 
+
+• The decoder Gθ can be encoded exactly as algebraic constraints, not merely approximated. 
+
+• The resulting formulation is a tractable class (MILP), rather than a mixed-integer nonlin-ear program (MINLP). 
+
+• The model size yields practical solution times (number of binary variables, LP relaxation tightness). 12 Table 2: Qualitative five-point assessment. In the MIP-embedding column, the integer is the number of binary variables in the model. VAE = variational autoencoder, GAN = generative adversarial network, NF = normalising flow (RealNVP), DDIM = denoising diffusion implicit model.                                                     
+
+> Model (P1) (P2) (P3) (P4) (P5) MIP embedding Primary failure
+> VAE (KL) ✓∼∼—✓128 (MILP) (P3): KL ̸⇒q(z)≈ N
+> GAN —✓×—✓128 (MILP) (P3): no encoder NF (RealNVP) ✓✓✓—×256/layer (MINLP) (P5): multistep, MINLP DDIM ∼✓∼—×128/step (MILP) (P5): multistep WAAE-RO (ours) ✓✓✓✓✓128 (MILP) Satisfies all five WAAE-GMM-RO (ours) ✓✓✓✓✓128 (MILP) GMM-guided (P3)
+
+(P5) concerns the existence of an exact , solver-friendly embedding, not worst-case complexity. A mixed-integer linear program is NP-hard in general, but for the decoder sizes used here a branch-and-bound solver verifies the worst-case oracle to global optimality in practical time. An MINLP or a non-exact (approximate) encoding provides neither this exact verification nor reliable global solves, so a model that forces one fails (P5) even when it scores well on (P1)–(P4). 
+
+2.3.6 Cross-Model Assessment 
+
+Table 2 evaluates representative generative model families against the five-point framework. Each family fails on at least one point, which motivates the Wasserstein Adversarial Autoen-coder (WAAE) design (Section 2.4) that targets all five simultaneously. Each row highlights the model’s primary failure mode, and a dash in the (P4) column indicates no built-in (P4) mechanism. The MIP embedding column gives the number of binary variables and the MIP type (MILP or MINLP) of each decoder’s embedding. NF and DDIM attain strong distribution matching (P2) through their multi-step structure, which is also what makes (P5) intractable. We identify the operational requirements for which the five-point framework is necessary. They come from the robust counterpart of Section 2.1, stated independently of the five points. 
+
+Definition 1 (Deployable generative uncertainty set) . Let UGθ = Gθ(Z) be the decoded uncer-tainty set, with encoder fϕ, aggregated posterior q(z), calibrated latent set Z at marginal level 
+
+p, and decision pool {xk}Kpool  
+
+> k=1
+
+. The set UGθ is deployable at level p if: 
+
+(I) Coverage. On each latent dimension j the encoded data attains marginal coverage at least p of the calibrated interval, and the canonical encoder–decoder path is faithful: with 
+
+ˆξ = Gθ(fϕ(ξ)) , a p-fraction of P ∗ on each marginal is both captured by Z through fϕ and returned by Gθ to within reconstruction tolerance. 
+
+(II) Tractability. The worst-case oracle max z∈Z g(x, G θ(z)) is an exact MILP (box latent) or MISOCP (ball latent), solvable per query within the regime reported in Section 3. 
+
+(III) Robust safety. The decoder oracle does not underestimate the empirical worst case on the pool: vgen (xk) ≥ vref (xk) for every xk.The necessity result holds under three standing assumptions. 
+
+Assumption 1 (Canonical-path coverage) . A scenario ξ counts as covered by UGθ through the single encoder map z = fϕ(ξ), the same map used to calibrate Z in Section 2.2.1. 13 Assumption 2 (Marginal-coverage convention) . Coverage in (I) is marginal, matching the calibration radius γmarg = Φ −1((1 + p)/2) of eq. (9). 
+
+Assumption 3 (Violation-exposed pool) . The decision pool is sampled near the robust bound-ary, so vref (xk) > 0 for each xk, and the safety comparison in (III) is then well-posed. Each assumption plays a role in the necessity result below. Assumption 1 makes coverage an encoder test, so the argument never needs to invert the decoder. Assumption 2 reads require-ment (I) as marginal rather than joint: even with a perfectly Gaussian aggregated posterior 
+
+q(z) = N (0, I) the calibrated box holds only the joint mass pnz < p (eq. (11)), so a joint-p
+
+reading would be unattainable by construction. 
+
+Proposition 1 (Necessity of (P1)–(P5)) . Under Assumptions 1–3, the decoded set UGθ = Gθ(Z)
+
+is deployable at level p on the pool only if the underlying model (fϕ, G θ) satisfies all five points (P1)–(P5). Points (P1) and (P2) are each necessary for (I) Coverage, as is (P3) against variance-inflation deviations of the latent law. (P4) is necessary for (III) Robust safety, and (P5) is necessary for (II) Tractability. 
+
+The proof (Appendix A.1) argues five contrapositives. (P1) failure breaks the canonical encoder–decoder coverage path. (P2) failure opens a total-variation gap between P ∗ and Gθ#N
+
+that removes the level-p coverage certificate (rather than forcing a realised coverage drop). (P3) failure inherits the calibration gap of Theorem 1 in the variance-inflation regime. (P4) failure produces a pool decision whose decoder oracle underestimates the empirical worst case. (P5) failure puts the oracle outside the exact-MILP class (smooth activations, Lemma 1) or outside the per-query regime (depth scaling). 
+
+Theorem 1 (Calibration gap) . Let j ∈ { 1, . . . , n z } and p ∈ (0 , 1) . Let qj denote the marginal of the aggregated posterior on dimension j, with CDF Fj , and let γmarg = Φ −1((1 + p)/2) be the marginal-mode calibration radius. The realised marginal coverage Cj (p) = Pr zj ∼qj (|zj | ≤ 
+
+γmarg ) = Fj (γmarg ) − Fj (−γmarg ) satisfies 
+
+|Cj (p) − p| ≤ 2 dKS (qj , N (0 , 1)) (27) 
+
+where dKS is the Kolmogorov–Smirnov distance. When qj = N (0 , 1) , Cj (p) = p for every p.
+
+The proof (Appendix A.2) follows the conformal-prediction calibration setup [Angelopoulos and Bates, 2023]. The bound is marginal and tight up to a factor of two. The converse Cj (p) = 
+
+p ⇒ qj = N (0 , 1) does not hold, since even-perturbation deviations preserve Cj (p) = p at every 
+
+p. Empirically, ∆wc increases when (P3) is not satisfied (Table 5). 
+
+Lemma 1 (Activation requirement) . Let f : Rn → Rm be the function computed by a feedfor-ward neural network. Call a real-analytic activation a non-degenerate component of f when its nonlinearity affects f on a set of positive Lebesgue measure. An exact, finite mixed-integer linear (MILP) encoding of the input–output graph of f exists only if f is piecewise-affine on a finite polyhedral subdivision of Rn. Hence, if any non-degenerate component is a real-analytic non-affine activation ( tanh , σ, exp , sin , cos ), no exact MILP encoding exists, and an exact mixed-integer encoding must instead be a mixed-integer nonlinear program (MINLP). 
+
+14 The proof (Appendix A.3) builds on the mixed-integer-formulation framework of Anderson et al. [2020, Definition 1]. Piecewise-affine activations such as ReLU admit exact Big-M encod-ings [Tjeng et al., 2019, Eq. 6]. Empirical support is given by the MILP-size column of Tables 2 and 5: normalising flows with exp ◦ tanh coupling layers produce a nonconvex MINLP rather than a MILP, and DDIM-style diffusion models unroll their denoiser T times so that the binary-variable count grows linearly in T (e.g. ∼6400 binaries at T = 50 versus 128 for a single-pass ReLU decoder). This intractability is a structural property of eq. (12), not a solver limitation, and it com-pounds when multiple uncertain constraints are present: each requires its own MILP oracle per cutting-plane iteration, so the per-iteration cost scales linearly in the number of uncertain constraints and can dominate even when any single oracle is fast. Figure 2 shows the five-point assessment on the six PP distributions (rows) across all five model families (columns). Both the data and latent spaces are six-dimensional ( nξ = nz = 6 ). Each sub-panel shows a 2D projection onto (ξ1, ξ 2) for data sub-panels and (z1, z 2) for latent sub-panels. Each cell pairs a latent-space sub-panel with a data-space sub-panel. Four concentric marginal quantile levels p ∈ { 0.3, 0.5, 0.7, 0.9} (γmarg ∈ { 0.39 , 0.67 , 1.04 , 1.64 }) are drawn as same-coloured rings in the latent sub-panel. The corresponding data-space contour is the image of that ring under the decoder Gθ.(P3) failure is visible on the VAE for the independent mixture case, where the latent is multimodal rather than N (0, I). The other baselines show latent or data-space distortion across the six rows. WAAE-GMM-RO maintains a stable latent space and an accurate data space. 
+
+2.4 WAAE: Wasserstein Adversarial Autoencoder 
+
+The WAAE backbone is configured so that each component addresses one or more of the five evaluation points. It is not a novel generative architecture per se. Although only the decoder Gθ appears in the MILP oracle at optimisation time, the archi-tecture includes a jointly trained encoder fϕ. A decoder-only generator (e.g. GAN [Goodfellow et al., 2014]) cannot guarantee that the latent geometry reflects the data geometry, which is what the calibration of Section 2.2.1 requires: if Zq does not correspond to a meaningful data-space region, the decoded set UGθ cannot be calibrated to a desired coverage level. The encoder sup-plies the data-anchored inverse mapping that resolves this, provided Points 1 and 3 both hold: 
+
+Gθ(fϕ(ξ)) ≈ ξ (P1) ensures local consistency between latent and data space, and fϕ mapping P ∗
+
+close to N (0, I) (P3) ensures that a q-quantile bound computed from encoded training data cor-responds to a q-quantile region of P ∗. The calibrated Zq is therefore data-supported : its bound-aries come from actual encoded observations, not an assumed prior. Encoder–decoder pairings of this kind trace back to VAEs [Kingma and Welling, 2014], adversarial autoencoders [Makhz-ani et al., 2016], and Wasserstein autoencoders [Tolstikhin et al., 2018]. Our WAAE reuses their structure and adds the ReLU-only, PCA-warm-started decoder required for Points 4 and 5. 
+
+2.4.1 Architecture 
+
+The WAAE consists of four neural networks, all multilayer perceptrons (MLPs): 
+
+• Encoder fϕ : Rnξ → Rnz , deterministic, ReLU activations. 15 Figure 2: Latent and data-space distribution fits. The four trained generative models against the ground-truth distribution P ∗ across the six PP uncertainty distributions (rows). Rings at the marginal-quantile levels p ∈ { 0.3, 0.5, 0.7, 0.9} trace through each model’s decoder. 
+
+• Decoder Gθ : Rnz → Rnξ , composed of a ReLU MLP body b : Rnz → Rdpca (with optional skip connection) followed by a linear head h : Rdpca → Rnξ (see PCA warm-start below), so Gθ = h ◦ b.
+
+• PCA-space critic Dpca  
+
+> ψ
+
+: Rdpca → R, LeakyReLU, WGAN-GP critic operating on PCA-standardised samples. 
+
+• Std-space critic Dstd  
+
+> ψ
+
+: Rnξ → R, LeakyReLU, WGAN-GP critic operating on standard-ised raw samples. When nz = dpca , the decoder body includes a residual (skip) connection, 
+
+b(z) = NN (z) + z (28) Since the encoder is trained to produce fϕ(ξ) ≈ z close to the standardised data (P3), the identity mapping z 7 → z is already a reasonable reconstruction, and the network NN (z) learns only the correction . In the MILP formulation, the skip adds only dpca linear constraints. The decoder also carries a PCA warm-start. The body b produces outputs in the PCA-whitened coordinate system of eq. (15), and the linear head h of eq. (16) maps them back to raw units. The head’s parameters {V, σ, μ} are initialised from the fitted PCA scaler so that at 
+
+t = 0 , h(b(fϕ(ξpca ))) = ξ whenever the body reconstructs the identity, making the warm-start reconstruction-trivial. The head serves two roles: (i) it lets the body train in PCA-whitened coordinates, so the 16 loss scales are balanced across coordinates, and (ii) it gives the final linear layer a principled initialisation. The head is held fixed during (P1)–(P3) training. 
+
+2.4.2 Training Objective 
+
+The total loss decomposes as: 
+
+L = λrecon Lrecon + λdata Ldata + λlatent Llatent (29) where Lrecon targets (P1) via eq. (17), Ldata targets (P2) via eqs. (18)–(21), and Llatent targets (P3) via eqs. (22)–(23). The WAAE addresses (P1)–(P3) and (P5) (ReLU decoder) by construction. The complete training procedure, including (P4) extensions, is given in Algorithms 1 and 2. (P4) requires the extension described in Section 2.6. 
+
+2.5 GMM-Guided Training (WAAE-GMM) 
+
+The WAAE presented in Section 2.4 satisfies (P1)–(P3) empirically through MMD and moment penalties. However, these penalties only penalise deviations in the aggregated posterior: they do not decompose the matching problem into verifiable sub-conditions, so the encoder receives no structural guidance about the data distribution and must learn to transport a potentially multimodal distribution to N (0, I) in a single pass. Combined with the hole problem of latent variable models with a fixed unimodal prior [Rezende and Viola, 2018], where q(z) may not cover all regions of high prior density (so samples from those regions decode to unrealistic outputs), this motivates the GMM-guided approach below. 
+
+2.5.1 Data-Space Gaussian Mixture 
+
+By the universal approximation property of Gaussian mixtures, any continuous data distribution can be written as 
+
+p(ξ) = 
+
+> K∑
+> k=1
+
+πk N(ξ | μk, diag( σ2
+
+> k
+
+)) (30) for sufficiently large K. This mixture (eq. (30)) is explicitly modelled in data space with train-able parameters {σk, π k}Kk=1 and component means {μk} held fixed at their warm-start values. Freezing the means is necessary here, because without it the components drift during adversarial training and can collapse onto a single mode [Lu et al., 2025]. The encoder is trained to trans-port the K data-space components into K latent sub-distributions whose π-weighted moments aggregate to those of N (0, I) on every dimension, an explicit condition that is given in eq. (35) below. The GMM is a training-time guide only . At inference, generation proceeds as z ∼ N (0, I), ξ =
+
+Gθ(z). The latent prior remains N (0, I), so calibration and the ball constraint ∥z∥2 ≤ γ are unchanged, and the decoder MILP is identical to that of the standard WAAE. This contrasts with the latent-prior mixtures used by VaDE [Jiang et al., 2017], VampPrior [Tom-czak and Welling, 2018], GMVAE [Dilokthanakul et al., 2016], and AAE+GMM [Makhzani et al., 17 2016], which require two-stage sampling at inference, k ∼ Cat( π) followed by z ∼ pk: the lat-ent prior is no longer N (0, I), so calibration of Zq breaks (P3), and MILP embedding requires one-hot binaries to multiplex between the K component branches (P5). 
+
+2.5.2 Training Losses 
+
+The GMM parameters {σk, π k}Kk=1 are fitted to the data distribution by minimising the negative log-likelihood: 
+
+LGMM = − 1
+
+N
+
+> N∑
+> n=1
+
+log 
+
+> K∑
+> k=1
+
+πk N (ξ(n) | μk, diag( σ2
+
+> k
+
+)) (31) Eq. (31) is computed using the log-sum-exp trick for numerical stability. Gradients flow only to 
+
+{σk, π k} (the input ξ(n) is real data, not encoder output). The GMM is warm-started before adversarial training, to avoid component collapse, by either expectation–maximisation with fixed 
+
+K or variational inference with a Dirichlet-process prior that auto-prunes redundant components. On correlated mixture data the variational variant typically prunes K=12 down to ≈ 9 effective components. We next construct the component moment constraint. Given a data point ξ and the current GMM parameters, the responsibility of component k [Dempster et al., 1977] is 
+
+rk(ξ) = πk pk(ξ) 
+
+> ∑Kj=1
+
+πj pj (ξ) (32) with pk(ξ) = N (ξ | μk, diag( σ2
+
+> k
+
+)) . Responsibilities are treated as constants in subsequent gradient computations: the encoder loss does not update the GMM parameters, which are trained only by the negative log-likelihood loss above. Using the responsibilities of eq. (32), we compute per-component latent statistics. Let zn = fϕ(ξ(n)) and rnk = rk(ξ(n)). The weighted mean and variance per component k and latent dimension j are: 
+
+μzk,j = 
+
+> ∑
+> n
+
+rnk znj  
+
+> ∑
+> n
+
+rnk 
+
+, (33) 
+
+vzk,j = 
+
+> ∑
+> n
+
+rnk (znj − μzk,j )2 
+
+> ∑
+> n
+
+rnk 
+
+(34) The component moment loss ensures that the K latent sub-distributions aggregate to N (0, I)
+
+up to four marginal moments. Since the m-th moment of a mixture is the π-weighted sum of its components’ m-th moments, and the moments of N (μk, v k) are known in closed form, a 1-D mixture with component placeholders (μk, v k) matches the first four moments of N (0 , 1) if and only if: ∑
+
+> k
+
+πk μk = 0 , ∑
+
+> k
+
+πk (vk + μ2
+
+> k
+
+) = 1 ,
+
+> ∑
+> k
+
+πk (μ3 
+
+> k
+
++ 3 μk vk) = 0 , ∑
+
+> k
+
+πk (μ4 
+
+> k
+
++ 6 μ2 
+
+> k
+
+vk + 3 v2
+
+> k
+
+) = 3 (35) The component moment loss penalises deviations from these targets, applied to each latent dimension j with the placeholders (μk, v k) instantiated as the per-component latent statistics 18 (μzk,j , v zk,j ) from eqs. (33)–(34): 
+
+Lcomp = 1
+
+nznz∑
+
+> j=1
+> (
+
+M 21,j + ( M2,j − 1) 2 + M 23,j + ( M4,j − 3) 2)
+
+(36) where Mm,j is the left-hand side of the m-th line of eq. (35) evaluated with μk ← μzk,j and 
+
+vk ← vzk,j .
+
+Corollary 1 (GMM-decomposed moment condition for (P3)) . Suppose (i) the per-component conditional latent distributions are univariate Gaussian, q(zj | component k) = N (μzk,j , v zk,j )
+
+for each k ∈ { 1, . . . , K } and j ∈ { 1, . . . , n z }, and (ii) the aggregated-posterior mass of each component equals its GMM weight, N −1 ∑ 
+
+> n
+
+rnk = πk (exact at an expectation–maximisation fixed point). If the component moment loss Lcomp = 0 (eq. (36) ), then for every dimension j the aggregated marginal q(zj ) matches N (0 , 1) in moments 1 through 4. The GMM thus decomposes the global matching problem into K per-component conditions on the arrangement of latent sub-distributions. 
+
+The proof is in Appendix A.4. The match is marginal. The joint dependence across dimen-sions is not controlled, and agreement in four moments is not distributional equality. Hypotheses (i) and (ii) are not enforced by any training loss. 
+
+Remark 3 (Applicability to arbitrary distributions) . By the universal-approximation property invoked above, the component moment constraint applies regardless of the true data distribution (multimodal, skewed, and heavy-tailed distributions included). 
+
+Combining these terms with the WAAE loss of eq. (29) gives the total WAAE-GMM object-ive: 
+
+LWAAE-GMM = L + λgmm LGMM + λcomp Lcomp (37) The GMM parameters are optimised with a separate learning rate ( ηgmm = 10 −4, lower than 
+
+ηae = 10 −3). Figure 3 visualises the GMM-guided latent decomposition on independent mixture distri-bution ( K = 12 ). The left panel shows the raw data space (ξ1, ξ 2) with points coloured by their dominant GMM component. The right panel shows how those same components cover the latent space (z1, z 2) without holes after training. Figure 3 illustrates Corollary 1: the K
+
+per-component moment conditions of eq. (36) jointly recover the target prior. Having addressed (P3) through the component moment constraint, we now turn to Point 4: ensuring the trained decoder captures the constraint-violation structure needed for robust de-cisions. 
+
+2.6 Robust Optimisation-Aware Training 
+
+Standard WAAE training optimises (P1)–(P3) but is agnostic to the downstream optimisation problem. To address (P4), we extend the training with robust-optimisation-aware (RO-aware) objectives. The scenario-selection step below shares motivation with problem-driven scenario 
+
+19 Figure 3: WAAE-GMM component membership ( K=12 ) on independent mixture distribution: component colouring in data space (left) and latent space (right). 
+
+generation in stochastic programming [Fairbrother et al., 2022]: both let the downstream prob-lem inform the data side, but the mechanism and output are different. SP scenario gener-ation chooses scenarios to best approximate the optimisation objective , producing a discrete weighted scenario set that is then used as a sample-average. Here a pool of feasible decisions is sampled, the constraint function is evaluated over the resulting (decision, scenario) grid to identify infeasibility-inducing scenarios, and these scenarios upweight the training loss of a con-tinuous generative model whose decoder is later embedded in a MIP oracle for worst-case veri-fication. No auxiliary optimisation problem is solved during this step. 
+
+2.6.1 Problem Setting 
+
+The (P4) procedure operates per constraint of the robust optimisation (2): for a fixed index 
+
+i ∈ { 1, . . . , m }, gi(x, ξ) is the violation signal. A pool of feasible decisions {xk}Kpool  
+
+> k=1
+
+is sampled from the decision space and N historical scenarios {ξ(n)}Nn=1 are drawn i.i.d. from P ∗. Training then upweights pairs (xk, ξ(n)) with gi > 0 so the decoded uncertainty set covers the infeasibility-inducing tail of P ∗. Case-study specifics (decision dimensions, sampling procedure, tolerance value) are presented with the numerical results. 
+
+2.6.2 Violation-Aware Training Signal 
+
+Given a decision pool of size Kpool and N historical scenarios, the violation matrix is precom-puted as 
+
+Mkn = gi(xk, ξ(n)), k = 1 , . . . , K pool , n = 1 , . . . , N (38) Each entry Mkn is the value of constraint i at scenario ξ(n) under decision xk, with Mkn > 0
+
+marking an infeasibility and Mkn ≤ 0 marking feasibility. Let εvio > 0 denote a small violation tolerance below which a constraint value is treated as numerically zero. For each scenario ξ(n), the worst violation it causes across the decision pool, clipped at the 20 tolerance, defines the tail score 
+
+ρn = max  
+
+> k
+
+max (Mkn − εvio , 0) (39) A positive tail score from eq. (39), ρn > 0, identifies ξ(n) as infeasibility-inducing for at least one decision in the pool, while ρn = 0 leaves it benign. The tail score is mapped to a per-scenario training weight by a sigmoid: 
+
+wn = 1 + α · σ(κ(ρn − ρ0)) (40) where σ is the sigmoid function, α controls the maximum upweighting, κ controls sharpness, and 
+
+ρ0 is the activation threshold. Each scenario n receives a weight wn ∈ [1 , 1+ α] that multiplies its reconstruction-loss contribution during Phase-2 training: benign scenarios ( ρn ≤ ρ0) keep 
+
+wn ≈ 1 and contribute as usual, while infeasibility-inducing scenarios ( ρn > ρ 0) are upweighted by up to a factor of (1+ α), so the decoder’s gradient signal emphasises violation-critical regions of P ∗ without altering the distributional properties of the training batch (Remark 4). The decision–scenario pairs whose constraint value exceeds the tolerance form the dangerous-pair set H = {(k, n ) : Mkn > ε vio , k ∈ { 1, . . . , K pool }, n ∈ { 1, . . . , N }} . Only pairs in H
+
+contribute to the constraint-consistency loss below, so the decoder is corrected only at decision– scenario pairs where infeasibility is triggered. (P4) training may slightly affect (P1)–(P3) performance. To make this trade-off controllable, training data and scenario data are mixed in each batch: 
+
+Bmix = {ξ(i)}Nt  
+
+> i=1
+> ︸︷︷ ︸
+> training data
+
+∪ { ξ(n)}Ns  
+
+> n=1
+> ︸︷︷ ︸
+> scenarios
+
+,Nt = ⌊(1 − β)B⌋, Ns = B − Nt
+
+(41) 
+
+Remark 4 (Mixed-batch input distribution) . Since the training data {ξ(i)} and scenario data 
+
+{ξ(n)} are both drawn i.i.d. from P ∗, their concatenation Bmix is itself an i.i.d. sample from P ∗
+
+for any mixing ratio β ∈ [0 , 1] . The violation weights wn enter the loss as gradient coefficients only. The unweighted (P2) and (P3) estimators are therefore unbiased on Bmix . Training under the reweighted loss converges to a different stationary point, by design. That shift injects the (P4) signal. 
+
+Training is split into two phases. Phase 1 ( E1 epochs) optimises the (P1)–(P3) losses together with the GMM guide under a frozen decoder head. (P4) losses are inactive. Once Phase 1 ends the decoder learning rate drops to lr 2 (Table 3) to prevent gradient conflicts between (P1)–(P3) and (P4) objectives, while the encoder retains the Phase-1 learning rate. Phase 2 ( E2 epochs) introduces the (P4) losses through a linear annealing schedule [Bowman et al., 2016] over Ea
+
+epochs, with anneal factor a ∈ [0 , 1] of eq. (42), letting the network adapt to the new objective without disrupting the existing (P1)–(P3) fit. 21 2.6.3 Point 4 Loss Components 
+
+The (P4) signal first enters reconstruction through a weighted loss that unifies (P1) and (P4): 
+
+Lw-recon = 1
+
+W 
+
+> (∑
+> i∈train
+
+∥ξ(i) − ˆξ(i)∥2 + a ∑
+
+> n∈scen
+
+wn∥ξ(n) − ˆξ(n)∥2)
+
+(42) where W = Nt + a ∑ 
+
+> n
+
+wn is the total sample weight and a ∈ [0 , 1] is the anneal factor ( a = 0 
+
+during Phase 1 so only the training-data term is active, and a ramps to 1 linearly over the first 
+
+Ea epochs of Phase 2). The second (P4) component is a constraint-consistency regularisation. While (P1) recon-struction ensures Gθ(fϕ(ξ)) ≈ ξ in data space, it does not guarantee that the constraint function value is preserved. Two scenarios ξ and ˆξ may have small data-space distance ∥ξ − ˆξ∥ but pro-duce different violation values gi(x, ξ)̸ = gi(x, ˆξ) if they differ along the direction aligned with the decision x.The constraint-consistency loss penalises violation mismatches on infeasibility-inducing decision– scenario pairs H, using the constraint function g as the training signal: 
+
+Lcc = 1
+
+|H sub |
+
+> ∑
+> (k,n )∈H sub
+
+ℓ(gi(xk, ξ(n)), g i(xk, ˆξ(n))) (43) where ˆξ(n) = S−1
+
+> pre
+> (
+
+Gθ(fϕ(ξ(n))) ) and Hsub ⊂ H is a random subsample per batch. This can be viewed as a form of physics-informed regularisation: the physical constraint function gi(x, ξ)
+
+serves as the loss signal, ensuring the decoder preserves the constraint values across the un-certainty distribution. For problems with multiple constraints ( m > 1), the same procedure is applied independently to each gi.Three loss functions ℓ(·, ·) are considered: 
+
+• L1 : ℓ(g, ˆg) = |g − ˆg|, symmetric, penalising both over- and underestimation. 
+
+• Hinge : ℓ(g, ˆg) = max( g − ˆg, 0) , penalising only underestimation (conservative reconstruc-tion incurs zero loss). 
+
+• MMD : ℓ = MMD 1D
+
+> (
+
+{gi(xk, ξ(n))}n, {gi(xk, ˆξ(n))}n
+
+> )
+
+, matching the per-decision distribu-tion of violations rather than individual values. This variant targets the distributional quantity that the MIP oracle optimises. A latent-violation loss reinforces the coupling between infeasibility-inducing scenarios and the latent space by combining (i) a weighted latent MMD between encoded infeasibility-inducing scenarios and the prior, with weights wn from eq. (40), and (ii) an encode-decode roundtrip penalty ∥zn − fϕ(Gθ(zn)) ∥2 on the infeasibility-inducing subsample: 
+
+Llat-vio = MMD 2
+
+> k
+> (
+
+{fϕ(ξ(n))}, {zj }; wn 
+
+> )
+
++ Ez∼fϕ(Ξdang )
+
+> ∥∥
+
+z − fϕ(Gθ(z)) ∥∥2 (44) with Ξdang the scenarios appearing in Hsub and {zj } ∼ N (0, I). This loss keeps infeasibility-inducing scenarios well-represented in latent space (the weighted MMD) and ensures the decoder is inference-consistent on them (the roundtrip), with weight λlat-vio .The decoder head can optionally be unfrozen in Phase 2. The decoder head h is frozen during Phase 1 (P1–P3 training), serving only as a fixed inverse of the PCA standardisation. When 22 Algorithm 1 WAAE-GMM-RO Training: Phase 1 (P1–P3 with GMM guide, frozen head) 
+
+Require: Training data X ∈ RN ×nξ ; phase-1 epochs E1.
+
+Ensure: Warm-started (fϕ, b, h, GMM ) with h frozen.  
+
+> 1:
+
+Fit PCA on X to obtain (μ, σ, V ); set Xpca ← V ⊤(X − μ) ⊘ σ. 
+
+> 2:
+
+Initialise head h with weight diag( σ) V , bias μ; freeze h. 
+
+> 3:
+
+Warm-start GMM {(πk, μk, σk)}Kgmm  
+
+> k=1
+
+via expectation–maximisation (or variational inference with a Dirichlet-process prior) on X. 
+
+> 4:
+
+for e = 1 , . . . , E 1 do  
+
+> 5:
+
+for each mini-batch x ⊂ Xpca do  
+
+> 6:
+
+L1 ← λrecon Lrecon + λdata Ldata + λlatent Llatent + λgmm LGMM + λcomp Lcomp , i.e. LWAAE-GMM of eq. (37); update fϕ, b, {Dpca  
+
+> ψ
+
+, D std  
+
+> ψ
+
+}, GMM.  
+
+> 7:
+
+end for  
+
+> 8:
+
+end for  
+
+> 9:
+
+return (fϕ, b, h, GMM ).
+
+Phase 2 begins we optionally allow the head to adapt. Three modes are supported: (i) keep the head frozen throughout, (ii) unfreeze only the decoder head h, and (iii) unfreeze both h and the encoder pre-head V (a linear pre-encoder with the same structure as the PCA preprocessor of Eq. (15), with μ, σ held fixed at their PCA-fitted values and V made trainable), so that 
+
+V can co-adapt on both sides of the encoder–decoder pipeline. The weighted-reconstruction loss of eq. (42) and the constraint-consistency loss of eq. (43) continue to provide the training signal through the now partially trainable decoder. No new reconstruction term is introduced. Allowing V to drift only in Phase 2 lets the head align with the constraint-violation geometry captured by Lcc without disturbing the distribution fit learned under the frozen warm-start. 
+
+2.6.4 Unified Training Algorithm 
+
+Algorithms 1 and 2 give the complete WAAE-GMM-RO training procedure. Phase 1 (Al-gorithm 1) establishes (P1)–(P3) together with the GMM guide under a frozen decoder head. When Phase 2 begins the decoder learning rate drops to lr 2, and the head (optionally together with the encoder pre-head V ) becomes trainable. Phase 2 (Algorithm 2) continues all Phase-1 losses while adding the tail-weighted mixed batch, constraint-consistency, and latent-violation losses. With the encoder–decoder trained to satisfy (P1)–(P4), we now embed the ReLU decoder in a mixed-integer linear program for exact worst-case verification (P5). 
+
+2.7 MILP Integration and Worst-Case Oracle 
+
+The central premise of using a ReLU decoder is exact worst-case verification: given a candidate decision x, we can certify whether the generative uncertainty set contains any scenario that violates a given constraint. Building on the MILP representation of Section 2.2.2, the oracle is embedded in a cutting-plane outer loop that solves the GRO problem. 
+
+2.7.1 Decoder Export and MILP Encoding 
+
+After training, the decoder is exported via ONNX and lifted to a Pyomo MILP block using the OMLT library [Ceccon et al., 2022]. Each hidden ReLU is encoded by eq. (14), yielding one 23 Algorithm 2 WAAE-GMM-RO Training: Phase 2 (P4 on tail-weighted mixed batch) 
+
+Require: Warm-started (fϕ, b, h, GMM ) from Algorithm 1; scenarios Ξ; decision pool D with |D| =
+
+Kpool ; phase-2 epochs E2; anneal period Ea; mixing ratio β; unfreeze mode ∈ { none , head only , head +
+
+pre-head }.
+
+Ensure: Trained (fϕ, b, h ).
+
+1: Precompute violation matrix M (eq. (38)) and tail weights w (eq. (40)). 
+
+2: Drop decoder learning rate to lr 2. If unfreeze mode ̸ = none, unfreeze h (and encoder pre-head V
+
+when mode = head +pre-head) and add their parameters to the AE optimiser. 
+
+3: for e = 1 , . . . , E 2 do 
+
+4: a ← min(1 , e/E a) {anneal factor} 
+
+5: for each mini-batch do 
+
+6: Build mixed batch Bmix (eq. (41)) and attach tail weights wmix .
+
+7: L2 ← λrecon Lw-recon + λdata Ldata + λlatent Llatent + λgmm LGMM + 0 .1 λcomp Lcomp + a λ cc Lcc +
+
+λlat-vio Llat-vio (eqs. (42), (43), (44); Ldata , Llatent , LGMM , Lcomp as in Phase 1; λcomp is attenuated by 0.1 so that (P4) terms dominate late in training); update fϕ, b, h (+V if unfrozen), GMM. 
+
+8: end for 
+
+9: end for 
+
+10: return (fϕ, b, h ).
+
+Table 3: WAAE-GMM-RO hyperparameters. 
+
+Parameter Symbol Default Description 
+
+Mixing ratio β 0.2 Fraction of scenarios in mixed batch Phase-1 epochs E1 1000 Epochs of (P1)–(P3) + GMM training (frozen head) Anneal period Ea 100 Linear annealing duration Phase-2 epochs E2 500 Epochs of (P1)–(P4) training with mixed batch Phase-2 learning rate lr 2 5×10 −4 Decoder LR during Phase 2 GMM components Kgmm 12 Mixture components in the data-space GMM guide Tail upweighting α 3.0 Maximum tail weight factor Sigmoid sharpness κ 10.0 Sigmoid steepness Activation threshold ρ0 0.1 Violation threshold for upweighting Reconstruction weight λrecon 2.0 (P1) loss weight Constraint consistency λcc 1.0 (P4) constraint-consistency weight CC loss type ℓ hinge Constraint-consistency loss ( ℓ ∈ { L1, hinge, MMD })Latent violation weight λlat-vio 1.0 (P4) latent loss weight Critic steps ncritic 5 Discriminator steps per generator step Gradient penalty λgp 10.0 WGAN-GP penalty weight CC subsample size |H sub | 256 Dangerous pairs per batch Gradient clipping — 1.0 Max gradient norm (optional) Refresh interval R 50 Epochs between (P4) data refresh Head unfreeze mode — none {none, head only, head + pre-head} in Phase 2 
+
+binary variable per hidden neuron ( 128 in our [6 , 32 , 64 , 32 , 6] decoder) and reproducing eq. (12) exactly. Two operational choices complete the encoding. First, once the decoder is exported we tighten its Big-M relaxations offline with optimality-based bound tightening (OBBT), which accelerates the subsequent branch-and-bound. Second, the inverse data-scaling is folded into the block itself: under the PCA warm-start pipeline (Section 2.5) the decoder head h implements the PCA inverse h(y) = diag( σ) V y + μ, so the composed network h ◦ b outputs raw-unit scenarios directly, with no separate inverse-scaling step after the MILP block. The decoder body also carries an input-output skip, b(z) = net (z) + z (eq. (28)). Because the skip is linear in z, it is included in the ONNX export and appears as a standard feedforward operation in the MILP block, adding nz linear terms with no new binary variables. 24 2.7.2 Worst-Case Oracle 
+
+Given a candidate decision x and an uncertain constraint g(x, ξ) from eq. (2), the worst-case violation is computed by solving 
+
+v⋆(x) = max   
+
+> z,ξ
+
+g(x, ξ) s.t. ξ = Gθ(z), z ∈ Z , (45) where Z is the calibrated latent set (eq. (7) or eq. (8)). The oracle returns: 
+
+• the worst-case violation v⋆,
+
+• the optimal latent vector z⋆,
+
+• the worst-case scenario ξ⋆ = Gθ(z⋆) in original-unit space, 
+
+• the MIP optimality gap and solution time. A convex feasibility check precedes the exact oracle. Solving the full oracle of eq. (45) requires branch-and-bound over the 128 ReLU binaries and is the dominant cost of the cutting-plane loop. The oracle is a MILP under the box latent constraint of eq. (7) and a MISOCP under the ball constraint of eq. (8). In either case its continuous relaxation (ReLU binaries relaxed to 
+
+[0 , 1] , latent constraint retained as-is) is convex (an LP or an SOCP respectively) and provides an upper bound ¯v on the worst-case violation. The feasibility check uses this relaxation with the OBBT-tightened Big-M bounds in place. When ¯v ≤ εvio , feasibility is certified. Otherwise the full oracle is invoked. When the check does not certify feasibility, the exact oracle returns v⋆ and z⋆ at global optimality. If v⋆ ≤ εvio , the decision is certified robust-feasible within the calibrated latent set. Otherwise the worst-case scenario ξ⋆ = Gθ(z⋆) is a constructive certificate of infeasibility. This exact verification is what distinguishes the oracle from sampling. Monte Carlo sampling of z from the calibrated set Z and evaluating g(x, G θ(z)) provides only a lower bound on the worst-case violation: if the worst-case latent lies in a narrow region missed by the sample, the bound is loose. The oracle of eq. (45) guarantees global optimality (gap = 0), providing the 
+
+exact worst-case, which gradient-based heuristics such as PGA [Brenner et al., 2025] do not provide. 
+
+2.7.3 GRO Cutting-Plane Algorithm 
+
+The trained decoder and the oracle of Section 2.7.2 close the GRO loop. The master problem inherits the form of the application’s deterministic counterpart: an LP for the production-planning case study, a MILP for facility location where binary opening decisions make the master integer. Algorithm 3 treats this master as a black-box and is agnostic to its type. The master starts with only the deterministic constraints. Each iteration solves the current master, queries the oracle (with the feasibility check of Section 2.7.2 in front of the exact oracle) on every uncertain constraint, and either certifies the current decision as robust-feasible or adds one robust cut per violated constraint to the master. The preprocessing (MILP export and OBBT) from Section 2.7.1 is done once, before the loop, and is reused across all iterations. Two properties justify this scheme. First, finite convergence: the master polytope is bounded and the exact oracle returns an optimal ξ⋆ each iteration. The loop either terminates by cer-tification or produces a monotonically tightening sequence of master feasibility sets until kmax .25 Algorithm 3 GRO Cutting-Plane Algorithm 
+
+Require: Trained decoder pipeline Gθ : Z → Rnξ mapping latent z to original-unit outputs (Sec-tion 2.7.1); calibrated latent set Z; nominal master-LP builder (no uncertainty constraints); set of uncertain constraints C with per-constraint violation function gc(x, ξ); violation tolerance εvio ;maximum master iterations kmax .
+
+Ensure: Robust-feasible decision x⋆, or max-iter with best-so-far x. 
+
+> 1:
+
+[Preprocessing]  
+
+> 2:
+
+Export Gθ to ONNX; build the OMLT MILP block once (Section 2.7.1).  
+
+> 3:
+
+Run OBBT once (one LP per hidden variable) to tighten Big-M constants.  
+
+> 4:
+
+[Outer master loop]  
+
+> 5:
+
+Build master LP; k ← 0. 
+
+> 6:
+
+while k < k max do  
+
+> 7:
+
+Solve master LP → candidate decision x. 
+
+> 8:
+
+[Phase A]: feasibility screen on every constraint  
+
+> 9:
+
+for each c ∈ C do  
+
+> 10:
+
+Feasibility check (Section 2.7.2): solve the convex relaxation of the oracle for c at x → screen value ¯vc. 
+
+> 11:
+
+end for  
+
+> 12:
+
+Ccand ← { c ∈ C : ¯ vc > ε vio } // MIP candidates  
+
+> 13:
+
+if Ccand = ∅ then  
+
+> 14:
+
+return x⋆ ← x // every constraint certified by the screen  
+
+> 15:
+
+end if  
+
+> 16:
+
+[Phase B]: exact MIPs on the candidate list  
+
+> 17:
+
+for each c ∈ C cand in parallel do  
+
+> 18:
+
+Exact oracle : solve the full MIP (45) for c at x → (v∗ 
+
+> c
+
+, ξ∗ 
+
+> c
+
+). 
+
+> 19:
+
+end for  
+
+> 20:
+
+Cvio ← { c ∈ C cand : v∗ 
+
+> c
+
+> ε vio } // confirmed violators  
+
+> 21:
+
+if Cvio = ∅ then  
+
+> 22:
+
+return x⋆ ← x 
+
+> 23:
+
+end if  
+
+> 24:
+
+[Phase C]: one robust cut per confirmed violator  
+
+> 25:
+
+for each c ∈ C vio do  
+
+> 26:
+
+Add robust cut gc(·, ξ∗ 
+
+> c
+
+) ≤ 0 to the master LP.  
+
+> 27:
+
+end for  
+
+> 28:
+
+k ← k + 1 . 
+
+> 29:
+
+end while  
+
+> 30:
+
+return max-iter reached; current x with worst violation max c∈C vio v∗ 
+
+> c
+
+.
+
+Second, the guarantee carries through: if the loop returns x⋆ via the certification branch, x⋆
+
+is feasible against every scenario in the decoded uncertainty set UGθ . The three-phase inner structure of Algorithm 3 accelerates the loop without compromising this guarantee. Phase A applies the feasibility check (Section 2.7.2) to each constraint and prunes to the candidate list 
+
+Ccand . Phase B solves the exact oracle on each candidate in parallel. The candidates share the master decision x, the MILP block, and the OBBT-tightened Big-M bounds, differing only in the constraint gc. Phase C adds one robust cut per confirmed violator to the master, then the loop advances. 
+
+# 3 Case Studies 
+
+3.1 Multi-Period Production Planning 
+
+We evaluate the GRO framework on a 6-period production planning (PP) problem. 26 Table 4: Production planning problem data (Ravindran, 2008; robust cost-uncertainty version after Li et al., 2012).                                                
+
+> Period t123456Price Pt($/ton) 180 180 250 270 300 320 Nominal cost Ct($/ton) 20 25 30 40 50 60 Storage Vt($/ton) 222222Capacity Ut(tons) 1500 2000 2200 3000 2700 2500 Demand Dt(tons) 1100 1500 1800 1600 2300 2500
+
+3.1.1 Problem formulation 
+
+A company plans production, storage, and sales over T = 6 periods of 2 months each to maximise sales revenue subject to a cost budget. For each period t = 1 , . . . , 6, the decision variables are 
+
+xt (production, tons), yt (end-of-period inventory, tons), and zt (sales, tons). The deterministic formulation is: 
+
+max 
+
+> x,y,z
+> 6
+
+∑
+
+> t=1
+
+Pt zt (46) s.t. 
+
+> 6
+
+∑
+
+> t=1
+
+˜Ct xt +
+
+> 6
+
+∑
+
+> t=1
+
+Vt yt ≤ B (47) 
+
+yt−1 + xt = yt + zt, t = 1 , . . . , 6, y0 := I0 (48) 
+
+y6 = Ifinal (49) 
+
+0 ≤ xt ≤ Ut, 0 ≤ zt ≤ Dt, yt ≥ 0 (50) where Pt are selling prices, ˜Ct are uncertain production costs, Vt are storage costs, B = 400 ,000 is the budget, and I0 = Ifinal = 500 tons. The uncertain costs ˜Ct are the only source of uncertainty. All other parameters are known. Table 4 lists the nominal parameters. Training data consist of N = 6 ,000 scenarios drawn from six synthetic cost distributions: three independent variants (normal, skewed, mixture) and three correlated variants with shared latent factor ( ρ = 0 .7). Each marginal is centred at the nominal cost Ct of Table 4 with a fixed coefficient of variation σt/C t = 0 .25 , so the per-period standard deviations σt range from 5.00 to 
+
+15 .00 $/ton across the six periods. The mixture variants additionally use an inner-component standard deviation of σt/2 around each of two component means. This problem instantiates the abstract robust formulation eq. (2) of Section 2.1 as follows. The decision vector is x = ( xprod , y, zsale ) ∈ R18 with xprod = ( x1, . . . , x 6), y = ( y1, . . . , y 6),and zsale = ( z1, . . . , z 6). The uncertainty vector is ξ = ( ˜C1, . . . , ˜C6) ∈ R6. The budget eq. (47) is the sole uncertain constraint and takes the form g(x, ξ) = ξ⊤xprod + V ⊤y − B ≤ 0, where 
+
+V = ( V1, . . . , V 6). The remaining constraints, eqs. (48)–(50), are deterministic and define the feasible set X of eq. (2). Under the uncertain costs, the robust counterpart maximises the sales revenue eq. (46) subject to the budget eq. (47) holding for every cost realisation in the calibrated uncertainty set. Its optimal value is the robust objective τ (in M$). 27 Table 5: Cross-model comparison across six distribution families ( d = 6 , N = 6000 ). Metric definitions are given in the body. Bold marks the best entry per distribution and metric, excluding NF for the Point-4 columns.                                                                                                                                                                                                                                                   
+
+> (P1) (P2) (P3) (P4) (P5) Dist. Model rmse MMD AD SW ∆wc conserv corr MILP Indep. Normal  VAE 0.0210 0.0002 66; 57/60 0.083 0.917 0.999 128 WAAE 0.0020 0.0002 66; 59/60 0.020 1.012 1.000 128 WAAE-GMM-RO 0.0013 0.0006 66; 59/60 0.020 1.008 0.999 128 NF —0.0002 56; 59/60 ———MINLP DDIM 0.0282 0.0067 56; 60/60 0.138 0.862 1.000 ∼6400 Indep. Skewed  VAE 0.0241 0.0004 01; 25/60 0.044 1.041 0.998 128 WAAE 0.0084 0.0004 26; 51/60 0.042 0.958 0.997 128 WAAE-GMM-RO 0.0043 0.0009 66; 58/60 0.016 1.015 1.000 128 NF —0.0002 66; 59/60 ———MINLP DDIM 0.0309 0.0078 56; 57/60 0.041 0.959 0.999 ∼6400 Indep. Mixture  VAE 0.0375 0.0017 11; 24/60 0.127 0.873 1.000 128 WAAE 0.0167 0.0012 35; 52/60 0.035 0.979 0.999 128 WAAE-GMM-RO 0.0044 0.0006 66; 59/60 0.037 1.023 0.999 128 NF —0.0003 06; 51/60 ———MINLP DDIM 0.0202 0.0041 03; 34/60 0.135 0.865 1.000 ∼6400 Corr. Normal  VAE 0.0324 0.0007 66; 58/60 0.104 0.896 0.998 128 WAAE 0.0193 0.0018 66; 58/60 0.007 0.994 1.000 128 WAAE-GMM-RO 0.0022 0.0012 66; 58/60 0.010 1.005 0.999 128 NF —0.0001 66; 58/60 ———MINLP DDIM 0.0303 0.0057 66; 58/60 0.034 0.966 1.000 ∼6400 Corr. Skewed  VAE 0.0399 0.0007 46; 56/60 0.009 0.994 0.999 128 WAAE 0.0180 0.0025 15; 48/60 0.023 1.005 0.994 128 WAAE-GMM-RO 0.0050 0.0008 66; 58/60 0.005 1.002 1.000 128 NF —0.0002 66; 56/60 ———MINLP DDIM 0.0298 0.0055 36; 53/60 0.051 0.949 1.000 ∼6400 Corr. Mixture  VAE 0.0859 0.0020 01; 33/60 0.063 0.938 0.999 128 WAAE 0.0137 0.0021 00; 23/60 0.115 0.888 0.986 128 WAAE-GMM-RO 0.0035 0.0008 56; 57/60 0.029 1.018 0.998 128 NF —0.0006 46; 60/60 ———MINLP DDIM 0.0257 0.0125 01; 22/60 0.071 0.929 1.000 ∼6400
+
+3.1.2 Trained decoder evaluation 
+
+The trained decoders are evaluated against the empirical production-planning distribution before deployment in the cutting-plane algorithm of Section 2.7.3. Table 5 reports the five-point cross-model comparison. Figures 4 and 5 report the worst-case oracle accuracy at a representative decision and across a pool of Kpool = 2000 feasible decisions, respectively. Table columns implement the five-point metric definitions of Section 2.3 (cf. eqs. (17), (20), (26)). The Point-3 cells count latent dimensions passing the Anderson–Darling and Shapiro– Wilk normality tests at α = 0 .01 . The Point-4 columns ( ∆wc , conserv, corr) are evaluated on each model’s encoder–decoder reconstruction of the 2000 empirical reference scenarios, which probes whether the decoder preserves the violation geometry of the training distribution. NF is bijective, so its reconstruction is exact and the Point-4 cells reduce to a trivial identity (reported as “—”). Point-4 training is essential for producing a deployable decoder, irrespective of architecture: the tail-weighted (P4) loss keeps WAAE-GMM-RO’s conservatism ratio within a tight band around the safe-but-tight target ( 1.002 –1.023 across the six distributions, all on the safe side), the best of any model in the table and the only model with conserv ≥1.00 everywhere. Several conclusions emerge from Table 5: 28 Figure 4: Worst-case oracle at a fixed median decision xmed on the independent mixture distribution. Top row: data-space slice (ξ2, ξ 5). Bottom row: latent slice (z1, z 2).
+
+• VAE fails (P3) on non-Gaussian data: KL regularisation alone does not deliver a well-calibrated aggregated posterior, which propagates into a (P4) underestimation on the skewed and mixture distributions. 
+
+• WAAE matches the data distribution well (P1)–(P3) but underestimates the worst-case violation on the harder skewed and mixture cells, since the loss carries no (P4) signal. 
+
+• NF matches the data distribution well, but its multi-step structure (stacked coupling layers with exp(tanh( ·)) activations) pushes the verification problem to MINLP rather than MILP, ruling out exact oracle solves: a (P5) failure. 
+
+• DDIM is also a multi-step model: unrolling its T -step denoising chain inflates the binary-variable count an order of magnitude beyond the single-pass decoders, so (P5) fails. It additionally underestimates the worst-case (conserv <1 on all six distributions), failing (P4) as well. 
+
+• WAAE-GMM-RO is the only model that satisfies all five points: an accurate distribution match, a regular latent, a (P4)-safe oracle, and a tractable MILP-embeddable decoder. Figure 4 provides a deployment-side snapshot at a single decision xmed (median worst-case vi-olation in the pool) on the independent mixture distribution. The top row plots the (ξ2, ξ 5) data-space slice: the ground-truth column shows the empirical scatter coloured by g(xmed , ξ)/B , and each model column overlays the 2000 encoder–decoder reconstructions of those reference scen-arios on the same rainbow scale. The bottom row plots the latent (z1, z 2) density of the encoded reference scenarios, with a dashed reference circle at the calibrated radius γmarg (p = 0 .9) ≈ 1.64 .Black ⋆ marks the empirical worst-case scenario ξ∗ 
+
+> ref
+
+(shared across columns). Model-coloured 
+
+⋆ marks the decoder-side worst-case reconstruction ξ∗ 
+
+> gen
+
+on top and the matching latent z∗
+
+> gen
+
+on bottom. A well-calibrated decoder places its worst-case reconstruction close to the empirical reference and its latent-space worst-case inside the calibrated ball. The VAE column shows both failure modes simultaneously: its worst-case falls outside the calibrated ball of the latent space, reflecting the Point-3 failure of Section 2.3.3, and its data-space reconstruction underestimates the empirical worst-case violation, leaving the resulting oracle on the unsafe side of (P4). Astandalone VAE is therefore structurally insufficient as a generative uncertainty set. Figure 5 provides a per-decision view of the oracle across the six PP distributions for VAE, 29 Figure 5: Per-decision oracle validation across the six distributions (columns) and four generative models (rows). Each point is one of Kpool = 2000 pool decisions xk. The dashed 
+
+y = x marks a perfectly calibrated oracle. A safe oracle keeps every point on or above this line and as close to the line as possible to limit over-conservatism. WAAE, WAAE-GMM-RO, and DDIM. NF is omitted, since its bijective decoder makes vgen ≡
+
+vref by construction. Each point is one of Kpool = 2000 pool decisions xk: the x-axis is the empirical worst-case violation vref (xk), the y-axis is its encoder–decoder counterpart vgen (xk),both as defined in Section 2.3.4 and normalised here by the budget B. Per-panel annotations report the Pearson correlation corr , the pool-averaged relative error ∆wc of eq. (26), and the conservatism ratio conserv . Across the six distributions WAAE-GMM-RO keeps its points on or above y = x (conserv ≥ 1 everywhere), whereas the VAE and DDIM points fall below it on the unsafe side for most distributions. The per-decision view therefore confirms the aggregate safety reported in Table 5. 
+
+3.1.3 Algorithm 3 specialisation and comparison baselines 
+
+We compare seven uncertainty set approaches at the same marginal coverage p (eq. (9)): two classical robust baselines, three distributionally-robust baselines, and two decoder-based meth-ods. The WAAE and WAAE-RO ablation rows are reported in Table 5 above and are not repeated here. 
+
+• Box LP. Marginal empirical quantile box [ξlo  
+
+> t
+
+, ξ hi  
+
+> t
+
+] = [ Q(1 −p)/2, Q (1+ p)/2], with the worst case at the upper bound since xt ≥ 0, solved as LP. 
+
+• IE SOCP. Interval+ellipsoidal counterpart [Ben-Tal and Nemirovski, 1999] with Ω = Φ−1((1 + p)/2) , solved as SOCP. 30 • DDRO SOCP. Data-driven distributionally robust counterpart [Bertsimas et al., 2018] using the empirical covariance ˆΣ and a coverage-p confidence set, solved as SOCP. 
+
+• W-DRO. Wasserstein-1 ambiguity ball about the empirical cost distribution ( L2 ground metric) [Mohajerin Esfahani and Kuhn, 2018, Thm 4.2]. For the affine budget, its SOCP counterpart adds one cone constraint ̂ ξ⊤x + ∑ 
+
+> t
+
+Vtyt + ε ∥x∥2 ≤ B to the master, with ̂ ξ
+
+the empirical mean cost and ε the radius. 
+
+• OT-GMM-DRO. Optimal-transport DRO over the weight simplex of a fixed K = 8 
+
+Gaussian mixture fit by EM [Kammammettu et al., 2024, Model 20]. The inner supremum over weight transports, bounded in squared Bures distance, ∑ 
+
+> i,j
+
+πij d2 
+
+> ij
+
+≤ ε2, admits an LP dual added to the master. 
+
+• VAE. VAE decoder with the MIP oracle of Section 2.7.2. 
+
+• WAAE-GMM-RO. WAAE-GMM-RO decoder with the same MIP oracle as VAE. Computations use Gurobi 12 with OBBT preprocessing on an NVIDIA RTX 2000 Ada GPU. The PP case specialises Algorithm 3 as follows: |C| = 1 (the budget eq. (47) is the sole uncertain constraint), and the decision vector x ∈ R18 is the consolidated stack of Section 3.1.1. Each outer iteration therefore queries one MIP oracle. 
+
+3.1.4 Numerical validation and quantile sweep 
+
+We first validate the oracle on independent normal costs, the one case with an analytical refer-ence. For costs ξt ∼ N (μt, σ 2 
+
+> t
+
+), the analytical q-quantile robust counterpart is 
+
+> ∑
+> t
+
+μtxt + Φ −1(q)
+
+> √∑
+> t
+
+σ2 
+
+> t
+
+x2 
+
+> t
+
++ ∑
+
+> t
+
+Vtyt ≤ B (51) which an affine decoder on ∥z∥2 ≤ γmarg reproduces exactly under the calibration of eq. (9). On Gaussian data the decoder therefore cannot outperform the analytical set, and we measure how closely the trained decoder and MIP oracle approximate it. Across the coverage sweep p ∈ { 0.1, 0.3, 0.5, 0.7, 0.9} under the ball latent constraint, the two decoder objective curves overlap the analytical SOCP, while the Box LP, IE SOCP and DDRO SOCP baselines lie progressively below, reflecting set-shape conservatism (Fig. 6, left panel). The middle panel resolves the decoder gap on a ±8% scale: WAAE-GMM-RO remains on the safe side throughout, with the gap growing from 0 at p = 0 .1 to approximately −0.44% at 
+
+p ≥ 0.7, since the trained-decoder nonlinearity admits a slightly larger image than the analytical ball. VAE sits on the unsafe side, with the gap reaching +0 .28% at p = 0 .9, consistent with its (P3) failure (Section 2.3.3). Both gaps remain within half a percent across the full p range. The right panel verifies decision-level agreement at p = 0 .9: both decoder schedules coincide with SOCP period by period. On data where an exact reference exists, the trained decoder and MIP oracle therefore reproduce the analytical robust counterpart to within half a percent, validating the pipeline before the non-Gaussian distributions where no closed form is available. The (ξ1, ξ 2) slice at p = 0 .8 shows the same comparison geometrically (Fig. 7, independent normal on top, independent mixture on the bottom). On Gaussian data all methods nearly coincide, and both decoders reduce to a single Gaussian peak at the data mean. On bimodal data the two decoders separate: the WAAE-GMM-RO decoded density splits into four separ-31 Figure 6: Validation on the independent normal distribution under the ball latent constraint. Left: τ vs p. Middle: relative gap to SOCP. Right: 6-period schedule at p = 0 .9. Lines: SOCP-exact (gray dashed), Box LP (blue), IE SOCP (tan), DDRO SOCP (sage), VAE MIP (purple), WAAE-GMM-RO MIP (red). 
+
+Figure 7: Per-method uncertainty regions in the slice (ξ1, ξ 2) at p = 0 .8. W-DRO is an isotropic ball about the empirical mean. OT-GMM-DRO is the K = 8 fixed mixture components, with the worst-cost component outlined. Upper: independent normal. Lower: independent mixture. ated mode peaks that track the empirical mixture, whereas VAE recovers the four modes but places noticeable mass between them. The Box LP and IE SOCP regions cover the same area but flat-fill the interior, carrying no information about where the data concentrates, and the two distributionally-robust sets are no better here: W-DRO reduces, for the affine budget, to an isotropic ball about the empirical mean, and OT-GMM-DRO to a frozen set of Gaussian components. Neither adapts to the bimodal structure that the decoders capture above. The robust objective τ is swept over marginal coverage q ∈ [0 .1, 0.9] for the two MILP-embeddable decoders on all six distributions (Fig. 8). Each decoder is plotted in the two latent-shape variants (the “box” eq. (7) and the inscribed “ball” eq. (8)), at the calibrated marginal radius γmarg of eq. (9). Throughout, lower τ corresponds to a larger uncertainty set (more 32 conservative robust decision) and higher τ to a smaller set. The two analytical baselines (Box LP and IE SOCP) are independent of the decoder’s latent shape. On the non-Gaussian distributions the two analytical baselines, Box LP and IE SOCP, have no closed-form reference and hold a fixed geometry. Figure 8 also overlays two distributionally-robust baselines, W-DRO and OT-GMM-DRO, each calibrated to the same one-sided feasibility 
+
+(1 + p)/2 as the decoders, so a higher τ marks a less conservative decision at equal safety. Both are shape-blind (Fig. 7): W-DRO reaches the requested feasibility on every distribution at a profit cost that grows with coverage, and OT-GMM-DRO saturates at a distribution-dependent coverage ceiling that under-covers at high p (the hollow-marker segments). The decoder adapts. Under the box latent both decoders track Box LP within a few percent and sit ∼6% below SOCP-exact on independent normal, since the decoded box exceeds the inscribed ball (WAAE-GMM-RO runs slightly more conservative than VAE on the multimodal and correlated cells). Under the ball latent they coincide with SOCP-exact on independent normal (Fig. 6) and sit above Box LP and IE SOCP on the other five distributions, a less conservative set than any analytical baseline. Where the data is multimodal or correlated, the learned set splits into the right modes and follows the correlation (Fig. 7), capturing structure that no isotropic ball, ellipsoid, or frozen mixture can, and it carries no coverage ceiling. Off the Gaussian case no analytical reference ranks conservatism exactly, and on this single affine budget the decoder offers no lower robust cost. Its advantage is a shape-adaptive set delivered under one calibration. The classical baselines, conversely, need no training, solve in under a second, and carry finite-sample out-of-sample guarantees the decoder lacks. Together, the two latent variants show the practical advantage of the formulation: one trained decoder captures the real data distribution, and the uncertainty set is then chosen by the latent constraint rather than re-derived for each case. This decouples distribution learning from set specification in two ways: the same decoder spans different set specifications without retraining (the box and ball geometries, marginal or joint coverage, at any level q), and it embeds unchanged into a different type of robust problem, as the facility-location study of Section 3.2 shows. The advantage is greatest on the non-Gaussian, multimodal, and correlated distributions, where no fixed geometric primitive captures both the data shape and the desired coverage. 
+
+3.1.5 Computational cost 
+
+Computational cost has two components: a one-off per-model training cost (Table 6) and a per-query cutting-plane cost (Table 7). Table 6 reports the median wall-clock across the hyperparameter-search trials. WAAE-GMM-RO is the most expensive, since its adversarial critics, GMM guidance, and Point-4 RO-aware stage add per-epoch overhead beyond a plain autoencoder. This cost is paid once per distribution before deployment, so even the 431 s figure is amortised across all subsequent queries. The non-generative baselines, including the two distributionally-robust ones, solve in under 
+
+0.5 s and are omitted from Table 7. For the two MILP-embeddable decoders ( 128 binary vari-ables), Gurobi solves each worst-case oracle to global optimality, and the cutting-plane loop converges in a few outer iterations. Table 7 reports the outer-iteration count, per-iteration time, and total wall-clock at q = 0 .5 and q = 0 .9 as the median and [min , max ] over four retrain seeds. 33 Figure 8: PP quantile sweep across the six uncertainty distributions: robust objective τ (M$) vs marginal coverage q ∈ [0 .1, 0.9] . Row 1: independent variants. Row 2: correlated variants. Each decoder appears in two latent-shape variants (“box” = |zj | ≤ γ, “ball” = ∥z∥2 ≤ γ), with the W-DRO and OT-GMM-DRO baselines overlaid. OT-GMM-DRO markers are hollow where it under-covers. Table 6: Per-model training cost on the six PP distributions ( d = 6 , N = 6000 ). Median wall-clock training time per distribution on an NVIDIA RTX 2000 Ada GPU.       
+
+> Model Training time per distribution (s)
+> VAE 18 WAAE 100 WAAE-GMM-RO 431 NF 30 DDIM 15
+
+The four seeds yield density-equivalent decoders, yet their wall-clock varies sharply, spanning 
+
+60 to 2167 s on the hardest cell (independent skewed at q = 0 .9). The variation traces to the branch-and-bound geometry of each trained decoder. The bottleneck is the big-M relaxation, so a tighter ReLU encoding [Anderson et al., 2020] is a promising, as-yet-untested route to a uni-form speed-up, while the correlated distributions are inexpensive throughout because the PCA rotation aligns the latent ball with the correlation structure. OBBT preprocessing (Section 2.7.1) adds ∼30 –60 s, amortised across queries. 
+
+3.2 Robust Facility Location with Demand Uncertainty 
+
+We apply the generative uncertainty set framework to a multi-period robust facility location problem with uncertain demand, following the formulation of [Baron et al., 2011]. This case study extends the framework in two directions: (i) integration with combinatorial optimisation, 34 Table 7: End-to-end cutting-plane cost on the q-sweep for the two MILP-embeddable decoders across the six distributions: outer-iteration count, per-iteration time, and total wall-clock at 
+
+q = 0 .5 and q = 0 .9 (median [min–max] over four retrain seeds).                                                                                         
+
+> q= 0 .5q= 0 .9
+> Distribution Method iters s/iter total (s) iters s/iter total (s) Indep. Normal VAE 42.7 13 [6–22] 711.0 69 [40–112] WAAE-GMM-RO 41.3 6 [1–405] 714.5 98 [5–1083] Indep. Skewed VAE 44.2 17 [6–72] 12 11.6 107 [35–429] WAAE-GMM-RO 46.1 24 [2–81] 13 49.3 876 [60–2167] Indep. Mixture VAE 42.6 12 [3–50] 12 8.5 98 [37–161] WAAE-GMM-RO 66.4 35 [14–646] 568.8 337 [51–1013] Corr. Normal VAE 42.6 10 [3–37] 48.6 34 [13–44] WAAE-GMM-RO 42.0 7 [2–23] 46.5 26 [3–129] Corr. Skewed VAE 43.6 14 [6–39] 48.7 35 [18–53] WAAE-GMM-RO 44.0 16 [2–25] 47.1 35 [9–367] Corr. Mixture VAE 410.0 41 [21–63] 423.9 94 [37–343] WAAE-GMM-RO 44.6 19 [9–32] 411.8 47 [14–109]
+
+since the master is a MILP with binary location decisions and endogenous capacity sizing, and (ii) a per-period latent radius schedule that adapts the spatial decoder set to Baron’s deterministic temporal-growth recurrence on the uncertainty band. 
+
+3.2.1 Problem formulation 
+
+Consider a network of N nodes on a two-dimensional plane, each serving as both a potential facility location and a demand point, over T scheduling periods. Node j has uncertain demand 
+
+˜ξjt in period t.The strategic decisions, made once before demand is observed, are Ii ∈ { 0, 1} (open a facility at node i) and Zi0 ≥ 0 (installed capacity). The operational decisions, made per period, are the allocation fractions Xijt ∈ [0 , 1] and the production levels Zit ≥ 0. The nominal problem maximises profit: 
+
+max τ (52) s.t. ∑
+
+> t,i,j
+
+(r − dij ) ξjt Xijt 
+
+− ∑
+
+> t,i
+
+ci Zit − ∑
+
+> i
+
+(Ci0 Zi0 + K I i) ≥ τ, (53) 
+
+∑
+
+> j
+
+ξjt Xijt ≤ Zit , ∀ i, t, (54) 
+
+Zit ≤ Zi0, ∀ i, t, (55) 
+
+Zi0 ≤ M I i, ∀ i, (56) 
+
+∑
+
+> i
+
+Xijt ≤ 1, ∀ j, t, (57) 
+
+Xijt ≥ 0, I i ∈ { 0, 1}, Z i0, Z it ≥ 0 (58) Parameters follow Baron et al. Table 1: N = 15 , T = 20 , unit revenue r = 1 .0, K = 50 000 ,
+
+Ci0 = 0 .1, ci = 0 .1, dij = ∥pi −pj ∥2, ¯ξj ∼ Uniform[17 500 , 22 500] . The capacity Zi0 is a decision 35 variable: the firm chooses capacity before demand is realised. 
+
+3.2.2 Uncertainty model and training data 
+
+Baron et al. model demand as ˜ξjt = ¯ξj (1 + εjt ) with a deterministic growth schedule for the uncertainty-band half-width, 
+
+ε0 = 0 , εt = γ + (1 − γ) εt−1, γ = 0 .15 (59) (giving ε1 = 0 .15 , ε19 ≈ 0.95 ), and a per-period per-node box U Bjt = ¯ξj [1 − εt, 1 + εt]. Since the allocation Xijt ≥ 0, the worst case of production constraint (54) at (i, t ) is attained analytically at ¯ξj (1 + εt), so the N T production worst-cases reduce to closed-form linear constraints in a single master solve. Baron’s ellipsoid counterpart admits an analogous SOC form. We replace Baron’s box spatial geometry with a learned set ˆξt = Gθ(zt) where zt ∈ Z (γt) is constrained to a ball of radius γt. The decoder output is the demand directly, so no εt mixing with nominal is needed. The per-period latent radius is computed from Baron’s schedule via the single mapping γt = Φ −1((1 + min( εt, ε cap )) /2). Here εt plays the role of the marginal coverage parameter in eq. (9), capped at εcap so that γt stays within a bounded radius. The T = 20 
+
+experiment uses εcap = 0 .75 (γmax ≈ 1.15 ). At T = 5 no cap binds and γ0 = 0 , γ4 ≈ 0.64 .
+
+Remark 5 (Per-period latent ball) . The schedule {γt}T −1 
+
+> t=0
+
+is computed once from Baron’s {εt}
+
+at oracle construction time and stored in the oracle. Period t = 0 has zero radius ( γ0 = 0 ): the latent ball reduces to the single point z = 0, which decodes to the nominal demand, so there is no worst case to search and the oracle evaluates the constraint at that point directly, without building a MISOCP. OBBT (Section 2.7.1) runs once at the widest radius γT −1 (∼124 s for the FL decoder) so the tightened Big-M bounds are valid for every (i, t ) query. Individual queries at smaller γt solve faster because the ball contracts but the bounds do not loosen. 
+
+The decoder is trained on a multimodal demand distribution that replaces Baron’s uniform 
+
+±εt box perturbation. For each scenario and independently for each node j, a regime is drawn from a three-component categorical distribution and the demand ξj is then sampled from a truncated Gaussian conditional on the chosen regime: 
+
+• Low: μ = 0 .7 ¯ξj , σ = 0 .05 ¯ξj , weight = 0 .3.
+
+• Normal: μ = 1 .0 ¯ξj , σ = 0 .10 ¯ξj , weight = 0 .4.
+
+• High: μ = 1 .3 ¯ξj , σ = 0 .15 ¯ξj , weight = 0 .3.Drawing the regime per node induces a joint distribution with 3N modes (Section 2.5). This multimodal spatial structure is what a box or ellipsoid cannot capture, motivating the learned decoder set used here. The decoder is trained using the (P4) procedure of Section 2.6, with two FL-specific ad-aptations. First, feasible decisions are generated by opening a random subset of facilities, deterministically allocating each demand node to its nearest open facility (one-hot Xij ), set-ting Zit = ∑ 
+
+> j
+
+¯ξj Xij , and installing capacity Zi0 = max t Zit · (1 + si) with per-facility slack 
+
+si ∼ U [0 , 1.5] . The utilisation of facility i is then ui = max t Zit /Z i0 = 1 /(1 + si), its peak production as a fraction of installed capacity (the FL analogue of the PP budget utilisation). 36 Decisions with max i ui < u min = 0 .60 are discarded, keeping the training set near the capa-city boundary, where demand can plausibly exceed capacity and the Point-4 violation signal is informative. Second, although the problem has N × T production constraints, two properties of our training data reduce the violation to a per-facility quantity: the training scenarios ξ(s) ∈ RN ,each a demand vector over the N nodes indexed by scenario s, are period-agnostic patterns (temporal growth enters only at oracle time via γt), and the sampler uses Xijt = Xij and Zi0
+
+time-invariant by construction. Under these conditions the per-(i, t ) violation is independent of 
+
+t, so we work with the per-facility 
+
+gi(x, ξ) = max 
+
+> (
+
+0, 
+
+> ∑Nj=1
+
+Xij ξj − Zi0
+
+Zi0
+
+> )
+
+(60) matching the multi-constraint vector form of Section 2.6 (eq. (43)) with N components and violation data of shape (K, S, N ) instead of (K, S, N, T ). The (P4) Constraint-consistency loss of Section 2.6 is applied elementwise across the N facilities. Pairs are flagged as infeasibility-inducing when max i gi > ϵ vio = 10 −4. The profit bound (53) is tracked diagnostically but, being effectively always satisfied in our parameter regime, contributes no training signal. 
+
+3.2.3 Algorithm 3 specialisation 
+
+The FL case specialises Algorithm 3 in three ways. First, the latent radius γt schedules with the period, so the constraint set C = {(i, t )} has |C| = N T and each outer iteration queries up to N T 
+
+oracles rather than one. Second, within each period only facilities with I∗ 
+
+> i
+
+= 1 in the current master solution require an oracle (active-facility pruning). Third, each per-(i, t ) exact oracle is a MISOCP rather than a pure MILP because the latent constraint is a ball. The decoder oracle for constraint (i, t ) searches the latent ball Z(γt) for the demand realisation maximising the overload, 
+
+v∗ 
+
+> it
+
+= max 
+
+> zt∈Z (γt)
+> N∑
+> j=1
+
+Gθ(zt)j X∗ 
+
+> ijt
+
+− Z∗ 
+
+> it
+
+(61) which is a MISOCP over the composed decoder h◦b (Section 2.7.1) with dz = 15 latent variables, 
+
+587 hidden ReLU neurons, and one convex quadratic ball constraint ∥zt∥2 ≤ γt. The feasibility check of Section 2.7.2 is applied per (i, t ) before the exact MISOCP is solved (Section 3.2.4 characterises the screen’s prune rate on this geometry). The feasibility cut added to the master at each violated (i, t ) is the per-period production cut ∑ 
+
+> j
+
+ˆξjt Xijt ≤ Zit , where ˆξjt = Gθ(z∗ 
+
+> t
+
+)j is the worst-case demand returned by the oracle eq. (61). 
+
+3.2.4 Results and computational cost 
+
+All three methods share the deterministic temporal growth of eq. (59) but parameterise the spatial geometry differently (Table 8): Box treats nodes independently and Ellipsoid captures linear correlations, while the decoder is the only one capturing nonlinear multimodal spatial structure and the only one without a closed-form worst case, so it alone calls a MISOCP oracle per (i, t ). This added spatial expressiveness is what the profit comparison below isolates. 37 Table 8: Structural comparison of uncertainty models for robust facility location.                     
+
+> Method Spatial Temporal Multimodal Oracles/iter
+> Box Independent εtschedule No 0 (analytical) Ellipsoid Joint (linear) εtschedule No 0 (analytical) Decoder (ours) Joint (learned) γt(εt)Yes ≤N T MISOCPs
+
+Table 9: Facility location, T = 20 : WAAE-GMM-RO decoder vs. nominal LP vs. Baron’s box counterpart.                  
+
+> Method τ(profit) Facilities open Iterations Wall-clock Nominal LP 4,694 ,256 11 1 (no oracle) —Box (Baron) 705 ,952 41 (analytical) —WAAE-GMM-RO–MISOCP (ours) 4,555 ,060 11 610.4 h (6-worker parallel)
+
+On the full Baron T = 20 , N = 15 instance, the parallel cutting-plane driver is applied to the FL decoder (WAAE-GMM-RO, dz = 15 , K = 12 GMM components, ball latent constraint, 
+
+εcap = 0 .75 , γmax ≈ 1.15 ). Table 9 compares it against the nominal LP and Baron’s box counterpart. Only WAAE-GMM-RO satisfies all five points (Table 5) and is therefore the only model embeddable here as an exact MISOCP. The decoder set recovers 97 .0% of the nominal optimum, while Baron’s box counterpart reaches only 15 .0% , a 6.4× profit gap. The cutting-plane loop converges in six iterations, the number of violating (i, t ) pairs falling 208 → 101 → 52 → 15 → 1 → 0. The per-iteration MISOCP cost is analysed below. The learned multimodal set therefore protects against the same demand realisations the box guards against while shedding the spatial over-conservatism behind the box’s profit loss. The strategic decisions diverge (Fig. 9): the decoder opens the same eleven facilities as Nominal and sizes each ∼25% larger, whereas Box consolidates into only four, each ∼4× the nominal-LP’s average per-facility capacity (largest is f2 at 166 k vs. nominal max 43 k). The decoder instead spreads its additional capacity across all eleven sites, which is why it pays no comparable profit penalty. The T = 20 instance has N T = 300 production constraints in total. Period t = 0 is deterministic (Remark 5), leaving up to N (T − 1) = 285 stochastic constraints, and active-facility pruning further reduces this to 11 × 19 = 209 MISOCPs dispatched per outer iteration in our run. The per-iteration MISOCP count dominates wall-clock: the convex LP feasibility screen (Section 2.7.2) prunes few queries on the FL geometry, so every outer iteration solves essentially all 209 , even the final one that adds no cut, for ∼1,254 MISOCPs in total ( 6 × 209 ). MISOCP solve time scales with the latent radius: the small early-period balls solve in seconds, while the widest radii hit the 300 s solver limit, averaging ∼180 s overall. Aggregate wall-clock is reported in Table 9, with one-off OBBT preprocessing of ∼124 s amortised across all queries. The T = 5 instance is an order of magnitude cheaper ( N (T − 1) = 60 stochastic constraints, 
+
+γt ∈ [0 , 0.64] , ∼11 min per outer iteration sequentially). Tighter LP screening or MISOCP warm-start strategies are open directions for reducing wall-clock without sacrificing exactness. At the months-to-years strategic-planning horizon, however, the current solution times are well within practical budgets. 38 Figure 9: Facility-location spatial decisions on the Baron 15-node instance ( T = 20 ). Columns left to right: Nominal LP (purple), Box (Baron, blue), and WAAE-GMM-RO (red). Top: 2D node layout with open facilities sized by √Zi0 (area ∝ Zi0), each panel annotated with its open count, total capacity, and profit τ . Bottom: installed capacity Zi0 per open facility on a shared 
+
+y-axis. 
+
+# 4 Conclusions 
+
+This paper develops Generative Robust Optimisation (GRO), a framework for robust optimisa-tion based on encoder–decoder neural networks. We propose a five-point evaluation framework (reconstruction fidelity, distribution matching, latent regularity, robust relevance, computational tractability) that identifies the jointly necessary conditions any generative model must satisfy to serve as a reliable uncertainty set, and we instantiate an architecture, WAAE-GMM-RO, that satisfies all five points simultaneously through a PCA-preprocessed Wasserstein adversarial au-toencoder, a Gaussian-mixture-guided latent regulariser, a constraint-consistency Point-4 loss, and a single-pass ReLU decoder. The trained decoder is integrated into an exact mixed-integer worst-case oracle via OMLT with optimality-based bound tightening, and embedded in a paral-lel GRO cutting-plane algorithm. Numerical experiments on a six-period production planning problem and a multi-period robust facility location problem demonstrate that the framework reproduces analytical SOCP ground truth on Gaussian data within ±0.5% , yields more data-adaptive and less conservative uncertainty sets than the fixed geometric counterparts on the non-Gaussian distributions, where no analytical reference is available to calibrate conservatism exactly, and recovers 97% of the nominal optimum in a T = 20 facility location instance where Baron’s box counterpart reaches only 15% .Beyond the specific results above, the framework offers two structural advantages. First, the decoder is shape-adaptive: a single ReLU MLP trained on data captures heavy-tailed, skewed, 39 multimodal, and correlated structure that no fixed geometric primitive (box, ellipsoid, polyhed-ron) can express in one shape, removing the need for problem-specific set engineering. Second, the calibration procedure is uniform: each uncertainty set is the image under the decoder of a calibrated latent set Z (a ball or box) in N (0, I), so a single coverage level controls conservatism across all six production-planning distributions and the facility-location instance, replacing the per-problem derivations that fixed geometric counterparts require. Because the decoder is a learned distribution-to-distribution mapping, the trained model also serves as a portable com-putational primitive: exported as a single ONNX block, it is reusable without retraining across stochastic programming (by direct N (0, I) sampling), scenario generation, and distributionally robust counterparts whose ambiguity geometry inherits the decoder’s shape rather than being prescribed in data space. Future work includes more efficient and expressive distribution-mapping architectures that preserve (P5) tractability, faster worst-case oracles through tighter feasibility screens and MISOCP warm-starts, and extensions to higher-dimensional uncertainty and to multi-stage robust optim-isation with recourse. 
+
+# Data Availability 
+
+The data underlying this article will be shared on reasonable request to the corresponding author. 
+
+# Acknowledgments 
+
+Financial support from EPSRC grant EP/W003317/1 (ADOPT) and UCL’s Research Excellence Scholarship is gratefully acknowledged. 
+
+# A Proofs 
+
+A.1 Proof of Proposition 1 
+
+We prove the contrapositive in each case, under Assumptions 1–3. 
+
+Necessity of (P1) for (I). By Assumptions 1 and 2, coverage is certified through the ca-nonical encoder path and required on each marginal j: a p-fraction of P ∗ must be both cap-tured by Z through fϕ and returned by Gθ to within the reconstruction tolerance τ . Write 
+
+Rj = {ξ : |ξj − Gθ(fϕ(ξ)) j | ≤ τ } for the within-tolerance return set on marginal j. The return leg of (I) is Pr P ∗ (Rj ) ≥ p for every j. If (P1) fails, so that on some marginal j the reconstruction keeps fewer than a p-fraction within tolerance, then Pr P ∗ (Rj ) < p and (I) fails on that marginal. Faithful reconstruction (P1) is therefore necessary for (I). 
+
+Necessity of (P2) for (I). Requirement (I) is coverage of the true P ∗, whereas the latent set Z is calibrated against the model’s own generated law Gθ#N , the distribution the calib-ration of Section 2.2.1 actually sees. Treating the decoded set Gθ(Z) as covering a p-fraction 40 of P ∗ is the inheritance premise of that calibration. (P2) carries this certified coverage from 
+
+Gθ#N to P ∗: any fixed region is assigned masses by P ∗ and by Gθ#N that differ by at most 
+
+TV( P ∗, G θ#N ), so the level-p coverage the calibration certifies under Gθ#N transfers to P ∗
+
+only up to TV( P ∗, G θ#N ). A (P2) failure TV( P ∗, G θ#N ) = δ2 > 0 degrades the guaranteed 
+
+P ∗-coverage by up to δ2 and removes the level-p certificate the premise needs. The bound is one-sided: (P2) failure removes the certificate rather than forcing realised coverage below p.
+
+Necessity of (P3) for (I). (P3) failure means q(z)̸ = N (0, I) on some marginal j, so 
+
+dKS (qj , N (0 , 1)) > 0. By Theorem 1, |Cj (p) − p| ≤ 2 dKS (qj , N (0 , 1)) . In the variance-inflation regime σj > 1, the shift-and-scale corollary (Corollary 2) gives coverage strictly below the level 
+
+p, Cj (p) = 2Φ( γmarg /σ j ) − 1 < p , so Z captures less than a p-fraction of the encoded data on marginal j and (I) fails. Two other deviation classes do not break (I): a deflation σj < 1 gives coverage above p, and by the converse of Theorem 1 even-symmetric deviations can preserve 
+
+Cj (p) = p. (P3) is therefore necessary for (I) against the variance-inflation class. 
+
+Necessity of (P4) for (III). Define (P4) failure by the signed mean gap ¯vgen − ¯vref =
+
+K−1
+
+> pool
+
+∑
+
+> k
+
+(vgen (xk) − vref (xk)) < 0. Then at least one pool decision xk has vgen (xk) < v ref (xk),which negates (III). By Assumption 3, vref (xk) > 0, so this is a genuine underestimation: the oracle can return vgen (xk) ≤ 0 and certify xk robust-feasible while vref (xk) > 0 exposes a training scenario ξ(n) ∼ P ∗ with g(xk, ξ(n)) > 0.
+
+Necessity of (P5) for (II). Sub-case A (smooth activations): by Lemma 1 no exact MILP encoding exists, so the oracle falls outside class (II). Sub-case B (multi-step depth): for Gθ =
+
+fT ◦ · · · ◦ f1 with T ≫ 1, where layer ft admits a tight Big-M ReLU encoding with bt binaries, the standard compositional encoding uses ∑ 
+
+> t
+
+bt binaries, an order of magnitude beyond the single-pass case for moderate T and outside the per-query regime reported in Table 7. □
+
+A.2 Proof of Theorem 1 
+
+Fix j and p. Let Fj (t) = Pr zj ∼qj (zj ≤ t), Φ the standard normal CDF, and γmarg = Φ −1((1 + 
+
+p)/2) .
+
+Identity under qj = N (0 , 1) . Cj (p) = Φ( γmarg ) − Φ( −γmarg ) = 2Φ( γmarg ) − 1 = p, using 
+
+Φ( −x) = 1 − Φ( x) and the definition of γmarg .
+
+KS bound. Cj (p) − p = [ Fj (γmarg ) − Φ( γmarg )] − [Fj (−γmarg ) − Φ( −γmarg )] . Bounding each of the two bracketed terms by sup t |Fj (t) − Φ( t)| = dKS (qj , N (0 , 1)) and adding gives eq. (27). 
+
+Converse fails. Take Fj (t) = Φ( t) + ϵ t 2e−t2
+
+. Since t2e−t2
+
+vanishes at ±∞ , Fj (−∞ ) = 0 
+
+and Fj (+ ∞) = 1 . Equivalently, the density perturbation ϵ ddt (t2e−t2
+
+) integrates to zero. The perturbed density ϕ(t)+ ϵ ddt (t2e−t2
+
+) is non-negative for |ϵ| below a positive threshold, because the perturbation-to-ϕ ratio is bounded on R. Hence Fj is a monotone, proper CDF. The perturbation is even, so Fj (γmarg ) − Fj (−γmarg ) = Φ( γmarg ) − Φ( −γmarg ), giving Cj (p) = p for every p while 
+
+qj is not Gaussian. □
+
+Corollary 2 (Shift-and-scale deviation) . If qj = N (μj , σ 2 
+
+> j
+
+), then Cj (p) = Φ(( γmarg − μj )/σ j ) −
+
+Φ(( −γmarg − μj )/σ j ). Pure variance deviation μj = 0 , σ j > 1 gives Cj (p) = 2Φ( γmarg /σ j ) − 1 <
+
+41 p (coverage below p), whereas σj < 1 gives coverage above p. Pure shift ( σj = 1 ) gives |Cj (p) − p|
+
+increasing in |μj |.Proof. For qj = N (μj , σ 2 
+
+> j
+
+) the CDF is Fj (t) = Φ(( t − μj )/σ j ). Substituting into Cj (p) = 
+
+Fj (γmarg ) − Fj (−γmarg ) gives the stated expression. With μj = 0 it reduces to 2Φ( γmarg /σ j ) − 1.Since Φ is strictly increasing and γmarg > 0, this is below 2Φ( γmarg ) − 1 = p when σj > 1 and above it when σj < 1. For σj = 1 , by the symmetry and unimodality of the normal density the captured mass Cj (p) over the fixed interval [−γmarg , γ marg ] is maximised at μj = 0 and decreases as |μj | grows, so |Cj (p) − p| increases in |μj |. □
+
+A.3 Proof of Lemma 1 
+
+Step 1. A mixed-integer linear formulation of Γf = {(ζ, η) : η = f (ζ)} represents Γf as the projection onto (ζ, η) of the feasible region of a finite linear system with continuous auxiliaries 
+
+u ∈ Rq and binaries a ∈ { 0, 1}b [Anderson et al., 2020, Definition 1]. 
+
+Step 2. For each fixed a = a(ℓ) the system reduces to a polyhedron Pℓ in (ζ, η, u). Projecting out the continuous auxiliaries u while retaining (ζ, η) gives a polyhedron Qℓ, and Γf = ⋃ 
+
+> ℓ
+
+Qℓ.On the common refinement of the ζ-images proj ζ Qℓ by their active-constraint sets (finitely many full-dimensional cells) the active set is constant and the binding equalities express η as an affine function of ζ, single-valued since f is a function. 
+
+Step 3. The refined cells are finite (at most 2b binary assignments, each refined into finitely many active sets) and cover Rn since f is total, so f is affine cell-by-cell on a finite polyhedral subdivision of Rn.
+
+Step 4. A real-analytic g : Rn → Rm that agrees with an affine map on a non-empty open subset O ⊆ Rn agrees with it on all of Rn: the difference ψ is real-analytic and vanishes on 
+
+O, so ψ and all its partial derivatives vanish throughout O. The set on which ψ and all its partial derivatives vanish is closed by continuity and open by analyticity (there ψ equals its identically-zero Taylor series locally), hence all of Rn by connectedness, and ψ ≡ 0.
+
+Step 5. For the activations of interest ( tanh , σ, exp , sin , cos ) the scalar map ϕ is real-analytic on all of R, so f is real-analytic on Rn. Were f affine on a full-dimensional cell of Step 3 (a non-empty open set), Step 4 would force f to be affine on all of Rn, contradicting that the analytic activation is a non-degenerate component (it influences f on a set of positive Lebesgue measure, so f is not globally affine). Hence f is non-affine on every full-dimensional cell on which the component is active. By Step 3, f is then not piecewise-affine on any finite polyhedral subdivision, so no exact MILP encoding exists and an exact reformulation requires nonlinear (MINLP) constraints. Piecewise-affine activations such as ReLU instead admit exact Big-M encodings [Tjeng et al., 2019, Eq. 6]. □
+
+A.4 Proof of Corollary 1 
+
+Fix j. By hypotheses (i) and (ii), q(zj ) = ∑Kk=1 πk N (μzk,j , v zk,j ). Linearity of the integral over a finite sum gives, for any m ≥ 0, Eq(zj )[zmj ] = ∑ 
+
+> k
+
+πk EN (μzk,j ,v zk,j )[zmj ]. For Z ∼ N (μ, v ), E[Z] = μ,
+
+E[Z2] = v+μ2, E[Z3] = μ3+3 μv , E[Z4] = μ4+6 μ2v+3 v2. Substituting yields the four aggregated moments M1,j , . . . , M 4,j of eq. (36). Since Lcomp = 1
+
+> nz
+> ∑nz
+> j=1
+
+(M 21,j +( M2,j −1) 2+M 23,j +( M4,j −3) 2)
+
+42 is a sum of non-negative squares, Lcomp = 0 forces M1,j = 0 , M2,j = 1 , M3,j = 0 , M4,j = 3 , the first four moments of N (0 , 1) . □
+
+# References 
+
+Ross Anderson, Joey Huchette, Will Ma, Christian Tjandraatmadja, and Juan Pablo Vielma. Strong mixed-integer programming formulations for trained neural networks. Mathematical Programming , 183(1):3–39, 2020. doi: 10.1007/s10107-020-01474-5. Panagiotis Andrianesis, Dimitris Bertsimas, Thodoris Koukouvinos, and Angelos Georgios Koulouras. Ensembling wind forecasting models to construct data-driven uncertainty sets in robust optimization. In IEEE Power & Energy Society General Meeting (PESGM) , 2024. Anastasios N. Angelopoulos and Stephen Bates. Conformal prediction: A gentle introduction. 
+
+Foundations and Trends in Machine Learning , 16(4):494–591, 2023. doi: 10.1561/2200000101. Opher Baron, Joseph Milner, and Hussein Naseraldin. Facility location: A robust optimization approach. Production and Operations Management , 20(5):772–785, 2011. doi: 10.1111/j. 1937-5956.2010.01194.x. Aharon Ben-Tal and Arkadi Nemirovski. Robust convex optimization. Mathematics of Opera-tions Research , 23(4):769–805, 1998. Aharon Ben-Tal and Arkadi Nemirovski. Robust solutions of uncertain linear programs. Oper-ations Research Letters , 25(1):1–13, 1999. doi: 10.1016/S0167-6377(99)00016-4. Aharon Ben-Tal, Laurent El Ghaoui, and Arkadi Nemirovski. Robust Optimization . Princeton University Press, 2009. Dimitris Bertsimas and Melvyn Sim. The price of robustness. Operations Research , 52(1):35–53, 2004. Dimitris Bertsimas, David B. Brown, and Constantine Caramanis. Theory and applications of robust optimization. SIAM Review , 53(3):464–501, 2011. Dimitris Bertsimas, Vishal Gupta, and Nathan Kallus. Data-driven robust optimization. Math-ematical Programming , 167:235–292, 2018. Samuel R. Bowman, Luke Vilnis, Oriol Vinyals, Andrew M. Dai, Rafal Jozefowicz, and Samy Bengio. Generating sentences from a continuous space. In Proceedings of the 20th SIGNLL Conference on Computational Natural Language Learning (CoNLL) , pages 10–21, 2016. Aron Brenner, Rahman Khorramfar, Jennifer Sun, and Saurabh Amin. A deep generative learning approach for two-stage adaptive robust optimization. In International Conference on Learning Representations (ICLR) , 2025. Francesco Ceccon, Jordan Jalving, Joshua Haddad, Alexander Thebelt, Calvin Tsay, Carl D. Laird, and Ruth Misener. OMLT: Optimization & Machine Learning Toolkit. Journal of Machine Learning Research , 23(349):1–8, 2022. 43 Abhilash Reddy Chenreddy, Nymisha Bandi, and Erick Delage. Data-driven conditional robust optimization. In Advances in Neural Information Processing Systems (NeurIPS) , 2022. Arthur P. Dempster, Nan M. Laird, and Donald B. Rubin. Maximum likelihood from incomplete data via the EM algorithm. Journal of the Royal Statistical Society: Series B , 39(1):1–38, 1977. Nat Dilokthanakul, Pedro A. M. Mediano, Marta Garnelo, Matthew C. H. Lee, Hugh Salimbeni, Kai Arulkumaran, and Murray Shanahan. Deep unsupervised clustering with Gaussian mix-ture variational autoencoders. Preprint, arXiv:1611.02648 , 2016. URL https://arxiv.org/ abs/1611.02648 .Jamie Fairbrother, Amanda Turner, and Stein W. Wallace. Problem-driven scenario genera-tion: an analytical approach for stochastic programs with tail risk measure. Mathematical Programming , 191(1):141–182, 2022. doi: 10.1007/s10107-019-01451-7. Rui Gao, Xi Chen, and Anton J. Kleywegt. Wasserstein distributionally robust optimization and variation regularization. Operations Research , 72(3):1177–1191, 2024. doi: 10.1287/opre. 2022.2383. Marc Goerigk and Jannis Kurtz. Data-driven robust optimization using deep neural networks. 
+
+Computers & Operations Research , 151:106087, 2023. Ian J. Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, and Yoshua Bengio. Generative adversarial nets. In Advances in Neural Information Processing Systems (NeurIPS) , 2014. Ishaan Gulrajani, Faruk Ahmed, Martin Arjovsky, Vincent Dumoulin, and Aaron Courville. Im-proved training of Wasserstein GANs. In Advances in Neural Information Processing Systems (NeurIPS) , 2017. Gurobi Optimization, LLC. Gurobi Optimizer Reference Manual , 2024. URL https://www. gurobi.com .Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. In Ad-vances in Neural Information Processing Systems (NeurIPS) , 2020. L. Jeff Hong, Zhiyuan Huang, and Henry Lam. Learning-based robust optimization: Procedures and statistical guarantees. Management Science , 67(6):3447–3467, 2021. doi: 10.1287/mnsc. 2020.3640. Zhuxi Jiang, Yin Zheng, Huachun Tan, Bangsheng Tang, and Hanning Zhou. Variational deep embedding: An unsupervised and generative approach to clustering. In Proceedings of the Twenty-Sixth International Joint Conference on Artificial Intelligence (IJCAI-17) , pages 1965–1972, 2017. doi: 10.24963/ijcai.2017/273. Sanjula Kammammettu, Shu-Bo Yang, and Zukui Li. Distributionally robust optimization using optimal transport for Gaussian mixture models. Optimization and Engineering , 25(3):1571– 1596, 2024. doi: 10.1007/s11081-023-09856-2. 44 Diederik P. Kingma and Max Welling. Auto-encoding variational Bayes. In International Con-ference on Learning Representations (ICLR) , 2014. Daniel Kuhn, Peyman Mohajerin Esfahani, Viet Anh Nguyen, and Soroosh Shafieezadeh-Abadeh. Wasserstein distributionally robust optimization: Theory and applications in ma-chine learning. In INFORMS Tutorials in Operations Research , pages 130–166. INFORMS, 2019. Daniel Kuhn, Soroosh Shafiee, and Wolfram Wiesemann. Distributionally robust optimization. 
+
+Acta Numerica , 34:579–804, 2025. doi: 10.1017/S0962492924000084. Zukui Li, Qiuhua Tang, and Christodoulos A. Floudas. A comparative theoretical and compu-tational study on robust counterpart optimization: II. Probabilistic guarantees on constraint satisfaction. Industrial & Engineering Chemistry Research , 51(19):6769–6788, 2012. doi: 10.1021/ie201651s. Benoît Loger, Alexandre Dolgui, Fabien Lehuédé, and Guillaume Massonnet. Approximate kernel learning uncertainty set for robust combinatorial optimization. INFORMS Journal on Computing , 36(3):900–917, 2024. doi: 10.1287/ijoc.2022.0330. Weiguo Lu, Deng Ding, Fengyan Wu, and Gangnan Yuan. An efficient Gaussian mixture model and its application to neural networks. Knowledge-Based Systems , 310:112942, 2025. doi: 10.1016/j.knosys.2024.112942. Yulong Lu and Jianfeng Lu. A universal approximation theorem of deep neural networks for expressing probability distributions. In Advances in Neural Information Processing Systems (NeurIPS) , 2020. Alireza Makhzani, Jonathon Shlens, Navdeep Jaitly, Ian Goodfellow, and Brendan Frey. Ad-versarial autoencoders. In International Conference on Learning Representations (ICLR) Workshop , 2016. Asimina Marousi and Vassilis M. Charitopoulos. Global robust optimisation for non-convex quadratic programs: Application to pooling problems. Systems and Control Transactions , 4: 1592–1597, 2025. doi: 10.69997/sct.168949. Peyman Mohajerin Esfahani and Daniel Kuhn. Data-driven distributionally robust optimiz-ation using the Wasserstein metric: performance guarantees and tractable reformulations. 
+
+Mathematical Programming , 171(1):115–166, 2018. doi: 10.1007/s10107-017-1172-1. George Papamakarios, Eric Nalisnick, Danilo Jimenez Rezende, Shakir Mohamed, and Balaji Lakshminarayanan. Normalizing flows for probabilistic modeling and inference. Journal of Machine Learning Research , 22(57):1–64, 2021. A. Ravi Ravindran, editor. Operations Research Methodologies . CRC Press, Boca Raton, FL, 2008. ISBN 9781420091823. Danilo Jimenez Rezende and Fabio Viola. Taming VAEs. arXiv:1810.00597 , 2018. 45 Allen L. Soyster. Technical note—convex programming with set-inclusive constraints and ap-plications to inexact linear programming. Operations Research , 21(5):1154–1157, 1973. Akylas Stratigakos and Panagiotis Andrianesis. Learning data-driven uncertainty set par-titions for robust and adaptive energy forecasting with missing data. arXiv preprint arXiv:2503.20410 , 2025. Vincent Tjeng, Kai Y. Xiao, and Russ Tedrake. Evaluating robustness of neural networks with mixed integer programming. In International Conference on Learning Representations (ICLR) , 2019. Ilya Tolstikhin, Olivier Bousquet, Sylvain Gelly, and Bernhard Schölkopf. Wasserstein auto-encoders. In International Conference on Learning Representations (ICLR) , 2018. Jakub M. Tomczak and Max Welling. VAE with a VampPrior. In AISTATS , pages 1214–1223, 2018. Wolfram Wiesemann, Daniel Kuhn, and Melvyn Sim. Distributionally robust convex optimiza-tion. Operations Research , 62(6):1358–1376, 2014. doi: 10.1287/opre.2014.1314. Chen Xu, Jonghyeok Lee, Xiuyuan Cheng, and Yao Xie. Flow-based distributionally robust optimization. IEEE Journal on Selected Areas in Information Theory , 5:62–77, 2024. doi: 10.1109/JSAIT.2024.3370699. 46

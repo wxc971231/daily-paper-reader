@@ -6,36 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-23
-- 运行时间：2026-06-23 19:35:31 UTC
+- 最新运行日期：2026-06-24
+- 运行时间：2026-06-24 19:11:45 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：1
-- 速读区：3
+- 本次总论文数：3
+- 精读区：2
+- 速读区：1
 
 ### 今日简报（AI）
-今日精读高影响力论文《GRIMIP》，用LLM为MIP求解器实现实例级自动调参，另速读三篇涉及编译器调优、航天任务调度和DSL代码生成。
-
-最推荐《GRIMIP》（9分）和《Text2DSL》（7分），前者开创了LLM定制求解器配置的新范式，后者展示了用自然语言生成领域特定代码的实用路径。
-
-建议普通读者优先阅读《GRIMIP》理解LLM如何与经典优化算法结合，后续可关注《AutoPass》中证据引导的智能体设计。
-- 详情：[/202606/23/README](/202606/23/README)
+今日精选2篇高分论文，分别研究强化学习改进大语言模型代码合规系统及生成式鲁棒优化。最值得关注的方向是利用强化学习提升自动化代码合规的准确性，以及生成式方法在优化问题中的鲁棒性。建议后续可深入探索强化学习在代码合规中的实际部署，并参考决策聚焦学习中传统预测模型的失败原因。
+- 详情：[/202606/24/README](/202606/24/README)
 
 ### 精读区论文标签
-1. [GRIMIP: A General Framework for Instance-Specific Configuration of MIP Solvers Using LLMs](/202606/23/2606.23299v1-grimip-a-general-framework-for-instance-specific-configuration-of-mip-solvers-using-llms)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：利用大语言模型为混合整数规划求解器进行实例特定配置
+1. [Reinforcement learning to improve large language model-based automated code compliance systems](/202606/24/2606.22402v1-reinforcement-learning-to-improve-large-language-model-based-automated-code-compliance-systems)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：基于LLM的合规代码生成与强化学习优化
+2. [Generative Robust Optimisation](/202606/24/2606.22536v1-generative-robust-optimisation)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：提出生成式鲁棒优化框架，用深度生成模型定义不确定集
 
 ### 速读区论文标签
-1. [AutoPass: Evidence-Guided LLM Agents for Compiler Performance Tuning](/202606/23/2606.20373v1-autopass-evidence-guided-llm-agents-for-compiler-performance-tuning)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：大语言模型智能体用于编译器性能调优，涉及代码优化生成
-2. [Deep RL for Fast Long-Horizon Operations Scheduling on NASA's Carruthers Geocorona Observatory Mission](/202606/23/2606.22159v1-deep-rl-for-fast-long-horizon-operations-scheduling-on-nasas-carruthers-geocorona-observatory-mission)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：深度强化学习求解航天器任务调度这一组合优化问题
-3. [Text2DSL: LLM-Based Code Generation for Domain-Specific Languages](/202606/23/2606.22586v1-text2dsl-llm-based-code-generation-for-domain-specific-languages)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：基于LLM的DSL代码生成
+1. [Decision-Focused Learning: When and Why Traditional Prediction Models Fail](/202606/24/2606.21773v1-decision-focused-learning-when-and-why-traditional-prediction-models-fail)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：关于决策聚焦学习的教程，涉及预测-优化运筹学问题建模
 
 
 <div class="dpr-home-promo-card">
