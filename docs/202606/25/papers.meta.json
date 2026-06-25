@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-25",
+  "date": "2026-06-25",
+  "generated_at": "2026-06-25T19:54:02",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/25/2606.22978v1-joint-air-traffic-flow-and-capacity-management-via-answer-set-programming",
+      "section": "deep",
+      "title_en": "Joint Air Traffic Flow and Capacity Management via Answer Set Programming",
+      "authors": "Alexander Beiser, Markus Hecher, Nysret Musliu, Stefan Woltran",
+      "date": "2026-06-22",
+      "pdf": "https://arxiv.org/pdf/2606.22978v1",
+      "score": "9.0",
+      "evidence": "使用ASP对空中交通流量管理进行运筹问题建模",
+      "tldr": "空中交通流量与容量管理（ATFCM）需平衡航班需求与扇区容量，现有研究分别优化航迹（ATFM）或扇区配置（DAC），缺乏联合考虑。本文提出基于回答集编程（ASP）的联合ATFCM模型，实验显示ASP性能优于混合整数规划（MIP），在小实例上与启发式算法相当。DAC对求解效率提升最大，但无限制变体易导致搜索空间震荡。该工作填补了联合优化空白，为ATFCM提供了高效求解新方案。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Operational Air Traffic Flow and Capacity Management (ATFCM) balances flight demand with available sector capacity, to ensure safe and efficient operations. Mathematical models enhance operational ATFCM performance by framing demand-capacity balancing as an optimization problem, maximizing efficiency while adhering to safety constraints. However, SOTA research optimizes the aircraft trajectories (called ATFM) or the sector configuration (called DAC) separately. This leaves a research gap of whether joint optimization of ATFM and DAC can bring benefits. We partially address this limitation by introducing a joint ATFCM model with an encoding in Answer Set Programming (ASP). The ASP implementation is evaluated against two baselines applied to our joint model: a SOTA Mixed Integer Programming (MIP) model and an iterative CASA-based heuristic. Computational experiments utilize an instance generator fitted to historical OpenSky Network flight data. Our results indicate that the ASP model outperforms the MIP model, while ASP remains competitive against heuristics on small instances. Furthermore, while DAC has the largest improvement on solving performance compared to rerouting and delaying, unrestricted variants of DAC or rerouting lead to search space thrashing.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/25/2606.25832v1-miniopt-reasoning-to-model-and-solve-general-optimization-problems-with-limited-resources",
+      "section": "deep",
+      "title_en": "MiniOpt: Reasoning to Model and Solve General Optimization Problems with Limited Resources",
+      "authors": "Ke Zhao, Zixiang Di, Hong Qian, Xiang Shu, Yaolin Wen, Qitao Shi, Bingdong Li, Xingyu Lu, Xiangfeng Wang, Jun Zhou, Ke Tang, Yang Yu",
+      "date": "2026-06-24",
+      "pdf": "https://arxiv.org/pdf/2606.25832v1",
+      "score": "9.0",
+      "evidence": "基于LLM推理建模并生成求解代码解决优化问题",
+      "tldr": "现有优化大语言模型依赖大规模监督数据和复杂推理标注，训练成本高昂。为此提出MiniOpt框架，采用“推理-建模-求解”范式，通过强化学习与OptReward分层奖励函数实现高效策略学习。MiniOpt-3B在多种优化问题中展现强泛化能力，在10B以下参数规模的模型中取得最高求解精度，为紧凑优化专用语言模型提供了有效方案。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Achieving strong optimization generalization across diverse optimization problems while requiring limited training resources remains a challenging problem for optimization-oriented large language models (LLMs). Existing approaches typically rely on large-scale supervised datasets, costly reasoning annotations, and expensive intermediate step verification, resulting in substantial training overhead. To address these challenges, we propose MiniOpt, a reinforcement learning framework that learns to solve optimization problems through an \"reasoning-to-model-and-solve\" paradigm. MiniOpt decomposes optimization reasoning into structured optimization modeling and executable solver generation. Building upon this paradigm, we introduce OptReward, a reward function with hierarchical score structure that jointly evaluates formulation and solution, enabling effective policy learning without expert demonstrations. We further develop an optimization-oriented policy optimization strategy that improves exploration efficiency and stabilizes reinforcement learning for compact models. Extensive experiments show that MiniOpt-3B exhibits strong optimization generalization across various optimization types, problem scenarios, and task domains. For models with fewer than 10B parameters, MiniOpt series achieves the highest average solving accuracy (SA). For models with more than 10B parameters, MiniOpt still shows competitive performance. These results suggest that optimization-oriented reward design and reinforcement learning provide an effective pathway for developing compact optimization-specialized language models with strong optimization generalization capabilities. The code is available at https://github.com/Hsiang-1/MiniOpt.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/25/2606.21440v1-fusing-backdoors-machine-learning-and-optimization-for-large-scale-parametric-mixed-integer-programs",
+      "section": "quick",
+      "title_en": "Fusing Backdoors, Machine Learning, and Optimization for Large-Scale Parametric Mixed-Integer Programs",
+      "authors": "El Mehdi Er Raqabi, Pascal Van Hentenryck",
+      "date": "2026-06-19",
+      "pdf": "https://arxiv.org/pdf/2606.21440v1",
+      "score": "7.0",
+      "evidence": "利用后门的大规模混合整数规划学习优化框架",
+      "tldr": "大规模混合整数规划在参数频繁变化时重复求解耗时巨大。本文提出BIPC框架，通过识别后门变量子集，训练ML模型预测其取值或区间，将原问题简化为子问题优化求解。在真实大规模问题上，求解时间大幅缩短（如减少50%以上），解质量损失有限。该框架将机器学习融入优化流水线，为参数扰动场景下的高效求解提供实用方案。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large-scale optimization problems are often solved repeatedly under similar structural conditions, leading to substantial computational overhead. This occurs in applications such as power systems, transportation, and supply chain networks, where the underlying structure is fixed while parameters frequently vary under perturbations.   This paper proposes a Learning to Optimize (LTO) framework that accelerates the solution of large-scale general mixed-integer problems by leveraging the concept of a backdoor, i.e., a subset of variables that drive most of the computational complexity. The proposed BIPC framework consists of three phases. Phase I is an identification procedure that discovers a backdoor for a set of instances in the distribution. Phase II uses supervised learning to develop machine learning models that, given an instance, predict values for bounded-domain backdoor variables and intervals for wide-domain backdoor variables. These predictions define a reduced optimization problem where the predictions constrain the backdoor variables, while the other variables remain free. Phase III optimizes this reduced problem and, if necessary, applies a correction step to restore feasibility or the optimality guarantees.   Experiments on real-world, large-scale problems show substantial reductions in solution time with only a limited loss in solution quality. The framework enables organizations to solve large-scale optimization problems efficiently in the presence of frequent perturbations, such as unexpected events, demand fluctuations, or operational changes. Because these changes affect parameters rather than the problem structure, BIPC can quickly provide high-quality, feasible solutions, offering a practical approach to integrating machine learning into existing optimization pipelines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/25/2606.23977v1-a-comparative-study-of-bayesian-contextual-bandits-for-real-time-warehouse-sorter-optimization",
+      "section": "quick",
+      "title_en": "A Comparative Study of Bayesian Contextual Bandits for Real-Time Warehouse Sorter Optimization",
+      "authors": "Tina Dongxu Li, Mouhacine Benosman, Ken Meszaros, Trevor Dardik",
+      "date": "2026-06-22",
+      "pdf": "https://arxiv.org/pdf/2606.23977v1",
+      "score": "7.0",
+      "evidence": "贝叶斯上下文赌博机用于实时仓库分拣优化",
+      "tldr": "电商仓库分拣机依赖静态权重配置，无法适应动态系统上下文。本研究比较了线性回归、XGBoost和贝叶斯上下文Bandit (BCB)三种框架，利用高保真模拟器解决冷启动问题。实验表明BCB在奖励提升2.03%的同时，具备决策时间最优、持续在线学习和低延迟等优势，为大规模仓库实时控制提供了可行方案。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Efficient sorter diversion control of automated material handling systems (MHS) is critical for optimizing operational efficiency in large-scale warehouse environments. In this study, we use an inbound receiving sorter at a high-volume e-commerce warehouse as our primary use case, where the sorter diversion system relies on cost functions with static weight configurations that fail to adapt to highly dynamic system contexts, such as volume mode, congestion level, equipment physical status, and upstream/downstream dependencies. To address this real-time sorter diversion optimization challenge, we conducted a comparative study of three candidate hybrid machine learning frameworks: Linear Regression with Gradient Descent Optimization (LR+GDO), XGBoost with Bayesian Optimization (XGB+BO), and Bayesian Contextual Bandits (BCB). Model training and evaluation were enabled by leveraging a high-fidelity physics-aware emulator to overcome the cold-start problem and allow a safe transition from offline to online learning. We performed comprehensive evaluations including reward model predictive accuracy, contextual sensitivity, action distribution, and projected reward uplift. Our results demonstrate that while tree-based reward models offer slightly better predictive power, the BCB framework achieved overall higher performance with 2.03% reward uplift over the heuristic baseline. Furthermore, BCB exhibits several superior characteristics, such as its decisive time-optimal policy backed by Bang-Bang control theory, continuous online learning capability, strategic balance between exploration and exploitation, and significantly shorter inference latency. These results demonstrate the potential of the BCB framework for real-time control optimization in large-scale warehouse environments, motivating further investigation toward operational deployment.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
