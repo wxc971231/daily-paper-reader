@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-26",
+  "date": "2026-06-26",
+  "generated_at": "2026-06-26T19:15:50",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/26/2606.25832v2-miniopt-reasoning-to-model-and-solve-general-optimization-problems-with-limited-resources",
+      "section": "deep",
+      "title_en": "MiniOpt: Reasoning to Model and Solve General Optimization Problems with Limited Resources",
+      "authors": "Ke Zhao, Zixiang Di, Hong Qian, Xiang Shu, Yaolin Wen, Qitao Shi, Bingdong Li, Xingyu Lu, Xiangfeng Wang, Jun Zhou, Ke Tang, Yang Yu",
+      "date": "2026-06-24",
+      "pdf": "https://arxiv.org/pdf/2606.25832v2",
+      "score": "10.0",
+      "evidence": "直接通过LLM推理建模和求解通用优化问题并生成代码",
+      "tldr": "现有优化大语言模型依赖大规模监督数据和昂贵推理标注，训练开销大。MiniOpt提出“推理-建模-求解”范式，结合层次奖励函数OptReward和优化策略优化，无需专家示范。3B参数模型在多种优化问题上取得最高平均求解准确率，优于同规模模型。表明奖励设计与强化学习可有效训练紧凑优化专用模型。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Achieving strong optimization generalization across diverse optimization problems while requiring limited training resources remains a challenging problem for optimization-oriented large language models (LLMs). Existing approaches typically rely on large-scale supervised datasets, costly reasoning annotations, and expensive intermediate step verification, resulting in substantial training overhead. To address these challenges, we propose MiniOpt, a reinforcement learning framework that learns to solve optimization problems through an \"reasoning-to-model-and-solve\" paradigm. MiniOpt decomposes optimization reasoning into structured optimization modeling and executable solver generation. Building upon this paradigm, we introduce OptReward, a reward function with hierarchical score structure that jointly evaluates formulation and solution, enabling effective policy learning without expert demonstrations. We further develop an optimization-oriented policy optimization strategy that improves exploration efficiency and stabilizes reinforcement learning for compact models. Extensive experiments show that MiniOpt-3B exhibits strong optimization generalization across various optimization types, problem scenarios, and task domains. For models with fewer than 10B parameters, MiniOpt series achieves the highest average solving accuracy (SA). For models with more than 10B parameters, MiniOpt still shows competitive performance. These results suggest that optimization-oriented reward design and reinforcement learning provide an effective pathway for developing compact optimization-specialized language models with strong optimization generalization capabilities. The code is available at https://github.com/Hsiang-1/MiniOpt.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/26/2606.26578v1-evooptigraph-weakness-driven-coevolution-via-graph-based-structural-generation-for-optimization-modeling",
+      "section": "deep",
+      "title_en": "EvoOptiGraph: Weakness-Driven Coevolution via Graph-Based Structural Generation for Optimization Modeling",
+      "authors": "Qingcan Kang, Mingyang Liu, Xiaojin Fu, Shixiong Kai, Tao Zhong, Mingxuan Yuan",
+      "date": "2026-06-25",
+      "pdf": "https://arxiv.org/pdf/2606.26578v1",
+      "score": "9.0",
+      "evidence": "使用LLM从自然语言自动生成优化模型和求解代码",
+      "tldr": "自动化优化建模面临训练数据缺乏结构多样性和生成流水线静态的问题。EvoOptiGraph将混合整数线性规划表示为属性二分图，通过保留有效性的进化算子生成结构多样的实例，并转化为代码和自然语言。采用监督微调和基于模型弱点的强化学习，形成数据-模型协同进化的闭环。在六个数据集上显著优于大模型、代理方法和专用基线，验证了针对性协同进化策略的有效性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Automating optimization modeling from natural language with large language models (LLMs) faces two key challenges. First, training corpora lack structural diversity. Second, data generation pipelines remain static and decoupled from model learning. To address these challenges, we propose EvoOptiGraph, a novel framework where data and model co-evolve, driven by model weaknesses. EvoOptiGraph represents each mixed-integer linear program (MILP) as an attributed bipartite graph and applies validity-preserving evolutionary operators to generate structurally diverse instances. The evolved graphs are converted into solver code and natural language via deterministic compilation and verified back-translation. Training proceeds in two stages: supervised fine-tuning (SFT) on an initial dataset, followed by reinforcement learning with verifiable rewards (RLVR), where graph-derived weakness signals guide the generation of new instances targeting the model's failures. This forms a closed loop that continuously updates the training distribution. Empirical results on six public datasets show that EvoOptiGraph significantly outperforms larger generalist models, agentic methods, and specialized baselines in accuracy, executability, and generalization. These results demonstrate that targeted data-model coevolution is an effective strategy for improving LLMs on optimization modeling tasks.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/26/2606.19605v2-fapo-fully-automated-prompt-optimization-of-multi-step-llm-pipelines",
+      "section": "quick",
+      "title_en": "FAPO: Fully Automated Prompt Optimization of Multi-Step LLM Pipelines",
+      "authors": "Paul Kassianik, Baturay Saglam, Huaibo Zhao, Blaine Nelson, Supriti Vijay, Aman Priyanshu, Amin Karbasi",
+      "date": "2026-06-17",
+      "pdf": "https://arxiv.org/pdf/2606.19605v2",
+      "score": "6.0",
+      "evidence": "LLM流水线的自动化提示优化可应用于优化代码生成",
+      "tldr": "多步骤LLM管道的失败常源于检索、推理和格式化步骤的交互，仅优化提示难以解决瓶颈。FAPO框架利用Claude Code自动诊断中间步骤，先尝试提示编辑，若不足则根据归因调整链结构。在18个模型-基准比较中，FAPO以平均+14.1个百分点胜过基线GEPA，其中6个需结构变化的比较全部获胜，增益达+33.8个百分点。在安全任务上，FAPO使测试准确率提升多达+7.1个百分点。FAPO成为通用及安全场景下最先进的管道优化技术。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Multi-step LLM pipelines fail through interactions among retrieval, reasoning, and formatting steps, so prompt-only optimization can miss bottlenecks in the chain. We present Fully Automated Prompt Optimization (FAPO), a framework that lets Claude Code optimize an LLM pipeline inside a standardized codebase. FAPO evaluates a pipeline, inspects intermediate steps, diagnoses failures, proposes scoped changes, and validates variants repeatedly to optimize against a score function. It first tries prompt edits and, only when prompt optimization appears insufficient, changes chain structure within the permitted scope when attribution identifies a structural bottleneck. Across six benchmarks and three task models, FAPO beats the baseline GEPA in 15 of 18 model-benchmark comparisons. In 11 model-benchmark comparisons, FAPO wins with non-overlapping mean $\\pm$ trial-standard-deviation ranges, and the mean FAPO-GEPA gain is +14.1 pp. In the six HoVer and IFBench comparisons where prompt-first search escalated to structural changes, FAPO wins all six with a mean gain of +33.8 pp. FAPO also improves performance on security tasks: on CTIBench-RCM, a security CVE-to-CWE task, prompt-only FAPO lifts test accuracy by +4.0 pp on GPT-5, +7.1 pp on Foundation-Sec-8B-Instruct, and +2.0 pp on Foundation-Sec-8B-Reasoning. These results position FAPO as a state-of-the-art pipeline optimization technique for both general-purpose and security-focused tasks.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
