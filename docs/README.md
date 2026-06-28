@@ -6,31 +6,28 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-27
-- 运行时间：2026-06-27 19:04:26 UTC
+- 最新运行日期：2026-06-28
+- 运行时间：2026-06-28 19:17:42 UTC
 - 运行状态：成功
-- 本次总论文数：2
+- 本次总论文数：1
 - 精读区：0
-- 速读区：2
+- 速读区：1
 
 ### 今日简报（AI）
-今日推荐两篇速读论文，聚焦LLM辅助搜索优化与资源感知神经符号推理。
+今日速读1篇探讨自动构建神经关系推理器基准测试的论文。
 
-值得关注《LLM-Aided A* Search in Non-Geometric Network Graphs》（7.0/10）中非几何网络图搜索的新范式。
+该研究提出了Auto-World框架用于自动化任务生成，评分6.0/10，可作为关系推理基准设计的参考。
 
-建议优先精读第一篇，探索大模型增强路径规划在现实网络中的应用潜力。
-- 详情：[/202606/27/README](/202606/27/README)
+建议关注其自动化任务构建逻辑，但需验证框架在其他场景的泛化能力。
+- 详情：[/202606/28/README](/202606/28/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [LLM-Aided A* Search in Non-Geometric Network Graphs](/202606/27/2606.23136v1-llm-aided-a-search-in-non-geometric-network-graphs)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：LLM辅助最短路径优化
-2. [Resource-Aware Neuro-Symbolic Reasoning for Local Small Language Models](/202606/27/2606.27281v1-resource-aware-neuro-symbolic-reasoning-for-local-small-language-models)  
+1. [Project Auto-World: Towards Automated Benchmarking of Neural Relational Reasoners](/202606/28/2606.24965v1-project-auto-world-towards-automated-benchmarking-of-neural-relational-reasoners)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：使用LLM将问题建模为约束规划并通过符号求解器求解
+   evidence：LLM驱动的进化搜索用于自动生成基准测试
 
 
 <div class="dpr-home-promo-card">

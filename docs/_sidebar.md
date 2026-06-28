@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-06-28 <!--dpr-date:20260628-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/28/2606.24965v1-project-auto-world-towards-automated-benchmarking-of-neural-relational-reasoners" data-sidebar-item="{&quot;title&quot;: &quot;Project Auto-World: Towards Automated Benchmarking of Neural Relational Reasoners&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.24965v1-project-auto-world-towards-automated-benchmarking-of-neural-relational-reasoners&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;LLM驱动的进化搜索用于自动生成基准测试&quot;}">Project Auto-World: Towards Automated Benchmarking of Neural Relational Reasoners</a>
   * 2026-06-27 <!--dpr-date:20260627-->
     * 速读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/27/2606.23136v1-llm-aided-a-search-in-non-geometric-network-graphs" data-sidebar-item="{&quot;title&quot;: &quot;LLM-Aided A* Search in Non-Geometric Network Graphs&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.23136v1-llm-aided-a-search-in-non-geometric-network-graphs&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;LLM辅助最短路径优化&quot;}">LLM-Aided A* Search in Non-Geometric Network Graphs</a>

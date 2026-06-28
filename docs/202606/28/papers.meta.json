@@ -1,0 +1,24 @@
+{
+  "label": "2026-06-28",
+  "date": "2026-06-28",
+  "generated_at": "2026-06-28T19:17:49",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202606/28/2606.24965v1-project-auto-world-towards-automated-benchmarking-of-neural-relational-reasoners",
+      "section": "quick",
+      "title_en": "Project Auto-World: Towards Automated Benchmarking of Neural Relational Reasoners",
+      "authors": "Anirban Das, Joanne Boisson, Irtaza Khalid, Sumita Garai, Steven Schockaert",
+      "date": "2026-06-23",
+      "pdf": "https://arxiv.org/pdf/2606.24965v1",
+      "score": "6.0",
+      "evidence": "LLM驱动的进化搜索用于自动生成基准测试",
+      "tldr": "神经关系推理模型在从简单实例系统化泛化到复杂结构时面临显著挑战，且缺乏自动化生成难度递增实例的评估基准。本文提出Auto-World框架，利用大语言模型（LLM）驱动的进化搜索（基于FunSearch）和自主智能体搜索，在由Datalog规则参数化的世界中端到端地学习采样函数，以生成具有挑战性的推理实例。将这些数据用于训练Edge Transformer后，模型在泛化至更复杂扰动时表现显著提升。实验证明该流程能有效发现困难案例，并可无缝迁移至LLM自行提出的新世界，从而为神经关系推理的自动化基准测试和自主研究开辟了新路径。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Reasoning about relational structures remains a significant challenge for neural models, particularly when they must systematically apply learned knowledge to problem instances that are harder than those seen in training. Progress is hampered by the difficulty of evaluating such generalization, since a priori, it is rarely clear what makes an instance hard. We study how this issue can be addressed by using large language models (LLMs) to automate benchmark generation, learning to produce increasingly challenging instances in an end-to-end manner. Concretely, given a world parametrized by Datalog rules, and an Edge Transformer as the reasoning evaluator, we use LLM-driven evolutionary search (based on FunSearch) and autonomous agentic search to discover sampling functions that yield hard problem instances. We also show that the Edge Transformer can be improved using this data such that it generalizes well to further data perturbations. Finally, we show that the same machinery can be applied to novel worlds proposed by LLMs, opening the door to autonomous research on neural relational reasoning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
