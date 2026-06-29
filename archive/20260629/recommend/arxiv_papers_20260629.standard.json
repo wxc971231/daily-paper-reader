@@ -1,0 +1,217 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-29T19:19:33.320770+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2606.27611v1",
+      "source": "arxiv",
+      "title": "COOPA: A Modular LLM Agent Architecture for Operations Research Problems",
+      "abstract": "Operations Research (OR) provides a rigorous framework for high-stakes decision-making, but effective OR modeling requires substantial domain knowledge, mathematical abstraction, and solver expertise. Recent LLM-based systems automate parts of this pipeline, yet remain limited by low accuracy on complex problems, opaque outputs, and narrow solver support. We propose COOPA (COoperative OPerations Agent), a modular LLM-agent architecture for interpretable and scalable OR decision support. It combines three components: iterative confidence-based modeling, which generates multiple candidate formulations, self-evaluates them across modeling dimensions, and selects one using a max-min confidence criterion; element-level provenance and confidence explanations, which link variables, parameters, constraints, and objectives to quoted source text and provide an audit trail for human verification; and multi-solver routing to specialized optimizer agents for different OR problem classes. Across three OR benchmarks, eight LLM backbones, and four baselines under identical conditions, COOPA achieves the best macro-average accuracy on six of eight backbones and improves over the strongest baseline by up to 6.7 percentage points. A within-system ablation isolates the contribution of iterative confidence-based modeling, while additional analyses and case studies illustrate the value of source traceability and multi-solver dispatch.",
+      "authors": [
+        "Chuanhao Li",
+        "Xiaoan Xu",
+        "Dirk Bergemann",
+        "Ethan X. Fang",
+        "Yehua Wei",
+        "Zhuoran Yang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-25T23:56:58+00:00",
+      "link": "https://arxiv.org/pdf/2606.27611v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Modular LLM agent for OR problem modeling and solver integration",
+      "llm_evidence_cn": "模块化LLM智能体用于运筹问题建模和求解器集成",
+      "llm_evidence": "模块化LLM智能体用于运筹问题建模和求解器集成",
+      "canonical_evidence": "模块化LLM智能体用于运筹问题建模和求解器集成",
+      "llm_tldr_en": "COOPA is a modular LLM agent architecture for operations research that generates multiple candidate formulations, self-evaluates them, and selects one with max-min confidence, providing interpretable and scalable decision support.",
+      "llm_tldr_cn": "针对现有LLM自动化运筹建模准确率低、输出不透明且求解器支持有限的问题，提出COOPA模块化LLM智能体架构。它通过迭代置信度建模生成多个候选公式，从多个维度自我评估并使用最大最小置信度准则选择最优公式，同时提供元素级别溯源和置信度解释。实验表明COOPA在复杂运筹问题上显著提升了建模准确性和可解释性，为LLM驱动的运筹决策支持提供了可扩展方案。",
+      "llm_tldr": "针对现有LLM自动化运筹建模准确率低、输出不透明且求解器支持有限的问题，提出COOPA模块化LLM智能体架构。它通过迭代置信度建模生成多个候选公式，从多个维度自我评估并使用最大最小置信度准则选择最优公式，同时提供元素级别溯源和置信度解释。实验表明COOPA在复杂运筹问题上显著提升了建模准确性和可解释性，为LLM驱动的运筹决策支持提供了可扩展方案。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.25362v1",
+      "source": "arxiv",
+      "title": "Learning Optimization Proxies for Sequential Contextual Stochastic Programs: An Order Fulfillment Application",
+      "abstract": "Sequential contextual stochastic programs model real-time decision systems in which each time epoch commits to an action under uncertainty whose consequences propagate into future decisions. In many practical contexts, these programs require obtaining solutions rapidly as new information becomes available. These problems can be represented through scenario approximations to be solved by off-the-shelf optimization solvers, which achieve high decision quality offline but typically run in seconds to minutes per instance, falling short of the sub-second responses that peak periods of planning require. This paper develops a learning-based optimization proxy: a scenario-embedded neural network trained offline on solver-generated labels, paired online with a decoder that enforces feasibility, replacing the per-epoch solve with a single forward pass. The framework is specialized to omnichannel order fulfillment, where each arriving order requires a sub-second assignment of products to distribution centers and carrier services under stochastic delivery times and future demand. A two-stage contextual stochastic program is introduced to formulate this problem, and its contextual sample average approximation (C-SAA) supplies the offline labels, while a composite training loss combines label imitation, a constraint-violation penalty, and self-supervised cost alignment. In a calibrated simulator built from JD.com transactional records, a detailed computational study is provided. The proxy reduces decision latency by roughly 2800x relative to the online finite-sample C-SAA reference and improves over it by 3.3% in realized fulfillment cost. Relative to established fulfillment policies, the proxy lowers total realized cost by at least 10.7% and roughly halves the late-delivery rate.",
+      "authors": [
+        "Tinghan Ye",
+        "Shuaicheng Tong",
+        "Changkun Guan",
+        "Beste Basciftci",
+        "Pascal Van Hentenryck"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cs.LG"
+      ],
+      "published": "2026-06-24T03:45:52+00:00",
+      "link": "https://arxiv.org/pdf/2606.25362v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "learning optimization proxy for sequential stochastic programs",
+      "llm_evidence_cn": "学习顺序随机程序的优化代理",
+      "llm_evidence": "学习顺序随机程序的优化代理",
+      "canonical_evidence": "学习顺序随机程序的优化代理",
+      "llm_tldr_en": "Proposes a learning-based optimization proxy using neural networks to replace slow solvers for sequential contextual stochastic programs, achieving sub-second response times.",
+      "llm_tldr_cn": "该论文针对顺序上下文随机程序求解速度慢的问题，提出了一种基于学习的优化代理方法，通过场景嵌入神经网络离线训练，替代传统优化求解器。在订单履行应用中，该方法实现亚秒级响应，同时保持高决策质量，适用于实时决策场景。",
+      "llm_tldr": "该论文针对顺序上下文随机程序求解速度慢的问题，提出了一种基于学习的优化代理方法，通过场景嵌入神经网络离线训练，替代传统优化求解器。在订单履行应用中，该方法实现亚秒级响应，同时保持高决策质量，适用于实时决策场景。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.26728v1",
+      "source": "arxiv",
+      "title": "Scientific discovery as meta-optimization: a combinatorial optimization case study",
+      "abstract": "Scientific discovery is fundamentally an optimization problem, defined by a vast \"state space\" of theories and experiments, and an evaluation criterion based on quality, novelty, and validity. Large language models (LLMs) have enabled automated exploration of this space, but we argue that simultaneous modification of the evaluation criteria is equally important. Here, we propose formalizing research as meta-optimization, where the optimization objective itself is also being optimized. Our key contribution is \"consensus objective aggregation,\" where LLM-generated objective functions are combined via correlation-weighted voting, yielding a stable, self-correcting evaluation criterion that evolves as understanding deepens. We apply this framework to algorithm discovery for 3-SAT problems based on digital MemComputing machines, reducing the baseline scaling with problem size $N$ from $\\sim N^{2.51}$ to $\\sim N^{1.33}$ and delivering a $\\sim 67\\times$ speedup on the largest instances tested. As a problem-agnostic framework, we hope this approach will considerably aid scientific discovery.",
+      "authors": [
+        "Yuan-Hang Zhang",
+        "Chesson Sipling",
+        "Massimiliano Di Ventra"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.MA"
+      ],
+      "published": "2026-06-25T08:11:48+00:00",
+      "link": "https://arxiv.org/pdf/2606.26728v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLMs generate objective functions for combinatorial optimization problems",
+      "llm_evidence_cn": "LLM生成组合优化问题的目标函数",
+      "llm_evidence": "LLM生成组合优化问题的目标函数",
+      "canonical_evidence": "LLM生成组合优化问题的目标函数",
+      "llm_tldr_en": "Proposes a meta-optimization framework that uses LLMs to generate and aggregate objective functions, applied to a combinatorial optimization case study.",
+      "llm_tldr_cn": "科学发现本质上是一个优化问题，但传统方法仅优化解决方案空间。本文提出将研究形式化为元优化，即同时优化评估标准。核心贡献是'共识目标聚合'，将LLM生成的目标函数通过相关加权投票组合，形成稳定自修正的评估标准。将该框架应用于组合优化案例，展示了LLM在自动建模优化目标方面的潜力。",
+      "llm_tldr": "科学发现本质上是一个优化问题，但传统方法仅优化解决方案空间。本文提出将研究形式化为元优化，即同时优化评估标准。核心贡献是'共识目标聚合'，将LLM生成的目标函数通过相关加权投票组合，形成稳定自修正的评估标准。将该框架应用于组合优化案例，展示了LLM在自动建模优化目标方面的潜力。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.25530v1",
+      "source": "arxiv",
+      "title": "Evaluating LLMs on Real-World Software Performance Optimization",
+      "abstract": "Software performance optimization is a notoriously complex and manual task. Despite the growing use of Large Language Models (LLMs) for code refinement, we still lack benchmarks that capture how optimization actually happens in real-world codebases. Existing frameworks often oversimplify the problem by focusing on isolated functions or a single performance metric, missing the critical trade-offs between execution time and memory footprint, the inherent noise of the measurement environment, and the variability introduced by different input data and execution conditions. We address this by introducing SWE-Pro, a repository-level benchmark derived from 102 expert-written optimizations from open-source projects. Unlike previous benchmarks, SWE-Pro pairs each task with parameterized tests to evaluate runtime, peak memory, and Time-Weighted Memory Usage (TWMU) across varying input data and execution conditions under noise-aware measurement conditions. Our evaluation shows that current LLMs struggle significantly: runtime gains are negligible, and memory optimizations are nearly non-existent. This stands in sharp contrast to expert implementations, which achieve an aggregate speedup of 15.5x and peak memory reduction of 171.3x over benchmark tasks. Expert-written improvements are observed in 91.2% of tasks for runtime and 65.7% for peak memory. Our findings expose a substantial gap between current LLM capabilities and the demands of expert-level engineering.",
+      "authors": [
+        "Ezgi Sarıkayak",
+        "Wenchao Gu",
+        "Hesham Ghonim",
+        "Chunyang Chen"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-24T08:07:41+00:00",
+      "link": "https://arxiv.org/pdf/2606.25530v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM benchmark for software performance optimization code generation",
+      "llm_evidence_cn": "用于软件性能优化代码生成的LLM基准",
+      "llm_evidence": "用于软件性能优化代码生成的LLM基准",
+      "canonical_evidence": "用于软件性能优化代码生成的LLM基准",
+      "llm_tldr_en": "This paper introduces SWE-Pro, a benchmark derived from real-world expert optimizations, to evaluate LLMs on generating code that optimizes software performance, addressing trade-offs between time and memory.",
+      "llm_tldr_cn": "针对大语言模型在代码优化方面评估不足的问题，本文提出SWE-Pro基准，包含102个来自开源项目的专家级优化任务。该基准不仅关注单一性能指标，还捕获执行时间与内存占用之间的权衡、测量噪声及输入变化。实验发现，当前LLM在真实软件优化任务上面临挑战。该工作为评估LLM生成优化代码的能力提供了更真实的场景。",
+      "llm_tldr": "针对大语言模型在代码优化方面评估不足的问题，本文提出SWE-Pro基准，包含102个来自开源项目的专家级优化任务。该基准不仅关注单一性能指标，还捕获执行时间与内存占用之间的权衡、测量噪声及输入变化。实验发现，当前LLM在真实软件优化任务上面临挑战。该工作为评估LLM生成优化代码的能力提供了更真实的场景。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.27369v1",
+      "source": "arxiv",
+      "title": "Reinforcement Learning without Ground-Truth Solutions can Improve LLMs",
+      "abstract": "Reinforcement learning with verifiable rewards (RLVR) for training LLMs typically rely on ground-truth answers to assign rewards, limiting their applicability to tasks where the ground-truth solution is unknown. We introduce a \\textbf{R}anking-\\textbf{i}nduced \\textbf{VER}ifiable framework (RiVER) that trains LLMs on score-based optimization tasks without ground-truth solutions, using deterministic execution feedback as continuous-valued supervision. When applying group-relative RL to such continuous rewards, we identify two key challenges: \\emph{scale dominance}, where uncalibrated score magnitudes across test instances distort policy updates, and \\emph{frequency dominance}, where repeatedly sampled suboptimal solutions can outweigh rare but stronger candidates. RiVER addresses these challenges with calibrated reward shaping that uses instance-wise comparisons and emphasizes top-ranked solvers while retaining bounded feedback for other valid solutions. We train on 12 AtCoder Heuristic Contest tasks and evaluate on Algorithm Engineering Benchmark (ALE-Bench), LiveCodeBench, and USACO. RiVER advances Qwen3-8B and GLM-Z1-9B-0414 by 8.9\\% and 9.4\\% in ALE rating rank. More importantly, despite training exclusively on score-based tasks without any ground-truth solutions, RiVER also improves the backbones across exact-solution benchmarks such as LiveCodeBench and USACO by an absolute average improvement of 2.4\\% and 3.5\\%. By contrast, baselines trained with raw execution scores improve ALE rating but fail to transfer to exact-solution benchmarks. These results suggest that score-based optimization tasks, combined with proper reward calibration, can serve as effective training environments for general coding ability without ground-truth solutions.",
+      "authors": [
+        "Yingyu Lin",
+        "Qiyue Gao",
+        "Nikki Lijing Kuang",
+        "Xunpeng Huang",
+        "Kun Zhou",
+        "Tongtong Liang",
+        "Zhewei Yao",
+        "Yi-An Ma",
+        "Yuxiong He"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-25T17:59:36+00:00",
+      "link": "https://arxiv.org/pdf/2606.27369v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL with execution feedback improves LLMs on score-based optimization tasks without ground-truth solutions",
+      "llm_evidence_cn": "使用执行反馈的强化学习改进LLM在基于分数的优化任务上的表现",
+      "llm_evidence": "使用执行反馈的强化学习改进LLM在基于分数的优化任务上的表现",
+      "canonical_evidence": "使用执行反馈的强化学习改进LLM在基于分数的优化任务上的表现",
+      "llm_tldr_en": "RiVER trains LLMs on score-based optimization tasks without ground-truth solutions using deterministic execution feedback, addressing scale and frequency dominance challenges.",
+      "llm_tldr_cn": "该论文提出RiVER框架,利用确定性执行反馈作为连续奖励信号,在无真实解的情况下训练LLM处理基于分数的优化任务。通过引入排序诱导的可验证奖励,有效缓解了量纲主导和频率主导问题。实验表明该方法能在不依赖标准答案的场景下提升LLM的优化能力,拓展了RLVR的适用边界。",
+      "llm_tldr": "该论文提出RiVER框架,利用确定性执行反馈作为连续奖励信号,在无真实解的情况下训练LLM处理基于分数的优化任务。通过引入排序诱导的可验证奖励,有效缓解了量纲主导和频率主导问题。实验表明该方法能在不依赖标准答案的场景下提升LLM的优化能力,拓展了RLVR的适用边界。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

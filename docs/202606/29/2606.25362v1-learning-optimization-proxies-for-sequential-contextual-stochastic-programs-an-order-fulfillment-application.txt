@@ -1,0 +1,1549 @@
+Title: Learning Optimization Proxies for Sequential Contextual Stochastic Programs: An Order Fulfillment Application
+
+URL Source: https://arxiv.org/pdf/2606.25362v1
+
+Published Time: Thu, 25 Jun 2026 00:28:53 GMT
+
+Number of Pages: 30
+
+Markdown Content:
+# Learning Optimization Proxies for Sequential Contextual Stochastic Programs: An Order Fulfillment Application 
+
+Tinghan Ye 1∗, Shuaicheng Tong 1, Changkun Guan 1, Beste Basciftci 2, Pascal Van Hentenryck 1
+
+> 1
+
+H. Milton Stewart School of Industrial and Systems Engineering, Georgia Institute of Technology, Atlanta, GA 30332 
+
+> 2
+
+Tippie College of Business, University of Iowa, Iowa City, IA 52242 
+
+Abstract 
+
+Sequential contextual stochastic programs model real-time decision systems in which each time epoch commits to an action under uncertainty whose consequences propagate into future decisions. In many practical contexts, these programs require obtaining solutions rapidly as new information becomes available. These problems can be represented through scenario approximations to be solved by off-the-shelf optimization solvers, which achieve high decision quality offline but typically run in seconds to minutes per instance, falling short of the sub-second responses that peak periods of planning require. This paper develops a learning-based optimization proxy: a scenario-embedded neural network trained offline on solver-generated labels, paired online with a decoder that enforces feasibility, replacing the per-epoch solve with a single forward pass. The framework is specialized to omnichannel order fulfillment, where each arriving order requires a sub-second assignment of products to distribution centers and carrier services under stochastic delivery times and future demand. A two-stage contextual stochastic program is introduced to formulate this problem, and its contextual sample average approximation (C-SAA) supplies the offline labels, while a composite training loss combines label imitation, a constraint-violation penalty, and self-supervised cost alignment. In a calibrated simulator built from JD.com transactional records, a detailed computational study is provided. The proxy reduces decision latency by roughly 2 ,800 × relative to the online finite-sample C-SAA reference and improves over it by 3 .3% in realized fulfillment cost. Relative to established fulfillment policies, the proxy lowers total realized cost by at least 10 .7% and roughly halves the late-delivery rate. It improves both fulfillment cost and on-time delivery, the service dimension that drives customer satisfaction, at a runtime that stays suitable for peak workloads. 
+
+Keywords: E-commerce Fulfillment; Contextual Stochastic Optimization; Machine Learning for Combinato-rial Optimization; Real-Time Decision Making; Optimization Proxy. 
+
+Code: https://github.com/Joeyetinghan/contextual-fulfillment-proxy .
+
+# 1 Introduction 
+
+Many real-time decision systems share a common abstraction: at each epoch the decision maker observes contextual covariates, commits to an action under uncertainty, and carries the consequences into future decisions. The same structure appears across many real-time operations. In real-time electricity dispatch, system operators clear security-constrained economic dispatch every five minutes to rebalance generation against fluctuating load and prices (Chen et al. 2024). In ride-hail matching, platforms assign drivers to riders as requests arrive under demand and travel-time uncertainty ( ¨ Ozkan and Ward 2020). In dynamic pricing, sellers revise prices as demand and changing circumstances are observed over time, where digital technologies enabled continuously adjusting prices in many business contexts (den Boer 2015). These systems run at large scale under tight latency budgets. For instance, Uber recorded roughly 11 .3 billion trips in 2024 (Uber Technologies, Inc. 2025), and Alibaba reported a peak of 583 ,000 orders created per second during its 2020 Singles’ Day event (Alibaba Group 2020).  
+
+> ∗Corresponding author: joe.ye@gatech.edu
+
+1
+
+> arXiv:2606.25362v1 [math.OC] 24 Jun 2026
+
+When a high-quality decision cannot be produced in time, operators fall back on simpler heuristics that forgo the value of optimization, and at these volumes even small per-order losses accumulate rapidly. Sequential contextual stochastic programs formalize this setting by representing the underlying uncertainty through a conditional distribution based on the covariate information. For the solution of these problems, a standard approach approximates this distribution by a finite scenario set and solves the resulting stochastic program under these scenarios at every epoch by utilizing an off-the-shelf optimization solver. While this delivers high decision quality offline, the scenario-based reformulation typically runs in seconds to minutes per instance depending on its size, falling short of the sub-second responses that peak periods demand, which require the development of novel computationally efficient solution techniques. Omnichannel order fulfillment in large e-commerce networks is a representative problem setting where the fast response times to satisfy the order assignments are critical for achieving effective operations of these systems (Acimovic and Farias 2019). Specifically, each arriving order must be assigned to a distribution center and carrier service that together balance shipping cost, delivery-time risk, multi-unit consolidation discounts, and the opportunity cost of consuming inventory needed by future orders. Leveraging context information which can include factors such as order characteristics, state of the distribution and carrier network, weather information and current demand, can be critical in this regard to represent the underlying uncertainties such as delivery times accurately. To this end, although contextual stochastic optimization (CSO) has lowered the realized cost of these decisions by integrating distributional forecasts of delivery times (Ye et al. 2025a), extending CSO to sequential online environments remains computationally challenging (Sadana et al. 2025). Concretely, in the JD.com transactional setting used in this paper for the order fulfillment problem (Shen et al. 2024), peak hours of a typical day see hundreds of order arrivals per minute, with even higher rates during holiday seasons, while the contextual sample average approximation (C-SAA) reformulation (Verweij et al. 2003) typically takes seconds to minutes per order to solve to a tight optimality gap (Ye et al. 2025a). Solver-based C-SAA is therefore unavailable when peak periods demand sub-second responses, and operational systems fall back on heuristics that ignore the modeled uncertainty. This paper develops a learning-based optimization proxy for sequential contextual stochastic programs and specializes it to omnichannel order fulfillment. The proxy is a scenario-embedded hierarchical neural network trained offline on solver-based labels, paired at deployment with a dedicated decoder that returns a feasible plan; together they replace the per-epoch solve with a single forward pass. Unlike prior optimization proxies that do not explicitly condition on the contextual uncertainty distribution (Yuan et al. 2022, Qi et al. 2023, Yilmaz and B¨ uy¨ uktahtakın 2024, Ojha et al. 2025, Van Hentenryck 2025), the proposed architecture is explicitly scenario-aware, capturing both immediate stochastic costs and the sequential impact of resource consumption. The contributions of this paper are four-fold: 1. A scenario-conditioned optimization proxy for sequential contextual stochastic programs : This model maps contextual features and scenarios to decisions in a single forward pass, ensuring feasibility via a lightweight decoder and utilizing a multi-term loss function that integrates solver imitation, constraint penalties, and self-supervised cost-alignment. 2. A two-stage contextual stochastic model for sequential omnichannel fulfillment : This formulation explicitly ties each arriving order’s assignment to the inventory available for future orders. To address this problem, a tailored proxy is introduced, featuring a hierarchical neural network over distribution centers and carrier services that generates scenario-conditioned scores. An inventory-weighted decoder then converts these scores into a feasible plan in a single pass. 3. Theoretical guarantees for the fulfillment proxy : The proposed inventory-weighted decoder is shown to yield a feasible decision in time log-linear in the size of the fulfillment network (the number of distribution centers and carrier services) per product line. Furthermore, its expected cost upper-bounds the optimal two-stage objective, and its out-of-sample value admits unbiased, consistent sample-mean and sample-variance estimators. 4. Empirical evaluation via an industry-calibrated simulator : Using a simulation framework built from JD.com transactional records and proprietary-calibrated carrier services, the operational impact of the proxy is demon-strated. Compared to an online solver-based baseline utilizing the same fitted forecaster, the proposed approach 2reduces per-order decision latency by approximately 2 ,800 × while lowering realized fulfillment costs by 3 .3%. Beyond computational efficiency and better out-of-sample performance, the proxy improves operational out-comes. Relative to established fulfillment policies, it lowers total realized fulfillment cost by at least 10 .7% and roughly halves the late-delivery rate of the strongest classical baselines. Fewer late deliveries raise on-time service, the dimension that drives customer satisfaction. The remainder of the paper is organized as follows. Section 2 reviews related work. Section 3 formalizes the two-stage contextual stochastic model and its C-SAA reformulation. Section 4 develops the scenario-embedded proxy and instantiates it for omnichannel fulfillment. Section 5 reports the computational study on JD.com data. Section 6 concludes the paper and discusses future directions. 
+
+# 2 Literature Review 
+
+This section surveys three relevant domains which this paper provides contributions: contextual stochastic opti-mization, machine learning for stochastic and combinatorial optimization, and dynamic e-commerce fulfillment. 
+
+2.1 Contextual Stochastic Optimization 
+
+Classical stochastic programming typically represents uncertainty with an empirical distribution estimated from historical data, ignoring any auxiliary information that might be available. In contrast, contextual stochastic optimization (CSO) uses concurrent auxiliary information, or covariates, to construct conditional distributions and thereby produce context-dependent decisions (Sadana et al. 2025). CSO methodologies fall broadly into three streams: sequential predict-and-optimize, integrated learning and optimization, and direct decision-rule learning. Sequential predict-and-optimize methods train a predictive model and pass its output to a downstream solver (Bertsimas and Kallus 2020). Integrated approaches, or decision-focused learning, instead train predictive models directly with respect to downstream decision quality (Donti et al. 2017, Wilder et al. 2019). However, in settings with non-linear and asymmetric costs, such as e-commerce fulfillment with severe late-delivery penalties, relying only on point forecasts may still be insufficient. To address this limitation, recent CSO methods increasingly use conditional scenario generation to represent predictive uncertainty (Kannan et al. 2025, Jia et al. 2025, Qi et al. 2025). In omnichannel fulfillment, Ye et al. (2025a) established the benefit of distribution-aware C-SAA relative to point-forecast and empirical-SAA baselines when delivery uncertainty is modeled explicitly. The present paper extends this from a static offline setting to an online two-stage contextual stochastic program that also captures the future opportunity cost of inventory consumption. To satisfy tight latency requirements, the proposed framework adopts direct decision-rule learning, training a parameterized policy that maps contextual states directly to fulfillment decisions. While related to sequential control, direct reinforcement learning is less attractive here due to hard operational constraints and the availability of offline optimization labels. 
+
+2.2 Machine Learning for Stochastic and Combinatorial Optimization 
+
+The intersection of machine learning and operations research has yielded diverse methodologies for combinato-rial and stochastic optimization, ranging from accelerating exact heuristics (Gasse et al. 2019) to differentiable categorical relaxations (Jang et al. 2017). In multi-stage stochastic programming, learning-based proxies ad-dress intractability primarily through direct solution prediction, value function approximation, and optimization-integrated learning (Rosemberg et al. 2025). For instance, Neur2SP (Dumouchelle et al. 2022) approximates the expected second-stage value function by pre-training a neural network that is subsequently encoded as fixed constraints in a downstream mixed-integer program. Chan et al. (2025) avoids pre-training by embedding the second-stage cost approximation directly into the optimization formulation alongside the first-stage decisions, yielding new theoretical optimality bounds. 3A directly relevant thread is constrained optimization learning (Van Hentenryck 2025), which imitates complex optimization oracles for sub-second inference in autonomous fleet control and vehicle relocation (Yuan et al. 2022, Jungel et al. 2025), recurrent dual-sourcing inventory control (B¨ ottcher et al. 2023), and end-to-end load planning (Ojha et al. 2025). However, these works primarily study deterministic settings or rely on point-forecast approximations, leaving scenario-aware policies for sequential contextual stochastic programs largely unexplored. The proposed proxy differs from these threads on three axes. First, a permutation-invariant DeepSets-style encoder consumes a sampled scenario set as a first-class input rather than a point forecast. Furthermore, solver-label imitation is augmented by a constraint-violation penalty and a self-supervised cost-alignment term, rather than the decision-focused gradients of the respective learning setting (Donti et al. 2017, Wilder et al. 2019). Additionally, decisions are first-stage and per-epoch in a sequential inventory-coupled setting, rather than the static second-stage value-function approximations of Dumouchelle et al. (2022) and Chan et al. (2025). 
+
+2.3 Dynamic E-Commerce Fulfillment 
+
+Omnichannel fulfillment requires assigning orders to facilities and carrier services to balance costs, consolidation, and service levels (Acimovic and Farias 2019, Vasconcelos et al. 2026). While rolling-horizon policies and dynamic inventory heuristics improve myopic decisions by addressing future demand uncertainty and capacity limits (Acimovic and Graves 2015, Jasin and Sinha 2015, Jia et al. 2026), they typically assume deterministic delivery times. Conversely, recent data-driven studies emphasize timeliness by explicitly modeling delivery uncertainty (Salari et al. 2022, Ye et al. 2025a,b, Faulkner et al. 2026). Because existing models have yet to integrate both uncertainty streams simultaneously, formulating a sequential model that jointly captures future demand and delivery uncertainties constitutes a primary contribution of this paper. Beyond these modeling contributions, the paper develops a learning-based solution approach for this problem. A scenario-aware optimization proxy returns fulfillment decisions in a single forward pass and runs several orders of magnitude faster than solver-based stochastic optimization. Existing order-fulfillment methods do not develop such a proxy, so the need for fast, scenario-aware solutions in this setting remains as an open challenge. 
+
+# 3 Problem Formulation 
+
+Many e-commerce firms face an online order-fulfillment problem in their daily operations. Customers place orders continuously throughout the day, and each order must be served quickly under tight delivery promises. An order consists of one or more products, each requested in some quantity, together with the customer’s destination and order attributes such as product categories, brands, order type, and applicable discounts. When an order arrives, the firm observes its contents, the on-hand inventory at each distribution center, the available carrier services and their shipping costs, and contextual signals predictive of delivery times and future demand. The firm must then immediately decide, for each product, which distribution center fulfills it and which carrier service ships it. Because these decisions consume inventory that later orders also draw on, each assignment shapes the cost and feasibility of fulfilling future orders. The remainder of this section formalizes this setting. The online order fulfillment is formulated over a planning horizon T = {1, 2, . . . , 𝑇 }, where each epoch 𝑡 ∈ T 
+
+corresponds to the arrival of a customer order. The fulfillment network consists of a set of locations/distribution centers (DCs) J , a set of products I, and a set of carrier-services K. Each order requests quantities q𝑡 = (𝑞 𝑡 𝑖 )𝑖 ∈ I .The current on-hand inventory levels are denoted by Inv 𝑡 𝑖, 𝑗 for each product 𝑖 ∈ I at each location 𝑗 ∈ J . The core task is to create a dynamic fulfillment plan for each arriving order, assigning products to locations and carrier-services to minimize total expected costs while respecting operational constraints (see App. A for a full nomenclature). For each order, the primary operational decision is the fulfillment plan z𝑡 = (𝑧 𝑡 𝑖, 𝑗,𝑘 )𝑖 ∈ I , 𝑗 ∈ J , 𝑘 ∈ K , where 𝑧 𝑡 𝑖, 𝑗,𝑘 
+
+is the integer quantity of product 𝑖 sourced from location 𝑗 and shipped using carrier-service 𝑘 . An auxiliary slack variable u𝑡 = (𝑢 𝑡 𝑖 )𝑖 ∈ I represents unfulfilled demand for each product, ensuring feasibility when the requested quantity exceeds globally available inventory. The joint decision at epoch 𝑡 then belongs to the feasible set Z𝑡 
+
+4defined by fulfillment and inventory restrictions: 
+
+Z𝑡 =
+
+
+
+(z𝑡 , u𝑡 ) ∈ Z| I | | J | | K | + × Z| I | + :∑︁  
+
+> 𝑗 ∈ J
+
+∑︁ 𝑘 ∈ K 
+
+𝑧 𝑡 𝑖, 𝑗,𝑘 + 𝑢 𝑡 𝑖 = 𝑞 𝑡 𝑖 , ∀𝑖 ∈ I ;∑︁  
+
+> 𝑘 ∈ K
+
+𝑧 𝑡 𝑖, 𝑗,𝑘 ≤ Inv 𝑡 𝑖, 𝑗 , ∀𝑖 ∈ I , 𝑗 ∈ J 
+
+
+
+.
+
+The decision-making process is subject to two primary sources of uncertainty. The first is delivery timeliness. Let ˜ 𝚫 𝑡 = ( ˜Δ𝑡 𝑗,𝑘 ) 𝑗 ∈ J , 𝑘 ∈ K be a random vector, where ˜ Δ𝑡 𝑗,𝑘 represents the deviation in days from the promised delivery date when an item is sourced from location 𝑗 and shipped using carrier-service 𝑘 . A positive realization 
+
+Δ𝑡 𝑗,𝑘 indicates a late delivery, while a negative value indicates an early one. The realization of Δ𝑡 𝑗,𝑘 for the chosen location-carrier pairs is observed only after the decision z𝑡 is executed, analogous to a partial feedback setting (Ye et al. 2025a). The second source of uncertainty is future demand, represented by a random vector ˜ D𝑡 = ( ˜𝐷 𝑡 𝑖 )𝑖 ∈ I 
+
+denoting the cumulative demand for each product from 𝑡 + 1 to 𝑇 .The per-epoch cost function 𝐶 (z𝑡 , u𝑡 , ˜𝚫 𝑡 ) combines deterministic shipping costs, penalties for stochastic delivery deviations, and a unit stockout penalty 𝜌 applied to unfulfilled demand. To encourage consolidation, a discount 𝛽 ∈ ( 0, 1) is applied to the shipping cost 𝑐 ship  
+
+> 𝑖, 𝑗,𝑘
+
+for any location-carrier pair ( 𝑗, 𝑘 ) that sources two or more units for the order. Asymmetric penalties, 𝛾 + ≫ 𝛾 − > 0, are applied for late ( ˜ Δ 𝑡 + 
+
+> 𝑗,𝑘
+
+= max {0, ˜Δ𝑡 𝑗,𝑘 }) and early ( ˜ Δ 𝑡 − 
+
+> 𝑗,𝑘
+
+= max {0, − ˜Δ𝑡 𝑗,𝑘 }) deliveries. The cost 𝐶 (z𝑡 , u𝑡 , ˜𝚫 𝑡 ) is given by ∑︁  
+
+> 𝑗 ∈ J
+
+∑︁ 𝑘 ∈ K 
+
+" ∑︁ 
+
+> 𝑖 ∈ I
+
+𝑐 ship  
+
+> 𝑖, 𝑗,𝑘
+
+𝑧 𝑡 𝑖, 𝑗,𝑘 
+
+!
+
+1 − 𝛽 1
+
+n∑︁ 
+
+> 𝑖 ∈ I
+
+𝑧 𝑡 𝑖, 𝑗,𝑘 ≥ 2
+
+o!
+
++
+
+
+
+𝛾 + ˜Δ 𝑡 + 
+
+> 𝑗,𝑘
+
++ 𝛾 − ˜Δ 𝑡 −
+
+> 𝑗,𝑘
+
+∑︁ 
+
+> 𝑖 ∈ I
+
+𝑧 𝑡 𝑖, 𝑗,𝑘 
+
+#
+
++ 𝜌 ∑︁ 
+
+> 𝑖 ∈ I
+
+𝑢 𝑡 𝑖 .
+
+As this cost function induces non-linear terms, in the computational implementation, the non-linear indicator function governing the consolidation discount is linearized using standard big-𝑀 constraints and auxiliary binary variables. At the start of epoch 𝑡 , a contextual vector X𝑡 ∈ X is observed, containing features of the order, customer, and current network state. Because fulfillment decisions consume inventory and thereby affect future feasible actions, the problem is inherently sequential. The system state therefore evolves over time as inventory is depleted and new exogenous information arrives. 
+
+3.1 Two-Stage Contextual Stochastic Model 
+
+The sequential nature of online fulfillment gives rise to a multi-stage stochastic program that is typically intractable. A rolling-horizon framework with stage aggregation is therefore employed. At each epoch 𝑡 , a two-stage contextual stochastic program is solved for the immediate decision (z𝑡 , u𝑡 ), collapsing future epochs 𝑡 + 1, . . . , 𝑇 into a single second-stage problem (Powell 2022). The first-stage decision is committed before any current-period or future uncertainty is realized. The second-stage variables v𝑡 = (𝑣 𝑡 𝑖, 𝑗,𝑘 )𝑖, 𝑗,𝑘 and w𝑡 = (𝑤 𝑡 𝑖 )𝑖 ∈ I represent the aggregated fulfillment plan and slack stockout for orders from 𝑡 + 1 to 𝑇 . The problem solved at each epoch is min    
+
+> (z𝑡 ,u𝑡 ) ∈ Z 𝑡
+
+E ˜𝚫 𝑡 , ˜D𝑡 ∼P(· | X𝑡 )
+
+h
+
+𝐶  z𝑡 , u𝑡 , ˜𝚫 𝑡  + 𝑄  z𝑡 , ˜D𝑡 i
+
+, (1) where P(· | X𝑡 ) represents the conditional distribution given the context X𝑡 and 𝑄 (z𝑡 , ˜D𝑡 ) is the second-stage cost function representing the expected future shipping and stockout costs: 
+
+𝑄 (z𝑡 , ˜D𝑡 ) = min    
+
+> v𝑡 ≥0,w𝑡 ≥0
+
+∑︁ 𝑖 ∈ I ∑︁ 𝑗 ∈ J ∑︁ 𝑘 ∈ K 
+
+𝑐 ship  
+
+> 𝑖, 𝑗,𝑘
+
+𝑣 𝑡 𝑖, 𝑗,𝑘 + 𝜌 ∑︁ 
+
+> 𝑖 ∈ I
+
+𝑤 𝑡 𝑖 ∑︁ 𝑗 ∈ J ∑︁ 𝑘 ∈ K 
+
+𝑣 𝑡 𝑖, 𝑗,𝑘 + 𝑤 𝑡 𝑖 = ˜𝐷 𝑡 𝑖 , ∀𝑖 ∈ I ,∑︁  
+
+> 𝑘 ∈ K
+
+ 𝑧 𝑡 𝑖, 𝑗,𝑘 + 𝑣 𝑡 𝑖, 𝑗,𝑘 
+
+ ≤ Inv 𝑡 𝑖, 𝑗 , ∀𝑖 ∈ I , 𝑗 ∈ J .
+
+
+
+.
+
+The first-stage decision z𝑡 enters the second stage through the post-allocation inventory state, which constrains the feasible recourse and thereby determines 𝑄 . The second-stage variable v𝑡 is declared continuous: with 5integer right-hand sides Inv 𝑡 and ˜ D𝑡 , the transportation-network constraint matrix is totally unimodular and an integer optimum is recovered without imposing integrality. The second-stage cost includes only base shipping and stockout costs on the forecast future demand; it omits future delivery-time penalties and consequently considers an approximation of the true future cost, since the aggregate delivery-time deviation across the remaining horizon cannot be forecast at decision time. 
+
+3.2 Contextual Sample Average Approximation (C-SAA) 
+
+To solve the stochastic program (1), the conditional distribution P(· | X𝑡 ) is approximated by a finite sampled scenario set ˜ Ω𝑡 = {𝜔 1, . . . , 𝜔 𝐸 } given the context X𝑡 , with each scenario 𝜔 providing a delivery-time realization 
+
+𝚫 𝑡 𝜔 = (Δ𝑡 𝑗,𝑘, 𝜔 ) 𝑗,𝑘 and per-product cumulative demands 𝐷 𝑡 𝑖, 𝜔 . The details of the scenario generation process and integration of the context information are discussed in Section 4.2.1. By introducing per-scenario second-stage variables v𝑡 𝜔 = (𝑣 𝑡 𝑖, 𝑗,𝑘, 𝜔 ) and w𝑡 𝜔 = (𝑤 𝑡 𝑖, 𝜔 ), the C-SAA extensive form can be written as follows (Verweij et al. 2003, Ye et al. 2025a): min      
+
+> (z𝑡 ,u𝑡 ) ∈ Z 𝑡
+> v𝑡 𝜔 ≥0,w𝑡 𝜔 ≥0
+
+1
+
+𝐸 ∑︁ 𝜔 ∈ ˜Ω𝑡 
+
+𝐶 (z𝑡 , u𝑡 , 𝚫 𝑡 𝜔 ) + ∑︁ 
+
+> 𝑖 ∈ I
+
+∑︁ 𝑗 ∈ J ∑︁ 𝑘 ∈ K 
+
+𝑐 ship  
+
+> 𝑖, 𝑗,𝑘
+
+𝑣 𝑡 𝑖, 𝑗,𝑘, 𝜔 + 𝜌 ∑︁ 
+
+> 𝑖 ∈ I
+
+𝑤 𝑡 𝑖, 𝜔 
+
+!
+
+s.t. ∑︁  
+
+> 𝑗 ∈ J
+
+∑︁ 𝑘 ∈ K 
+
+𝑣 𝑡 𝑖, 𝑗,𝑘, 𝜔 + 𝑤 𝑡 𝑖, 𝜔 = 𝐷 𝑡 𝑖, 𝜔 , ∀𝑖 ∈ I , 𝜔 ∈ ˜Ω𝑡 ,∑︁  
+
+> 𝑘 ∈ K
+
+ 𝑧 𝑡 𝑖, 𝑗,𝑘 + 𝑣 𝑡 𝑖, 𝑗,𝑘, 𝜔 
+
+ ≤ Inv 𝑡 𝑖, 𝑗 , ∀𝑖 ∈ I , 𝑗 ∈ J , 𝜔 ∈ ˜Ω𝑡 .
+
+(2) As a single finite-sample C-SAA instance is sensitive to scenario sampling variability, an iterative evaluation procedure is utilized to generate multiple candidate solutions under different scenario sets. The proposed procedure follows the standard multiple-replication strategy of the SAA algorithms (Verweij et al. 2003), where 𝑆 candidate first-stage decisions are generated by solving independent instances of (2) with scenario size 𝑁 1, then these solutions are evaluated on a larger common scenario set of size 𝑁 2 ≫ 𝑁 1 to estimate their out-of-sample performances to select the best candidate solution. Details of this procedure is provided in Appendix B. 
+
+# 4 A Scenario-Embedded Optimization Proxy for Sequential Contextual Stochas-tic Program 
+
+Solving a solver-based scenario approximation of the two-stage contextual stochastic program could still be com-putationally prohibitive in real time during peak operating periods. This motivates the low-latency optimization proxy pipeline developed in this section to address these operational challenges. Section 4.1 states this design as a general proxy framework for sequential contextual stochastic programs. Section 4.2 instantiates the framework for the fulfillment setting of Section 3. 
+
+4.1 General Proxy Framework 
+
+Consider a sequential contextual stochastic program in which, at each epoch 𝑡 , the decision maker observes a state or context X𝑡 , samples a scenario set 𝛀 𝑡 from a fitted conditional forecaster, and chooses a first-stage decision in a feasible set Z𝑡 before the next epoch. The computational bottleneck arises when a solver-based approximation, such as SAA or another scenario-based reformulation, can produce high-quality first-stage decisions offline but is too slow to run at every online epoch. The proxy framework replaces this online solve with a learned decision rule trained on offline solver labels. The framework has four ingredients. First, an offline oracle maps historical contexts and scenario sets to first-stage action labels a𝑡 , ∗. Second, a scenario-embedded model 𝑓 𝜃 (X𝑡 , 𝛀 𝑡 ) maps the same information to 6decision scores or logits. Third, a decoder 𝐷 maps these scores into a feasible decision in Z𝑡 . Fourth, training combines label imitation with problem-aware regularization, such as a soft feasibility penalty and a scenario-based cost-alignment term. Online, the solver call is replaced by one forward pass through 𝑓 𝜃 followed by the decoder 
+
+𝐷 .This framework is intended for latency-critical settings where high-quality offline labels are available and feasibility can be enforced by a decoder, projection, or efficient repair rule. The quality of the solutions obtained through this approach depends on the offline label generator, the fitted scenario model, and the expressiveness of the proxy class, which can be specialized depending on the problem setting considered. To this end, the fulfillment application below is one instantiation of the proposed proxy framework, where the offline oracle is finite-sample C-SAA, the generic action label a𝑡 , ∗ corresponds to the fulfillment decision (z𝑡 , ∗, u𝑡 , ∗), the decoder is inventory-weighted feasible inference, and the scenario set contains demand and delivery-time samples. 
+
+4.2 Fulfillment Instantiation 
+
+The remainder of this section instantiates the framework for omnichannel fulfillment. Figure 1 schematizes the pipeline: demand and delivery-time forecasters feed finite-sample C-SAA on historical orders offline, and the trained proxy serves each arriving order online. 
+
+Figure 1: Schematic of the optimization proxy for omnichannel order fulfillment. 
+
+4.2.1 Contextual Inputs and Scenario Generation 
+
+The fulfillment context decomposes as X𝑡 =  X𝑡 
+
+> ord
+
+, {X𝑡  
+
+> dc , 𝑗
+
+} 𝑗 ∈ J , {X𝑡  
+
+> cost , 𝑗,𝑘
+
+} 𝑗 ∈ J ,𝑘 ∈ K 
+
+. The order-context vector 
+
+X𝑡  
+
+> ord
+
+concatenates SKU and brand categorical embeddings with numeric order fields (number of SKUs in the order, total quantity, order type, bundle and coupon discount flags, gift-item flag, average discount rate), calendar features (e.g. hour and day of week), and customer demographics; the per-DC vector X𝑡  
+
+> dc , 𝑗
+
+collects the on-hand inventory Inv 𝑡 𝑗 and a DC categorical embedding for each candidate 𝑗 ∈ J ; and the per-(DC, carrier) vector 
+
+X𝑡  
+
+> cost , 𝑗,𝑘
+
+collects the base shipping cost 𝑐 ship  
+
+> 𝑗,𝑘
+
+and a carrier categorical embedding for each option ( 𝑗, 𝑘 ).Two fitted forecasters approximate the conditional distribution P(· | X𝑡 ) through predicted quantiles, generating a paired scenario set 𝛀 𝑡 = (𝛀 𝑡 
+
+> dem
+
+, 𝛀 𝑡 
+
+> time
+
+) of 𝐸 Monte Carlo scenarios per random vector by inverse-transform 7sampling: for each 𝜔 ∈ { 1, . . . , 𝐸 }, a uniform draw 𝑢 𝜔 ∼ 𝑈 (0, 1) is mapped through the linearly interpolated predicted CDF to a realization. A multi-horizon quantile recurrent network (MQRNN) (Wen et al. 2017) consumes order-context features and historical demand to produce non-crossing per-period demand quantiles, which are inverse-sampled per period and summed across the horizon to yield 𝛀 𝑡  
+
+> dem
+
+= ( ˜Ω𝑡 𝑖, dem )𝑖 ∈ I with ˜ Ω𝑡 𝑖, dem =
+
+{𝐷 𝑡 𝑖, 1, . . . , 𝐷 𝑡 𝑖,𝐸 }. A multi-quantile multilayer perceptron (MQMLP) consumes order-context and per-(DC, carrier) cost features to produce delivery-time quantiles, sampled the same way to yield 𝛀 𝑡  
+
+> time
+
+= ( ˜Ω𝑡 𝑗,𝑘, time ) 𝑗 ∈ J ,𝑘 ∈ K with ˜Ω𝑡 𝑗,𝑘, time = {Δ 𝑡 𝑗,𝑘, 1, . . . , Δ 𝑡 𝑗,𝑘,𝐸 }. The online supplement reports the full feature lists, network architectures, training objectives, and held-out forecasting performance. 
+
+4.2.2 Scenario-Embedded Hierarchical Proxy 
+
+Because the constraints in Z𝑡 are separable across products, a single shared network 𝑓 𝜃 processes one product line at a time and the order-level decision concatenates per-product outputs. The consolidation discount couples the multiple product lines of the same order that ship together but is not separable; the per-product decomposition therefore sees this coupling only indirectly through the jointly optimized C-SAA labels. Each training instance 
+
+𝑛 ∈ N is one historical (order, product-line) record, paired with its contextual features, sampled scenarios, and C-SAA label. 
+
+Architecture Walkthrough. Figure 2 schematizes the proxy. The upper panel shows the architecture: four input modules (global, scenario, DC, cost) produce embeddings that are concatenated per DC and passed to a DC head and a DC-conditioned carrier head, which together return (ℓdc , ℓcarrier ). The lower panels summarize the composite training loss applied at training time and the inventory-weighted decoder applied at inference (developed in Sections 4.2.3 and 4.2.4). Figure 3 formalizes the forward pass of the optimization proxy. Each module 𝜙 
+
+and head 𝑔 is a multilayer perceptron (MLP) whose hidden layers apply a fully connected linear projection, batch normalization, dropout regularization, and a ReLU activation in sequence; hidden widths and layer counts are tuned and reported in Appendix G. 
+
+Figure 2: Schematic of optimization proxy architecture, training loss, and inference. 
+
+Global and DC modules. A shared MLP 𝜙 ord encodes the order context Xord into a global embedding; a second shared MLP 𝜙 dc encodes each per-DC feature vector Xdc , 𝑗 into a per-DC embedding, parameter-shared across 8𝑓 𝜃 
+
+ Xord , {Xdc , 𝑗 } 𝑗 ∈ J , {Xcost , 𝑗,𝑘 } 𝑗 ∈ J , 𝑘 ∈ K , 𝛀 dem , 𝛀 time 
+
+:
+
+eglobal = 𝜙 ord (Xord )
+
+mdem = 1
+
+> 𝐸
+
+Í𝐷 𝜔 ∈𝛀 dem 𝜙 dem scen (𝐷 𝜔 )
+
+mtime = 1
+
+> 𝐸
+
+Í𝚫 𝜔 ∈𝛀 time 𝜙 time scen (vec (𝚫 𝜔 )) 
+
+escen = mdem + mtime 
+
+edc , 𝑗 = 𝜙 dc (Xdc , 𝑗 ) 𝑗 ∈ J 
+
+ecost , 𝑗 = 𝜙 cost 
+
+
+
+stats 
+
+
+
+{𝑐 ship  
+
+> 𝑗,𝑘
+
+}𝑘 ∈ K , {Δ 𝑗,𝑘, 𝜔 }𝑘 ∈ K , 𝜔 ∈ [ 𝐸 ]
+
+ 
+
+𝑗 ∈ J 
+
+h 𝑗 = [eglobal ∥ escen ∥ edc , 𝑗 ∥ ecost , 𝑗 ] 𝑗 ∈ J 
+
+ℓdc  
+
+> 𝑗
+
+= 𝑔 dc (h 𝑗 ) 𝑗 ∈ J 
+
+ℓcarrier  
+
+> 𝑗,𝑘
+
+= 𝑔 carrier 
+
+
+
+h 𝑗 , ℓ dc  
+
+> 𝑗
+
+, Xcost , 𝑗,𝑘 
+
+
+
+𝑗 ∈ J , 𝑘 ∈ K 
+
+return  ℓdc , ℓcarrier .
+
+Figure 3: Forward pass of the optimization proxy 𝑓 𝜃 .candidates 𝑗 so the embedding size is independent of |J | :
+
+eglobal = 𝜙 ord (Xord ), edc , 𝑗 = 𝜙 dc (Xdc , 𝑗 ), 𝑗 ∈ J .
+
+Scenario module. The sampled scenario sets 𝛀 dem and 𝛀 time are unordered and may vary in size at deployment. For the current product line, identify 𝛀 dem = {𝐷 𝜔 }𝐸 𝜔 =1 as the scalar demand scenarios and 𝛀 time = {𝚫 𝜔 }𝐸 𝜔 =1 as the deviation matrices 𝚫 𝜔 = (Δ 𝑗,𝑘, 𝜔 ) 𝑗 ∈ J ,𝑘 ∈ K under a fixed ( 𝑗, 𝑘 ) ordering. Following the DeepSets template (Zaheer et al. 2017, Dumouchelle et al. 2022), each scenario is encoded individually and the resulting embeddings are averaged. The encoder 𝜙 dem scen : R → Rℎ (with ℎ the shared embedding dimension across the proxy’s modules, a tuned hyperparameter reported in Appendix G) maps 𝐷 𝜔 to an embedding capturing where the scenario sits in the demand distribution. The encoder 𝜙 time scen : R| J | | K | → Rℎ maps the flattened matrix vec (𝚫 𝜔 ) to an embedding capturing which DC–carrier options are jointly stressed in that sampled future. Averaging the per-scenario embeddings is the network’s analogue of an expectation and matches the arithmetic-mean structure of the C-SAA objective: 
+
+mdem = 1
+
+𝐸 ∑︁ 𝐷 𝜔 ∈𝛀 dem 
+
+𝜙 dem scen (𝐷 𝜔 ), mtime = 1
+
+𝐸 ∑︁ 𝚫 𝜔 ∈𝛀 time 
+
+𝜙 time scen (vec (𝚫 𝜔 )) ,
+
+escen = mdem + mtime .
+
+The two branches use independent weights at the same hidden width, so addition preserves disentangled demand and delivery-time signals without a learned fusion layer. 
+
+Cost module. The candidate option set {( 𝑗, 𝑘 )} 𝑗,𝑘 has |J | |K | entries, so feeding all per-option features into the DC head directly would either inflate parameter count or require a second permutation-invariant pool over carriers. Instead, the proxy summarizes the per-DC cost and timeliness features through stats (c 𝑗 , 𝚫 𝑗 ) ∈ R8,with c 𝑗 = (𝑐 ship  
+
+> 𝑗,𝑘
+
+)𝑘 ∈ K and 𝚫 𝑗 = (Δ 𝑗,𝑘, 𝜔 )𝑘 ∈ K , 𝜔 ∈ [ 𝐸 ] . The first five outputs are carrier-axis statistics of c 𝑗 
+
+(c 𝑗 , min c 𝑗 , 𝜎 (c 𝑗 ), 𝑝 90 (c 𝑗 ), gap 2 (c 𝑗 ) = 𝑐 (2) 
+
+> 𝑗
+
+− 𝑐 (1) 
+
+> 𝑗
+
+) corresponding to mean, minimum, standard deviation, 90th percentile, the gap between the two smallest entries, respectively, and the last three are (carrier, scenario)-axis statistics of 𝚫 𝑗 (𝚫 𝑗 , 𝜎 (𝚫 𝑗 ), 𝑝 90 (𝚫 𝑗 )). The cost embedding is ecost , 𝑗 = 𝜙 cost (stats (c 𝑗 , 𝚫 𝑗 )) . These dispersion statistics expose per-carrier variability to the DC head without committing to a specific carrier. 9Joint embedding and hierarchical heads. The four embeddings concatenate per DC, h 𝑗 = [eglobal ∥ escen ∥
+
+edc , 𝑗 ∥ ecost , 𝑗 ] for 𝑗 ∈ J . The DC head, MLP 𝑔 dc , maps h 𝑗 to a scalar logit ℓdc  
+
+> 𝑗
+
+= 𝑔 dc (h 𝑗 ). The carrier head 𝑔 carrier 
+
+then conditions the carrier choice on the joint embedding, the raw DC logit, and the per-option features: 
+
+ℓcarrier  
+
+> 𝑗,𝑘
+
+= 𝑔 carrier 
+
+
+
+h 𝑗 , ℓ dc  
+
+> 𝑗
+
+, Xcost , 𝑗,𝑘 
+
+
+
+, 𝑗 ∈ J , 𝑘 ∈ K . (3) Two design choices matter in (3). First, the carrier head receives the raw , pre-softmax DC logit, so carrier selection can depend on the strength of the learned DC ranking rather than only on the relative ordering of DCs. Second, the two heads imply a hierarchical factorization 𝑝 ( 𝑗 ) · 𝑝 (𝑘 | 𝑗 ). The DC-head softmax realizes 𝑝 ( 𝑗 ) over distribution centers, and the carrier-head softmax realizes 𝑝 (𝑘 | 𝑗 ) over each DC’s eligible carrier services. This factorization matches the structure of the fulfillment decision: an order line first selects a DC, then a carrier-service from that DC’s eligible set. It reduces the complexity of learning the full joint |J | |K | assignment. 
+
+4.2.3 Composite Training Loss 
+
+Figure 4 states the training optimization. It takes the |N | training instances as input and minimizes the average per-instance composite loss L𝑛 , which combines three terms targeting C-SAA-label imitation, operational feasibility, and self-supervised cost alignment. The offline C-SAA oracle returns a quantity decision (z𝑛, ∗, 𝑢 𝑛, ∗) for the product line, which may distribute the requested quantity across multiple ( 𝑗, 𝑘 ) options. The learning task is framed as predicting a single primary 
+
+option per product line rather than the full multi-DC split, which encourages shipping consolidation; if a shortage forces a split, the inventory-weighted decoder of Section 4.2.4 recovers it at inference. The primary location and carrier-service labels are extracted as the most-served option of the C-SAA decision: 
+
+𝑗 𝑛, ∗ ∈ arg max  
+
+> 𝑗 ∈ J
+
+∑︁ 𝑘 ∈ K 
+
+𝑧 𝑛, ∗ 
+
+> 𝑗,𝑘
+
+, 𝑘 𝑛, ∗ ∈ arg max  
+
+> 𝑘 ∈ K 𝑛 𝑗 𝑛, ∗
+
+𝑧 𝑛, ∗  
+
+> 𝑗 𝑛, ∗,𝑘
+
+,
+
+with deterministic tie breaking. 
+
+𝜃 ∗ ∈ arg min 
+
+> 𝜃
+
+1
+
+|N | ∑︁ 𝑛 ∈ N 
+
+L𝑛 (𝜃 )
+
+s.t.  ℓ𝑛, dc , ℓ𝑛, carrier  = 𝑓 𝜃 (X𝑛 , 𝛀 𝑛 ) ∀𝑛 ∈ N 
+
+p𝑛, dc = softmax  ℓ𝑛, dc  ∀𝑛 ∈ N 
+
+p𝑛, carrier = softmax 𝑘 
+
+ ℓ𝑛, carrier  ∀𝑛 ∈ N 
+
+a𝑛 = ST-GumbelSoftmax (ℓ𝑛, dc , 𝜏 ) ∀𝑛 ∈ N L𝑛 (𝜃 ) = L𝑛 
+
+> sel
+
+ ℓ𝑛, dc , ℓ𝑛, carrier ; 𝑗 𝑛, ∗, 𝑘 𝑛, ∗
+
++ L 𝑛 
+
+> const
+
+ a𝑛 ; 𝑞 𝑛 , Inv 𝑛 
+
++ L 𝑛 
+
+> cost
+
+ p𝑛, dc , p𝑛, carrier ; 𝛀 𝑛 
+
+> cost
+
+.
+
+Figure 4: Optimization model for training the proxy 𝑓 𝜃 .
+
+Selection Loss. Let p𝑛, dc = softmax (ℓ𝑛, dc ) and p𝑛, carrier = softmax 𝑘 (ℓ𝑛, carrier ) denote the head probabilities, with the carrier softmax taken along the carrier-service axis at each fixed DC. The selection loss Lsel supervises both heads against the primary labels ( 𝑗 𝑛, ∗, 𝑘 𝑛, ∗) via the negative log-likelihood of the labeled pair under the hierarchical predicted distribution (equivalently, the categorical cross-entropy on the unnormalized logits), with separate weights on the DC and conditional-carrier terms: 
+
+L𝑛  
+
+> sel
+
+= −𝜆 sel 
+
+
+
+log 𝑝 𝑛, dc  
+
+> 𝑗 𝑛, ∗
+
++ 𝜆 carrier log 𝑝 𝑛, carrier  
+
+> 𝑗 𝑛, ∗, 𝑘 𝑛, ∗
+
+
+
+.
+
+10 Here 𝜆 sel scales the overall selection weight and 𝜆 carrier scales the relative importance of the conditional carrier signal. 
+
+Constraint Loss. The one-hot DC assignment a𝑛 ∈ { 0, 1}| J | is drawn from the DC logits via the Straight-Through Gumbel-Softmax (ST-GumbelSoftmax) estimator of Jang et al. (2017): a𝑛 is the one-hot encoding of arg max 𝑗 (ℓ𝑛, dc  
+
+> 𝑗
+
++𝑔 𝑗 ) with independent and identically distributed (i.i.d.) standard Gumbel noise 𝑔 𝑗 , but its gradient is computed as if a𝑛 equaled the temperature-𝜏 softmax softmax (ℓ𝑛, dc /𝜏 ), so a discrete DC choice can pass to the loss while gradients still flow back through 𝑔 dc . The discrete sample is essential here: evaluating the inventory cap on the soft mass Í 𝑗 𝑝 𝑛, dc  
+
+> 𝑗
+
+min {𝑞 𝑛 , Inv 𝑛 𝑗 } instead would let a hedge between an infeasible primary and a feasible secondary DC escape penalty. Two feasibility requirements in Z𝑡 bind on the DC selected by a𝑛 : the per-DC inventory cap ( Í𝑘 𝑧 𝑗,𝑘 ≤ Inv 𝑛 𝑗 )and the demand-satisfaction requirement that the requested quantity 𝑞 𝑛 be served. The constraint penalty Lconst 
+
+encodes both as the demand shortfall after each DC’s allocation is capped by its on-hand inventory: 
+
+L𝑛  
+
+> const
+
+= 𝜆 const 
+
+
+
+𝑞 𝑛 −∑︁  
+
+> 𝑗 ∈ J
+
+min 𝑞 𝑛 𝑎 𝑛 𝑗 , Inv 𝑛 𝑗 
+
+
+
+> +
+
+,
+
+where [𝑥 ]+ = max (0, 𝑥 ) and 𝜆 const scales the penalty. Because a𝑛 is one-hot, the served quantity reduces to min {𝑞 𝑛 , Inv 𝑛 𝑗 ∗ } at the chosen primary DC 𝑗 ∗, so the penalty fires precisely when that DC’s inventory is insufficient. 
+
+Cost-Alignment Loss. The cost-alignment penalty Lcost is a self-supervised regularizer that pulls probability mass toward low-cost (DC, carrier-service) pairs. It operates on the head probabilities (p𝑛, dc , p𝑛, carrier ) defined above, so the gradient flows through a smooth surface. Letting 𝑐 𝑛 𝑗,𝑘, 𝜔 be the realized immediate fulfillment cost for option ( 𝑗, 𝑘 ) under scenario 𝜔 (shipping plus delivery-time penalty, no second-stage recourse) drawn from 
+
+𝛀 𝑛 
+
+> cost
+
+, the term computes the expected immediate cost under the predicted joint 𝑝 𝑛, dc  
+
+> 𝑗
+
+𝑝 𝑛, carrier  
+
+> 𝑗,𝑘
+
+:
+
+L𝑛  
+
+> cost
+
+= 𝜆 cost 
+
+1
+
+𝐸 
+
+> 𝐸
+
+∑︁ 
+
+> 𝜔 =1
+
+∑︁ 𝑗 ∈ J ∑︁ 𝑘 ∈ K 
+
+𝑝 𝑛, dc  
+
+> 𝑗
+
+𝑝 𝑛, carrier  
+
+> 𝑗,𝑘
+
+𝑐 𝑛 𝑗,𝑘, 𝜔 .
+
+4.2.4 Feasible Inference via Inventory-Weighted Decoding 
+
+At an online epoch 𝑡 , the trained proxy first maps the current context and sampled scenarios to the same hierarchical logits used during training, 
+
+(ℓdc , ℓcarrier ) = 𝑓 𝜃 
+
+
+
+X𝑡 
+
+> ord
+
+, {X𝑡  
+
+> dc , 𝑗
+
+} 𝑗 ∈ J , {X𝑡  
+
+> cost , 𝑗,𝑘
+
+} 𝑗,𝑘 , 𝛀 𝑡 
+
+> dem
+
+, 𝛀 𝑡 
+
+> time
+
+
+
+,
+
+and converts them to probabilities pdc = softmax (ℓdc ) and pcarrier = softmax 𝑘 (ℓcarrier ). These probabilities are not used directly as fractional decisions. Instead, the decoder reweights each DC’s predicted probability by the fractional coverage that the DC can offer for the current line: for a product line with requested quantity 𝑞 𝑡 ,
+
+𝑟 𝑡 𝑗 = min {Inv 𝑡 𝑗 /𝑞 𝑡 , 1}, 𝑠 𝑡 𝑗 = 𝑝 dc  
+
+> 𝑗
+
+𝑟 𝑡 𝑗 ,
+
+where 𝑟 𝑡 𝑗 ∈ [ 0, 1] leaves a fully-covering DC undisturbed and discounts a partially-covering one in proportion to its coverage. The reweighting approximates the second-stage recourse cost 𝑄 that the training loss does not directly model: depleting a DC whose stock barely covers the current line raises the likelihood of a costly split or stockout on a future order that the same DC could have served, so steering volume toward DCs with healthier inventory buffers preserves serviceability over the horizon. The score 𝑠 𝑡 𝑗 also softens the single-DC preference learned through Lconst , allowing multi-DC splits when shortages require them. 11 The decoder then sorts eligible DCs by 𝑠 𝑡 𝑗 and scans them greedily. For each visited DC, it chooses the highest-probability eligible carrier service and assigns as much residual demand as inventory permits, where K𝑡 𝑗 
+
+denotes the set of carrier services eligible at DC 𝑗 at epoch 𝑡 :
+
+𝑘 ∗ ( 𝑗 ) ∈ arg max  
+
+> 𝑘 ∈ K 𝑡 𝑗
+
+𝑝 carrier  
+
+> 𝑗,𝑘
+
+, 𝑥 𝑡 𝑗 = min {𝑞 𝑡 
+
+> rem
+
+, Inv 𝑡 𝑗 }, 𝑧 proxy ,𝑡 𝑗,𝑘 ∗ ( 𝑗 ) = 𝑥 𝑡 𝑗 .
+
+The residual 𝑞 𝑡  
+
+> rem
+
+(the quantity of the line not yet assigned, initialized to the requested quantity 𝑞 𝑡 ) is updated after each assignment, and any remaining quantity becomes unmet demand 𝑢 proxy ,𝑡 . Thus the learned probabilities determine the ordering and carrier choice, while the decoder enforces the demand-allocation, inventory, and eligibility constraints in Z𝑡 𝑖 corresponding to the product-line 𝑖 restriction of Z𝑡 , which can be defined as 
+
+Z𝑡 𝑖 = {( z𝑡 , u𝑡 ) ∈ Z| J | | K | + × Z+ : Í 𝑗 ∈ J 
+
+Í𝑘 ∈ K 𝑧 𝑡 𝑗,𝑘 + 𝑢 𝑡 = 𝑞 𝑡 ; Í𝑘 ∈ K 𝑧 𝑡 𝑗,𝑘 ≤ Inv 𝑡 𝑗 , 𝑗 ∈ J } . Algorithm 1 summarizes the end-to-end online inference procedure for one product line. 
+
+Algorithm 1 End-to-end online inference for one product line 𝑖 : 𝑓 𝜃 maps context and scenarios to logits, and the inventory-weighted decoder returns a feasible decision in Z𝑡 𝑖 (the product-line restriction of Z𝑡 ). 
+
+Require: Order context X𝑡 
+
+> ord
+
+, per-DC features {X𝑡  
+
+> dc , 𝑗
+
+} 𝑗 ∈ J , per-option features {X𝑡  
+
+> cost , 𝑗,𝑘
+
+} 𝑗 ∈ J , 𝑘 ∈ K , sampled scenarios 𝛀 𝑡 
+
+> dem
+
+, 𝛀 𝑡 
+
+> time
+
+, requested quantity 𝑞 𝑡 ∈ Z+, inventories {Inv 𝑡 𝑗 ∈ Z+} 𝑗 ∈ J , eligibility sets {K 𝑡 𝑗 ⊆ K} 𝑗 ∈ J .
+
+Ensure: Feasible decision (zproxy ,𝑡 , 𝑢 proxy ,𝑡 ) ∈ Z 𝑡 𝑖 . 
+
+> 1:
+
+(ℓdc , ℓcarrier ) ← 𝑓 𝜃 
+
+ X𝑡 
+
+> ord
+
+, {X𝑡  
+
+> dc , 𝑗
+
+}, {X𝑡  
+
+> cost , 𝑗,𝑘
+
+}, 𝛀 𝑡 
+
+> dem
+
+, 𝛀 𝑡 
+
+> time
+
+ ⊲ forward pass  
+
+> 2:
+
+pdc ← softmax (ℓdc ); pcarrier ← softmax 𝑘 (ℓcarrier ) 
+
+> 3:
+
+For each 𝑗 ∈ J : 𝑟 𝑡 𝑗 ← min {Inv 𝑡 𝑗 /𝑞 𝑡 , 1}; 𝑠 𝑡 𝑗 ← 𝑝 dc  
+
+> 𝑗
+
+𝑟 𝑡 𝑗 ⊲ inventory-weighted score  
+
+> 4:
+
+J elig ← { 𝑗 ∈ J : Inv 𝑡 𝑗 > 0, K𝑡 𝑗 ≠ ∅} , sorted by 𝑠 𝑡 𝑗 in decreasing order  
+
+> 5:
+
+𝑞 rem ← 𝑞 𝑡 ; 𝑧 proxy ,𝑡 𝑗,𝑘 ← 0 for all ( 𝑗, 𝑘 ) ∈ J × K  
+
+> 6:
+
+for 𝑗 in J elig while 𝑞 rem > 0 do  
+
+> 7:
+
+𝑥 𝑗 ← min {𝑞 rem , Inv 𝑡 𝑗 } 
+
+> 8:
+
+𝑘 ∗ ( 𝑗 ) ← arg max 𝑘 ∈ K 𝑡 𝑗 𝑝 carrier  
+
+> 𝑗,𝑘
+> 9:
+
+𝑧 proxy ,𝑡 𝑗,𝑘 ∗ ( 𝑗 ) ← 𝑥 𝑗 ; 𝑞 rem ← 𝑞 rem − 𝑥 𝑗  
+
+> 10:
+
+end for  
+
+> 11:
+
+𝑢 proxy ,𝑡 ← 𝑞 rem  
+
+> 12:
+
+return (zproxy ,𝑡 , 𝑢 proxy ,𝑡 )
+
+Proposition 1 establishes feasibility, runtime, and policy-value estimation properties of the proposed frame-work. 
+
+Proposition 1 (Feasibility, Runtime, and Policy-Value Bound) . For each product line, Algorithm 1 returns a feasible decision in Z𝑡 𝑖 and runs in 𝑂 (|J | log |J | + Í 𝑗 |K 𝑡 𝑗 |) time, or 𝑂 (|J | log |J | + |J ||K |) when every carrier is eligible at every DC. Since Z𝑡 = Î𝑖 ∈ I Z𝑡 𝑖 , concatenating the per-product decisions gives (zproxy ,𝑡 , uproxy ,𝑡 ) ∈ Z𝑡 . Define 𝑓 𝑡  
+
+> proxy
+
+:= E
+
+h
+
+𝐶 (zproxy ,𝑡 , uproxy ,𝑡 , ˜𝚫 𝑡 ) + 𝑄 (zproxy ,𝑡 , ˜D𝑡 ) X𝑡 
+
+i
+
+, where the expectation is taken jointly over 
+
+( ˜𝚫 𝑡 , ˜D𝑡 ). Then 𝑓 𝑡  
+
+> proxy
+
+upper-bounds the optimal objective value of the two-stage contextual stochastic program (1) 
+
+at epoch 𝑡 .
+
+Proof. Since the constraints in Z𝑡 are separable across products with Z𝑡 = Î𝑖 ∈ I Z𝑡 𝑖 , and the order-level decision concatenates per-product outputs of Algorithm 1, it suffices to verify (zproxy ,𝑡 𝑖 , 𝑢 proxy ,𝑡 𝑖 ) ∈ Z 𝑡 𝑖 for the product 𝑖 .Each loop iteration assigns an integer 𝑥 𝑗 = min {𝑞 rem , Inv 𝑡 𝑗 } ≤ Inv 𝑡 𝑗 to a single carrier at a previously unvisited 𝑗 ,so Í𝑘 𝑧 proxy ,𝑡 𝑗,𝑘 ≤ Inv 𝑡 𝑗 , and the loop invariant 𝑞 𝑡 = 𝑞 rem + Í 𝑗 𝑥 𝑗 gives Í 𝑗,𝑘 𝑧 proxy ,𝑡 𝑗,𝑘 + 𝑢 proxy ,𝑡 = 𝑞 𝑡 on termination. Hence (zproxy ,𝑡 , uproxy ,𝑡 ) ∈ Z 𝑡 . Then, by utilizing this feasible solution, an upper bound can be constructed as 
+
+𝑓 𝑡  
+
+> proxy
+
+= E[ 𝐶 (zproxy ,𝑡 , uproxy ,𝑡 , ˜𝚫 𝑡 ) + 𝑄 (zproxy ,𝑡 , ˜D𝑡 ) | X𝑡 ] ≥ min (z,u) ∈ Z 𝑡 E[ 𝐶 (z, u, ˜𝚫 𝑡 ) + 𝑄 (z, ˜D𝑡 ) | X𝑡 ].12 For runtime, sorting eligible DCs by 𝑠 𝑡 𝑗 costs 𝑂 (|J | log |J |) . The allocation scan over sorted DCs costs 
+
+𝑂 (|J |) , and selecting 𝑘 ∗ ( 𝑗 ) scans the eligible carrier sets at total cost Í 𝑗 |K 𝑡 𝑗 |. Thus, the decoder costs 
+
+𝑂 (|J | log |J | + Í 𝑗 |K 𝑡 𝑗 |) , showing the desired result. When all carriers are eligible at all DCs, Í 𝑗 |K 𝑡 𝑗 | = |J ||K | .
+
+□
+
+To evaluate the policy obtained in practice, an independent out-of-sample scenario set can be utilized. The following remark clarifies the statistical interpretation of this evaluation procedure. 
+
+Remark 1. To estimate the expected performance of the policy (zproxy ,𝑡 , uproxy ,𝑡 ) returned by Algorithm 1 at epoch 𝑡 , consider an independent scenario set Ω𝑡 𝑁 2 = {𝜔 ℓ }𝑁 2 
+
+> ℓ=1
+
+where the scenarios are drawn i.i.d. from an evaluation distribution Q(· | 𝑋 𝑡 ) and each scenario 𝜔 ∈ Ω𝑡 𝑁 2 specifies a joint realization (𝚫 𝑡 𝜔 , D𝑡 𝜔 ). Let 
+
+𝑌 𝑡 𝜔 := 𝐶 (zproxy ,𝑡 , uproxy ,𝑡 , 𝚫 𝑡 𝜔 ) + 𝑄 (zproxy ,𝑡 , D𝑡 𝜔 ). Assuming EQ [ ( 𝑌 𝑡 𝜔 )2 | X𝑡 ] < ∞, the sample-average estimator ¯𝑓 proxy  
+
+> 𝑡
+
+= 1
+
+> 𝑁 2
+
+Í𝜔 ∈Ω𝑡 𝑁 2
+
+𝑌 𝑡 𝜔 is unbiased for the conditional policy value EQ [ 𝑌 𝑡 𝜔 | X𝑡 ] and converges almost surely to this value as 𝑁 2 → ∞ . For 𝑁 2 ≥ 2, (𝑠 𝑡 
+
+> proxy
+
+)2 = 1 
+
+> 𝑁 2−1
+
+Í𝜔 ∈Ω𝑡 𝑁 2
+
+(𝑌 𝑡 𝜔 − ¯𝑓 proxy  
+
+> 𝑡
+
+)2 is unbiased and consistent for Var Q (𝑌 𝑡 𝜔 | X𝑡 ).
+
+4.3 Training Data Collection and Model Selection 
+
+This Section describes the experimental protocol used to generate proxy-training labels and evaluate out-of-sample policy performance. The training horizon spans three consecutive weeks, partitioned chronologically: the initial two weeks form the forecast training split Dfcast , the third week constitutes the proxy training split Dproxy , and a held-out fourth week is used for online evaluation. Forecasters are trained on Dfcast alone, with no exposure to Dproxy or the evaluation week to prevent leakage into labels or test; they then generate context-conditional scenarios for each order in Dproxy , and C-SAA solves the resulting instances against the inventory state at each order’s arrival epoch to produce the C-SAA-optimal label z𝑛, ∗ (optimal over the finite scenario sample, not the true conditional distribution). The same scenario tensors feed both C-SAA (for labels) and the proxy (as inputs), so the proxy is trained on the uncertainty distribution that produced its labels. The proxy is then trained on Dproxy with hierarchical location-carrier labels ( 𝑗 𝑛, ∗, 𝑘 𝑛, ∗) extracted from z𝑛, ∗.Before the final evaluation, the forecasters are refitted on Dtrain = Dfcast ∪ D proxy for deployment fidelity; the proxy itself is not retrained. A temporal subset of Dproxy is held out as a validation set, and the proxy checkpoint is selected by Hit@5, defined as the rate at which the C-SAA-chosen (DC, carrier) pair appears in the proxy’s top-five predicted options. Top-five is used because multiple near-optimal pairs typically exist per instance, and at deployment the inventory-weighted decoder reshuffles top-ranked options against real-time inventory. 
+
+# 5 Computational Study 
+
+The proxy is evaluated in a simulated online environment built from JD.com transaction records (Shen et al. 2024), with independent daily instances spanning the 06:00–18:00 peak operational window. The planning horizon T
+
+corresponds to this window, and second-stage demand ˜D𝑡 aggregates remaining intra-day arrivals from the demand forecaster’s 24-hour rolling output. Inventory and queue states are reinitialized each day from historical demand parameters with no intra-day replenishment. The primary metric is cumulative realized objective value, comprising base shipping cost, delivery-time penalties, multi-unit consolidation discounts, and stockout penalties. Late delivery percentage and cumulative lateness are reported as service-level metrics. Because the public JD.com release is dominated by a single carrier and lacks exact facility coordinates, the dataset is augmented with a synthetic multi-carrier-service layer and synthetic geocoordinates, calibrated against a separate proprietary multi-carrier dataset. Preprocessing, calibration, and instance construction are detailed in Appendices C and D. The first three weeks supply training data and the final week is held out for online evaluation. A counterfactual simulator generates calibrated delivery-time realizations for unobserved fulfillment decisions (Ye et al. 2025a), and all reported metrics average 50 independent simulation runs. 13 Evaluation proceeds order by order in rolling-horizon fashion, with the inventory state updated after each decision. The C-SAA solver uses Gurobi 13.0.1 with four threads per instance, 𝑆 = 10 candidate solutions at 𝑁 1 = 50 scenarios each, common-set evaluation on 𝑁 2 = 500 scenarios, and a 0.01% relative MIP gap. Experiments ran on a shared HPC cluster (RHEL 9.6, dual Intel Xeon Gold 6226 at 2.7 GHz, NVIDIA RTX 6000 GPUs). 
+
+5.1 Comparative Analysis 
+
+The proxy and the online C-SAA solver are compared against five baselines covering heuristic, point-forecast, and benchmark fulfillment approaches. The first three baselines are extended to the sequential setting from Ye et al. (2025a). 
+
+• Greedy: minimizes the item-specific base shipping cost 𝑐 ship  
+
+> 𝑖, 𝑗,𝑘
+
+for each product 𝑖 and ignores stochastic delivery-time deviations. It mirrors the common practice of always sourcing from the cheapest feasible option. 
+
+• Predict-Then-Optimize (PTO): substitutes P(· | X𝑡 ) with its conditional mean and solves the deterministic equivalent. It is a forecast-driven policy that acts on expected values and ignores the spread of uncertainty. 
+
+• Empirical-SAA: samples 𝛀 𝑡 uniformly from the historical unconditional empirical distributions, ignoring contextual signals. It accounts for uncertainty but not for the context of the specific order. 
+
+• Deterministic LP (DTLP) (Acimovic and Graves 2015): solves a linear program on a demand forecast to obtain dual prices that value the future opportunity cost of consuming inventory, then fulfills each arriving order against those prices. 
+
+• Primal-Dual (Andrews et al. 2019): maintains dual prices on inventory and updates them online as orders arrive, without relying on a demand forecast. Table 1 reports aggregate out-of-sample performance over the test week: the total realized objective (base shipping cost, delivery-time penalties, consolidation discounts, and stockout penalties), the average late-delivery rate and cumulative lateness, the per-order runtime, and the 𝑞 50 –𝑞 95 quantiles of each. In the calibrated simulation environment, the proxy attains a total objective of 829 ,805, improving on the online finite-sample C-SAA reference (857 ,892) by 3.3%. The average late delivery rate falls from 5.71% to 4.93%, and the daily gap is stable. The proxy’s edge over its own labels reflects scenario-noise averaging. The C-SAA reference at 
+
+(𝑆, 𝑁 1, 𝑁 2) = (10 , 50 , 500 ) is itself exposed to scenario generation error, finite-𝑁 1 sampling variance, and two-stage aggregation bias, while the proxy averages over the full corpus of these noisy labels with Lcost as a structural regularizer. The proxy improves on C-SAA in aggregate but can lag where C-SAA’s finite sample lands near the true optimum, as on the largest tier in Table 2. A higher-budget C-SAA may narrow the aggregate gap. Deterministic and point-prediction baselines lag substantially: Greedy reaches 928 ,970 with a 9.80% late rate, and PTO and Empirical-SAA both exceed 1 ,000 ,000 in objective and 11% in late rate, confirming the value of scenario-aware contextual information (Ye et al. 2025a). The proxy executes each decision in 0.006 seconds, an acceleration above 2 ,800 × over C-SAA’s 17.084 seconds. It is also faster than the simpler Greedy (0.104s) and PTO (0.223s) baselines, fitting within the sub-second latency budgets of high-throughput fulfillment systems. Relative to DTLP, the strongest classical baseline on objective, the proxy lowers total cost by 10 .7% (829 ,805 versus 928 ,889) and roughly halves the late-delivery rate (4 .93% versus 9 .77%); the cost gap widens to 48 .7% against the primal-dual algorithm. Both run within the same sub-second budget as the proxy, yet neither matches it on cost or service. The primal-dual algorithm is the fastest method (0 .004s) but the most expensive (objective 1,618 ,102): it updates inventory dual prices online without a demand forecast, so they stay far from what the forecast-based and scenario-aware policies achieve. DTLP performs about as well as greedy on both cost and service (objective 928 ,889; late rate 9 .77%) and runs in 0 .101s. Both price inventory through dual variables but ignore the contextual delivery-time uncertainty that the proxy and C-SAA capture through scenario forecasts, so neither avoids the options likely to ship late, and both leave late rates well above the proxy’s 4 .93%. The proxy outperforms both on every cost and service metric at comparable per-order speed. Figure 5 breaks the realized cost down by date, summing over the orders served each day and averaging across the 50 replications. The proxy stays at or below every baseline on each evaluation date and keeps its margin over 14 Table 1: Aggregate out-of-sample performance for the proxy, the C-SAA reference, and the five fulfillment baselines. Totals, average late rate, and cumulative lateness are means with 95% CIs across the 50 replications; runtimes and quantiles ( 𝑞 50 , 𝑞 75 , 𝑞 90 , 𝑞 95 ) are point estimates. 
+
+Metric Proxy C-SAA DTLP Greedy Empirical-SAA PTO Primal-Dual 
+
+Total Objective Value ( ↓) 829,805.22 ± 3,591.60 857,892.49 ± 3,397.22 928,889.34 ± 3,587.17 928,970.28 ± 4,066.40 1,015,540.50 ± 3,818.07 1,021,986.33 ± 3,751.13 1,618,102.13 ± 3,204.83 Avg Late Delivery Rate (%) ( ↓) 4.93 ± 0.07 5.71 ± 0.08 9.77 ± 0.08 9.80 ± 0.08 11.12 ± 0.08 12.46 ± 0.09 8.93 ± 0.07 Avg Cumulative Lateness ( ↓) 0.122 ± 0.002 0.132 ± 0.002 0.191 ± 0.002 0.191 ± 0.003 0.226 ± 0.002 0.229 ± 0.002 0.172 ± 0.002 Avg Run Time (s) ( ↓) 0.006 17.084 0.101 0.104 16.546 0.223 0.004 Objective q50 ( ↓) 828,623.86 856,328.63 927,611.38 925,307.78 1,015,155.68 1,022,939.95 1,616,524.13 Objective q75 ( ↓) 836,647.11 863,805.48 934,345.23 936,506.18 1,021,156.23 1,028,017.25 1,625,064.43 Objective q90 ( ↓) 841,212.72 868,645.43 943,459.70 951,517.40 1,034,531.14 1,032,943.11 1,631,733.95 Objective q95 ( ↓) 852,203.32 883,859.23 952,590.11 959,385.00 1,039,722.57 1,046,086.78 1,636,044.90 Late Delivery q50 (%) ( ↓) 4.87 5.70 9.74 9.76 11.07 12.45 8.90 Late Delivery q75 (%) ( ↓) 5.03 5.86 9.92 9.92 11.26 12.69 9.07 Late Delivery q90 (%) ( ↓) 5.22 6.02 10.10 10.19 11.42 12.78 9.25 Late Delivery q95 (%) ( ↓) 5.34 6.07 10.28 10.41 11.61 12.89 9.39 Cumulative Lateness q50 ( ↓) 0.121 0.131 0.190 0.189 0.225 0.230 0.171 Cumulative Lateness q75 ( ↓) 0.126 0.136 0.194 0.196 0.229 0.233 0.177 Cumulative Lateness q90 ( ↓) 0.129 0.139 0.200 0.206 0.238 0.236 0.181 Cumulative Lateness q95 ( ↓) 0.137 0.149 0.206 0.211 0.241 0.245 0.184 2018-03-26 
+
+> 2018-03-27
+> 2018-03-28
+> 2018-03-29
+> 2018-03-30
+> 2018-03-31
+
+0
+
+50000 
+
+100000 
+
+150000 
+
+200000 
+
+250000 
+
+300000 
+
+350000 
+
+400000 
+
+> Total realized cost
+
+Total realized cost across dates (95% CI) 
+
+Proxy 
+
+C-SAA 
+
+DTLP 
+
+Greedy 
+
+Empirical-SAA 
+
+PTO 
+
+Primal-Dual 
+
+Figure 5: Total realized fulfillment cost by evaluation date, summed over orders served each day and averaged across the 50 replications. the baseline policies across the week. 
+
+5.2 Computational Scalability 
+
+This Section highlights the computational performance of the proposed proxy against the baseline C-SAA approach by examining its scalability in terms of number of scenarios and size of the instances considered. 15 5.2.1 Scenario Size Scalability 
+
+Figure 6 reports solution quality and latency as the scenario sample size 𝑁 1 varies. For the C-SAA solver, total objective value decreases monotonically with 𝑁 1, but average runtime grows roughly linearly to about 30 seconds at 𝑁 1 = 90. The proxy, by contrast, attains its minimum objective at the training value 𝑁 1 = 50 and degrades little for larger 𝑁 1, with per-decision latency remaining near 0.006 seconds across the tested 𝑁 1 range. 10 20 30 40 50 60 70 80 90 
+
+> Scenario size
+> 820000
+> 840000
+> 860000
+> 880000
+> 900000
+> 920000
+> Total objective value
+> 0
+> 5000
+> 10000
+> 15000
+> 20000
+> 25000
+> 30000
+> Avg policy runtime (ms)
+> Proxy runtime
+> 4.8 ms avg
+> [3.9, 5.9] ms
+> Scenario sensitivity: objective and runtime vs scenario size
+> CSAA obj
+> Proxy obj
+> CSAA runtime
+> Proxy runtime
+
+Figure 6: Scenario Size Sensitivity. 
+
+5.2.2 Instance Size Scalability 
+
+Table 2 stratifies the test evaluation set by combinatorial complexity, defined as the product of the order quantity and the total number of eligible fulfillment options. As instance size grows, the C-SAA solver’s runtime increases from roughly 15 to 27 seconds, while the proxy’s per-decision time stays near 0.006 seconds across the tested tiers. On the largest instances the C-SAA point estimate is marginally lower than the proxy’s, but the 95% confidence intervals overlap, so the two are statistically indistinguishable on that tier. The proxy maintains a lower late delivery rate across all tiers. Table 2: Out-of-sample performance stratified by instance size, defined as the product of the order quantity and total eligible fulfillment options. Size tiers use 𝑘 -means on a log scale with boundaries at 1 ,026 and 1 ,927 options. 
+
+Size Method Orders Size Range Avg Runtime (s) Avg Obj / Order ( ± CI95) Late % ( ± CI95) Cum. Late ( ± CI95) 
+
+Small C-SAA 31,435 599–1,026 15.479 14.86 ± 0.07 5.444 ± 0.074 0.097 ± 0.002 Proxy 0.006 14.16 ± 0.07 4.682 ± 0.071 0.087 ± 0.002 Medium C-SAA 5,853 1,026–1,927 23.880 44.53 ± 0.21 6.618 ± 0.124 0.221 ± 0.005 Proxy 0.006 43.30 ± 0.17 5.738 ± 0.100 0.196 ± 0.004 Large C-SAA 1,128 1,927–139,600 26.633 115.48 ± 1.04 8.249 ± 0.220 0.665 ± 0.026 Proxy 0.006 116.38 ± 1.15 7.513 ± 0.184 0.721 ± 0.029 
+
+5.3 Proxy Ablations 
+
+An ablation study quantifies the contribution of individual framework components across the neural archi-tecture, loss formulation, and inference strategy. Aggregate impacts on objective cost and service reliability are summarized in Tables 3, 4, and 5. These ablations also stand in for natural learning-based baselines: 16 no cost loss (imitation-heavy, drops Lcost ), no selection loss (cost-only, drops solver-label supervision), and no scenario module (no-scenario proxy, same decoder). All are inferior to the full model on objective cost. 
+
+Architecture and Features: Table 3 confirms the value of the hierarchical, multimodal design. Removing the DC module ( no dc module ) strips location-specific features and inventory state, costing 11.7% in objective and pushing the late rate to 5.45%. Flattening the heads ( single tower ) costs 11.2% in objective with a comparable late rate, indicating that joint heads sacrifice cost economies for speed. Removing the scenario module ( no scenario module ) forces the proxy onto deterministic features and produces a consistent cost increase. Table 3: Impact of architectural components on out-of-sample performance (means ± 95% CIs). 
+
+Metric full model no scenario module single tower no dc module Objective Total 829,805.22 ± 3,591.60 831,981.53 ± 3,307.30 922,693.47 ± 3,270.59 926,661.69 ± 3,579.82 
+
+Late Delivery % 4.93 ± 0.07 4.86 ± 0.08 4.55 ± 0.07 5.45 ± 0.07 
+
+Cumulative Lateness 0.122 ± 0.002 0.125 ± 0.002 0.115 ± 0.002 0.136 ± 0.002 
+
+Loss Formulation: Table 4 isolates the contribution of each composite-loss term. Removing the selection loss (no selection loss ) costs 3.7% in objective, showing that direct cost-based training alone, without C-SAA label supervision, is insufficient. Removing the cost-alignment term Lcost costs 3.2% in objective and pushes the late rate to 5.63%, isolating its role in smoothing expected scenario costs and consistent with the proxy’s improvement over the finite-sample C-SAA solver. Removing the constraint loss Lconst costs 1.8% in objective with comparable service-level degradation, confirming its role in shaping operationally feasible primary-DC commitments before decoding. Table 4: Impact of loss function components on out-of-sample performance (means ± 95% CIs). 
+
+Metric full model no constraint loss no cost loss no selection loss Objective Total 829,805.22 ± 3,591.60 845,144.16 ± 3,743.72 856,460.94 ± 3,514.36 860,285.99 ± 3,490.07 
+
+Late Delivery % 4.93 ± 0.07 5.62 ± 0.08 5.63 ± 0.07 5.24 ± 0.07 
+
+Cumulative Lateness 0.122 ± 0.002 0.134 ± 0.002 0.139 ± 0.002 0.128 ± 0.002 
+
+Inference Strategy: Table 5 compares the proposed Inv-Weighted decoder against four alternative decoders specified in Appendix G.4. Inv-Weighted and Greedy-Prob are within 0.1% of each other in objective, but Greedy-Prob lacks the explicit bias toward fully feasible first choices that Inv-Weighted ’s inventory-adequacy ratio 𝑟 𝑡 𝑗 provides. Hard-feasibility filters ( Top-K-Feasible-DC , Feasible-DC-First ) lose ground because they discard high-probability DCs that fall marginally short of full coverage. The joint-space search (Top-K-Feasible-Joint ) breaks the factorized hierarchy and produces a 30.1% cost explosion with a late rate above 11%. Table 5: Impact of inference strategies on out-of-sample performance (means ± 95% CIs).                                                   
+
+> Metric Inv-Weighted Top-K-Feasible-DC Greedy-Prob Feasible-DC-First Top-K-Feasible-Joint Objective Total 829,805.22 ±3,591.60 830,412.57 ±3,490.95 830,527.60 ±3,430.36 837,853.57 ±3,244.52 1,079,642.16 ±3,500.57
+> Late Delivery % 4.93 ±0.07 4.93 ±0.07 4.93 ±0.07 4.93 ±0.08 11.75 ±0.07
+> Cumulative Lateness 0.122 ±0.002 0.122 ±0.002 0.122 ±0.002 0.127 ±0.002 0.247 ±0.002
+
+17 5.4 Managerial Insights 
+
+The computational study suggests four practical implications for large omnichannel fulfillment networks. First, the main value of the proposed approach is not just faster execution. By shifting solver compute offline, stochastic fulfillment can be deployed in real time: offline solver-based solutions supervise a learned policy that then runs online in milliseconds. Second, scenario-aware methods materially outperformed point-estimate baselines on realized cost, so scenario generation is a primary modeling lever rather than a peripheral forecasting step. Third, the inference-strategy ablation shows that how predictive outputs are translated into feasible actions has a measurable effect on realized cost and service, so inventory-aware feasible inference belongs in the policy rather than in post-processing. Finally, the results support a hybrid operating model. The learned proxy serves high-throughput real-time traffic where latency precludes online stochastic optimization, and online C-SAA remains useful for offline policy generation and selected high-stakes orders. 
+
+# 6 Conclusion 
+
+This paper formulated online omnichannel order fulfillment as a two-stage contextual stochastic program and addressed the latency of its mixed-integer C-SAA reformulation through a scenario-embedded hierarchical opti-mization proxy paired with an inventory-weighted feasibility decoder. The network maps context and scenarios to distribution-center and carrier-service logits in a single forward pass, and the decoder turns them into a feasible per-order plan. The composite training loss augments solver-label imitation with a constraint-violation penalty and a self-supervised cost-alignment term, so the trained proxy can match or improve upon its finite-sample C-SAA reference under the same scenario forecaster. Theoretical analysis establishes that the decoder returns a feasible decision in 𝑂 (|J | log |J | + |J ||K |) time per product line, that its expected cost upper-bounds the two-stage stochastic optimum, and that its out-of-sample value admits unbiased, consistent sample-mean and sample-variance estimators. The study on a simulator built from JD.com transactional records evaluated the proxy against online C-SAA and heuristic baselines under a common fitted forecaster. The proxy reduced per-order decision latency by roughly 2,800 × relative to online finite-sample C-SAA and ran in constant time as scenario density grew, whereas C-SAA latency scaled linearly. On realized fulfillment cost the proxy improved over the same reference by 3 .3%, with the strongest gains on small-to-medium instances and statistical parity on the largest tier. Several limitations point to natural extensions. The per-product-line decomposition keeps inference fast but captures the multi-line consolidation discount only indirectly through the jointly optimized C-SAA labels. An end-to-end architecture would broaden applicability to multi-item baskets. The second-stage recourse aggregates intra-day demand into a single approximation and would benefit from finer multi-period coupling. Methodolog-ically, extending the uncertainty quantification of the demand and delivery-time forecasters, for instance through conformal prediction or distributionally robust forecasting, would supply coverage guarantees on the sampled scenarios under distribution shift. 
+
+# Acknowledgments 
+
+This research was supported by the NSF AI Institute for Advances in Optimization (Award 2112533). 
+
+# A Nomenclature 
+
+Table A.1 summarizes the notation, sets, and mathematical operators employed throughout this paper. 18 Table A.1: Summary of Notation and Symbols 
+
+Symbol Description 
+
+Sets, indices, horizon 
+
+T = {1, . . . , 𝑇 } Planning horizon consisting of 𝑇 epochs, where 𝑡 indexes individual epochs. 
+
+I, 𝑖, 𝐼 =|I| Set of products with index 𝑖 and cardinality 𝐼 .
+
+J , 𝑗, 𝐽 =|J | Fulfillment locations (distribution centers) with index 𝑗 and cardinality 𝐽 .
+
+K, 𝑘, 𝐾 =|K | Set of carrier services with index 𝑘 and cardinality 𝐾 .
+
+X Contextual covariate space. ˜Ω𝑡 , 𝐸 , 𝑁 1, 𝑁 2, 𝑆 𝐸 sampled scenarios at epoch 𝑡 . C-SAA generates 𝑆 candidate first-stage decisions on independent samples of size 𝑁 1 each, and evaluates them on a common sample of size 
+
+𝑁 2 ≫ 𝑁 1.˜Ω𝑡 𝑖, dem , ˜Ω𝑡 𝑗,𝑘, time Per-product demand scenarios and per-(DC, carrier) delivery-time scenarios at epoch 
+
+𝑡 , respectively. 
+
+N, 𝑛 Training set of offline historical order instances indexed by 𝑛 .
+
+Order, state, inventory 
+
+𝑞 𝑡 , 𝑞 𝑛 Units requested for the product line at epoch 𝑡 (online) or instance 𝑛 (offline). Inv 𝑡 𝑖, 𝑗 , Inv 𝑛 𝑗 On-hand inventory level at location 𝑗 for product 𝑖 during epoch 𝑡 (online) or for instance 𝑛 (offline). 
+
+Inv 𝑛 Vector form of on-hand inventory across J for instance 𝑛 .
+
+X𝑡 Contextual features observed at epoch 𝑡 .
+
+Decisions 
+
+z𝑡 First-stage fulfillment decision for the order at epoch 𝑡 , specifying the units of product 
+
+𝑖 from location 𝑗 via carrier 𝑘 .
+
+u𝑡 Stockout slack decision representing unfulfilled units at epoch 𝑡 .
+
+Z𝑡 Feasible decision space for the fulfillment problem at epoch 𝑡 .
+
+v𝑡 , w𝑡 Aggregated second-stage fulfillment and stockout decisions for future periods. 
+
+v𝑡 𝜔 , w𝑡 𝜔 Second-stage allocation and stockout decisions under scenario 𝜔 .
+
+zproxy ,𝑡 First-stage fulfillment decision generated by the neural optimization proxy. 
+
+Uncertain parameters 
+
+˜𝚫 𝑡 This random vector represents delivery-time deviations when an order is served from location 𝑗 via carrier 𝑘 .
+
+Δ𝑡 𝑗,𝑘 Realized delivery-time deviation, where positive values indicate lateness and negative values indicate early delivery. ˜D𝑡 This random vector represents the cumulative future demand from epoch 𝑡 + 1 to 𝑇 .
+
+𝚫 𝑡 𝜔 , 𝐷 𝑡 𝑖, 𝜔 Realized delivery-time deviations and future demands under scenario 𝜔 .
+
+Costs and objectives 
+
+𝑐 ship  
+
+> 𝑖, 𝑗,𝑘
+
+Deterministic base shipping cost for product 𝑖 from location 𝑗 via carrier 𝑘 .
+
+𝛽 Consolidation discount applied when multiple units ship from the same location. 
+
+𝛾 +, 𝛾 − Asymmetric unit penalties applied for late and early deliveries, respectively. 
+
+𝜌 Unit penalty associated with stockouts or lost sales. 
+
+𝐶 (z𝑡 , u𝑡 , ˜𝚫 𝑡 ) Per-epoch cost, including shipping costs, discounts, and stochastic penalties. 
+
+𝑄 (z𝑡 , ˜D𝑡 ) Expected future fulfillment cost in the second stage given the first-stage decision. 
+
+Distributions and operators 
+
+P(· | X𝑡 ) Conditional probability law of the uncertainties given the contextual features. 
+
+[𝑥 ]+ Standard rectified linear unit (ReLU) function defined as max (0, 𝑥 ).vec (·) Flattens a matrix or tensor into a column vector under a fixed (column-major) ordering of its entries. stats (·) Eight-dimensional cross-carrier summary aggregator: mean, minimum, standard de-viation, 90th percentile, best-vs-second gap of base shipping cost over carriers, plus three delivery-penalty statistics over carriers and scenarios. softmax (x)𝑖 Softmax operator softmax (x)𝑖 = exp (𝑥 𝑖 )/ Í 𝑗 exp (𝑥 𝑗 ), mapping a logit vector to the probability simplex. 
+
+Optimization-proxy notation 
+
+Inputs 
+
+19 Symbol Description X𝑛  
+
+> ord
+
+Order-context input at instance 𝑛 : numeric order, calendar, and customer fields together with the SKU and brand categorical identifiers. 
+
+X𝑛  
+
+> dc , 𝑗
+
+Per-DC features at instance 𝑛 : on-hand inventory Inv 𝑛 𝑗 , days-of-supply, region match, consolidation potential, distance, and rolling 2-hour shipping queue statistics, together with the DC categorical identifier. 
+
+X𝑛  
+
+> cost , 𝑗,𝑘
+
+Per-option (DC–carrier) features at instance 𝑛 : the deterministic base shipping cost 
+
+𝑐 ship  
+
+> 𝑗,𝑘
+
+, scenario-derived delivery-penalty summary statistics (mean, standard deviation, and 90th percentile), and the carrier categorical identifier. 
+
+𝛀 𝑛  
+
+> dem
+
+= {𝐷 𝑛 𝜔 }𝐸 𝜔 =1 Sampled cumulative-demand scenarios for the product line of instance 𝑛 .
+
+𝛀 𝑛  
+
+> time
+
+= {𝚫 𝑛 𝜔 }𝐸 𝜔 =1 Sampled delivery-time deviation scenarios; each 𝚫 𝑛 𝜔 ∈ R| J | × | K | .
+
+𝛀 𝑛  
+
+> cost
+
+= {c𝑛 𝜔 }𝐸 𝜔 =1 Realized scenario costs derived from 𝛀 𝑛  
+
+> time
+
+and per-option features, used by the cost-alignment loss. 
+
+𝑗 𝑛, ∗, 𝑘 𝑛, ∗, z𝑛, ∗ Primary location, carrier-service, and full first-stage labels extracted from the C-SAA solution for instance 𝑛 , used as training targets. 
+
+Outputs 
+
+ℓdc ∈ R| J | This vector contains the DC logits returned by the proxy. 
+
+ℓcarrier ∈ R| J | × | K | This matrix contains the carrier-service logits returned by the proxy. 
+
+Learnable parameters 
+
+𝑓 𝜃 , 𝜃 Proxy network and the collection of all learnable weights, including categorical em-bedding tables for SKU, brand, DC, and carrier identifiers. 
+
+𝜙 ord , 𝜙 dc , 𝜙 cost Per-modality embedding MLPs for the order context, per-DC features, and the per-DC cost summary, respectively. 
+
+𝜙 dem scen , 𝜙 time scen Per-scenario encoders for demand and delivery-time samples. 
+
+𝑔 dc , 𝑔 carrier DC and carrier head MLPs. 
+
+Auxiliary values 
+
+eglobal , escen , edc , 𝑗 , ecost , 𝑗 Embeddings produced by the four input modules. 
+
+mdem , mtime Per-branch scenario-pooled embeddings before fusion. 
+
+h 𝑗 Joint per-DC embedding constructed by concatenation. 
+
+pdc , pcarrier These vectors hold the softmax probabilities derived from ℓdc and ℓcarrier .
+
+a𝑛 One-hot sample of ℓdc : hard one-hot in the forward pass, temperature-𝜏 softmax relaxation in the backward pass (Straight-Through Gumbel-Softmax estimator, Jang et al. 2017). 
+
+𝑟 𝑡 𝑗 ∈ [ 0, 1] Inventory adequacy ratio used by the deterministic decoder during inference. 
+
+Loss components and parameters 
+
+Lsel , Lconst , Lcost Composite-loss components: selection (C-SAA-label imitation), constraint penalty (joint demand-balance and inventory-cap shortfall), and self-supervised cost align-ment. 
+
+𝜆 sel , 𝜆 carrier , 𝜆 const , 𝜆 cost These scalars balance the terms in the composite training loss. 
+
+𝜏 Temperature of the softmax relaxation used in the backward pass of a𝑛 .
+
+# B C-SAA Evaluation Procedure 
+
+Algorithm 2 summarizes the resulting candidate-generation and evaluation procedure, where SolveSAA (Ω)
+
+denotes solving (2) with scenario set Ω and returns the first-stage solution and the resulting optimal objective function value. 
+
+# C Fulfillment Instance Setup 
+
+This section details the construction of the daily fulfillment instances, including the generation of feasible options, state initialization, and the composite realized cost structure used in the simulation environment. 20 Algorithm 2 Two-Stage C-SAA with Candidate Solution Generation and Evaluation 
+
+Require: Number of candidates 𝑆 ; generation scenario size 𝑁 1; evaluation scenario size 𝑁 2
+
+Ensure: Selected solution (z𝑡 𝑠 ★ , u𝑡 𝑠 ★ ) and estimated objective ¯ 𝑓 𝑠 ★ 
+
+> 1:
+
+procedure GenerateCandidates (𝑆, 𝑁 1) 
+
+> 2:
+
+for 𝑠 = 1 to 𝑆 do ⊲ Generate candidate solutions  
+
+> 3:
+
+Ω𝑠, 𝑁 1 ← SampleScenarios (𝑁 1) ⊲ Sample demand and delivery-time scenarios  
+
+> 4:
+
+(z𝑡 𝑠 , u𝑡 𝑠 , 𝑓 𝑠, 𝑁 1 ) ← SolveSAA (Ω𝑠, 𝑁 1 ) 
+
+> 5:
+
+end for  
+
+> 6:
+
+return {( z𝑡 𝑠 , u𝑡 𝑠 )} 𝑆 𝑠 =1 
+
+> 7:
+
+end procedure  
+
+> 8:
+
+procedure EvaluateCandidates ({( z𝑡 𝑠 , u𝑡 𝑠 )} 𝑆 𝑠 =1, 𝑁 2) 
+
+> 9:
+
+Ω𝑁 2 ← SampleScenarios (𝑁 2) ⊲ Sample a larger scenario set for evaluation  
+
+> 10:
+
+for 𝑠 = 1 to 𝑆 do ⊲ Evaluate each candidate  
+
+> 11:
+
+for each 𝜔 ∈ Ω𝑁 2 do  
+
+> 12:
+
+𝜙 𝑠, 𝜔 ← 𝑄 (z𝑡 𝑠 , D𝑡 𝜔 ) 
+
+> 13:
+
+end for  
+
+> 14:
+
+¯𝑓 𝑠 ← 1
+
+𝑁 2∑︁ 𝜔 ∈Ω𝑁 2
+
+
+
+𝜙 𝑠, 𝜔 + 𝐶 (z𝑡 𝑠 , u𝑡 𝑠 , 𝚫 𝑡 𝜔 )
+
+
+
+⊲ Estimated expected cost of candidate 𝑠  
+
+> 15:
+
+end for  
+
+> 16:
+
+return { ¯𝑓 𝑠 }𝑆 𝑠 =1 
+
+> 17:
+
+end procedure  
+
+> 18:
+
+{( z𝑡 𝑠 , u𝑡 𝑠 )} 𝑆 𝑠 =1 ← GenerateCandidates (𝑆, 𝑁 1) 
+
+> 19:
+
+{ ¯𝑓 𝑠 }𝑆 𝑠 =1 ← EvaluateCandidates ({( z𝑡 𝑠 , u𝑡 𝑠 )} 𝑆 𝑠 =1, 𝑁 2) 
+
+> 20:
+
+𝑠 ★ ← arg min 𝑠 ∈ { 1,...,𝑆 } ¯𝑓 𝑠 ⊲ Select the best candidate  
+
+> 21:
+
+return (z𝑡 𝑠 ★ , u𝑡 𝑠 ★ , ¯𝑓 𝑠 ★ )
+
+C.1 Simulation Scope and State Initialization 
+
+The simulation environment models independent daily instances rather than a continuous multi-day rolling horizon. At the start of each peak operational window, the system state is freshly initialized, meaning no inventory or queue backlogs carry over between simulation dates. 
+
+• Inventory Initialization: Initial on-hand inventory is computed separately for each simulation date using historical demand strictly preceding that date. For a given facility and item, the target stock level follows the standard safety-stock formulation target = 𝜇 daily + 𝑧 · 𝜎 daily , where 𝜇 daily and 𝜎 daily are the mean and standard deviation of historical daily demand. For local distribution centers, the 𝑧 -factor corresponds to a 50% cycle service level, and items are additionally filtered through a deterministic 75% stocking probability hash. Central warehouses aggregate demand regionally and use a higher 80% cycle service level. The simulator does not model intra-day replenishment; inventory strictly depletes as sequential fulfillment decisions allocate units. 
+
+• Queue State Warm-starting: Before processing the first order of the day, the simulator warm-starts the operational queue (e.g., waiting orders, waiting units, and pending shipments) using a historical snapshot from the preceding hours. This ensures the simulator begins from a realistic, non-empty operational state. Subsequent processing delays are estimated dynamically based on base unit processing times and queue backlogs, capped at a maximum of 720 minutes. 21 C.2 Feasible Options and Base Costs 
+
+For each arriving order, feasible fulfillment options are restricted to distribution centers and carrier services capable of delivering to the customer’s geographic state. The shipping distance from the origin DC to the synthetic customer location is computed using a vectorized Haversine formula based on hub-based pseudo-coordinates. The determin-istic base shipping cost for an eligible (DC, carrier) pair is Base Cost = (Distance in km ) · 𝛼 carrier +Fixed DC Cost, where 𝛼 carrier is the externally calibrated carrier distance coefficient and the fixed facility operational cost is 2.0 for local DCs and 4.0 for central warehouses. The remaining cost-function parameters of the main-paper defini-tion take the values 𝛽 = 0.5 (consolidation discount), 𝛾 + = 40 .0 and 𝛾 − = 0.2 (per-unit-per-day late and early penalties), and 𝜌 = 200 .0 (per-unit lost-sales penalty). 
+
+C.3 Delivery Time Simulator Construction 
+
+Because realized delivery-time deviations are only observed for the location–carrier options selected in the historical system, counterfactual delivery outcomes are unavailable for alternative fulfillment decisions. Following Ye et al. (2025a), a separate counterfactual simulator is therefore constructed to support online policy evaluation. The simulator uses the same multi-quantile MLP (MQMLP) class and feature pipeline as the delivery-time forecaster (defined in Appendix G), but is invoked at a different point in the loop and on disjoint data: the simulator is fit on the historical realized-delivery records and is queried only after a policy decision is made (to score that decision), whereas the forecaster’s role at decision time is to produce the scenario set 𝛀 𝑡  
+
+> time
+
+that policies see as input. The simulator therefore acts as a shared counterfactual evaluator: every policy compared in Section 5.3 consumes the same scenario inputs from the forecaster and is scored by the same simulator-sampled realizations, so the comparison among policies is consistent within the simulator, while not eliminating action-dependent bias of the simulator itself; calibration diagnostics by carrier and policy-relevant action region are an item for future work. For a realized context X𝑡 and a selected location–carrier pair ( 𝑗, 𝑘 ), the simulator produces conditional quantile estimates that define an approximate distribution for the delivery-time deviation, from which a realization is sampled to evaluate the chosen action. Because the simulator is a fitted predictive model rather than the true delivery process, it provides an approximate counterfactual evaluation environment for comparing policies. 
+
+# D Data Preprocessing and Carrier-Service Augmentation 
+
+D.1 Raw Data Cleaning 
+
+The foundational dataset is JD.com e-commerce transaction records (Shen et al. 2024). Several preprocessing filters were applied to clean the inputs for the simulation and forecasting models. Entries with missing delivery promise days and duplicate (order ID, sku ID) pairs were removed. Records with missing brand ID , single-item gift orders, and multi-package orders (identifiable by more than one unique package ID per order) were excluded to focus the evaluation on standard multi-item consolidation dynamics. Timestamps were parsed to compute the end-to-end delivery time (from order time to arr time ) and the DC-to-DC travel time (from ship out time to arr station time ). Records exhibiting negative durations due to logging errors were discarded. Delivery hours were converted to discrete days via ⌈hours /24 ⌉ (counting same-day delivery as 1 day). The delivery deviation was explicitly defined as delivery time days minus 
+
+promise delivery days . Finally, to remove extreme outliers, records with a delivery time days exceeding 5 days or a deviation falling outside the [− 5, 5] day window were filtered out. 
+
+D.2 Carrier-Service Augmentation 
+
+The baseline JD.com dataset is predominantly serviced by a single internal carrier and lacks precise geographic coordinates for its fulfillment facilities. To train and evaluate the hierarchical proxy and carrier-specific simulators, 22 a calibrated transformation layer is applied to the cleaned data to generate a synthetic, carrier-aware spatial dataset. The two augmentation parameter families described below (the per-distance-bin carrier-eligibility shares and the per-carrier delivery-time multipliers) are calibrated from a separate proprietary multi-carrier fulfillment dataset rather than chosen ad hoc, so that the augmented benchmark preserves the joint distribution of distance, carrier, and delivery-time variability observed in real operations even though the underlying transaction stream remains the public JD.com release. Aggregate calibration footprint (no proprietary records released): 17 carrier services, 5 origin-destination distance bins, an eligibility share per (distance bin, carrier) pair, and a median delivery-time ratio per (carrier, distance bin) pair (so 17 × 5 = 85 shares and 85 ratios). The augmentation proceeds sequentially. First, distribution centers are assigned synthetic coordinates based on regional metadata. Synthetic customer locations are similarly generated by mapping the original destination facility’s three-digit (ZIP3) postal codes to consistent five-digit (ZIP5) codes, enabling precise geocoding into latitude and longitude coordinates. Second, the shipping distance from the origin distribution center to the synthetic customer location is computed utilizing a vectorized Haversine formula. Third, each order is categorized into a discrete distance bin. Fourth, a carrier-service identifier is sampled from the proprietary-calibrated eligibility pool for the corresponding distance bin. Finally, a carrier-level delivery-time perturbation is applied: the original observed delivery time is multiplied by the proprietary-calibrated median delivery-time ratio for the sampled (carrier, distance) pair. This process yields a deterministic hybrid dataset (controlled via a fixed random seed) that preserves the anchoring of the original transactional observations while introducing spatial coordinates and re-scaling delivery times to reflect the realistic stochastic variations induced by different carrier selections. 
+
+# E Forecasting Model Feature Details 
+
+E.1 Demand Forecasting Features 
+
+The demand pipeline constructs rolling-window tensors using a historical lookback of 36 hours and a forecast horizon of 24 hours. The historical covariate tensor consists of 23 features per time step: 4 cyclical calendar vari-ables (sine and cosine transformations of hour and day of the week) and 19 aggregated order covariates (including SKU counts, bundle and coupon discount indicators, total quantity, and customer demographic encodings). The historical target tensor contains the realized demand quantity per time step. The future covariate tensor is strictly limited to the 4 cyclical calendar variables over the prediction horizon. Missing numerical values are imputed with a constant ( −1), and discrete covariates are factorized into integer indices. Baseline tree-based models flatten these temporal tensors into summary statistics (mean and standard deviation) or use the fully flattened temporal sequences. 
+
+E.2 Delivery-Time Forecasting Features 
+
+The delivery-time models use a shared feature set constructed from preprocessed order data. The target variable is the realized delivery duration in days. Numerical features include temporal indicators, order complexity metrics, and DC-operations snapshots (specifically, the volume of shipped orders and SKUs in the preceding two hours, alongside current waiting queues). Categorical features are limited to the origin and destination facility identifiers, which are label-encoded and embedded in the deep learning pipelines. 
+
+# F Forecasting Model Performance 
+
+Quantile regression models were trained and evaluated for both delivery-time and demand forecasting. The candidate model families are XGBoost ’s XGBRegressor (XGBoost), scikit-learn ’s QuantileRegressor 
+
+(QR), quantile-forest ’s RandomForestQuantileRegressor (QRF), an MLP-based MQMLP for delivery time, and a Multi-Quantile Recurrent Neural Network (MQRNN) for demand. All models predict 19 quantiles 23 (0.05 to 0.95 in increments of 0.05); predictions are rounded to integer values before scoring against the ground truth. Reported metrics are pinball loss and Continuous Ranked Probability Score (CRPS), averaged across the 17 carriers and 19 quantiles for delivery time (Table F.1) and across 24 future horizons and 19 quantiles for demand (Table F.2). For demand, MQRNN processes full temporal sequences through its recurrent architecture, whereas XGBoost, QR, and QRF use summary statistics (mean and standard deviation) of the temporal features. Table F.1: Metrics for Delivery Forecasting Models Averaged Across Quantiles of 17 Carriers. Model QR XGBoost QRF MQMLP (proposed) Pinball Loss 0.234 0.228 0.210 0.201 
+
+CRPS 0.449 0.436 0.407 0.396 
+
+Table F.2: Metrics for Demand Forecasting Models Averaged Across Quantiles Over 24 Horizons. Model QR XGBoost QRF MQRNN (proposed) Pinball Loss 0.319 0.237 0.270 0.229 
+
+CRPS 0.620 0.456 0.521 0.443 
+
+# G Neural Network Details 
+
+G.1 Delivery Time Forecasting Model (MQMLP) 
+
+The multi-quantile MLP (MQMLP) delivery time model is a feed-forward MLP that predicts multiple delivery-time quantiles. Inputs consist of numerical features and origin/destination DC IDs; the DC IDs are mapped through learned embeddings and concatenated to the numerical features before entering the network. The output layer returns one value per requested quantile. 
+
+Non-crossing quantiles. To avoid quantile crossing, the head is built around the median (0 .5) as an anchor. The model predicts (i) a median value and (ii) nonnegative “gaps” for higher and lower quantiles via a softplus 
+
+transform. Higher quantiles are the median plus cumulative upward gaps; lower quantiles are the median minus cumulative downward gaps. This construction produces nondecreasing quantiles by design. 
+
+Bounded support. Predictions are mapped to the fixed interval [𝑡 min , 𝑡 max ] = [1, 5] via ˆ 𝑞 = 𝑡 min + ( 𝑡 max − 𝑡 min ) · 
+
+𝜎 (raw ) with a monotone sigmoid 𝜎 .
+
+Training objective. Training uses the pinball (quantile) loss summed over all predicted quantiles. Early stopping is applied on a validation split. 
+
+Hyperparameters. Because the models are trained separately for each carrier, the selected hyperparameter configuration may vary by carrier. Table G.1 reports the hyperparameter search space. For each model, 500 unique hyperparameter combinations are sampled, with learning rate and weight decay drawn on a log scale. For each carrier, the final hyperparameter setting is selected as the configuration attaining the lowest validation loss. 
+
+G.2 Demand Forecasting (MQRNN) 
+
+The MQRNN demand model follows an encoder–decoder design. Two input encoders map (i) the history window (calendar features, order-statistics, and SKU/brand IDs via learned embeddings) and (ii) the prediction window 24 Table G.1: Hyperparameter search space for the carrier-specific models.                            
+
+> Hyperparameter Search space
+> Hidden width {96 ,128 ,192 }
+> MLP layers {2,3,4}
+> Dropout uniform [0.15 ,0.40 ]
+> Batch size {64 ,128 ,256 }
+> Learning rate log-uniform [3×10 −4,3×10 −3]
+> Weight decay log-uniform [3×10 −4,3×10 −3]
+
+(calendar features and the same IDs) into compact contexts. An LSTM then processes the history context concatenated with the observed target series. A two-level decoder produces multi-horizon quantiles: a global MLP builds horizon-agnostic and horizon-specific contexts, and a local head refines each horizon. 
+
+Non-crossing & non-negative quantiles. The quantile head is centered at the median as an anchor. It predicts nonnegative “gaps” for higher and lower quantiles using a softplus transform and accumulates them outwards from the median, which ensures ordered (non-crossing) quantiles. A final ReLU enforces non-negative forecasts. 
+
+Training objective. Training uses the pinball (quantile) loss summed over all horizons and quantiles, with early stopping on a validation split. 
+
+Hyperparameters. Table G.2 summarizes the hyperparameter search space and the selected best configuration for the MQRNN model. A total of 50 unique hyperparameter combinations are sampled, with learning rate and weight decay drawn on a log scale, consistent with the tuning procedure used for the delivery model. Training is run for up to 200 epochs, and early stopping is applied using the patience value selected from the search space. Table G.2: Hyperparameter search space and selected best configuration for the MQRNN model.                                                   
+
+> Hyperparameter Search space Selected best value
+> Hidden dimension {256 ,384 ,512 }512 LSTM layers {3,4}3Dropout uniform [0.65 ,0.80 ]0.725 Learning rate log-uniform [5×10 −5,1.5×10 −4]5×10 −5
+> Weight decay log-uniform [5×10 −5,2×10 −4]5×10 −5
+> Batch size {16 ,32 }16 Context dimension {12 ,16 ,20 }20 SKU embedding dimension {8,12 }12 Brand embedding dimension {12 ,16 }12 Early stopping patience {8,12 ,16 }8
+
+G.3 The Optimization Proxy 
+
+This appendix provides concrete dimensions and feature inventories for the symbolic specification of 𝑓 𝜃 given in Section 4.2.1 (Figure 3, with notation defined in Table A.1). Table G.3 lists the constituent fields of each input embedding source: categorical fields use the lookup widths shown in the table and continuous fields are min–max scaled prior to entering the network. Table G.4 reports the per-module input source, hidden-layer structure, and output dimension. Table G.5 reports the hyperparameter search space and the selected production configuration; the hidden width ℎ, dropout probability, and number of head hidden layers are tuned, while the structural choices in Table G.4 are fixed. 25 Table G.3: Feature inventory of the optimization proxy. 
+
+Source Type Constituent fields X𝑛  
+
+> ord
+
+(order context) categorical SKU id ( 𝑑 sku = 8), brand id ( 𝑑 brand = 6) continuous calendar (hour, weekday), order summary (number of SKUs, to-tal quantity, discount and gift-item indicators, order type, average discount), customer attributes (user/city level, Plus membership, promised delivery days, and demographic fields), destination DC 
+
+X𝑛  
+
+> dc , 𝑗
+
+(per-DC) categorical DC id ( 𝑑 dc = 64) continuous on-hand inventory Inv 𝑛 𝑗 , days-of-supply, region match, consolidation potential, distance (km), and dynamic operational metrics (shipped orders and SKUs in the last 2 hours, current waiting-orders and waiting-SKUs queues) 
+
+X𝑛  
+
+> cost , 𝑗,𝑘
+
+(per-option) categorical carrier id ( 𝑑 carrier = 16) continuous base shipping cost 𝑐 ship  
+
+> 𝑗,𝑘
+
+and the mean / standard deviation / 90th per-centile of scenario-realized delivery-penalty costs across the sampled delivery-time scenarios 
+
+𝛀 𝑛  
+
+> dem
+
+continuous sampled cumulative demand 𝐷 𝑛 𝜔 for the product line under each scenario 𝜔 ∈ { 1, . . . , 𝐸 }
+
+𝛀 𝑛  
+
+> time
+
+continuous sampled per-option delivery deviations 𝚫 𝑛 𝜔 ∈ R| J | × | K | for each sce-nario 𝜔 
+
+Table G.4: Module specification for the hierarchical optimization proxy. 
+
+Module Input Hidden structure Output 
+
+𝜙 ord X𝑛  
+
+> ord
+
+(categorical embeddings ∥ con-tinuous) 1 hidden layer of width ℎ Rℎ
+
+𝜙 dem scen 𝐷 𝑛 𝜔 ∈ R (per scenario) 2 hidden layers of width ℎ, light block Rℎ
+
+𝜙 time scen vec 𝚫 𝑛 𝜔 ∈ R| J | | K | (per scenario) 2 hidden layers of width ℎ, light block Rℎ
+
+𝜙 dc X𝑛  
+
+> dc , 𝑗
+
+(DC embedding ∥ continuous) 1 hidden layer of width ℎ Rℎ
+
+𝜙 cost stats (·) ∈ R8 (cross-carrier sum-mary) projection to option dim 𝑑 opt = 8 R8
+
+𝑔 dc h 𝑗 2 hidden layers of width ℎ R (scalar logit) 
+
+𝑔 carrier (h 𝑗 , ℓ dc  
+
+> 𝑗
+
+, X𝑛  
+
+> cost , 𝑗,𝑘
+
+) with carrier em-bedding ∥ option projection 2 hidden layers of width ℎ R (scalar logit per 𝑘 )
+
+G.4 Decoder Variants for the Inference Strategy Ablation 
+
+The four alternatives to Algorithm 1 compared in Table 5 consume the same logits (ℓdc , ℓcarrier ) and return a feasible decision in Z𝑡 ; they differ only in the DC-ranking score and eligibility filter, with the per-DC carrier choice 𝑘 ∗ ( 𝑗 ) = arg max 𝑘 ∈ K 𝑡 𝑗 𝑝 carrier  
+
+> 𝑗,𝑘
+
+shared and 𝐾 denoting the top-𝐾 rank cutoff. 
+
+• Inv-Weighted (proposed, Algorithm 1): 𝑠 𝑡 𝑗 = 𝑝 dc  
+
+> 𝑗
+
+𝑟 𝑡 𝑗 with 𝑟 𝑡 𝑗 = min {Inv 𝑡 𝑗 /𝑞 𝑡 , 1}; greedy fill on J elig = { 𝑗 :Inv 𝑡 𝑗 > 0, K𝑡 𝑗 ≠ ∅} in decreasing 𝑠 𝑡 𝑗 .
+
+• Greedy-Prob : identical to Inv-Weighted but with 𝑠 𝑡 𝑗 = 𝑝 dc  
+
+> 𝑗
+
+(the multiplier 𝑟 𝑡 𝑗 is dropped). 
+
+• Top-K-Feasible-DC : restricts the eligible set to the top-𝐾 DCs by 𝑝 dc  
+
+> 𝑗
+
+that also satisfy Inv 𝑡 𝑗 ≥ 𝑞 𝑡 , then greedy-fills on this restricted set; relaxes to J elig if no DC qualifies. 
+
+• Feasible-DC-First : first selects the highest-𝑝 dc  
+
+> 𝑗
+
+DC satisfying Inv 𝑡 𝑗 ≥ 𝑞 𝑡 ; falls back to the Inv-Weighted fill if none meets full coverage. 
+
+• Top-K-Feasible-Joint : ranks ( 𝑗, 𝑘 ) ∈ J × K pairs by 𝑝 dc  
+
+> 𝑗
+
+𝑝 carrier  
+
+> 𝑗,𝑘
+
+, retains the top 𝐾 , and assigns greedily 26 Table G.5: Hyperparameter search space and selected configuration for the hierarchical proxy model. Only tuned hyperparameters used in the final model are reported.                                                                    
+
+> Hyperparameter Search space Selected best value
+> Learning rate log-uniform [1.5×10 −4,6×10 −4]3.731 ×10 −4
+> Weight decay log-uniform [10 −6,3×10 −4]1.268 ×10 −4
+> Dropout probability 𝑝 uniform [0.08 ,0.27 ]0.22 Cost loss weight log-uniform [0.005 ,0.08 ]0.0067 Constraint loss weight {0.1,0.15 ,0.2,0.25 ,0.3}0.2Carrier loss weight log-uniform [5×10 −4,10 −2]0.007899 Carrier embedding dimension {8,16 ,32 }16 Option projection dimension {8,16 ,24 }8Number of hidden layers {2,3,4}2Hidden dimension {128 ,160 ,192 ,224 }224 DC embedding dimension {32 ,64 ,96 }64 Batch size {32 ,64 ,96 ,128 }96
+
+under Inv 𝑡 𝑗 > 0 and 𝑘 ∈ K 𝑡 𝑗 ; multiplying 𝑝 dc  
+
+> 𝑗
+
+with 𝑝 carrier  
+
+> 𝑗,𝑘
+
+= 𝑝 (𝑘 | 𝑗 ) as if independent breaks the hierarchical factorization 𝑓 𝜃 is trained against. 
+
+# H Reproducibility 
+
+The computational pipeline runs in six stages: preprocessing the public JD.com transaction records; the carrier-service augmentation of Appendix D; training the demand and delivery-time scenario generators; offline C-SAA label generation; proxy training; and online simulation. Fixed random seeds control augmentation, scenario generation, proxy training, and simulation replications; C-SAA scenario streams use order-indexed seeds derived from the global seed. After preprocessing, the study contains 237 ,407 orders, 1 ,488 SKUs, 55 distribution centers, and 17 carrier services. The proxy is trained on 31 ,907 peak-hour order-SKU examples with 500 scenarios per example, and the online test set contains 38 ,416 peak-hour orders over March 26–31, 2018. Reported runtimes measure policy execution time and exclude scenario generation and post-decision simulator sampling. 
+
+# References 
+
+Jason Acimovic and Vivek F Farias. The fulfillment-optimization problem. In Operations Research & Management Science in the age of analytics , pages 218–237. INFORMS, 2019. doi: 10.1287/educ.2019.0199. Jason Acimovic and Stephen C Graves. Making better fulfillment decisions on the fly in an online retail environ-ment. Manufacturing & Service Operations Management , 17(1):34–51, 2015. doi: 10.1287/msom.2014.0505. Alibaba Group. Alibaba generates RMB498.2 billion (US$74.1 billion) in GMV during the 2020 11.11 global shopping festival. Press release, 2020. URL https://www.alibabagroup.com/en-US/ document-1491144671282331648 . Reports a peak of 583,000 orders per second. John M Andrews, Vivek F Farias, Aryan I Khojandi, and Chad M Yan. Primal-dual algorithms for order fulfillment at Urban Outfitters, Inc. INFORMS Journal on Applied Analytics , 49(5):355–370, 2019. doi: 10.1287/inte.2019.1013. Dimitris Bertsimas and Nathan Kallus. From predictive to prescriptive analytics. Management Science , 66(3): 1025–1044, 2020. 27 Lucas B¨ ottcher, Thomas Asikis, and Ioannis Fragkos. Control of dual-sourcing inventory systems using recurrent neural networks. INFORMS Journal on Computing , 35(6):1308–1328, 2023. doi: 10.1287/ijoc.2022.0136. Timothy CY Chan, Bo Lin, and Shoshanna Saxe. Machine learning–augmented optimization of large bilevel and two-stage stochastic programs: Application to cycling network design. Manufacturing & Service Operations Management , 27(6):1851–1868, 2025. doi: 10.1287/msom.2024.1317. Wenbo Chen, Mathieu Tanneau, and Pascal Van Hentenryck. End-to-end feasible optimization proxies for large-scale economic dispatch. IEEE Transactions on Power Systems , 39(2):4723–4734, 2024. doi: 10.1109/TPWRS. 2023.3317352. Arnoud V. den Boer. Dynamic pricing and learning: Historical origins, current research, and new directions. 
+
+Surveys in Operations Research and Management Science , 20(1):1–18, 2015. doi: 10.1016/j.sorms.2015.03. 001. Priya Donti, Brandon Amos, and J Zico Kolter. Task-based end-to-end model learning in stochastic optimization. 
+
+Advances in neural information processing systems , 30, 2017. Justin Dumouchelle, Rahul Mihir Patel, Elias B. Khalil, and Merve Bodur. Neur2SP: Neural two-stage stochastic programming. Advances in neural information processing systems , 35:23992–24005, 2022. Stefan Faulkner, Reza Zandehshahvar, Vahid Eghbal Akhlaghi, Sebastien Ouellet, Carsten Jordan, and Pascal Van Hentenryck. Uncertainty-aware delivery delay duration prediction via multi-task deep learning. arXiv preprint arXiv:2602.20271 , 2026. doi: 10.48550/arXiv.2602.20271. Maxime Gasse, Didier Ch´ etelat, Nicola Ferroni, Laurent Charlin, and Andrea Lodi. Exact combinatorial opti-mization with graph convolutional neural networks. Advances in neural information processing systems , 32, 2019. Eric Jang, Shixiang Gu, and Ben Poole. Categorical reparameterization with gumbel-softmax. In International Conference on Learning Representations , 2017. Stefanus Jasin and Amitabh Sinha. An LP-based correlated rounding scheme for multi-item ecommerce order fulfillment. Operations Research , 63(6):1336–1351, 2015. doi: 10.1287/opre.2015.1441. Menglei Jia, Albert H Schrotenboer, and Feng Chen. Scenario predict-then-optimize for data-driven online inventory routing. Transportation Science , 59(5):1032–1056, 2025. doi: 10.1287/trsc.2024.0613. Qian Jia, Zhengrui Jiang, and Syam Menon. Enabling ultrafast online order fulfillment: Efficient inventory management for in-store microfulfillment centers. INFORMS Journal on Computing , 2026. Kai Jungel, Axel Parmentier, Maximilian Schiffer, and Thibaut Vidal. Learning-based online optimization for autonomous mobility-on-demand fleet control. INFORMS Journal on Computing , 2025. doi: 10.1287/ijoc. 2024.0637. Rohit Kannan, G¨ uzin Bayraksan, and James R Luedtke. Data-driven sample average approximation with covariate information. Operations Research , 73(6):3245–3259, 2025. doi: 10.1287/opre.2020.0533. Ritesh Ojha, Wenbo Chen, Hanyu Zhang, Reem Khir, Alan Erera, and Pascal Van Hentenryck. Outbound load planning in parcel delivery service networks using machine learning and optimization. Transportation Science ,2025. doi: 10.1287/trsc.2024.0672. Erhun ¨ Ozkan and Amy R. Ward. Dynamic matching for real-time ride sharing. Stochastic Systems , 10(1):29–70, 2020. doi: 10.1287/stsy.2019.0037. 28 Warren B Powell. Designing lookahead policies for sequential decision problems in transportation and logis-tics. IEEE Open Journal of Intelligent Transportation Systems , 3:313–327, 2022. doi: 10.1109/OJITS.2022. 3148574. Meng Qi, Yuanyuan Shi, Yongzhi Qi, Chenxin Ma, Rong Yuan, Di Wu, and Zuo-Jun Shen. A practical end-to-end inventory management model with deep learning. Management Science , 69(2):759–773, 2023. doi: 10.1287/mnsc.2022.4564. Meng Qi, Paul Grigas, and Zuo-Jun Shen. Integrated conditional estimation-optimization. Operations Research ,2025. doi: 10.1287/opre.2023.0427. Andrew W Rosemberg, Alexandre Street, Davi M Vallad˜ ao, and Pascal Van Hentenryck. Efficiently training deep-learning parametric policies using lagrangian duality. arXiv preprint arXiv:2405.14973 , 2025. doi: 10.48550/arXiv.2405.14973. Utsav Sadana, Abhilash Chenreddy, Erick Delage, Alexandre Forel, Emma Frejinger, and Thibaut Vidal. A survey of contextual optimization methods for decision-making under uncertainty. European Journal of Operational Research , 320(2):271–289, 2025. ISSN 0377-2217. doi: 10.1016/j.ejor.2024.03.020. Nooshin Salari, Sheng Liu, and Zuo-Jun Max Shen. Real-time delivery time forecasting and promising in online retailing: When will your package arrive? Manufacturing & Service Operations Management , 24(3): 1421–1436, 2022. doi: 10.1287/msom.2022.1081. Max Shen, Christopher S Tang, Di Wu, Rong Yuan, and Wei Zhou. JD. com: Transaction-level data for the 2020 MSOM data driven research challenge. Manufacturing & Service Operations Management , 26(1):2–10, 2024. doi: 10.1287/msom.2020.0900. Uber Technologies, Inc. Uber announces results for fourth quarter and full year 2024. Press re-lease, 2025. URL https://investor.uber.com/news-events/news/press-release-details/ 2025/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2024/default.aspx . Re-ports 11.3 billion trips for full-year 2024. Pascal Van Hentenryck. Optimization learning. arXiv preprint arXiv:2501.03443 , 2025. doi: 10.48550/arXiv. 2501.03443. S´ ergio Vasconcelos, Gonc ¸alo Figueira, and Bernardo Almada-Lobo. Order allocation in online retail: Clas-sification and literature review. European Journal of Operational Research , 333(1):1–18, 2026. doi: 10.1016/j.ejor.2025.11.018. Bram Verweij, Shabbir Ahmed, Anton J Kleywegt, George Nemhauser, and Alexander Shapiro. The sample average approximation method applied to stochastic routing problems: a computational study. Computational optimization and applications , 24(2):289–333, 2003. doi: 10.1023/A:1021814225969. Ruofeng Wen, Kari Torkkola, Balakrishnan Narayanaswamy, and Dhruv Madeka. A multi-horizon quantile recurrent forecaster. In 31st Conference on Neural Information Processing Systems (NIPS 2017), Time Series Workshop , Long Beach, CA, USA, 2017. arXiv:1711.11053. Bryan Wilder, Bistra Dilkina, and Milind Tambe. Melding the data-decisions pipeline: Decision-focused learning for combinatorial optimization. In Proceedings of the AAAI conference on artificial intelligence , volume 33, pages 1658–1665, 2019. doi: 10.1609/aaai.v33i01.33011658. Tinghan Ye, Sikai Cheng, Amira Hijazi, and Pascal Van Hentenryck. Contextual stochastic optimization for om-nichannel multicourier order fulfillment under delivery time uncertainty. Manufacturing & Service Operations Management , 2025a. doi: 10.1287/msom.2024.1328. 29 Tinghan Ye, Amira Hijazi, and Pascal Van Hentenryck. Conformal predictive distributions for order fulfillment time forecasting. arXiv preprint arXiv:2505.17340 , 2025b. doi: 10.48550/arXiv.2505.17340. Dogacan Yilmaz and ˙ I Esra B¨ uy¨ uktahtakın. A non-anticipative learning-optimization framework for solving multi-stage stochastic programs. Annals of Operations Research , 2024. doi: 10.1007/s10479-024-06100-7. Enpeng Yuan, Wenbo Chen, and Pascal Van Hentenryck. Reinforcement learning from optimization proxy for ride-hailing vehicle relocation. Journal of Artificial Intelligence Research , 75:985–1002, 2022. doi: 10.1613/jair.1.13794. Manzil Zaheer, Satwik Kottur, Siamak Ravanbakhsh, Barnabas Poczos, Russ R Salakhutdinov, and Alexander Smola. Deep sets. In I. Guyon, U. Von Luxburg, S. Bengio, H. Wallach, R. Fergus, S. Vishwanathan, and R. Garnett, editors, Advances in Neural Information Processing Systems , volume 30. Curran Associates, Inc., 2017. 30
