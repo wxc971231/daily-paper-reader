@@ -1,0 +1,212 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-30T19:22:57.633028+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 5,
+    "deep_cap": 6,
+    "deep_selected": 5,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2606.27611v1",
+      "source": "arxiv",
+      "title": "COOPA: A Modular LLM Agent Architecture for Operations Research Problems",
+      "abstract": "Operations Research (OR) provides a rigorous framework for high-stakes decision-making, but effective OR modeling requires substantial domain knowledge, mathematical abstraction, and solver expertise. Recent LLM-based systems automate parts of this pipeline, yet remain limited by low accuracy on complex problems, opaque outputs, and narrow solver support. We propose COOPA (COoperative OPerations Agent), a modular LLM-agent architecture for interpretable and scalable OR decision support. It combines three components: iterative confidence-based modeling, which generates multiple candidate formulations, self-evaluates them across modeling dimensions, and selects one using a max-min confidence criterion; element-level provenance and confidence explanations, which link variables, parameters, constraints, and objectives to quoted source text and provide an audit trail for human verification; and multi-solver routing to specialized optimizer agents for different OR problem classes. Across three OR benchmarks, eight LLM backbones, and four baselines under identical conditions, COOPA achieves the best macro-average accuracy on six of eight backbones and improves over the strongest baseline by up to 6.7 percentage points. A within-system ablation isolates the contribution of iterative confidence-based modeling, while additional analyses and case studies illustrate the value of source traceability and multi-solver dispatch.",
+      "authors": [
+        "Chuanhao Li",
+        "Xiaoan Xu",
+        "Dirk Bergemann",
+        "Ethan X. Fang",
+        "Yehua Wei",
+        "Zhuoran Yang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-25T23:56:58+00:00",
+      "link": "https://arxiv.org/pdf/2606.27611v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "modular LLM agent for OR problem modeling and solver selection",
+      "llm_evidence_cn": "模块化LLM智能体用于运筹学问题建模和求解器选择",
+      "llm_evidence": "模块化LLM智能体用于运筹学问题建模和求解器选择",
+      "canonical_evidence": "模块化LLM智能体用于运筹学问题建模和求解器选择",
+      "llm_tldr_en": "Proposes COOPA, a modular LLM agent architecture that generates multiple OR model formulations, self-evaluates them, and provides provenance, enabling interpretable and scalable OR decision support.",
+      "llm_tldr_cn": "针对现有LLM系统在复杂运筹学问题上准确率低、输出不透明、求解器支持窄的问题，提出COOPA模块化智能体架构。包含迭代置信度建模、元素级来源解释和灵活求解器集成三个组件。在多个OR基准上，COOPA显著提升了建模准确率和可解释性，为实现大规模可解释OR决策支持提供了新思路。",
+      "llm_tldr": "针对现有LLM系统在复杂运筹学问题上准确率低、输出不透明、求解器支持窄的问题，提出COOPA模块化智能体架构。包含迭代置信度建模、元素级来源解释和灵活求解器集成三个组件。在多个OR基准上，COOPA显著提升了建模准确率和可解释性，为实现大规模可解释OR决策支持提供了新思路。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.29366v1",
+      "source": "arxiv",
+      "title": "Solver-Verified Formulation Generation and Selection for Multi-Warehouse Inventory Allocation Using Large Language Models",
+      "abstract": "Balance-oriented multi-warehouse inventory allocation is a recurring decision problem in large-scale e-commerce supply chains, in which a fixed replenishment quantity is distributed across warehouses to balance post-allocation inventory coverage while accounting for demand forecasts and heterogeneous allocation constraints. In practice, allocation requirements are often scenario-dependent and expressed in semi-structured or natural-language form rather than as ready-to-solve operations research (OR) formulations. We propose an OR-guided Large Language Model (LLM) for Allocation (ORLA) that uses solver feedback to generate, verify, and select OR formulations. ORLA integrates automatic \"Problem-Model-Code (PMC)\" generation, learning-based formulation selection, and feasibility restoration. We develop three complementary mixed-integer programming formulation families based on deviation minimization, soft band compliance, and knapsack-inspired allocation, together with solver-ready mixed-integer linear programming reformulations, modular constraint extensions, and a penalty-based relaxation mechanism for infeasible cases. The LLM component generates candidate formulations and executable solver code from textual or semi-structured specifications, while the solver provides verification signals for executability, feasibility, and solution quality. To address instance heterogeneity, ORLA estimates the expected quality of candidate formulations, selects promising candidates, and combines their outputs through score-aware aggregation. Experimental results on 29 production evaluation batches from JD.com show that the best single OR formulation improves allocation accuracy by 3.4 percentage points over the incumbent approach, while the full ORLA framework achieves a 4.5 percentage-point overall improvement and improves allocation accuracy in 26 of the 29 evaluation batches.",
+      "authors": [
+        "Jintao Xu",
+        "Yingzheng Ma",
+        "Jiong Dong",
+        "Yongzhi Qi",
+        "Jianshen Zhang",
+        "Dongyang Geng",
+        "Anni Zhang"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cs.AI"
+      ],
+      "published": "2026-06-28T12:18:44+00:00",
+      "link": "https://arxiv.org/pdf/2606.29366v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM generates OR formulations and code for inventory allocation",
+      "llm_evidence_cn": "LLM生成运筹学公式和库存分配代码",
+      "llm_evidence": "LLM生成运筹学公式和库存分配代码",
+      "canonical_evidence": "LLM生成运筹学公式和库存分配代码",
+      "llm_tldr_en": "ORLA uses solver feedback to guide LLMs in generating, verifying, and selecting operations research formulations for multi-warehouse inventory allocation.",
+      "llm_tldr_cn": "多仓库库存分配问题中，分配需求常以非结构化形式给出，缺乏现成运筹学公式。ORLA框架利用LLM自动完成问题-模型-代码转换，通过求解器反馈迭代验证和选择公式。实验证明该方法能生成正确可求解的优化模型和代码，有效提升分配效率。",
+      "llm_tldr": "多仓库库存分配问题中，分配需求常以非结构化形式给出，缺乏现成运筹学公式。ORLA框架利用LLM自动完成问题-模型-代码转换，通过求解器反馈迭代验证和选择公式。实验证明该方法能生成正确可求解的优化模型和代码，有效提升分配效率。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.29082v1",
+      "source": "arxiv",
+      "title": "Evolution Fine-Tuning: Learning to Discover Across 371 Optimization Tasks",
+      "abstract": "Would experience designing faster GPU kernels also help close in on a long-standing open mathematical conjecture? Large Language Models (LLMs) integrated into evolutionary search have recently produced state-of-the-art solutions on optimization tasks, including open mathematical conjectures, GPU kernel design, scientific law discovery, and combinatorial puzzles. To achieve this, prior work applied search scaffolds to one target task at a time, so every new problem is approached from scratch and the experience accumulated during search is discarded once the model finishes its attempt. This leaves the capability of iteratively evolving a solution (e.g., knowing which part to mutate and how, deciding when to backtrack) entirely in the scaffold rather than in the model itself. Whether the model itself could acquire this capability and reuse it across different tasks has been largely unexamined. To address this, we introduce Evolution Fine-Tuning (EFT), a mid-training paradigm that teaches LLMs to evolve solutions across tasks by converting evolutionary search trajectories into supervision. We construct Finch Collection, a 156K-trajectory dataset spanning 10 domains and 371 optimization tasks, and fine-tune open-source LLMs from 2B to 9B parameters. Empirically, EFT confers cross-task generalization: across 22 held-out tasks, our models surpass their base counterparts by 10.22% on average. Furthermore, when paired with test-time RL, our model matches state-of-the-art performance on two circle-packing tasks and outperforms its base-model counterpart on the Erdős minimum-overlap problem. EFT thus serves as a \"practice phase\" for general-purpose discovery agents that do not solve new problems from scratch.",
+      "authors": [
+        "Young-Jun Lee",
+        "Seungone Kim",
+        "Minki Kang",
+        "Alistair Cheong Liang Chuen",
+        "Zerui Chen",
+        "Seungho Han",
+        "Taehee Jung",
+        "Dongyeop Kang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-06-27T20:48:18+00:00",
+      "link": "https://arxiv.org/pdf/2606.29082v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM with evolutionary search across 371 optimization tasks including combinatorial puzzles",
+      "llm_evidence_cn": "LLM结合进化搜索跨371个优化任务，包括组合谜题",
+      "llm_evidence": "LLM结合进化搜索跨371个优化任务，包括组合谜题",
+      "canonical_evidence": "LLM结合进化搜索跨371个优化任务，包括组合谜题",
+      "llm_tldr_en": "Proposes evolution fine-tuning where LLMs accumulate optimization experience across tasks; demonstrated on 371 tasks including combinatorial puzzles and math conjectures.",
+      "llm_tldr_cn": "该方法提出进化微调，使LLM在多个优化任务间积累搜索经验，避免每次从头开始。在371个优化任务上，包括组合谜题和数学猜想，展示了跨任务迁移能力，显著提升了新问题的求解效率。",
+      "llm_tldr": "该方法提出进化微调，使LLM在多个优化任务间积累搜索经验，避免每次从头开始。在371个优化任务上，包括组合谜题和数学猜想，展示了跨任务迁移能力，显著提升了新问题的求解效率。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.29627v1",
+      "source": "arxiv",
+      "title": "A Two-Stage Reflection and Reprompting Framework for LLM-Based Solution of Petri Net Reachability Problems in Industrial Applications",
+      "abstract": "Manufacturing systems exhibit strong concurrency, synchronization, and contention for shared reusable resources, which makes fast and reliable scheduling and verification challenging. Petri nets provide a rigorous formalism for modeling such discrete-event manufacturing systems, but reachability analysis and solving remain difficult for conventional graph search or optimization-based solvers, particularly under state-space explosion and evolving production requirements. Recently, Large language models (LLMs) have shown promise as flexible planners that can generate candidate action sequences from textual specifications. However, direct use of LLMs for Petri net reachability remains unreliable. This paper proposes an LLM-based solving framework augmented with a two-stage reflection and reprompting mechanism. The combined effects of reflection and re-clarification improve the accuracy of feasible sequence generation. The proposed method is evaluated on an industrial case modeled as a Petri net. Under a fixed Petri net structure, the proposed strategy is assessed on six solvable reachability configurations. The results demonstrate improved reliability and stability in solving Petri net reachability problems. The proposed framework is further evaluated across multiple LLMs, which indicates that the framework is not tied to any specific model.",
+      "authors": [
+        "Ruimin Hu",
+        "Mehmet Mercangöz"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-06-28T22:18:41+00:00",
+      "link": "https://arxiv.org/pdf/2606.29627v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based solution of Petri net reachability problems (optimization problem solving code)",
+      "llm_evidence_cn": "基于LLM的Petri网可达性问题求解，属于优化问题求解代码生成",
+      "llm_evidence": "基于LLM的Petri网可达性问题求解，属于优化问题求解代码生成",
+      "canonical_evidence": "基于LLM的Petri网可达性问题求解，属于优化问题求解代码生成",
+      "llm_tldr_en": "Proposes a two-stage reflection and reprompting framework for LLMs to solve Petri net reachability problems in industrial manufacturing, achieving improved reliability over direct LLM generation.",
+      "llm_tldr_cn": "针对制造系统中Petri网可达性分析难题，提出一种两阶段反思与重新提示框架，让LLM先生成候选动作序列再通过反思修正，提升了求解可靠性。实验表明该方法在工业场景中优于直接LLM生成，为运筹优化问题自动求解提供了新途径。",
+      "llm_tldr": "针对制造系统中Petri网可达性分析难题，提出一种两阶段反思与重新提示框架，让LLM先生成候选动作序列再通过反思修正，提升了求解可靠性。实验表明该方法在工业场景中优于直接LLM生成，为运筹优化问题自动求解提供了新途径。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.29700v1",
+      "source": "arxiv",
+      "title": "Toward Secure and Reliable PDDL Formalization of Large Language Models with Planner-in-the-Loop Feedback",
+      "abstract": "Planning often requires symbolic specifications that are both executable and verifiable. For large language models deployed in autonomous or decision-support systems, failures in such formalization may lead to unverifiable decisions, execution failures, or unsafe downstream behavior. We present NL-PDDL-Bench, a multi-domain benchmark for natural-language-to-PDDL specification construction with planner-verified executability and controlled difficulty scaling by object count. We further propose a planner-in-the-loop framework that uses validator and planner diagnostics to revise non-executable specifications through localized edits. Building on this infrastructure, we develop a planner-grounded optimization recipe that combines parameter-efficient Low-Rank Adaptation supervised fine-tuning, offline planner-derived preference pairs for Direct Preference Optimization, and inference-time planner-in-the-loop repair, without requiring online planner calls during training. We also provide a unified evaluation suite for parseability, solvability, specification similarity, and outcome-aware plan-level consistency against planner references. Experiments on representative model families show substantial gains in planner success and plan-level agreement, with improved robustness under difficulty scaling and cross-domain variation. These results highlight the value of externally verifiable formalization for reliable deployment of LLMs in safety- or security-sensitive planning systems. Code and data are available at: https://github.com/ibasicplan/NL-PDDL-Bench",
+      "authors": [
+        "Jiamei Jiang",
+        "Jiajing Zhang",
+        "Feifei Mo",
+        "Linjing Li",
+        "Daniel Zeng"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-29T02:08:30+00:00",
+      "link": "https://arxiv.org/pdf/2606.29700v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based PDDL formalization with planner-in-the-loop for constraint programming",
+      "llm_evidence_cn": "基于LLM的PDDL形式化与规划器在环用于约束编程",
+      "llm_evidence": "基于LLM的PDDL形式化与规划器在环用于约束编程",
+      "canonical_evidence": "基于LLM的PDDL形式化与规划器在环用于约束编程",
+      "llm_tldr_en": "Proposes planner-in-the-loop framework to revise LLM-generated PDDL specifications, ensuring executability; includes multi-domain benchmark.",
+      "llm_tldr_cn": "该论文针对LLM生成PDDL规范时可能出错的问题，提出规划器在环反馈框架，利用验证器和规划器诊断来修订不可执行的规范。同时构建了多领域基准NL-PDDL-Bench。实验表明该方法显著提升了规范的正确性和可执行性。",
+      "llm_tldr": "该论文针对LLM生成PDDL规范时可能出错的问题，提出规划器在环反馈框架，利用验证器和规划器诊断来修订不可执行的规范。同时构建了多领域基准NL-PDDL-Bench。实验表明该方法显著提升了规范的正确性和可执行性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "constraint programming modeling with LLM",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

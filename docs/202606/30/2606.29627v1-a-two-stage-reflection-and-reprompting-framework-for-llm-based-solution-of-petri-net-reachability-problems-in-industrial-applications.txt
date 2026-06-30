@@ -1,0 +1,216 @@
+Title: A Two-Stage Reflection and Reprompting Framework for LLM-Based Solution of Petri Net Reachability Problems in Industrial Applications
+
+URL Source: https://arxiv.org/pdf/2606.29627v1
+
+Published Time: Tue, 30 Jun 2026 01:30:16 GMT
+
+Number of Pages: 6
+
+Markdown Content:
+# A Two-Stage Reflection and Reprompting Framework for LLM-Based Solution of Petri Net Reachability Problems in Industrial Applications 
+
+Ruimin Hu 
+
+Department of Chemical Engineering Imperial College London 
+
+London, UK ruimin.hu25@imperial.ac.uk 
+
+Mehmet Mercang¨ oz 
+
+Department of Chemical Engineering Imperial College London 
+
+London, UK m.mercangoz@imperial.ac.uk 
+
+Abstract — Manufacturing systems exhibit strong concurrency, synchronization, and contention for shared reusable resources, which makes fast and reliable scheduling and verification challenging. Petri nets provide a rigorous formalism for modeling such discrete-event manufacturing systems, but reachability analysis and solving remain difficult for conventional graph search or optimization-based solvers, particularly under state-space explosion and evolving production requirements. Recently, Large language models (LLMs) have shown promise as flexible planners that can generate candidate action sequences from textual specifications. However, direct use of LLMs for Petri net reachability remains unreliable. This paper proposes an LLM-based solving framework augmented with a two-stage reflection and reprompting mechanism. The combined effects of reflection and re-clarification improve the accuracy of feasible sequence generation. The proposed method is evaluated on an industrial case modeled as a Petri net. Under a fixed Petri net structure, the proposed strategy is assessed on six solvable reachability configurations. The results demonstrate improved reliability and stability in solving Petri net reachability problems. The proposed framework is further evaluated across multiple LLMs, which indicates that the framework is not tied to any specific model. 
+
+Keywords: Large language models, Petri nets, manufac-turing system I. I NTRODUCTION 
+
+With the advance of Industry 4.0 and intelligent manufac-turing, manufacturing systems are increasingly shifting toward high-mix, low-volume operations [1]. Market uncertainty and customization requirements often lead to dynamic order arrivals, parallel processing stages, and contention for shared resources. As a result, a central challenge in manufacturing is to achieve fast and effective scheduling, which underpins pro-duction line design and verification, process route evaluation, and rapid iteration of operational strategies. Petri nets provide a rigorous formalism for representing the behavior of discrete manufacturing systems, including sequencing, concurrency, and synchronization [2]. Conse-quently, Petri nets have been widely adopted for modeling and analyzing discrete-event systems. In typical formulations, operations and events are modeled as transitions, whereas buffers, resources, and system states are represented by places. Resource capacities can be encoded via token counts, arc weights, or explicit capacity constraints [3]. Petri nets therefore offer a clear formal description of system structure while enabling characterization of system dynamics as state evolution driven by transition firings. In addition, the modular and scalable structure of Petri nets supports efficient model construction for large-scale and complex manufacturing systems. Although Petri nets provide a rigorous formalism for modeling manufacturing processes and representing system states, solving Petri net reachability and synthesizing valid firing sequences remain challenging in practice. Conventional approaches typically depend on explicit construction and exploration of the reachability graph. In many implementa-tions, the state space is traversed using generic graph-search strategies such as depth first search (DFS) and breadth first search (BFS) [4]. Optimization-based formulations, including integer linear programming and constraint programming, have also been investigated to derive feasible firing sequences. Despite the ability of these methods to provide exact solutions when computational resources permit, they often suffer from state-space explosion as the Petri net increases in scale and concurrency, which results in substantial computational and memory overhead. Heuristic approaches can produce solutions with lower latency, but they often rely on carefully engineered and model-specific rules. When the net structure or production requirements change, autonomous redesign of these heuristics is frequently required [5]. These limitations motivate the development of more adaptive and model-agnostic alternatives. In recent years, large language models (LLMs) have demonstrated strong capabilities in planning and reasoning [6] and have increasingly been discussed as a promising route toward artificial general intelligence (AGI) [7]. This progress suggests a new direction for Petri net reachability analysis and firing-sequence synthesis: instead of explicitly constructing the reachability graph or relying on expertise-intensive handcrafted heuristics, an LLM can generate candidate firing sequences directly from a text-encoded model specification and goal constraints. This paradigm has practical appeal in terms of rapid adaptation and deployment, particularly in manufacturing settings in which system configurations and production requirements change frequently. However, direct use of an LLM as a solver for Petri net reachability remains challenging. A generated firing sequence may include transitions that are not enabled under the current marking. Even when each step is locally enabled, 
+
+> arXiv:2606.29627v1 [eess.SY] 28 Jun 2026
+
+execution can still enter deadlock or other nonprogressing states, or terminate at a marking that does not satisfy the target specification. In addition, LLMs may produce incorrect reachability judgments, which can lead to false acceptance of infeasible goals or false rejection of feasible ones. These failure modes are particularly pronounced in systems with shared reusable resources, where intermediate reasoning may overlook transient resource availability and thereby produce sequences that fail during verification. Therefore, practical viability of LLM-driven Petri net solving requires reliable verification mechanisms and effective guidance strategies to improve correctness and robustness. To address the aforementioned challenges of using LLMs for Petri net solving, this paper proposes an LLM-driven two stage reflection and reprompting framework and evaluates the framework on an industrial case study. The LLM first generates a candidate firing sequence. A Petri net simulator then replays the sequence step by step, strictly checking transition enabledness at each marking and determining whether the target specification is satisfied. When verification fails, a two-stage correction procedure is applied instead of directly requesting another unconstrained full output. In the reflection stage, the model is restricted to output only a structured report that diagnoses the failure mode, pinpoints the first erroneous step, summarizes the current marking and the set of enabled transitions, and proposes a repair plan together with avoidance patterns. In the second stage, the model generates a revised firing sequence conditioned on the reflection report and verifier feedback. By enforcing closed-loop verification while providing structured diagnostic guidance, the proposed mechanism improves the reliability of LLM-generated solutions and enhances the ability of the model to satisfy constraints inherent in Petri net representa-tions of manufacturing scenarios. The main contributions of this paper are summarized as follows:  
+
+> •
+
+We propose and implement a closed-loop, LLM-driven solving framework for reachability solving of Petri nets and firing-sequence synthesis.  
+
+> •
+
+We design a two-stage reflection and reprompting mech-anism that structures feedback on failures and guides the model to perform strategic repairs, which improves solution stability under constraints.  
+
+> •
+
+We conduct an experimental evaluation on an industrial case study to validate the effectiveness of the proposed approach. The remainder of this paper is organized as follows. Section II reviews Petri nets and industrial applications of LLMs. Section III presents the proposed two-stage reflection and reprompting approach in detail. Section IV describes the experimental setup and the industrial case study. Sec-tion V reports and analyzes the experimental results. Finally, Section VI concludes the paper and discusses directions for future research. II. B ACKGROUND 
+
+A. Petri Nets Preliminaries 
+
+Petri nets provide a formal and graphical modeling framework for discrete event systems with concurrency, synchronization, and resource sharing. In this paper, we consider a place and transition Petri net defined as: 
+
+N = ( P, T, P re, P ost ) (1) where P is a finite set of places, T is a finite set of transitions with P ∩ T = ∅, and P re, P ost : P × T → N0
+
+denote the input and output arc weight functions. An arc 
+
+(p, t ) exists iff P re (p, t ) > 0, and an arc (t, p ) exists iff 
+
+P ost (p, t ) > 0.A marking is a function M : P → N, where M (p) is the number of tokens in place p. A transition t ∈ T is enabled at marking M if 
+
+∀p ∈ P, M (p) ≥ P re (p, t ) (2) If t is enabled, firing t yields a new marking M ′ defined by 
+
+∀p ∈ P, M ′(p) = M (p) − P re (p, t ) + P ost (p, t ). (3) Given an initial marking M0 and a target marking Mg ,
+
+Mg is reachable from M0 in N if there exists a finite firing sequence σ = ( t1, t 2, . . . , t k) such that 
+
+M0
+
+> t1
+
+−→ M1
+
+> t2
+
+−→ · · · tk
+
+−→ Mk = Mg . (4) 
+
+B. Petri Nets in Industrial Systems 
+
+The concurrency inherent in industrial manufacturing systems aligns well with the expressive power of Petri nets, which has motivated broad adoption of Petri nets for modeling production processes and supporting resource decision-making [8], [9]. In industrial applications, Petri nets provide a graphical yet formal representation of system behavior, which enables analysis and supervision of state evolution, particularly for deadlock prevention [10]. Moreover, Petri net models support both qualitative and quantitative assessment, ranging from structural and behavioral properties to performance evaluation when appropriate extensions are employed [11]. Finally, Petri nets can be integrated with optimization and control algorithms and can serve as a mod-eling backbone for systematic improvement of manufacturing operations [12]. A substantial body of work leverages Petri nets to model and optimize industrial production systems. For instance, in the Job Shop Scheduling Problem (JSSP), Lassoued et al. propose a reinforcement learning-based approach to derive scheduling policies [13]. For flexible manufacturing systems (FMS), Hu et al. model system dynamics using Petri nets and combine deep reinforcement learning with a graph convolutional network (GCN) to address the resulting decision problem [14]. Similarly, [15] integrates reinforcement learning with Petri net modeling to address real-time scheduling in automated manufacturing systems. Beyond reinforcement learning, Petri net models are often coupled with metaheuristic optimization methods [16], [17]. Another widely used class of methods comprises tree search-based approaches, which typically rely on handcrafted heuristics to guide the search toward promising scheduling decisions [18], [19]. A related line of work optimizes the configuration of the Petri net model itself rather than only the firing decisions, da Silva et al. iteratively configure a T-timed coloured Petri net through a mixed-integer linear programming (MILP) model to plan rail freight volumes and rolling stock [20]. However, many of these methods depend heavily on expert-designed modeling choices and algorithm-specific heuristics, which require substantial domain knowledge. When a manufacturing system changes because of disruptions or unexpected events, performance may degrade and redesign of the solution strategy is often required. 
+
+C. LLMs for Industrial Planning 
+
+In recent years, LLMs have attracted growing attention in intelligent manufacturing. A key advantage of LLMs is the ability to extract actionable knowledge representations from natural language, structured data, and process rules, and to generate decision recommendations or executable action sequences accordingly [21]. Integration enabled by LLMs can facilitate process planning and manufacturing workflow optimization, which can reduce the time and cost associated with manual planning and improve operational efficiency [22]. Despite this potential, manufacturing involves complex and domain specific knowledge, which poses substantial challenges to effective and reliable use of LLMs. Prior work has explored LLMs for manufacturing related decision support and planning. Xia et al. propose an error-guided fine-tuning strategy that strengthens the capability of LLMs to answer manufacturing specific queries and to generate valid domain-specific code [23]. Song et al. develop LLM-Planner, which leverages LLMs to perform few-shot planning for embodied or software agents [24]. Zheng et al. introduce a hierarchical approach that incrementally decomposes a complex objective into a task tree, which reduces planning burden at each step by combining human expert knowledge with guidance generated by LLMs [25]. Wang et al. develop an LLM-based multi-agent system for the flexible job-shop scheduling problem [26]. Reflection refers to the ability of an LLM to inspect the reasoning of itself or other agents, assess validity, identify errors, and adjust subsequent actions based on this assessment to obtain more accurate outcomes. Building on this idea, Cao et al. propose a hierarchical reflection scheme for scheduling [27]. Overall, existing studies indicate that LLMs can serve as powerful planners or decision assistants in manufactur-ing. However, most manufacturing planning problems are governed by strict constraints, under which plans generated by LLMs may still include infeasible steps or terminate at outcomes that do not match the goal specification. In this work, Petri nets are adopted as the modeling backbone, and a verifier in the loop LLM solving framework is developed to generate and repair firing sequences toward exact target markings. III. M ETHODOLOGY 
+
+To mitigate the tendency of LLMs to produce hallucinated or invalid steps when Petri net solving is performed directly, which often prevents generation of enabled and goal-reaching firing sequences, this paper proposes an LLM-driven closed-loop solving framework augmented with a two-stage reflection and reprompting mechanism. The key idea is to let the LLM generate candidate firing sequences, replay and verify each candidate step by step using a Petri net simulator to check transition enabledness, provide structured diagnostic feedback when verification fails, and iteratively repair the candidate until a feasible sequence that satisfies target marking constraints is obtained. 
+
+A. Method Overview 
+
+Given a Petri net structure together with initial and target markings, the model is converted into a standardized textual specification and provided to the LLM using a predefined prompt template, such that a candidate firing sequence is returned in a fixed format. This specification is a JSON object. Its structure field lists the input and output places and arc weights of each transition, a direct transcription of P re 
+
+and P ost , as in "T1": {"in": {"P1":1,"P2":1 },"out": {"P3":1 }} . The markings field gives M0 and Mg
+
+as place–token pairs, and any place not listed is taken to be empty. Because places, transitions, arcs, and markings are all encoded explicitly, the encoding is lossless and applies to a place/transition net of any size. The candidate sequence is then replayed step by step using a Petri net simulator. At each step, the verifier checks whether the selected transition is enabled under the current marking. If any transition is not enabled, such as, the transition cannot be fired, the sequence is deemed invalid and execution is terminated immediately. The verifier returns diagnostic information, and the procedure enters the reflection and reprompting stage. If the sequence can be executed to completion, the resulting marking is further examined to determine whether terminal constraints are satisfied. When verification fails, repeated sampling without guidance is not adopted. Instead, a two-stage reflection and reprompting strategy is employed. Key error signals, including failure type and related diagnostic information, are provided to the LLM. In the reflection stage, the model analyzes the failure, produces an actionable repair plan, and summarizes error patterns to avoid. In the subsequent stage, the reflection output is combined with the original problem specification to construct an updated prompt, which guides the LLM to generate a revised firing sequence. The overall framework is illustrated in Fig. 1. 
+
+B. Reflection and Reprompting Strategy 
+
+To improve reliability of LLM-based Petri net solving, a reflection and reprompting strategy is proposed. The core objective is to convert verification failures associated with a candidate firing sequence into structured and actionable diagnostic feedback. This feedback first prompts the model to analyze the failure, attribute the failure to a concrete cause, Petri net          
+
+> Termination End
+> [T1 T2 T3 T4 T5 T6 T7 T8 T9]
+> Yes
+> “status”: VALIDATION_FAILED
+> “error type”: UNKNOWN_TRANSITION
+> “error ”:“Transition ‘T9’ not found.”
+> “sequence”: [T1T2T3T4T5T6T7T8T9]
+> Error Analysis
+> No
+> Reflection
+> “status”: REFLECTION
+> “error type”: UNKNOWN_TRANSITION
+> “repair plan ”:“Replace ‘T9’ with separate ‘T2’ entries”
+> “avoid”: Using shorthand repetition notation
+> Reprompt
+> [T1 T2 T3 T4 T5 T6 T7 T8 T2]
+> Initialization
+> Initial solution
+> Updated solution
+> LLM Call
+> LLM Call
+> Petri Net Validation
+
+Fig. 1. Overall framework of two-stage reflection and reprompting for Petri net solving. 
+
+and formulate a repair plan, and then guides regeneration of a revised firing sequence. In this way, the strategy reduces inefficiency and instability that arise from repeated sampling without guidance. 1) Structured diagnostic feedback: During step by step replay of a candidate sequence, verification failures are categorized into two typical types: (i) intermediate step violations , where a chosen transition is ill formed, undefined, or not enabled under the current marking; and (ii) terminal goal violations , in which the final marking fails to satisfy the target specification. The verifier returns structured diagnostic fields to support subsequent prompt construction. Representative error signals include formatting errors, undefined transitions, not-enabled transitions, and non-progressing transition loops. 2) Reflection stage: Once a failure is detected, the procedure enters the Reflection stage, which consumes the structured diagnostics described above. This stage is not intended to directly generate a new sequence. Instead, it asks the model to perform failure attribution and strategy summarization, identify which class of constraint conflict caused the failure, determine how the sequence should be repaired, and extract patterns to avoid, thereby reducing repeated mistakes in later iterations. 3) Reprompting stage: After obtaining reflection out-comes, the method proceeds to the reprompting stage. In this stage, the reflection conclusions, the original problem specification, and constraints implied by the current failure state are integrated into an updated prompt, which guides the LLM to produce a new candi-date firing sequence. Compared with direct resampling, reprompting improves efficiency of LLM-based solving and reduces probability of recurring errors. IV. I LLUSTRATIVE CASE STUDY 
+
+The proposed method is evaluated on a real-world inspired multi-product automated manufacturing cell. As illustrated in Fig. 2, the cell receives workpieces from three heterogeneous inbound lines, denoted as PA, PB , and PC . After entering the cell, jobs proceed through multiple processing operations or-ganized in parallel production routes. The processed items are then merged into a downstream workstation that represents a shared and capacity-limited resource pool. This station cannot simultaneously serve the demands of different product types, which induces contention and requires explicit sequencing decisions. After completing this shared-resource stage, the system outputs two distinct finished product types. Fig. 2 presents both a process overview and the correspond-ing Petri net abstraction. The upper part shows the physical material flow of the manufacturing cell, while the lower part presents the Petri net structure used in the experiments. In the Petri net model, places represent buffers, intermediate states, and resource availability, whereas transitions represent processing events. In particular, the shared workstation is modeled by a dedicated resource place with a single token (ca-pacity 1), which enforces mutual exclusion when different job streams request the same bottleneck resource. This case study therefore captures key characteristics of industrial discrete-event systems, including concurrency, synchronization, and resource conflicts, making it suitable for assessing Petri net reachability planning under realistic constraints. 𝑝𝑝 1
+
+> 𝑝𝑝 2
+> 𝑝𝑝 3
+> 𝑃𝑃 𝐴𝐴
+> 𝑃𝑃 𝐵𝐵
+> 𝑃𝑃 𝐶𝐶
+> Shared Resource Pool
+> token=1
+> t1
+> t2
+> 𝑝𝑝 4
+> 𝑝𝑝 5
+> t3
+> t4
+> 𝑝𝑝 7
+> 𝑝𝑝 8
+> t5
+> t6
+> 𝑝𝑝 9
+> 𝑝𝑝 10
+> 𝑝𝑝 6
+
+Fig. 2. Overview of the industrial case study and the associated Petri net model. The upper panel depicts the production flow with three inbound lines, parallel processing routes, and a capacity-limited shared resource pool. The lower panel presents the corresponding Petri net. 
+
+V. E XPERIMENTS 
+
+The proposed framework is validated using an indus-trial case study to demonstrate practical effectiveness in a representative setting. Section IV details the industrial scenario and the corresponding Petri net model. Based on this model, Section V-A defines six benchmark reachability configurations that share the same net structure but differ in initial and target markings, which enables systematic control of problem difficulty. Section V-B evaluates the proposed method on these configurations. Finally, Section V-C compares performance across multiple LLMs,which assesses robustness under different model implementations. 
+
+A. Experimental Setup 
+
+All experiments are conducted on the same case study Petri net N = ( P, T, P re, P ost ) introduced in Section III. Six reachability configurations are constructed by fixing the net structure fixed while varying the initial and target markings  M (i)0 , M (i)
+
+> g
+
+ to induce different levels of resource contention and production requirements. The final marking must match 
+
+M (i) 
+
+> g
+
+on all places in P . Places not explicitly specified in 
+
+M (i) 
+
+> g
+
+are treated as having zero tokens. Table I summarizes the six marking pairs used in the evaluation. We report four metrics: (1) the overall success rate (%); (2) the first pass success rate (%); (3) repair success rate (%); and (4) average number of retries required until termination. For each configuration, five independent runs are performed. In each run, the solver executes up to a maximum of 10 attempts. The run terminates immediately once a valid sequence is verified, or stops when the retry budget is exhausted. Unless otherwise specified, all LLM calls use ChatGPT-4o with temperature set to 0. 
+
+B. Results on the Six Case Study Instances 
+
+Table II reports the performance of the proposed method on the six marking configurations of the fixed case study Petri net. Across all 30 runs (5 runs per case), the method achieves a 100% overall success rate, demonstrating that the framework can reliably certify valid firing sequences under the exact marking criterion. On the easier configurations (case01– case04), first pass success remains high, and the average number of retries per run is below 0.4, indicating that the LLM frequently outputs a correct sequence. In contrast, the more challenging configurations exhibit substantially lower first-pass success. In particular, case05 has 0% first-pass success but still reaches 100% overall success through repair, requiring on average 2.40 retries per run. This suggests that the effectiveness of reflection and reptompting strategy. Similarly, case06 benefits from the repair loop, reaching 80% 
+
+repair success with an average of 0.80 retries per run.                                                                           
+
+> TABLE I SIX REACHABILITY CONFIGURATIONS ON THE CASE -STUDY PETRI NET
+> Case Initial Marking M(i)0Target Marking M(i)
+> g
+> case01 P1= 4 , P 2= 8 , P 3= 4 , P 6=1
+> P6= 1 , P 9= 4 , P 10 = 4
+> case02 P1= 4 , P 2= 8 , P 3= 1 , P 6=1
+> P6= 1 , P 9= 1 , P 10 = 4
+> case03 P1= 14 , P 2= 24 , P 3=3, P 6= 3
+> P5= 1 , P 6= 1 , P 8= 2 , P 9=7, P 10 = 7
+> case04 P1= 11 , P 2= 22 , P 3=8, P 6= 2
+> P5= 2 , P 6= 1 , P 8= 1 , P 9=8, P 10 = 8
+> case05 P1= 35 , P 2= 54 , P 3=6, P 6= 6
+> P3= 6 , P 5= 5 , P 6= 1 , P 7=2, P 8= 3 , P 9= 14 , P 10 = 11
+> case06 P1= 30 , P 2= 40 , P 3=5, P 5= 6 , P 6= 8 , P 7=2, P 8= 3 , P 9= 0 , P 10 = 0
+> P1= 5 , P 2= 5 , P 3= 7 ,P5= 4 , P 6= 1 , P 7= 5 ,P8= 7 , P 9= 10 , P 10 = 8
+
+Overall, these results highlight the reflection and reprompt-ing mechanism substantially improves robustness on harder cases, converting initial failures into verified solutions and thereby stabilizing performance.                              
+
+> TABLE II PERFORMANCE ON SIX CASE STUDY INSTANCES
+> Case Overall success rate(%) First pass success rate(%) Repair success rate(%) Avg. retries per run case01 100 100 --case02 100 80 20 0.2 case03 100 60 40 0.4 case04 100 80 20 0.2 case05 100 0100 2.4 case06 100 20 80 0.8 Total 100 56.67 43.33 0.67
+
+C. Comparison Across Different LLMs 
+
+To examine whether the proposed framework is tied to a specific LLM, we evaluate the same closed-loop pipeline using three representative models: GPT-4o, Deepseek-chat, and Gemini-3-Flash. Table III summarizes the aggregated results over the six case study instances. The data presented in the table is the final result obtained by each LLM after running five times on six examples. Overall, the proposed method consistently achieves high feasibility across different LLMs. Both GPT-4o and Deepseek-chat reach a 100% overall success rate, while Gemini-3-Flash attains 96 .67% , indicating that the framework remains effective even when the underlying generative model changes. Notably, when initial attempts fail, the reflection and re-prompting enables the system to recover and produce verified firing sequences in a large portion of runs. This is reflected in repair success rate. While different LLMs exhibit different first pass perfor-mance and repair costs, the same verification guided closed loop provides a model-independent mechanism for rejecting invalid steps, diagnosing failures, and iteratively repairing candidate sequences toward the exact target marking.               
+
+> TABLE III CROSS -LLM COMPARISON OF THE PROPOSED METHOD ON SIX CASE STUDY INSTANCES
+> LLMs Model Overall success rate (%) First pass success rate (%) Repair success rate (%) Avg. retries per run GPT-4o 100 56.67 43.33 0.67 Deepseek-V3 (chat) 100 66.67 33.33 0.33 Gemini-3-Flash 96.67 70.00 26.67 1.13
+
+VI. C ONCLUSION AND FUTURE WORK 
+
+This paper studies Petri-net reachability planning and firing sequence under shared resource constraints. We propose an LLM-based solving framework augmented with a two stage reflection and reprompting mechanism to improve correctness and robustness. Unlike one shot sequence generation with an LLM, our framework first prompts the model to produce a candidate firing sequence and then verifies it via step by step replay, checking transition enabledness at each marking and, upon completion, determining whether the resulting marking matches the target specification. When verification fails, the framework drives the LLM to diagnose the failure and formulate a repair strategy, and then regenerates a revised sequence accordingly. This closed-loop process mitigates the inefficiency and uncertainty of naive repeated trials. On an industrial inspired, multi product automated man-ufacturing cell case study, we fix the Petri net structure and construct six benchmark configurations with distinct initial and target markings, covering varying degrees of resource contention and different combinations of production requirements. The experimental results indicate that the proposed approach can effectively solve this class of Petri nets, ensuring that the LLM outputs executable and valid firing sequences, thereby yielding feasible schedules for the manufacturing cell. These results further demonstrate the feasibility and practical value of our framework for discrete event manufacturing systems where concurrency, synchronization, and shared resource conflicts coexist. Regarding computational cost, the total runtime is ap-proximately the number of LLM calls times the per-call inference latency, since step-by-step verification is linear in the sequence length and comparatively negligible. The number of calls is bounded by the retry budget and stays small in our experiments, so the wall-clock time is governed mainly by the chosen model and its serving infrastructure rather than by the framework itself. Future work can proceed along three directions. First, the framework can be extended to larger scale and more com-plex industrial settings such as multi-objective optimization, dynamic order insertion, and flexible production. Second, the proposed approach can be integrated with complementary methods, including reinforcement learning, machine learning, and heuristic optimization algorithm. Third, the inference cost can be reduced through stronger first-pass prompting, smaller distilled models, or caching. REFERENCES [1] D. A. Rossit, F. Tohm ´e, and M. Frutos, “Industry 4.0: smart scheduling,” 
+
+International Journal of Production Research , vol. 57, no. 12, pp. 3802– 3813, 2019. [2] T. Murata, “Petri nets: Properties, analysis and applications,” Proceed-ings of the IEEE , vol. 77, no. 4, pp. 541–580, 2002. [3] R. Zurawski and M. Zhou, “Petri nets and industrial applications: A tutorial,” IEEE Transactions on industrial electronics , vol. 41, no. 6, pp. 567–583, 1994. [4] F. Chu and X.-L. Xie, “Deadlock analysis of petri nets using siphons and mathematical programming,” IEEE Transactions on Robotics and Automation , vol. 13, no. 6, pp. 793–804, 1997. [5] M. Baldea, A. T. Georgiou, B. Gopaluni, M. Mercang ¨oz, C. C. Pan-telides, K. Sheth, V. M. Zavala, and C. Georgakis, “From automated to autonomous process operations,” Computers & Chemical Engineering ,vol. 196, p. 109064, 2025. [6] M. S. Gill, J. Vyas, A. Markaj, F. Gehlhoff, and M. Mercang ¨oz, “Leveraging llm agents and digital twins for fault handling in process plants,” in 2025 IEEE 30th International Conference on Emerging Technologies and Factory Automation (ETFA) . IEEE, 2025, pp. 1–8. [7] I. Augenstein, T. Baldwin, M. Cha, T. Chakraborty, G. L. Ciampaglia, D. Corney, R. DiResta, E. Ferrara, S. Hale, A. Halevy et al. , “Factuality challenges in the era of large language models and opportunities for fact-checking,” Nature Machine Intelligence , vol. 6, no. 8, pp. 852–863, 2024. [8] R. Zurawski and M. Zhou, “Petri nets and industrial applications: A tutorial,” IEEE Transactions on Industrial Electronics , vol. 41, no. 6, p. 567–583, Dec. 1994. [9] G. Tuncel and G. M. Bayhan, “Applications of petri nets in produc-tion scheduling: a review,” The International Journal of Advanced Manufacturing Technology , vol. 34, no. 7, pp. 762–773, 2007. [10] G. Mejia, J. P. Caballero-Villalobos, and C. Montoya, “Petri nets and deadlock-free scheduling of open shop manufacturing systems,” IEEE Transactions on Systems, Man, and Cybernetics: Systems , vol. 48, no. 6, p. 1017–1028, Jun. 2018. [11] M. Zhou, “Modeling, analysis, simulation, scheduling, and control of semiconductor manufacturing systems: A petri net approach,” IEEE Transactions on Semiconductor Manufacturing , vol. 11, no. 3, pp. 333–357, 1998. [12] D. Y. Lee and F. DiCesare, “Scheduling flexible manufacturing systems using petri nets and heuristic search,” IEEE Transactions on Robotics and Automation , vol. 10, no. 2, p. 123–132, Apr. 1994. [13] S. Lassoued and A. Schwung, “Introducing petrirl: An innovative framework for jssp resolution integrating petri nets and event-based reinforcement learning,” Journal of Manufacturing Systems , vol. 74, pp. 690–702, 2024. [14] L. Hu, Z. Liu, W. Hu, Y. Wang, J. Tan, and F. Wu, “Petri-net-based dynamic scheduling of flexible manufacturing system via deep reinforcement learning with graph convolutional network,” Journal of Manufacturing Systems , vol. 55, pp. 1–14, 2020. [15] J. Luo, S. Yi, Z. Lin, H. Zhang, and J. Zhou, “Petri-net-based deep reinforcement learning for real-time scheduling of automated manufacturing systems,” Journal of Manufacturing Systems , vol. 74, pp. 995–1008, 2024. [16] J. Luo, Z. Liu, M. Zhou, and K. Xing, “Deadlock-free scheduling of flexible assembly systems based on petri nets and local search,” IEEE Transactions on Systems, Man, and Cybernetics: Systems , vol. 50, no. 10, pp. 3658–3669, 2018. [17] L. Han, K. Xing, X. Chen, and F. Xiong, “A petri net-based particle swarm optimization approach for scheduling deadlock-prone flexible manufacturing systems,” Journal of Intelligent Manufacturing , vol. 29, no. 5, pp. 1083–1096, 2018. [18] G. Mej ´ıa, J. P. Caballero-Villalobos, and C. Montoya, “Petri nets and deadlock-free scheduling of open shop manufacturing systems,” IEEE Transactions on Systems, Man, and Cybernetics: Systems , vol. 48, no. 6, pp. 1017–1028, 2017. [19] B. Huang, X.-X. Shi, and N. Xu, “Scheduling fms with alternative routings using petri nets and near admissible heuristic search,” The International Journal of Advanced Manufacturing Technology , vol. 63, no. 9, pp. 1131–1136, 2012. [20] G. F. da Silva, L. S. M. Guedes, R. R. Saldanha, C. Andrey Maia, and T. B. F. Tamantini, “Iterative configuration of t-timed colored petri nets by a milp model for rail freight volume and rolling stock planning,” 
+
+IEEE Access , vol. 13, p. 130066–130087, 2025. [21] L. Ren, H. Wang, J. Dong, Z. Jia, S. Li, Y. Wang, Y. Laili, D. Huang, L. Zhang, and B. Li, “Industrial foundation model,” IEEE Transactions on Cybernetics , 2025. [22] M. Ni, T. Wang, J. Leng, C. Chen, and L. Cheng, “A large language model-based manufacturing process planning approach under industry 5.0,” International Journal of Production Research , pp. 1–20, 2025. [23] L. Xia, C. Li, C. Zhang, S. Liu, and P. Zheng, “Leveraging error-assisted fine-tuning large language models for manufacturing excellence,” 
+
+Robotics and Computer-Integrated Manufacturing , vol. 88, p. 102728, 2024. [24] C. H. Song, J. Wu, C. Washington, B. M. Sadler, W.-L. Chao, and Y. Su, “Llm-planner: Few-shot grounded planning for embodied agents with large language models,” in Proceedings of the IEEE/CVF international conference on computer vision , 2023, pp. 2998–3009. [25] Y. Zhen, S. Bi, L. Xing-Tong, P. Wei-Qin, S. Hai-Peng, C. Zi-Rui, and F. Yi-Shu, “Robot task planning based on large language model representing knowledge with directed graph structures,” arXiv preprint arXiv:2306.05171 , 2023. [26] Z. Wang, C. Wan, J. Liu, X. Zhang, H. Wang, Y. Hu, and Z. Hu, “Masc: Large language model-based multi-agent scheduling chain for flexible job shop scheduling problem,” Advanced Engineering Informatics ,vol. 67, p. 103527, 2025. [27] S. Cao and Y. Yuan, “Reflecsched: Solving dynamic flexible job-shop scheduling via llm-powered hierarchical reflection,” arXiv preprint arXiv:2508.01724 , 2025.
