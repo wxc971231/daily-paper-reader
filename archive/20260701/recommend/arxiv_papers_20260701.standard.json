@@ -1,0 +1,206 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-01T19:48:50.974630+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2606.29999v1",
+      "source": "arxiv",
+      "title": "AlgoSkill: Learning to Design Algorithms by Scheduling Human-Like Skills",
+      "abstract": "Designing an algorithm from a natural-language problem statement requires identifying the problem structure, reading constraints, choosing a suitable paradigm, checking correctness, and refining complexity. Existing large language model (LLM) methods often rely on direct generation or generic self-refinement, leaving these steps implicit. We propose AlgoSkill, which models algorithm design as sequential decision-making over a typed library of algorithmic skills, including abstraction, constraint analysis, state design, data-structure selection, proof checking, counterexample construction, and complexity refinement. A learned scheduler proposes skills from the current design state, while a Monte Carlo Tree Search (MCTS) controller explores skill sequences using verification feedback from compilation, testing, stress testing, and complexity analysis. Experiments on competitive programming and combinatorial optimization benchmarks show that AlgoSkill improves over direct LLM generation, chain-of-thought prompting, self-refinement, and MCTS without typed skills. Ablations show that typed skills, verification-based repair, and search-based scheduling each contribute to performance. These results support treating automatic algorithm design as verification-guided skill scheduling rather than one-shot code generation.",
+      "authors": [
+        "Xinyuan Song",
+        "Zekun Cai",
+        "Liang Zhao"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-29T09:09:16+00:00",
+      "link": "https://arxiv.org/pdf/2606.29999v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "learns to design algorithms from problem statements, applicable to generating optimization code",
+      "llm_evidence_cn": "从问题描述学习设计算法，可应用于优化代码生成",
+      "llm_evidence": "从问题描述学习设计算法，可应用于优化代码生成",
+      "canonical_evidence": "从问题描述学习设计算法，可应用于优化代码生成",
+      "llm_tldr_en": "Proposes AlgoSkill which models algorithm design as sequential decision-making over a skill library, using MCTS to generate algorithms from natural-language problem statements, transferable to optimization code generation.",
+      "llm_tldr_cn": "现有LLM方法通常直接生成算法或通用自精化，过程不透明。本文提出AlgoSkill，将算法设计建模为对类人技能库的序列决策，通过MCTS探索技能序列，从自然语言问题生成算法。实验表明该方法在多个算法设计任务上有效生成正确且高效的算法。该框架可应用于运筹优化问题的求解代码自动生成。",
+      "llm_tldr": "现有LLM方法通常直接生成算法或通用自精化，过程不透明。本文提出AlgoSkill，将算法设计建模为对类人技能库的序列决策，通过MCTS探索技能序列，从自然语言问题生成算法。实验表明该方法在多个算法设计任务上有效生成正确且高效的算法。该框架可应用于运筹优化问题的求解代码自动生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.30704v1",
+      "source": "arxiv",
+      "title": "From Search to Synthesis: Training LLMs as Zero-Shot Workflow Generators",
+      "abstract": "Large language models (LLMs) excel across a wide range of tasks, yet their instance-specific solutions often lack the structural consistency needed for reliable deployment. Workflows that encode recurring algorithmic patterns at the task level provide a principled framework, offering robustness across instance variations, interpretable traces for debugging, and reusability across problem instances. However, manually designing such workflows requires significant expertise and effort, limiting their broader application. While automatic workflow generation could address this bottleneck, existing methods either produce instance-specific solutions without learning task-level patterns, or cannot generalize beyond their training configurations. We present MetaFlow, which casts workflow generation as a meta-learning problem: given a task and an operator set, the model learns to compose solution strategies. MetaFlow trains in two stages: supervised fine-tuning on synthetic workflow data, followed by reinforcement learning with verifiable rewards (RLVR) that uses execution feedback across problem instances in the task to improve end-to-end success. The resulting model produces effective workflows for trained tasks and exhibits strong generalization to untrained tasks and novel operator sets. Across benchmarks in question answering, code generation, and mathematical reasoning, MetaFlow achieves performance comparable to state-of-the-art baselines on in-domain tasks with single inference, while demonstrating remarkable zero-shot generalization capabilities on out-of-domain tasks and operator sets.",
+      "authors": [
+        "Gan Luo",
+        "Zihan Qin",
+        "Bin Dong",
+        "Wotao Yin"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-29T14:17:09+00:00",
+      "link": "https://arxiv.org/pdf/2606.30704v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "generates zero-shot workflows encoding algorithmic patterns, directly applicable to generating optimization solution code",
+      "llm_evidence_cn": "零样本生成编码算法模式的工作流，可直接应用于生成优化求解代码",
+      "llm_evidence": "零样本生成编码算法模式的工作流，可直接应用于生成优化求解代码",
+      "canonical_evidence": "零样本生成编码算法模式的工作流，可直接应用于生成优化求解代码",
+      "llm_tldr_en": "Presents a method to train LLMs as zero-shot workflow generators that produce task-level algorithmic workflows, providing robustness and reusability for optimization problem solving code generation.",
+      "llm_tldr_cn": "现有方法要么生成实例级解，要么无法泛化。本文训练LLM直接从问题描述生成任务级工作流，编码算法模式，采用搜索和综合策略。实验显示生成的工作流具有高正确率和泛化能力，可直接用于优化问题求解代码自动生成，减少人工设计工作流成本。",
+      "llm_tldr": "现有方法要么生成实例级解，要么无法泛化。本文训练LLM直接从问题描述生成任务级工作流，编码算法模式，采用搜索和综合策略。实验显示生成的工作流具有高正确率和泛化能力，可直接用于优化问题求解代码自动生成，减少人工设计工作流成本。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.31801v1",
+      "source": "arxiv",
+      "title": "RAISE: LLM-based Automated Heuristic Design with Robust Adversary Instance Search",
+      "abstract": "Automated Heuristic Design (AHD) with Large Language Models (LLMs) has shown remarkable progress in discovering high-quality heuristics. However, existing LLM-based AHD methods optimize heuristics for a fixed training instance set and may fail catastrophically when deployed under real-world distributional shifts. We propose Robust Adversary Instance Search (RAISE), a framework that integrates constrained worst-case instance search within a principled neighborhood of the training distribution into the LLM-based evolutionary search loop. RAISE treats robust AHD as a constrained adversarial instance search problem: the outer loop evolves heuristics via LLM operators, while an LLM-free inner loop efficiently identifies hard instances within an epsilon-ball around the training instance set using a basis distribution parameterization with boundary projection. Comprehensive experiments on Online Bin Packing (OBP), Online Job Shop Scheduling (OJSP), and Online Vehicle Routing (OVRP) across five distribution families demonstrate that existing LLM-based AHD methods degrade by up to 19 times under distribution shift, while RAISE consistently maintains strong performance across all tested distributions and problem scales",
+      "authors": [
+        "Fei Liu",
+        "Alessio Figalli",
+        "Patrick Owen",
+        "Nicola Serra"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-30T15:19:27+00:00",
+      "link": "https://arxiv.org/pdf/2606.31801v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based automated heuristic design for optimization problems",
+      "llm_evidence_cn": "基于LLM自动设计优化问题启发式算法",
+      "llm_evidence": "基于LLM自动设计优化问题启发式算法",
+      "canonical_evidence": "基于LLM自动设计优化问题启发式算法",
+      "llm_tldr_en": "RAISE integrates constrained worst-case instance search into LLM-based evolutionary search for robust automated heuristic design, improving generalization under distributional shifts.",
+      "llm_tldr_cn": "RAISE针对现有基于LLM的自动启发式设计在分布偏移下表现脆弱的问题，将约束最坏情况实例搜索集成到LLM进化搜索循环中。该方法在不依赖外部模型的情况下，通过内部循环高效识别困难实例，生成鲁棒启发式算法。实验表明，RAISE在多个优化问题上显著提升了启发式算法的泛化鲁棒性，为自动化求解生成提供了有效工具。",
+      "llm_tldr": "RAISE针对现有基于LLM的自动启发式设计在分布偏移下表现脆弱的问题，将约束最坏情况实例搜索集成到LLM进化搜索循环中。该方法在不依赖外部模型的情况下，通过内部循环高效识别困难实例，生成鲁棒启发式算法。实验表明，RAISE在多个优化问题上显著提升了启发式算法的泛化鲁棒性，为自动化求解生成提供了有效工具。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.27757v1",
+      "source": "arxiv",
+      "title": "Towards Reliable and Robust LLM Planning: Symbolic Feedback-Driven Iterative Self-Refinement Framework",
+      "abstract": "Large language models (LLMs) have attracted widespread attention from academia and industry, yet their deployment raises critical security concerns regarding robustness and reliability. Planning, a core component of intelligent behavior, remains challenging for LLMs, which often produce infeasible or incorrect solutions in long-horizon decision-making tasks due to inherent complexity. In this paper, we propose a symbolic feedback-driven iterative self-refinement framework to enhance the robustness and reliability of LLMs in long-horizon planning. Specifically, a natural language prompting mechanism is introduced to map logical symbols into natural language descriptions, enabling LLMs to better capture task constraints and semantics. We further design a symbolic verifier that identifies errors and converts them into corrective instructions interpretable by the LLM, thereby guiding self-refinement. In addition, we leverage a plan recognizer to infer goal reachability, facilitating more effective guidance toward desired goals. Empirical results demonstrate that the proposed framework consistently improves both feasibility and correctness in long-horizon planning tasks. This highlights its effectiveness in enhancing the reliability of LLM-based planning and potential to enable more trustworthy AI systems.",
+      "authors": [
+        "Jiajing Zhang",
+        "Jiamei Jiang",
+        "Chenyang Zhang",
+        "Feifei Mo",
+        "Linjing Li",
+        "Daniel Zeng"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-26T06:24:33+00:00",
+      "link": "https://arxiv.org/pdf/2606.27757v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "iterative self-refinement with symbolic feedback for generating feasible planning solutions, aligned with automatic optimization solution generation",
+      "llm_evidence_cn": "符号反馈驱动的迭代自优化生成可行规划方案，与自动优化求解生成一致",
+      "llm_evidence": "符号反馈驱动的迭代自优化生成可行规划方案，与自动优化求解生成一致",
+      "canonical_evidence": "符号反馈驱动的迭代自优化生成可行规划方案，与自动优化求解生成一致",
+      "llm_tldr_en": "Proposes a symbolic feedback-driven iterative self-refinement framework to enhance LLM planning reliability, generating correct long-horizon solutions applicable to optimization problem solving.",
+      "llm_tldr_cn": "LLM在长期规划中常产生不可行方案。本文提出符号反馈迭代自优化框架，将逻辑符号映射为自然语言描述，结合反馈引导LLM生成更可靠的长程规划方案。实验证明该方法显著提升规划成功率与鲁棒性，可用于运筹优化中的自动求解生成。",
+      "llm_tldr": "LLM在长期规划中常产生不可行方案。本文提出符号反馈迭代自优化框架，将逻辑符号映射为自然语言描述，结合反馈引导LLM生成更可靠的长程规划方案。实验证明该方法显著提升规划成功率与鲁棒性，可用于运筹优化中的自动求解生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.31182v1",
+      "source": "arxiv",
+      "title": "AI-Assisted Discovery of Convex Relaxations via Dual Agents",
+      "abstract": "Recent work shows that LLM agents can improve sharp-constant inequalities by searching for extremal constructions, which yield upper bounds. We address the complementary side: a lower bound holds for every admissible function and follows from a convex relaxation of the nonconvex problem, with tighter relaxations giving stronger bounds. We instantiate the autoresearch paradigm to discover such relaxations: a coding agent proposes valid tightening constraints, a theory agent verifies each one and searches for counterexamples, and every reported bound is certified by an explicit dual-feasible point checked in rigorous interval arithmetic. On two optimization constants studied by \\citet{tao2025alphaevolve} - the first autocorrelation inequality ($C_{6.2}$) and the Erdős minimum-overlap constant ($C_{6.5}$) - we improve the certified lower bounds from $1.28$ to $1.2937$ and from $0.379005$ to $0.37912$, respectively.",
+      "authors": [
+        "Sungyoon Kim",
+        "Mert Pilanci"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-30T06:10:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.31182v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM agents discover convex relaxations for optimization bounds",
+      "llm_evidence_cn": "LLM代理自动发现凸松弛，用于优化问题边界",
+      "llm_evidence": "LLM代理自动发现凸松弛，用于优化问题边界",
+      "canonical_evidence": "LLM代理自动发现凸松弛，用于优化问题边界",
+      "llm_tldr_en": "LLM agents (coding and theory) collaboratively discover convex relaxations to tighten lower bounds for nonconvex optimization constants, with formal certification via interval arithmetic.",
+      "llm_tldr_cn": "本文提出双代理框架，编码代理生成有效约束，理论代理验证并搜索反例，自动发现凸松弛以改进非凸优化问题的下界。该方法在自相关不等式和Erdos不等式常数上取得了更紧的界，并通过区间算术严格验证。研究展示了LLM辅助自动求解优化的潜力。",
+      "llm_tldr": "本文提出双代理框架，编码代理生成有效约束，理论代理验证并搜索反例，自动发现凸松弛以改进非凸优化问题的下界。该方法在自相关不等式和Erdos不等式常数上取得了更紧的界，并通过区间算术严格验证。研究展示了LLM辅助自动求解优化的潜力。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

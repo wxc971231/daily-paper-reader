@@ -6,36 +6,37 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-30
-- 运行时间：2026-06-30 19:26:02 UTC
+- 最新运行日期：2026-07-01
+- 运行时间：2026-07-01 19:53:12 UTC
 - 运行状态：成功
 - 本次总论文数：5
-- 精读区：5
-- 速读区：0
+- 精读区：3
+- 速读区：2
 
 ### 今日简报（AI）
-今日精读2篇高分论文，聚焦LLM在运筹优化（COOPA架构）与库存分配（Solver验证生成）中的应用。推荐重点：模块化LLM代理框架可提升运筹问题解决效率，而带求解器验证的公式生成能有效增强库存分配可靠性。建议后续关注LLM与运筹工具的协同验证机制，探索实际业务落地场景。
-- 详情：[/202606/30/README](/202606/30/README)
+1) 今日精读两篇8.0分论文，聚焦于算法设计技能调度与LLM零样本工作流生成。  
+2) 最值得关注两个方向：通过类人技能调度学习算法设计，以及训练LLM直接从搜索转向无先例的工作流合成。  
+3) 建议读者优先精读这两篇高分论文，了解如何将人类技能调度与LLM生成能力结合，提升算法设计效率。
+- 详情：[/202607/01/README](/202607/01/README)
 
 ### 精读区论文标签
-1. [COOPA: A Modular LLM Agent Architecture for Operations Research Problems](/202606/30/2606.27611v1-coopa-a-modular-llm-agent-architecture-for-operations-research-problems)  
-   标签：评分：10.0/10、query:llm-opt-code
-   evidence：模块化LLM智能体用于运筹学问题建模和求解器选择
-2. [Solver-Verified Formulation Generation and Selection for Multi-Warehouse Inventory Allocation Using Large Language Models](/202606/30/2606.29366v1-solver-verified-formulation-generation-and-selection-for-multi-warehouse-inventory-allocation-using-large-language-models)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：LLM生成运筹学公式和库存分配代码
-3. [Evolution Fine-Tuning: Learning to Discover Across 371 Optimization Tasks](/202606/30/2606.29082v1-evolution-fine-tuning-learning-to-discover-across-371-optimization-tasks)  
+1. [AlgoSkill: Learning to Design Algorithms by Scheduling Human-Like Skills](/202607/01/2606.29999v1-algoskill-learning-to-design-algorithms-by-scheduling-human-like-skills)  
    标签：评分：8.0/10、query:llm-opt-code
-   evidence：LLM结合进化搜索跨371个优化任务，包括组合谜题
-4. [A Two-Stage Reflection and Reprompting Framework for LLM-Based Solution of Petri Net Reachability Problems in Industrial Applications](/202606/30/2606.29627v1-a-two-stage-reflection-and-reprompting-framework-for-llm-based-solution-of-petri-net-reachability-problems-in-industrial-applications)  
+   evidence：从问题描述学习设计算法，可应用于优化代码生成
+2. [From Search to Synthesis: Training LLMs as Zero-Shot Workflow Generators](/202607/01/2606.30704v1-from-search-to-synthesis-training-llms-as-zero-shot-workflow-generators)  
    标签：评分：8.0/10、query:llm-opt-code
-   evidence：基于LLM的Petri网可达性问题求解，属于优化问题求解代码生成
-5. [Toward Secure and Reliable PDDL Formalization of Large Language Models with Planner-in-the-Loop Feedback](/202606/30/2606.29700v1-toward-secure-and-reliable-pddl-formalization-of-large-language-models-with-planner-in-the-loop-feedback)  
+   evidence：零样本生成编码算法模式的工作流，可直接应用于生成优化求解代码
+3. [RAISE: LLM-based Automated Heuristic Design with Robust Adversary Instance Search](/202607/01/2606.31801v1-raise-llm-based-automated-heuristic-design-with-robust-adversary-instance-search)  
    标签：评分：8.0/10、query:llm-opt-code
-   evidence：基于LLM的PDDL形式化与规划器在环用于约束编程
+   evidence：基于LLM自动设计优化问题启发式算法
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [Towards Reliable and Robust LLM Planning: Symbolic Feedback-Driven Iterative Self-Refinement Framework](/202607/01/2606.27757v1-towards-reliable-and-robust-llm-planning-symbolic-feedback-driven-iterative-self-refinement-framework)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：符号反馈驱动的迭代自优化生成可行规划方案，与自动优化求解生成一致
+2. [AI-Assisted Discovery of Convex Relaxations via Dual Agents](/202607/01/2606.31182v1-ai-assisted-discovery-of-convex-relaxations-via-dual-agents)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：LLM代理自动发现凸松弛，用于优化问题边界
 
 
 <div class="dpr-home-promo-card">
