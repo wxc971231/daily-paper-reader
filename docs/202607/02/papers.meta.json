@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-02",
+  "date": "2026-07-02",
+  "generated_at": "2026-07-02T19:48:30",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/02/2607.00604v1-vehicle-routing-problem-meets-large-language-models-an-overview-and-perspectives",
+      "section": "deep",
+      "title_en": "Vehicle Routing Problem Meets Large Language Models: An Overview and Perspectives",
+      "authors": "Xianchao Xiu, Chong Shen, Yanjiao Zhu, Wanquan Liu",
+      "date": "2026-07-01",
+      "pdf": "https://arxiv.org/pdf/2607.00604v1",
+      "score": "9.0",
+      "evidence": "LLM用于车辆路径问题的优化建模与代码生成",
+      "tldr": "车辆路径问题(VRP)是AI和物流中的核心NP-hard优化问题，实际约束复杂。大语言模型(LLM)通过处理自然语言需求、生成代码、推理约束和调用工具，为路径优化提供灵活接口。现有研究将LLM归纳为建模者(转换需求为约束和代码)、设计者(生成启发式或路线)、协调者(组织工具调用和多智能体协作)。本综述系统梳理了LLM辅助VRP的进展、基准和实验，为智能决策和工业自动化提供结构化参考。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "The vehicle routing problem (VRP) is a central optimization problem in artificial intelligence, logistics automation, transportation scheduling, and industrial decision-making. VRP and its variants are NP-hard, and practical routing tasks often combine time windows, vehicle capacities, pickup-and-delivery relations, dynamic requests, and other operational constraints, making both modeling and solving difficult. Large language models (LLMs) provide a flexible interface for routing optimization by processing natural-language requirements, generating code, reasoning over constraints, and interacting with external tools. This survey reviews LLM-driven research on VRP, covering the basic definition, main variants, major solver families, and LLM concepts needed for this topic. Existing studies are organized into three roles: modelers translate natural-language requirements into constraints and modeling code; designers generate heuristics, operators, or route plans; and coordinators organize tool calls, multi-agent collaboration, and connections with neural solvers. The survey also reviews standard benchmarks, real or near-real operational datasets, LLM-oriented evaluation frameworks, and two comparative experiments. The goal is to clarify current progress in LLM-assisted routing optimization and provide a structured reference for intelligent decision-making, advanced manufacturing, and industrial automation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/02/2607.00292v1-an-llm-based-framework-for-intent-driven-network-topology-design",
+      "section": "quick",
+      "title_en": "An LLM-Based Framework for Intent-Driven Network Topology Design",
+      "authors": "Kholoud El-Habbouli, Fen Zhou, Stephane Huet",
+      "date": "2026-07-01",
+      "pdf": "https://arxiv.org/pdf/2607.00292v1",
+      "score": "7.0",
+      "evidence": "基于LLM的约束驱动网络拓扑设计，属于优化建模",
+      "tldr": "网络拓扑设计自动化面临从自然语言需求生成可部署结构的挑战。本文提出基于大语言模型的框架，通过约束驱动流水线结合层次建模与系统验证，生成合规拓扑。在四个真实场景中评估多个LLM，使用节点/边F1分数和服务器/内容连接性指标衡量正确性与弹性，并分析接口不匹配等失败模式。该工作为AI驱动网络设计提供了系统化基准，支持模型选择。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Designing deployable and resilient network topologies from natural language requirements remains a challenging problem in network automation. This work investigates the ability of Large Language Models (LLMs) to generate structurally valid and constraint-compliant network topologies through a constraint-driven pipeline combining hierarchical modeling and systematic validation. The framework is evaluated via a multimodel comparison of proprietary and open-weight LLMs across four realistic network scenarios released as a public dataset. We assess structural correctness using node and edge F1-scores against reference topologies, and evaluate resilience through server and content connectivity metrics. In addition, we analyze common failure modes, including interface mismatches and directional inconsistencies in generated topologies. Overall, this work provides a systematic benchmark for understanding how LLMs handle structural and resilience constraints in topology synthesis, and supports informed model selection for AI-driven network design.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

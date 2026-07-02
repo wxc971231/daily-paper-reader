@@ -1,0 +1,94 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-02T19:46:32.975445+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.00604v1",
+      "source": "arxiv",
+      "title": "Vehicle Routing Problem Meets Large Language Models: An Overview and Perspectives",
+      "abstract": "The vehicle routing problem (VRP) is a central optimization problem in artificial intelligence, logistics automation, transportation scheduling, and industrial decision-making. VRP and its variants are NP-hard, and practical routing tasks often combine time windows, vehicle capacities, pickup-and-delivery relations, dynamic requests, and other operational constraints, making both modeling and solving difficult. Large language models (LLMs) provide a flexible interface for routing optimization by processing natural-language requirements, generating code, reasoning over constraints, and interacting with external tools. This survey reviews LLM-driven research on VRP, covering the basic definition, main variants, major solver families, and LLM concepts needed for this topic. Existing studies are organized into three roles: modelers translate natural-language requirements into constraints and modeling code; designers generate heuristics, operators, or route plans; and coordinators organize tool calls, multi-agent collaboration, and connections with neural solvers. The survey also reviews standard benchmarks, real or near-real operational datasets, LLM-oriented evaluation frameworks, and two comparative experiments. The goal is to clarify current progress in LLM-assisted routing optimization and provide a structured reference for intelligent decision-making, advanced manufacturing, and industrial automation.",
+      "authors": [
+        "Xianchao Xiu",
+        "Chong Shen",
+        "Yanjiao Zhu",
+        "Wanquan Liu"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-07-01T08:30:20+00:00",
+      "link": "https://arxiv.org/pdf/2607.00604v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM for vehicle routing problem optimization modeling and code generation",
+      "llm_evidence_cn": "LLM用于车辆路径问题的优化建模与代码生成",
+      "llm_evidence": "LLM用于车辆路径问题的优化建模与代码生成",
+      "canonical_evidence": "LLM用于车辆路径问题的优化建模与代码生成",
+      "llm_tldr_en": "This survey reviews LLM-driven research on the Vehicle Routing Problem, covering how LLMs can process natural-language requirements, generate code, reason over constraints, and interact with external solvers, providing a comprehensive overview of the intersection of LLMs and OR optimization.",
+      "llm_tldr_cn": "该综述论文详细回顾了大型语言模型（LLM）在车辆路径问题（VRP）中的研究进展。VRP是运筹优化领域的核心问题，其建模和求解面临NP-hard挑战。LLM通过处理自然语言需求、生成优化代码、推理约束条件以及调用外部求解器，为VRP提供了灵活接口。文章系统梳理了LLM驱动的VRP研究，包括问题定义、变体、求解器家族和LLM能力，是LLM用于运筹优化问题的代表性工作。",
+      "llm_tldr": "该综述论文详细回顾了大型语言模型（LLM）在车辆路径问题（VRP）中的研究进展。VRP是运筹优化领域的核心问题，其建模和求解面临NP-hard挑战。LLM通过处理自然语言需求、生成优化代码、推理约束条件以及调用外部求解器，为VRP提供了灵活接口。文章系统梳理了LLM驱动的VRP研究，包括问题定义、变体、求解器家族和LLM能力，是LLM用于运筹优化问题的代表性工作。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.00292v1",
+      "source": "arxiv",
+      "title": "An LLM-Based Framework for Intent-Driven Network Topology Design",
+      "abstract": "Designing deployable and resilient network topologies from natural language requirements remains a challenging problem in network automation. This work investigates the ability of Large Language Models (LLMs) to generate structurally valid and constraint-compliant network topologies through a constraint-driven pipeline combining hierarchical modeling and systematic validation. The framework is evaluated via a multimodel comparison of proprietary and open-weight LLMs across four realistic network scenarios released as a public dataset. We assess structural correctness using node and edge F1-scores against reference topologies, and evaluate resilience through server and content connectivity metrics. In addition, we analyze common failure modes, including interface mismatches and directional inconsistencies in generated topologies. Overall, this work provides a systematic benchmark for understanding how LLMs handle structural and resilience constraints in topology synthesis, and supports informed model selection for AI-driven network design.",
+      "authors": [
+        "Kholoud El-Habbouli",
+        "Fen Zhou",
+        "Stephane Huet"
+      ],
+      "primary_category": "cs.NI",
+      "categories": [
+        "cs.NI",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-07-01T00:38:36+00:00",
+      "link": "https://arxiv.org/pdf/2607.00292v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM-based constraint-driven pipeline for network topology optimization",
+      "llm_evidence_cn": "基于LLM的约束驱动网络拓扑设计，属于优化建模",
+      "llm_evidence": "基于LLM的约束驱动网络拓扑设计，属于优化建模",
+      "canonical_evidence": "基于LLM的约束驱动网络拓扑设计，属于优化建模",
+      "llm_tldr_en": "Proposes an LLM-based framework for intent-driven network topology design using a constraint-driven pipeline with hierarchical modeling and validation, achieving structurally valid and resilient topologies.",
+      "llm_tldr_cn": "该论文提出一个基于大语言模型（LLM）的意图驱动网络拓扑设计框架。通过结合分层建模和系统验证的约束驱动流水线，LLM能够从自然语言需求生成结构有效且满足约束的网络拓扑。在多个真实场景中评估了多种LLM，展示了其在处理优化建模问题方面的能力，为运筹优化问题建模提供了方法借鉴。",
+      "llm_tldr": "该论文提出一个基于大语言模型（LLM）的意图驱动网络拓扑设计框架。通过结合分层建模和系统验证的约束驱动流水线，LLM能够从自然语言需求生成结构有效且满足约束的网络拓扑。在多个真实场景中评估了多种LLM，展示了其在处理优化建模问题方面的能力，为运筹优化问题建模提供了方法借鉴。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "problem modeling for operations research",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

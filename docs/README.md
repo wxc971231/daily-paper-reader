@@ -6,37 +6,28 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-01
-- 运行时间：2026-07-01 19:53:12 UTC
+- 最新运行日期：2026-07-02
+- 运行时间：2026-07-02 19:48:21 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：3
-- 速读区：2
+- 本次总论文数：2
+- 精读区：1
+- 速读区：1
 
 ### 今日简报（AI）
-1) 今日精读两篇8.0分论文，聚焦于算法设计技能调度与LLM零样本工作流生成。  
-2) 最值得关注两个方向：通过类人技能调度学习算法设计，以及训练LLM直接从搜索转向无先例的工作流合成。  
-3) 建议读者优先精读这两篇高分论文，了解如何将人类技能调度与LLM生成能力结合，提升算法设计效率。
-- 详情：[/202607/01/README](/202607/01/README)
+今日聚焦LLM如何重塑车辆路径问题与网络拓扑设计，两篇高分研究揭示前沿方向。
+精读综述（9.0分）系统梳理了大语言模型在物流优化中的潜力，速读框架（7.0分）展示意图驱动下网络设计的自动化新思路。
+建议先从车辆路径问题的LLM应用综述入手，再尝试将意图驱动方法迁移至自身网络规划场景。
+- 详情：[/202607/02/README](/202607/02/README)
 
 ### 精读区论文标签
-1. [AlgoSkill: Learning to Design Algorithms by Scheduling Human-Like Skills](/202607/01/2606.29999v1-algoskill-learning-to-design-algorithms-by-scheduling-human-like-skills)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：从问题描述学习设计算法，可应用于优化代码生成
-2. [From Search to Synthesis: Training LLMs as Zero-Shot Workflow Generators](/202607/01/2606.30704v1-from-search-to-synthesis-training-llms-as-zero-shot-workflow-generators)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：零样本生成编码算法模式的工作流，可直接应用于生成优化求解代码
-3. [RAISE: LLM-based Automated Heuristic Design with Robust Adversary Instance Search](/202607/01/2606.31801v1-raise-llm-based-automated-heuristic-design-with-robust-adversary-instance-search)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：基于LLM自动设计优化问题启发式算法
+1. [Vehicle Routing Problem Meets Large Language Models: An Overview and Perspectives](/202607/02/2607.00604v1-vehicle-routing-problem-meets-large-language-models-an-overview-and-perspectives)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：LLM用于车辆路径问题的优化建模与代码生成
 
 ### 速读区论文标签
-1. [Towards Reliable and Robust LLM Planning: Symbolic Feedback-Driven Iterative Self-Refinement Framework](/202607/01/2606.27757v1-towards-reliable-and-robust-llm-planning-symbolic-feedback-driven-iterative-self-refinement-framework)  
+1. [An LLM-Based Framework for Intent-Driven Network Topology Design](/202607/02/2607.00292v1-an-llm-based-framework-for-intent-driven-network-topology-design)  
    标签：评分：7.0/10、query:llm-opt-code
-   evidence：符号反馈驱动的迭代自优化生成可行规划方案，与自动优化求解生成一致
-2. [AI-Assisted Discovery of Convex Relaxations via Dual Agents](/202607/01/2606.31182v1-ai-assisted-discovery-of-convex-relaxations-via-dual-agents)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：LLM代理自动发现凸松弛，用于优化问题边界
+   evidence：基于LLM的约束驱动网络拓扑设计，属于优化建模
 
 
 <div class="dpr-home-promo-card">
