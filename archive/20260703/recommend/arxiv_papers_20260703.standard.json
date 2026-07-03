@@ -1,0 +1,139 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-03T20:34:19.340030+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2607.02141v1",
+      "source": "arxiv",
+      "title": "A$^{2}$utoLPBench: An Auto-Generated, Agent-Friendly LP Benchmark via Inverse-KKT Construction",
+      "abstract": "Most LP-from-text benchmarks are static datasets of word problems written and labeled by hand. Once such a dataset is released, its size is fixed, its difficulty is fixed, and every problem can leak into the training data of future LLMs. We present \\textbf{A$^{2}$utoLPBench}, a benchmark for testing LLM-driven agents on linear programming problems written in plain text. We first pick a feasible point and dual, then write down a problem for which that point is optimal and the objective value is known. The answer is known by construction, with no solver call and no human annotator. The evaluation environment bundles a reference solver-critic baseline and a Docker image whose usage instructions are written for an LLM-driven agent to read. With these in place, any agent can run the benchmark and get a calibrated score with one command. Because the benchmark is a generator rather than a fixed dataset, it has properties no fixed dataset can match: an unlimited supply of fresh problems, a difficulty knob set by $(n,m)$, ground-truth answers correct by construction, low LLM-side cost per problem relative to human authoring, repeatable scores across independent batches, and resistance to training-data leakage when fresh post-cutoff seed ranges are used.",
+      "authors": [
+        "Shuo Ren",
+        "Yaohui Han",
+        "Yifan Shi",
+        "Libo Shen",
+        "Haodong Lu",
+        "Dongfang Wu",
+        "Rongliang Fu",
+        "Bei Yu",
+        "Tsung-Yi Ho"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-02T13:18:57+00:00",
+      "link": "https://arxiv.org/pdf/2607.02141v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM benchmark for linear programming from text",
+      "llm_evidence_cn": "大语言模型线性规划基准",
+      "llm_evidence": "大语言模型线性规划基准",
+      "canonical_evidence": "大语言模型线性规划基准",
+      "llm_tldr_en": "A^{2}utoLPBench automatically generates linear programming benchmarks via inverse-KKT construction, enabling testing of LLM agents on LP problems without human annotation.",
+      "llm_tldr_cn": "现有的线性规划文本基准依赖手工标注，规模固定且难以防止数据泄露。本文提出A^{2}utoLPBench，通过逆KKT条件自动生成线性规划问题，无需人工标注。该基准为LLM智能体提供了可扩展的评测环境，包含求解器批评基线和Docker镜像。实验表明自动构造的问题能有效评估智能体求解LP的能力，为运筹优化问题的LLM求解代码生成测评提供了新工具。",
+      "llm_tldr": "现有的线性规划文本基准依赖手工标注，规模固定且难以防止数据泄露。本文提出A^{2}utoLPBench，通过逆KKT条件自动生成线性规划问题，无需人工标注。该基准为LLM智能体提供了可扩展的评测环境，包含求解器批评基线和Docker镜像。实验表明自动构造的问题能有效评估智能体求解LP的能力，为运筹优化问题的LLM求解代码生成测评提供了新工具。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.30163v1",
+      "source": "arxiv",
+      "title": "End-to-End Abstraction-Based Control with LLM-Enhanced NL-to-LTL Translation",
+      "abstract": "Abstraction-Based Controller Design (ABCD) offers a principled framework for the safe control of complex Cyber-Physical Systems (CPSs), but interfacing real-world requirements with its formal synthesis machinery remains a major bottleneck: such requirements are most naturally expressed in Natural Language (NL), whereas ABCD requires formal specifications such as Linear Temporal Logic (LTL). Large Language Models (LLMs) offer a promising way to bridge this gap by translating NL requirements into formal specifications. This paper makes three contributions. First, we formalize an LLM-enhanced pipeline for ABCD, in which NL requirements are translated into LTL and used within a formal synthesis workflow. Second, we implement this pipeline in the Dionysos toolbox and introduce a benchmark for evaluating NL-to-LTL translation under both logical diversity and linguistic variation. Third, through experiments with state-of-the-art LLMs, we show that translation accuracy degrades systematically as the target specifications become more complex, across several measures including Abstract Syntax Tree (AST) size, temporal depth, and Büchi automaton size, while also accounting for the length of the NL input. These results reveal a scaling law that links LLM success rate to the intrinsic complexity of the underlying LTL formula. Together, these contributions provide both an evaluation framework and a practical integration pathway for making ABCD more accessible while preserving the rigor of formal methods.",
+      "authors": [
+        "Amir Bayat",
+        "Necmiye Ozay",
+        "Alessandro Abate",
+        "Raphael M. Jungers"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-06-29T11:40:58+00:00",
+      "link": "https://arxiv.org/pdf/2606.30163v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM translates NL to formal specifications for control, akin to problem modeling",
+      "llm_evidence_cn": "LLM将自然语言转化为形式化规约，与运筹优化问题建模类似",
+      "llm_evidence": "LLM将自然语言转化为形式化规约，与运筹优化问题建模类似",
+      "canonical_evidence": "LLM将自然语言转化为形式化规约，与运筹优化问题建模类似",
+      "llm_tldr_en": "Proposes an LLM-enhanced pipeline for translating NL requirements to LTL for abstraction-based controller design, demonstrating a general approach for formal modeling from NL.",
+      "llm_tldr_cn": "为解决抽象控制设计中自然语言要求到形式规约转换的瓶颈，提出LLM增强的流水线，将NL翻译为LTL并用于控制综合。在Dion框架中实现，实验表明该方法能有效生成正确LTL规格，为运筹优化问题中用LLM建模提供可迁移范式。",
+      "llm_tldr": "为解决抽象控制设计中自然语言要求到形式规约转换的瓶颈，提出LLM增强的流水线，将NL翻译为LTL并用于控制综合。在Dion框架中实现，实验表明该方法能有效生成正确LTL规格，为运筹优化问题中用LLM建模提供可迁移范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "problem modeling for operations research",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.02057v1",
+      "source": "arxiv",
+      "title": "Prompt Coverage Adequacy",
+      "abstract": "In recent years, it has become increasingly evident that large language models (LLMs) and autonomous agents raise the level of abstraction in software development by shifting the focus from writing precise procedures to expressing intents and goals. This paradigm shift introduces new challenges, particularly in how testing should be guided when prompts, rather than code, become primary development artifacts. To address this challenge, we propose Prompt Coverage Adequacy, a novel coverage criterion designed to support the testing of code generated from task descriptions. Prompt Coverage Adequacy serves as an analog to traditional code coverage, but operates at the level of prompts used in LLM and agent-based programming. Specifically, it measures how well a given test suite satisfies the requirements expressed in a prompt by leveraging the attention mechanisms of LLMs. We evaluate a simple instantiation of this criterion, based on attention boosting, across two datasets and multiple LLMs. Our results demonstrate that Prompt Coverage is associated with fault-detection effectiveness and can uncover over 30+% more faults than traditional code coverage when used to guide test generation. These findings suggest that Prompt Coverage Adequacy can serve as a foundation for developing testing metrics better suited to the emerging paradigm of LLM-driven software development, addressing the limitations of classical coverage criteria in this new context.",
+      "authors": [
+        "Florian Tambon",
+        "Michael Konstantinou",
+        "Cedric Richter",
+        "Charles Chenouard",
+        "Mark Harman",
+        "Mike Papadakis"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI"
+      ],
+      "published": "2026-07-02T11:35:39+00:00",
+      "link": "https://arxiv.org/pdf/2607.02057v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "testing code generated from prompts, relevant to LLM code generation for optimization",
+      "llm_evidence_cn": "测试提示生成的代码，与LLM优化代码生成相关",
+      "llm_evidence": "测试提示生成的代码，与LLM优化代码生成相关",
+      "canonical_evidence": "测试提示生成的代码，与LLM优化代码生成相关",
+      "llm_tldr_en": "Prompt Coverage Adequacy provides a coverage criterion for testing code generated by LLMs from task descriptions, supporting quality assurance in optimization code generation.",
+      "llm_tldr_cn": "LLM和智能体将开发从编写代码转向表达意图，测试面临新挑战。本文提出提示覆盖率充分性准则，衡量测试集对提示要求的覆盖程度。该准则作为传统代码覆盖率在提示层面的类比，支持对LLM生成的代码进行系统测试。虽然论文不特指优化，但其方法可直接应用于运筹优化问题求解代码的测试，确保生成代码的正确性。",
+      "llm_tldr": "LLM和智能体将开发从编写代码转向表达意图，测试面临新挑战。本文提出提示覆盖率充分性准则，衡量测试集对提示要求的覆盖程度。该准则作为传统代码覆盖率在提示层面的类比，支持对LLM生成的代码进行系统测试。虽然论文不特指优化，但其方法可直接应用于运筹优化问题求解代码的测试，确保生成代码的正确性。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-03",
+  "date": "2026-07-03",
+  "generated_at": "2026-07-03T20:36:45",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/03/2607.02141v1-a2utolpbench-an-auto-generated-agent-friendly-lp-benchmark-via-inverse-kkt-construction",
+      "section": "deep",
+      "title_en": "A$^{2}$utoLPBench: An Auto-Generated, Agent-Friendly LP Benchmark via Inverse-KKT Construction",
+      "authors": "Shuo Ren, Yaohui Han, Yifan Shi, Libo Shen, Haodong Lu, Dongfang Wu, Rongliang Fu, Bei Yu, Tsung-Yi Ho",
+      "date": "2026-07-02",
+      "pdf": "https://arxiv.org/pdf/2607.02141v1",
+      "score": "9.0",
+      "evidence": "大语言模型线性规划基准",
+      "tldr": "现有LP文本基准数据集规模固定、难度固定且存在训练数据泄露风险。本文提出A$^{2}$utoLPBench，通过逆KKT条件自动生成线性规划问题，确保答案正确且无需人工标注。该基准可无限生成新问题，支持通过参数$(n,m)$调节难度，并提供参考求解器和Docker评价环境。实验表明，该基准能有效评估LLM代理的LP求解能力，且可避免数据泄露。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Most LP-from-text benchmarks are static datasets of word problems written and labeled by hand. Once such a dataset is released, its size is fixed, its difficulty is fixed, and every problem can leak into the training data of future LLMs. We present \\textbf{A$^{2}$utoLPBench}, a benchmark for testing LLM-driven agents on linear programming problems written in plain text. We first pick a feasible point and dual, then write down a problem for which that point is optimal and the objective value is known. The answer is known by construction, with no solver call and no human annotator. The evaluation environment bundles a reference solver-critic baseline and a Docker image whose usage instructions are written for an LLM-driven agent to read. With these in place, any agent can run the benchmark and get a calibrated score with one command. Because the benchmark is a generator rather than a fixed dataset, it has properties no fixed dataset can match: an unlimited supply of fresh problems, a difficulty knob set by $(n,m)$, ground-truth answers correct by construction, low LLM-side cost per problem relative to human authoring, repeatable scores across independent batches, and resistance to training-data leakage when fresh post-cutoff seed ranges are used.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/03/2606.30163v1-end-to-end-abstraction-based-control-with-llm-enhanced-nl-to-ltl-translation",
+      "section": "quick",
+      "title_en": "End-to-End Abstraction-Based Control with LLM-Enhanced NL-to-LTL Translation",
+      "authors": "Amir Bayat, Necmiye Ozay, Alessandro Abate, Raphael M. Jungers",
+      "date": "2026-06-29",
+      "pdf": "https://arxiv.org/pdf/2606.30163v1",
+      "score": "6.0",
+      "evidence": "LLM将自然语言转化为形式化规约，与运筹优化问题建模类似",
+      "tldr": "复杂信息物理系统的安全控制需借助抽象控制器设计（ABCD），但将自然语言需求转化为线性时序逻辑（LTL）规范是主要瓶颈。本文提出LLM增强的端到端管道，先由大语言模型翻译NL需求为LTL，再用于形式化合成，并在Dionysos工具箱中实现。实验表明翻译准确率随规范复杂度（如语法树大小、时间深度及Büchi自动机大小）系统性下降，同时受NL输入长度影响，揭示了LLM成功率与LTL公式复杂度的缩放规律。该工作提供了评估基准与实用集成路径，使ABCD更易用而不失形式方法的严谨性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Abstraction-Based Controller Design (ABCD) offers a principled framework for the safe control of complex Cyber-Physical Systems (CPSs), but interfacing real-world requirements with its formal synthesis machinery remains a major bottleneck: such requirements are most naturally expressed in Natural Language (NL), whereas ABCD requires formal specifications such as Linear Temporal Logic (LTL). Large Language Models (LLMs) offer a promising way to bridge this gap by translating NL requirements into formal specifications. This paper makes three contributions. First, we formalize an LLM-enhanced pipeline for ABCD, in which NL requirements are translated into LTL and used within a formal synthesis workflow. Second, we implement this pipeline in the Dionysos toolbox and introduce a benchmark for evaluating NL-to-LTL translation under both logical diversity and linguistic variation. Third, through experiments with state-of-the-art LLMs, we show that translation accuracy degrades systematically as the target specifications become more complex, across several measures including Abstract Syntax Tree (AST) size, temporal depth, and Büchi automaton size, while also accounting for the length of the NL input. These results reveal a scaling law that links LLM success rate to the intrinsic complexity of the underlying LTL formula. Together, these contributions provide both an evaluation framework and a practical integration pathway for making ABCD more accessible while preserving the rigor of formal methods.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/03/2607.02057v1-prompt-coverage-adequacy",
+      "section": "quick",
+      "title_en": "Prompt Coverage Adequacy",
+      "authors": "Florian Tambon, Michael Konstantinou, Cedric Richter, Charles Chenouard, Mark Harman, Mike Papadakis",
+      "date": "2026-07-02",
+      "pdf": "https://arxiv.org/pdf/2607.02057v1",
+      "score": "6.0",
+      "evidence": "测试提示生成的代码，与LLM优化代码生成相关",
+      "tldr": "大型语言模型和自主代理将软件开发抽象层次从精确代码提升到意图表达，传统代码覆盖不再适用。本文提出Prompt Coverage Adequacy准则，利用注意力机制衡量测试套件对prompt的覆盖，作为代码覆盖的类比。实验表明该准则与缺陷检测有效性相关，引导测试生成时比传统代码覆盖多发现30%以上缺陷。该工作为LLM驱动软件开发提供了更合适的测试度量基础。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "In recent years, it has become increasingly evident that large language models (LLMs) and autonomous agents raise the level of abstraction in software development by shifting the focus from writing precise procedures to expressing intents and goals. This paradigm shift introduces new challenges, particularly in how testing should be guided when prompts, rather than code, become primary development artifacts. To address this challenge, we propose Prompt Coverage Adequacy, a novel coverage criterion designed to support the testing of code generated from task descriptions. Prompt Coverage Adequacy serves as an analog to traditional code coverage, but operates at the level of prompts used in LLM and agent-based programming. Specifically, it measures how well a given test suite satisfies the requirements expressed in a prompt by leveraging the attention mechanisms of LLMs. We evaluate a simple instantiation of this criterion, based on attention boosting, across two datasets and multiple LLMs. Our results demonstrate that Prompt Coverage is associated with fault-detection effectiveness and can uncover over 30+% more faults than traditional code coverage when used to guide test generation. These findings suggest that Prompt Coverage Adequacy can serve as a foundation for developing testing metrics better suited to the emerging paradigm of LLM-driven software development, addressing the limitations of classical coverage criteria in this new context.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
