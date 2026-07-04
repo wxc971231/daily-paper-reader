@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-04",
+  "date": "2026-07-04",
+  "generated_at": "2026-07-04T20:30:18",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/04/2607.02390v1-decomprl-solving-harder-problems-by-learning-modular-code-generation",
+      "section": "deep",
+      "title_en": "DecompRL: Solving Harder Problems by Learning Modular Code Generation",
+      "authors": "Juliette Decugis, Fabian Gloeckle, Francis Bach, Taco Cohen, Gabriel Synnaeve",
+      "date": "2026-07-02",
+      "pdf": "https://arxiv.org/pdf/2607.02390v1",
+      "score": "8.0",
+      "evidence": "通过分解实现困难问题的模块化代码生成",
+      "tldr": "大型语言模型处理复杂问题时，重复采样和强化学习受限于搜索空间过大和成本高昂，当基础策略正确概率极低时均告失败。DecompRL通过强化学习显式学习将问题分解为可独立求解的子函数，并生成层次化代码结构，组合多个实现的候选解数量呈指数增长，将计算瓶颈从GPU推理转移至廉价CPU评估。在LiveCodeBench和CodeContests上，DecompRL显著超越标准及多样性优化强化学习基线，GPU令牌成本降低约50倍，成功解决标准生成无法达到的问题。该工作展示了模块化代码生成在扩展LLM推理能力上的潜力。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "How can Large Language Models (LLMs) solve problems they currently cannot? Repeated sampling scales test-time compute but GPU cost grows linearly with attempts, while reinforcement learning (RL) with verifiable rewards improves single-attempt accuracy at the expense of sample diversity. Both strategies ultimately fail when the base policy has near-zero probability of producing a correct solution: no amount of sampling or gradient signal can overcome a search space that is simply too large. We take a different approach: rather than sampling harder, we make the task easier by decomposing problems into smaller, independently solvable sub-functions whose implementations can be recombined. Since off-the-shelf models are not trained for this modular generation, we introduce DecompRL, an RL algorithm that explicitly learns to decompose and implement hierarchical code structures. Recombining $k$ implementations of $n$ modules yields up to $k^{n}$ candidate solutions, shifting the bottleneck from GPU inference to cheap CPU evaluation and cutting GPU token cost by $\\sim$50$\\times$. On LiveCodeBench and CodeContests (Qwen~2.5~7B, Code World Model~32B), DecompRL outperforms standard and diversity-optimized RL baselines beyond $10^5$ tokens per problem, solving problems that standard generation cannot reach.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/04/2606.29532v1-semjoin-semantic-join-optimization",
+      "section": "quick",
+      "title_en": "SemJoin: Semantic Join Optimization",
+      "authors": "Christopher Gou, Aditya Banerjee, Jiaxuan Wang, Chunwei Liu",
+      "date": "2026-06-28",
+      "pdf": "https://arxiv.org/pdf/2606.29532v1",
+      "score": "7.0",
+      "evidence": "基于LLM智能体的语义连接策略优化",
+      "tldr": "语义连接（Semantic Join）需用大语言模型评估自然语言谓词，但全量比较成本过高。现有系统使用固定策略，无法适应数据和谓词变化。本文提出LLM Agent决策管线，根据表特征动态选择聚类连接或分类器策略，在三个数据集上相比自适应块连接（ABJ）F1提升20-33分，且比特征分解连接（FDJ）降低一到两个数量级的token消耗。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Integrating unstructured data into relational database systems is increasingly important as demand grows for natural language querying and analysis. A semantic join, joining two tables under a natural-language predicate, can be evaluated with a large language model (LLM), but comparing every pair of tuples requires O(M x N) LLM invocations and is cost-prohibitive at scale. Existing systems reduce this cost but typically commit to a single fixed strategy (e.g., embedding similarity or one batched scheme) regardless of the data or the join predicate. We propose an LLM-agent-based decision pipeline that optimizes semantic joins by matching the execution strategy to the characteristics of the underlying tables. An LLM advisor routes each join to one of two strategies: a Cluster Join, which prunes candidates via unsupervised embedding clustering and sample-based filtering, or a Classifier strategy for predicates that reduce to a shared discrete label set. Across three diverse datasets (IMDb reviews, email contradictions, and Stack Overflow tags), the advisor consistently identifies the optimal execution strategy for each workload. This dynamic routing proves decisive: it outperforms adaptive block join (ABJ) by 20-33 F1 points across all datasets while consuming fewer tokens on two of the three, and achieves higher F1 scores than featurized-decomposition join (FDJ) at one to two orders of magnitude lower token cost.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/04/2606.29953v1-semantics-aware-bilevel-co-evolution-towards-automated-multicomponent-algorithm-design",
+      "section": "quick",
+      "title_en": "Semantics-Aware Bilevel Co-Evolution: Towards Automated Multicomponent Algorithm Design",
+      "authors": "Zhiyao Zhang, Shenghao Wu, Xingyu Wu, Kay Chen Tan",
+      "date": "2026-06-29",
+      "pdf": "https://arxiv.org/pdf/2606.29953v1",
+      "score": "6.0",
+      "evidence": "LLM辅助进化搜索自动设计优化算法",
+      "tldr": "现有LLM辅助进化搜索在自动设计多组件复杂算法时，常因粗粒度修改或有限组件优化而受限，且缺乏对算法语义的显式建模。为此，本文提出STABLE方法，将算法组织为层次模块化结构，并实现高层配置与低层组件的双层级协同进化。通过构建多面语义模型，STABLE能捕获组件间的结构、功能与合理性关系，从而指导算法生成与评估。实验表明，STABLE在多个领域显著超越人工设计基线与先进LES方法，展现了高效且可解释的自动化设计能力。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "LLM-assisted evolutionary search (LES) has emerged as a promising paradigm for automated algorithm design. However, existing methods usually suffer from two inherent limitations when facing the automated design of real-world complex algorithms that usually consist of multiple components. The first limitation is that they either focus on modifying entire algorithms, making it difficult to reuse high-quality components, or concentrate on component refinement within a limited set of predefined multicomponent configurations. The second limitation is the insufficient explicit modeling and exploitation of algorithm semantics. These limitations severely degrade search efficiency and hinder effective exploration of complex design spaces. Therefore, this paper proposes STABLE (Semantics-Aware Bilevel Co-Evolution), an LES method purpose-built for automated multicomponent algorithm design that introduces structural algorithm formulation and semantics-driven evolution. In STABLE, complex algorithms are organized into hierarchical and modular architectures rooted in domain knowledge, aligning the search space with their intrinsic compositional traits. Based on this structured algorithm formulation, STABLE simultaneously optimizes high-level multicomponent configurations and low-level functional components, enabling coordinated cross-level updates while maintaining suitable granularities for design space exploration. At each level, STABLE establishes a multi-faceted semantic model to assist LLMs in capturing structural correlations, functional compatibilities, and inherent rationalities among algorithm components. This semantic model serves as the core guidance for evolutionary search, enabling principled algorithm generation and algorithm evaluation. Extensive experiments demonstrate that STABLE outperform both human-designed baselines and those from advanced LES methods.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
