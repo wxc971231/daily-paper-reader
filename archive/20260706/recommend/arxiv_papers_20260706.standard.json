@@ -1,0 +1,54 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-06T21:37:22.876844+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2607.00604v1",
+      "source": "arxiv",
+      "title": "Vehicle Routing Problem Meets Large Language Models: An Overview and Perspectives",
+      "abstract": "The vehicle routing problem (VRP) is a central optimization problem in artificial intelligence, logistics automation, transportation scheduling, and industrial decision-making. VRP and its variants are NP-hard, and practical routing tasks often combine time windows, vehicle capacities, pickup-and-delivery relations, dynamic requests, and other operational constraints, making both modeling and solving difficult. Large language models (LLMs) provide a flexible interface for routing optimization by processing natural-language requirements, generating code, reasoning over constraints, and interacting with external tools. This survey reviews LLM-driven research on VRP, covering the basic definition, main variants, major solver families, and LLM concepts needed for this topic. Existing studies are organized into three roles: modelers translate natural-language requirements into constraints and modeling code; designers generate heuristics, operators, or route plans; and coordinators organize tool calls, multi-agent collaboration, and connections with neural solvers. The survey also reviews standard benchmarks, real or near-real operational datasets, LLM-oriented evaluation frameworks, and two comparative experiments. The goal is to clarify current progress in LLM-assisted routing optimization and provide a structured reference for intelligent decision-making, advanced manufacturing, and industrial automation.",
+      "authors": [
+        "Xianchao Xiu",
+        "Chong Shen",
+        "Yanjiao Zhu",
+        "Wanquan Liu"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-07-01T08:30:20+00:00",
+      "link": "https://arxiv.org/pdf/2607.00604v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM for VRP optimization, code generation, constraint reasoning",
+      "llm_evidence_cn": "LLM用于VRP优化、代码生成、约束推理",
+      "llm_evidence": "LLM用于VRP优化、代码生成、约束推理",
+      "canonical_evidence": "LLM用于VRP优化、代码生成、约束推理",
+      "llm_tldr_en": "This survey reviews the use of LLMs for vehicle routing problems, covering natural language requirement processing, code generation, constraint reasoning, and tool integration.",
+      "llm_tldr_cn": "车辆路径问题（VRP）是物流与调度中的核心NP难优化问题。现有方法建模求解困难，而大语言模型（LLM）能通过自然语言处理、代码生成、约束推理和工具交互提供灵活解决方案。本综述系统梳理了LLM驱动VRP的研究，涵盖问题定义、主要变体、求解器家族及LLM在其中的应用角色。结果表明LLM在运筹优化问题建模与代码自动生成方面潜力巨大，为后续研究提供了全面参考。",
+      "llm_tldr": "车辆路径问题（VRP）是物流与调度中的核心NP难优化问题。现有方法建模求解困难，而大语言模型（LLM）能通过自然语言处理、代码生成、约束推理和工具交互提供灵活解决方案。本综述系统梳理了LLM驱动VRP的研究，涵盖问题定义、主要变体、求解器家族及LLM在其中的应用角色。结果表明LLM在运筹优化问题建模与代码自动生成方面潜力巨大，为后续研究提供了全面参考。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

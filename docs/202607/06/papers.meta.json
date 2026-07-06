@@ -1,0 +1,24 @@
+{
+  "label": "2026-07-06",
+  "date": "2026-07-06",
+  "generated_at": "2026-07-06T21:38:17",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202607/06/2607.00604v1-vehicle-routing-problem-meets-large-language-models-an-overview-and-perspectives",
+      "section": "deep",
+      "title_en": "Vehicle Routing Problem Meets Large Language Models: An Overview and Perspectives",
+      "authors": "Xianchao Xiu, Chong Shen, Yanjiao Zhu, Wanquan Liu",
+      "date": "2026-07-01",
+      "pdf": "https://arxiv.org/pdf/2607.00604v1",
+      "score": "9.0",
+      "evidence": "LLM用于VRP优化、代码生成、约束推理",
+      "tldr": "车辆路径问题(VRP)是NP难的组合优化问题，实际应用需处理时间窗、容量等复杂约束。大语言模型(LLM)作为灵活接口，可解析自然语言需求、生成优化代码并推理约束。本文综述将LLM在VRP中角色分为建模者、设计者、协调者三类，并回顾了基准数据集与对比实验。该工作为LLM辅助路由优化提供结构化参考，推动智能决策与工业自动化。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "The vehicle routing problem (VRP) is a central optimization problem in artificial intelligence, logistics automation, transportation scheduling, and industrial decision-making. VRP and its variants are NP-hard, and practical routing tasks often combine time windows, vehicle capacities, pickup-and-delivery relations, dynamic requests, and other operational constraints, making both modeling and solving difficult. Large language models (LLMs) provide a flexible interface for routing optimization by processing natural-language requirements, generating code, reasoning over constraints, and interacting with external tools. This survey reviews LLM-driven research on VRP, covering the basic definition, main variants, major solver families, and LLM concepts needed for this topic. Existing studies are organized into three roles: modelers translate natural-language requirements into constraints and modeling code; designers generate heuristics, operators, or route plans; and coordinators organize tool calls, multi-agent collaboration, and connections with neural solvers. The survey also reviews standard benchmarks, real or near-real operational datasets, LLM-oriented evaluation frameworks, and two comparative experiments. The goal is to clarify current progress in LLM-assisted routing optimization and provide a structured reference for intelligent decision-making, advanced manufacturing, and industrial automation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

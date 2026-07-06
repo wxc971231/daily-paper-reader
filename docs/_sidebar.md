@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-07-06 <!--dpr-date:20260706-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/06/2607.00604v1-vehicle-routing-problem-meets-large-language-models-an-overview-and-perspectives" data-sidebar-item="{&quot;title&quot;: &quot;Vehicle Routing Problem Meets Large Language Models: An Overview and Perspectives&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.00604v1-vehicle-routing-problem-meets-large-language-models-an-overview-and-perspectives&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;LLM用于VRP优化、代码生成、约束推理&quot;}">Vehicle Routing Problem Meets Large Language Models: An Overview and Perspectives</a>
   * 2026-07-04 <!--dpr-date:20260704-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/04/2607.02390v1-decomprl-solving-harder-problems-by-learning-modular-code-generation" data-sidebar-item="{&quot;title&quot;: &quot;DecompRL: Solving Harder Problems by Learning Modular Code Generation&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.02390v1-decomprl-solving-harder-problems-by-learning-modular-code-generation&quot;, &quot;score&quot;: &quot;8.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;通过分解实现困难问题的模块化代码生成&quot;}">DecompRL: Solving Harder Problems by Learning Modular Code Generation</a>

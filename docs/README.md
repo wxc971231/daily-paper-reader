@@ -6,19 +6,21 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-05
-- 运行时间：2026-07-05 20:01:58 UTC
+- 最新运行日期：2026-07-06
+- 运行时间：2026-07-06 21:38:12 UTC
 - 运行状态：成功
-- 本次总论文数：0
-- 精读区：0
+- 本次总论文数：1
+- 精读区：1
 - 速读区：0
 
 ### 今日简报（AI）
-> 今日无新推荐，系统未产出可展示论文。
-- 详情：[/202607/05/README](/202607/05/README)
+今日精读了一篇将大语言模型应用于车辆路径优化问题的综述，评分高达9.0。核心结论是LLM有望为传统组合优化难题提供新的解题思路和交互范式。建议对AI+运筹学交叉感兴趣的读者重点参考该文的方法论与未来方向。
+- 详情：[/202607/06/README](/202607/06/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Vehicle Routing Problem Meets Large Language Models: An Overview and Perspectives](/202607/06/2607.00604v1-vehicle-routing-problem-meets-large-language-models-an-overview-and-perspectives)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：LLM用于VRP优化、代码生成、约束推理
 
 ### 速读区论文标签
 - 本次无速读推荐。
