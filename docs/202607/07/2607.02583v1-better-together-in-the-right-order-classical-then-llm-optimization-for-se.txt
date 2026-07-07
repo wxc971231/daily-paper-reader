@@ -1,0 +1,667 @@
+Title: Better Together, in the Right Order: Classical-then-LLM Optimization for SE
+
+URL Source: https://arxiv.org/pdf/2607.02583v1
+
+Published Time: Tue, 07 Jul 2026 00:03:08 GMT
+
+Number of Pages: 11
+
+Markdown Content:
+# Better Together, in the Right Order: Classical-then-LLM Optimization for SE 
+
+Srinath Srinivasan 
+
+NC State University ssrini27@ncsu.edu 
+
+Tim Menzies 
+
+NC State University timm@ieee.org 
+
+Abstract —A growing body of work combines large language models (LLMs) with classical optimizers for software engineering (SE) configuration tasks. Often, the classical optimizer is in charge: it owns the search loop and calls the LLM only to assist in subroutines (e.g. to warm-start the first generation, propose a mutation, or stand in as a surrogate). We report that there is much value in the reverse approach: seeding an LLM with the results from a cheap classical learner. We call this method SNAP2. Applied to over 100 SE tasks, it is the single best of all methods studied, reaching the top tier on 85% of tasks, ahead of the same LLM run alone (75%) and ahead of every method in which the classical optimizer retains control. It is also less expensive: relative to the LLM-alone method, it uses roughly 30% fewer tokens and runs 1.4 × faster, since the classical setup performs the inexpensive work, and the LLM is invoked only to finish. We conclude that it is unwise to study classical learners or LLMs in isolation: there is much value in combining the two, and in the order that combination is applied. 
+
+Index Terms —software engineering optimization, large language models, warm-start, active learning, multi-objective optimization, configuration tuning 
+
+I. I NTRODUCTION 
+
+Misconfiguration is one of the most expensive recurring failures in software. In M YSQL, A PACHE , and H ADOOP , over 40% of failures trace to configuration errors [12], as do most cloud production outages [13]. A single bad setting is not a marginal cost: S TORM ’s worst configuration runs 480 × slower than its best [14]. The problem is growing. With LLMs and “vibe coding” it is easy to add “just a few more options”, and modern systems already ship with thousands that few developers understand [15]: in 15 years P OSTGRES options grew 300% and M YSQL 600% [16]. Most go untouched, so users fall back on sub-optimal defaults [15]. Twenty-five years of search-based software engineering have attacked this with stochastic search, Bayesian optimization, and active learning [17]–[20]. Lately the field has tried to move some, or all, of that work onto large language models [3], [21]–[26], but it cannot agree on whether the LLM helps at all. Reports range from limited advantage over conventional heuristics [27], to useful only on small problems [3], to useful only as a search subroutine [24], to too slow to be practical [28]. We argue this disagreement reflects an evidence base too thin to settle its own disputes. Studies here often report five datasets or fewer [3], where per-dataset variance swamps the effect sizes separating methods. Worse, papers reaching opposite verdicts 
+
+Classical optimizer drives the search 
+
+LLM is the optimizer              
+
+> opt3 ·no LLM
+> EZR ·RAND ·RRP
+> opt2 ·assists
+> bs_llm SynthCore LLAMBO ·LMEA GPTuner
+> opt1 ·LLM only
+> OPRO EvoLLM SNAP
+> SNAP2
+> classical seeds
+> →LLM optimizes
+
+Fig. 1. Methods grouped by who controls the search. Left: a classical optimizer drives the search (opt3, no LLM; or opt2, where the LLM only assists a subroutine). Right: the LLM is the optimizer (opt1). SNAP 2 alone occupies the intersection: a cheap classical learner seeds the trajectory, then the LLM performs the optimization. Every prior opt2 method runs the LLM first and lets a classical optimizer finish; SNAP 2 reverses that order, and no prior method occupies this cell. 
+
+on “LLMs for optimization” may be measuring different regimes (Fig. 1). The phrase covers at least three: 
+
+opt1 The LLM is the only optimizer, re-prompting itself with the trajectory so far and no external search. 
+
+opt2 A classical optimizer owns the search loop and the LLM assists in subroutines (e.g. warm-starting the first generation, proposing a mutation, or standing in as a surrogate) [3], [22]–[26]. 
+
+opt3 A classical optimizer runs with no LLM [29]–[33]. Settling the disagreement therefore needs more evidence across regimes, not just another algorithm. That is now possible: recently, the search based SE community collected over a hundred real-world tasks into the MOOT repository [34] (Table I). Over 105 of those tasks we rank methods spanning all three regimes (twenty repeats each) to ask: 
+
+RQ1: Does LLM involvement beat the classical state of the art? 
+
+RQ2: Does combining a classical learner with an LLM beat either alone? 
+
+RQ3: Does the order of combination matter? 
+
+RQ4: What does each method cost, and who should run which? 
+
+> arXiv:2607.02583v1 [cs.SE] 1 Jul 2026
+
+TABLE I EXPERIMENTAL DATASETS : THE 127 MOOT BENCHMARKS . O PTIMIZATION OBJECTIVES (y), FEATURES (x), AND IDENTIFIERS USED IN THIS STUDY .EXPERIMENTS RUN ON THE 105 ON WHICH ALL SEVEN METHODS CLEAR THE COVERAGE GATE (S ECTION IV).                                                                                                                                                                                  
+
+> #Category Focus File Name(s) Here, optimizers struggle with issues like... #y #x Rows Refs Software Systems & Configuration & Tuning
+> 25 Soft. Config PLE SS-[A-X], billing10k Minimize footprint/memory vs. maximizing throughput 2-3 3–88 197–86k [1] 12 PromiseTune Perf. 7z, LLVM, BDBC Minimize execution time and energy consumption 16–35 864–166k [2] 1Cloud compute Tuning Apache_AllMeas Balance server response vs. CPU/RAM load patterns 19192 [3] 1Cloud compute Tuning SQL_AllMeas Minimize latency/IO vs. maximizing throughput 139 4,654 [4] 1Cloud compute Tuning X264_AllMeas Optimize encoding parameters for PSNR/SSIM quality 116 1,153 [1] 1Cloud compute Tuning HSMGP_num Minimize solver runtime across grid configurations 114 3,457 [4] 7Cloud compute Tuning rs-*, sol-*, wc-* Misc. configuration tuning trade-offs 13-6 196–3,840 [3] 2Testing Testing test120, 600 Maximize coverage while minimizing execution time 195,161 –
+> Project Management & Process Modeling
+> 35 Proj. Health Health Health-Closed Optimize PR rates and minimize developer churn 2-3 510,001 [5] 3Scrum Agile Scrum[1k-100k] Maximize velocity within sprint constraints 3124 1k–100k [6] 8Feature Mod. Config FFM, FM-* Optimize Clause/Constraint ratio in large spaces 3128–1k 10,001 [1] 1nasa93dem Cost nasa93dem Minimize effort (person-months) vs. quality 326 93 [5] 1COC1000 Risk coc1000 Minimize risks/schedule slip vs. analyst expertise 520 1,001 [7] 4POM3 Process pom3[a-d] Balance project idle rates vs. completion costs 39501–20k [6] 4XOMO Defects xomo_[flt,grd] Minimize defect density vs. total project effort 427 10,001 [7]
+> Interdisciplinary & Behavioral Benchmarks
+> 4Behavioral Behavior all_players, etc Maximize user retention and predict cohort churn 1-3 26–55 82–17k [8] 4Financial Finance BankChurners Minimize credit risk vs. optimal pricing models 2-5 19–77 1k–20k [9] 3Health Health COVID19, Life Maximize accuracy/life vs. readmission likelihood 1-3 20–64 2k–25k [10] 2RL Control A2C_[Acr,Crt] Maximize reward signals vs. steps to convergence 3-4 9–11 224–318 –5Sales Market Marketing, socks Maximize ROI vs. minimizing forecasting error 1-8 20–31 247–2k [11] 3Misc. General auto93, Car Optimize multivariate trade-offs (e.g. MPG vs. HP) 2-5 5–38 205–1k [1]
+> 127 Total
+
+Our results overturn the pessimism reported above. Across opt2 work, the classical optimizer is in charge and the LLM only assists, and crucially, the LLM acts first : it seeds, suggests, or prunes, then a non-LLM algorithm drives the search to its answer. We find more value in the reverse approach: let a cheap classical learner do the inexpensive early work, then hand its results to the LLM to finish. This fills the middle cell of Fig. 1 (classical seeds, LLM optimizes), a pairing no prior method occupies. We call it SNAP 2, and it is the single best method we studied, reaching the top tier on 85% of tasks: ahead of the same LLM run alone ( 75% ) and ahead of every method in which the classical optimizer keeps control. It is also cheaper than the LLM alone (roughly 30% fewer tokens and 1.4 ×
+
+faster ) since the classical step does the inexpensive work and the LLM is invoked only to finish. We also find that the cheap classical learner itself, EZR ,while statistically inferior to SNAP 2, still performs strongly and runs thousands of times faster at zero token cost. EZR 
+
+alone may therefore be the right choice under tight resource constraints, such as edge computing or restricted API budgets. This paper makes four contributions: 1) SNAP 2, an optimizer that seeds an LLM with the output of a cheap classical learner, the reverse of the usual warm-start direction. 2) A large-scale evaluation across opt1 , opt2 , and opt3 on 105 SE optimization tasks (Section V). 3) Evidence that order matters : combining a classical learner and an LLM beats either alone, and the cheap-classical-first ordering of SNAP 2 beats the LLM-led ordering used in prior opt2 work. 4) Repeatable, refutable science : all code, prompts, and data are released under an open source license. Section II motivates the problem for an SE audience; Section III describes our algorithms; Section IV covers the MOOT datasets, metrics, statistics, and labeling budget; Section V answers the RQs; and Sections VI and VI-A discuss results and threats to validity. II. B ACKGROUND 
+
+A. Is This an SE Problem? 
+
+As shown in Table I, the methods of this paper support a wide range of common SE problems. All share one concern: “find the best value for this slot”. Formally, these are configuration tasks , and SE has many:  
+
+> •
+
+Effort estimation: options for faster, better delivery;  
+
+> •
+
+Defect prediction: options that best locate defects;  
+
+> •
+
+Performance tuning: compile options for more speed, least energy;  
+
+> •
+
+Product lines: the best options per product;  
+
+> •
+
+Project health: running a project to attract committers;  
+
+> •
+
+Cloud allocation: the .yaml that best tunes the cloud;  
+
+> •
+
+Test-suite selection: most bugs, least runtime;  
+
+> •
+
+Cross-domain: old-project options that help a new one;  
+
+> •
+
+Process modeling: steering a system-dynamics model to match the institutions and patterns that build the software. Hand-tuned solutions to these problems are error-prone. Hence, the failure costs of Section I are the direct consequence. 
+
+B. Why These Problems Are Hard 
+
+The difficulty is the size of the space a good answer hides in. X264’s eleven parameters take roughly 1,536 hours of compile-and-test [35]; M YSQL’s 460 binary options, treated as independent, yield 2460 combinations (the observable universe holds only about 280 stars) [15]; 7 Z’s fourteen compression parameters generate about a million configurations [2]. Spaces this large must be pruned with knowledge heuristics, and the three regimes of Section I differ only in where that knowledge comes from. 
+
+1) opt1: only LLMs: An LLM is a knowledge heuristic with no algorithmic search around it: it draws on what it learned from terabytes of text, prompted to surface the part overlapping the task. OPRO [21] is the canonical case: it feeds the model the trajectory of tried points and asks for the next, with later chain-of-thought variants [36]. 
+
+2) opt2: LLM plus classical: Rather than discard decades of algorithmic work, opt2 mixes the two. The cleanest case is the warm start: evolutionary optimizers need a generation zero, and better initial candidates yield better final results, so Senthilkumar et al. ask an LLM to propose it [3], [37]. 
+
+3) opt3: no LLM: SMAC fits a random forest to the data seen so far and uses it to pick what to label next, searching widely while uncertain, then exploiting the region the ensemble agrees is best [20], [29]. TPE does the same with two Bayesian models [30]; multi-objective variants maximize expected hypervolume (qEHVI [31], [38]) or decompose one hard problem into many easy ones (MOEA/D [32]); DEHB adds Hyperband’s multi-fidelity budgeting [39]. RRP , used here and described below, is another no-LLM method. We do not re-run these, and that omission is deliberate. At FSE’26, Ganguly et al. benchmarked SMAC3, TPE, and DEHB against EZR on this same MOOT corpus and found EZR was strongest [28]. III. A LGORITHMS , THE DETAILS 
+
+In SE optimization it is usually cheap to see the space of options but expensive to measure their effects . For example:  
+
+> •
+
+A test suite of a billion cases is easy to write and slow to run.  
+
+> •
+
+Every parameter in a makefile is trivial to list, but running them all to measure energy and runtime is often too slow to attempt.  
+
+> •
+
+Analyst skill and tooling clearly lower the cost of good software, yet pinning a number on that effect takes real work. So all our methods adopt one meta-procedure, sequential model-based optimization (SMO): given a table split into x
+
+(independent) and y (dependent) columns, find rows with better 
+
+y values while inspecting the y values of at most B rows. We call B the optimization budget . It can be surprisingly small when SMO uses active learning [40]. A passive learner builds its model from all the data. An active learner instead reflects on the model built so far to pick what to label next, so it can learn from very little data by chasing the most informative example and skipping the redundant ones. Every method here scores a candidate the same way. Each proposed configuration is projected onto its nearest measured row, by feature distance ρ, so every guess maps to a row with a known label. The methods differ only in which rows they spend the budget on. We compare seven of them across the three regimes (Table II). The candidate space of opt1,opt2,opt3 algorithms is far too large for one paper to enumerate. Accordingly, for each regime we take the published state of the art and add our own where the design space is empty. That coverage is deliberately uneven, because the literature is uneven:  
+
+> •
+
+Opt1 is nearly bare: the field mostly assumed a standalone LLM could not optimize [27], leaving OPRO [21] as the one landmark which we extend into SNAP . 
+
+> •
+
+Opt2 gives us two recent methods, BS _LLM [3] and SYNTH CORE [37].  
+
+> •
+
+opt3 gives us EZR , the learner Ganguly et al. recommend after a large FSE’26 evaluation [28]. Cohen advises checking complex methods against simple ones [41], so we add two no-LLM floors: RANDOM and the 2018 search-based method RRP [42]. Four of the seven algorithms are quickly described.   
+
+> •RANDOM
+
+is the simplest. It randomly samples, labels, and sorts B rows, then returns the best (by Eq. (2)).   
+
+> •RRP
+
+(random rare-pair) picks two far-apart rows then projects every row onto the line between them (using the cosine rule 1). It splits at the median and recurses on the half nearer the better pole. It labels two rows per split, so it needs O(log 2 n) labels.  
+
+> •
+
+SYNTH CORE [37] seeds by clustered ensemble prompting. DBSCAN [43] pre-clusters the labeled rows. Across M
+
+independent sessions, each with a reset context and a fresh per-cluster sample, the model is asked to synthesize a row better than the best seen so far. There is no chain-of-thought, no debate, no cross-talk between sessions. The 
+
+M outputs are sorted and the best is returned.  
+
+> •BS
+
+_LLM (“baseline LLM”) is an un-clustered version of SYNTH CORE . One prompt over all the data guesses B
+
+configurations. It is the naive warm-start proposer that the clustered S YNTH CORE should beat. The other three methods carry the paper’s argument, so we detail them next. 
+
+A. EZR (opt3): no LLM  
+
+> EZR
+
+[3], [28] is our opt3 method and the no-LLM control. It spends the same budget B as the opt2 proposers but seeds generation zero at random instead of from an LLM (Algorithm 1). It labels W random rows and partitions them, by d2h (Section IV-B ), into a √W -sized best set and a rest 
+
+set with centroids Cb, C r . After that it labels rows one at a time. At each step it scores every unevaluated row by 
+
+ϵ(row ) = ρ(row , C b) − ρ(row , C r ), where lower is better since it selects for rows nearer best and further from rest . The winning row is labeled and added to best (possibly evicting the worst member to rest if best grows past p|D|). This keeps best asmall elite whose centroid sharpens as the budget is spent (so                
+
+> 1Given rows A, B at distance c, a row Xat distances a, b to A, B projects onto the A–Bline at x=a2+c2−b2
+> 2c.
+
+TABLE II THE SEVEN METHODS ON UNIFORM AXES . “LLM ROLE ” IS HOW THE MODEL IS USED . “EZR SUBSTRATE ?” IS WHETHER THE METHOD USES THE EZR ACTIVE -LEARNING LOOP OF SECTION III-A TO CHOOSE ROWS TO LABEL . “W ARM START ” IS HOW GENERATION ZERO IS SEEDED . B IS THE LABEL BUDGET .“D ISTINCTIVE MECHANISM ” NAMES EACH METHOD ’S ONE NEW IDEA . SNAP AND SNAP 2 ARE NEW ; THE REST ARE ADOPTED FROM PRIOR WORK .Method Regime LLM role EZR substrate? B Warm start Distinctive mechanism 
+
+> SNAP
+
+2 hybrid finisher half 20 EZR , B=10 classical seeds, LLM finishes  
+
+> SNAP
+
+opt1 sole optimizer no 20 4 random collision tracking 
+
+> BS
+
+_LLM opt2 proposer yes 20 LLM, one-shot whole-table one-shot prompt SYNTH CORE opt2 proposer yes 20 LLM, M sessions per-cluster session ensemble  
+
+> EZR
+
+opt3 none yes 20 random — 
+
+> RANDOM
+
+opt3 none no 20 random — 
+
+> RRP
+
+opt3 none no ∼ log 2 n rare-pair rare-pair projection 
+
+Algorithm 1 EZR : centroid-driven active learning, the no-LLM control. A best /rest split is grown one label at a time; the centroids Cb, C r pick the next row to label. The warm start is random (cf. the LLM-seeded opt2 methods). 
+
+Require: rows R, warm-start size W , total budget B, feature distance 
+
+ρ, objective score d2h 
+
+1: shuffle R; S ← R[1: W ] ▷ random warm start; label S
+
+2: sort S ascending by d2h ▷ lower is better 
+
+3: m ← ⌊ √W ⌋
+
+4: best ← S[1: m]; rest ← S[m+1:] 
+
+5: D ← S; U ← R \ S ▷ labeled / unevaluated 
+
+6: while |D| < B and U̸ = ∅ do 
+
+7: Cb ← mids (best ); Cr ← mids (rest )
+
+8: r∗ ← arg min r∈U ρ(r, C b) − ρ(r, C r ) ▷ nearer best 
+
+9: U ← U \ { r∗}; label r∗ ▷ spend one of B
+
+10: D ← D ∪ { r∗}; best ← best ∪ { r∗}
+
+11: if |best | > ⌊p|D|⌋ then ▷ rebalance 
+
+12: sort best ascending by d2h 
+
+13: rest ← rest ∪ { POP -WORST (best ) }
+
+14: end if 
+
+15: end while 
+
+16: return arg min r∈D d2h (r)
+
+each label is chosen against a steadily better picture of the good region). 
+
+EZR never queries a model and never invents a synthetic configuration. It only selects which tabulated row to reveal next, which makes it the natural baseline method to compare against the LLM. It is also the exact configuration Ganguly et al. [28] report beating the classical state of the art (TPE [30], SMAC3 [29], and DEHB [39]) on these MOOT tasks, so we adopt it unchanged. 
+
+B. SNAP (opt1): the LLM is the optimizer 
+
+Algorithm 2 shows the SNAP algorithm. This is an opt1 algorithm; i.e. the LLM is the only optimizer so there is no support by any classical optimizer. 
+
+SNAP is our extension to OPRO [21]. OPRO ’s main loop shows the LLM a trajectory of tried points and asks for the next. OPRO was validated only on continuous benchmarks (BBOB [44], TSP, vehicle routing), where Huang et al. found standalone LLMs no better than conventional heuristics [27]. 
+
+MOOT data is largely symbolic, so we adapt OPRO to selection over a fixed table, as described here. 
+
+Algorithm 2 SNAP /SNAP 2: OPRO -style re-prompting with no external active learner. A collision set coll steers the prompt away from regions already explored. SNAP uses the random warm start ( v=1 ); SNAP 2 uses the EZR warm start ( v=2 ). 
+
+Require: rows R, warm-start size W , warm-start mode v, total budget 
+
+B, candidates/call K, feature distance ρ, objective score d2h 
+
+1: D ← WARM START (R, W, v ) ▷ |D| = W
+
+2: U ← R \ D ▷ unevaluated pool 
+
+3: T ← { (r, d2h (r)) : r ∈ D} ▷ trajectory = optimizer state 
+
+4: coll ← ∅ 
+
+5: while |D| < B and U̸ = ∅ do 
+
+6: k ← min( K, B − | D|)
+
+7: sort T descending by score ▷ so best=T[0] 
+
+8: C ← LLM (T, constraints , objectives , coll , k )
+
+9: coll ← ∅ 
+
+10: for all c ∈ C do 
+
+11: r∗ ← arg min r∈U ρ(c, r ) ▷ find near unevaluated 
+
+12: r◦ ← arg min r∈D ρ(c, r )
+
+13: if ρ(c, r ◦) < ρ (c, r ∗) then ▷ look elsewhere 
+
+14: coll ← coll ∪ { (r◦, d2h (r◦)) }
+
+15: end if 
+
+16: U ← U \ { r∗}; D ← D ∪ { r∗}
+
+17: T ← T ∪ { (r∗, d2h (r∗)) }
+
+18: end for 
+
+19: end while 
+
+20: return arg min (r,s )∈T s
+
+21: function WARM START (R, W, v )
+
+22: if v = 1 then ▷ random ( SNAP )
+
+23: D ⊂ R ▷ |D| = W
+
+24: else if v = 2 then ▷ EZR seed ( SNAP 2 ) 
+
+25: D ← EZR (R, B =10) 
+
+26: end if 
+
+27: return D
+
+28: end function 
+
+Like OPRO , SNAP keeps a trajectory of tried configurations and their d2h scores. At each step it asks for the next batch (K=2 per call) until the budget is spent (Algorithm 2). Its one addition to OPRO is collision tracking . When a proposal lands nearer an already-evaluated row, SNAP nudges the suggestion to another region. SNAP collects these “nudges” in a set coll 
+
+and feeds it back as a “diversification” block to the prompts of Fig. 2. This pushes the model off exhausted neighborhoods with no external search. The trajectory is seeded with W =4 
+
+random rows to match the other methods. SNAP ’s contribution is subtractive: where the opt2 methods hand their proposals to ### 1. SYSTEM MESSAGE You are an optimizer. Your job is to propose feature configurations that minimize d2h (distance to heaven, i.e.\ distance to the ideal objective values; lower is better). STRICT RULE: every value you propose MUST be inside the declared NUM range or the declared SYM allowed-values set. Do NOT use values from your prior knowledge of the domain - only the values listed in the constraints below are valid. ### 2. USER MESSAGE ## Hard constraints (each proposed value must satisfy these EXACTLY) - Spout_wait (NUM): MUST be numeric, range [1, 10000] - Spliters (NUM): MUST be numeric, range [1, 6] - Counters (NUM): MUST be numeric, range [1, 18] ## 3. Objectives (NOT to be proposed; they are evaluated for you) - Throughput+: maximize - Latency-: minimize ## 4. Trajectory (sorted worst -> best; best is last, end-of-prompt) | configuration | d2h ||--------------------------------------|--------| | Spout_wait=1, Spliters=1, Counters=1 | 0.4681 || Spout_wait=1, Spliters=1, Counters=2 | 0.3806 |## 5. Diversification (your prior proposals mapped onto these already-evaluated rows; propose distinct ones) - Spout_wait=1, Spliters=1, Counters=4 (d2h=0.3582) ## 6. Retry (your previous response was not valid: candidate 0 missing features: [’Counters’]) Prior response: {"candidates": [{"Spout_wait": 1, "Spliters": 2}]} Re-read the hard constraints above. Every NUM must be in range; every SYM EXACTLY one of the listed values. ## 7. Reminder Verify each value against the hard-constraints block. NUM values outside [lo, hi] and SYM values not in the allowed set will be rejected and waste a retry. ## 8. Instruction Propose exactly 2 new feature configurations whose d2h is below 0.3806. Respond with ONLY a JSON object of this exact shape (no prose, no markdown fences): { "candidates": [{ "Spout_wait": <numeric in [1,10000]>, "Spliters": <numeric in [1,6]>, "Counters": <numeric in [1,18]> }, ... ] }The "candidates" array MUST have exactly 2 entries. 
+
+Fig. 2. An example SNAP prompt, on a 3-feature task. The eight blocks match SNAP ’s prompt template: (1) System sets the role and the strict in-range rule; (2) Hard constraints list each feature’s legal range; (3) Objectives are described but never proposed (they are scored for the model); (4) Trajectory lists tried configurations sorted worst-to-best, with the best placed last so it sits in the high-attention end-of-prompt position; (5) Diversification lists prior proposals that collided with already-evaluated rows (the coll set of Algorithm 2), asking for distinct ones; (6) Retry feeds back the last malformed response so the model can repair it; (7) Reminder restates the validation rule; and (8) Instruction fixes the output to a JSON object of exact arity. 
+
+a downstream active learner, SNAP deletes that stage and lets the model choose every point. 
+
+C. SNAP 2 (the intersection): the classical learner seeds the LLM 
+
+SNAP 2 was not designed up front. It fell out of the results of this paper. Once every method had run (Section V), one number was hard to ignore: EZR uses no LLM and runs three orders of magnitude faster than SNAP , yet it trailed SNAP by only a few top-tier points. To say that another way, a nearly free method was almost as good as our best, most expensive one. That gap suggested a trade: i.e. use a little of the cheap method to save time on the more expensive one. As shown at the bottom of Algorithm 2, SNAP 2 replaces 
+
+SNAP ’s random warm start with the output of a short EZR 
+
+run. EZR spends the first half of its labeling budget acquiring informative rows. The labeled trajectory then becomes gener-ation zero for the OPRO -style loop, which spends the second half ( WARM START mode v=2 in Algorithm 2). The total label budget stays at B and nothing else changes. IV. E XPERIMENTAL SETUP 
+
+A. Datasets: MOOT 
+
+This study used the MOOT data from Table I. As shown in that table, these tabular data sets have  
+
+> •
+
+3-1000 independent x attributes;  
+
+> •
+
+1 to 8 dependent y attributes to be minimized or maxi-mized;  
+
+> •
+
+93 to 100,000 rows. To the best of our knowledge, MOOT is the largest collection of real SE optimization tasks assembled to date. As shown by the references (right-hand-side column, Table I), MOOT’s data come from papers by numerous SE authors, presented in leading venues (ICSE, FSE, TSE, IST, EMSE, TOSEM, ASE). MOOT’s tasks span configuration, performance tuning, product lines, project health, defect prediction, testing, cost estimation, cross-domain generalization, and text mining. Compared to MOOT, other resources (e.g., SPLOT) were narrow and are now offline. Toolkits like Pygmo or Platypus offer only synthetic benchmarks. MOOT’s datasets come from published studies, real performance logs, cloud systems, and tuning tasks where bad configurations cost time, money, and credibility. Of MOOT’s 127 tasks we keep the 105 on which every method completed its full run of repeats. This common-denominator rule keeps the comparison fair: no method can inflate its score by silently skipping datasets it cannot complete. We use this same set of 105 throughout; the per-dataset counts in Table IV and elsewhere all share this denominator. The 105 datasets cover software configuration (X264, BDBC, P OSTGRE SQL, LLVM, S TORM , and others), software process modeling (POM3, a model of agile requirements prioritization [45]; XOMO, a Monte Carlo simulator over the COCOMO suite of effort, risk, and defect models [46]), feature models, project health, and hyperparameter optimization. 
+
+B. Metrics 
+
+We report three layers of performance metrics. The under-lying per-run score is distance to heaven. We normalize each objective into [0 , 1] , then compute: 
+
+d2h (y) = 
+
+vuut kX
+
+> i=1
+
+y2 
+
+> i
+
+/ √k, (1) where k is the number of objectives and 0 is the utopia point :the ideal but usually unreachable point where every objective hits its best value at once. For d2h , lower values are better [3] since those solutions are closer to the ideal points 2
+
+To make d2h comparable across datasets we report a normalized improvement ∆. For each dataset, let base min and 
+
+base med be the minimum and median d2h over every row of the CSV. Then 
+
+∆ = 1 − d2h − base min 
+
+base med − base min 
+
+, (2) reported as a percent. For ∆, larger values are better [3] since those solutions are closer to the best possible results: 100% 
+
+means the empirical optimum was recovered, 0% means the no-tuning median, and ∆ > 100% is possible when a method’s held-out validation score beats the best row in the table. We will often report our results via the top-tier rate : the fraction of datasets on which a method falls in the top tier, where “best” is defined in Section IV-D . Because top-tier membership is itself a significance decision (Section IV-D ), this rate aggregates 105 per-dataset significance tests rather than raw scores. ∆ gives the magnitude of the improvement; the top-tier rate gives how often a method is among the best.        
+
+> 2For the reader familiar with the optimization literature, we note that there are many other ways to measure performance in multi-objective reasoning. A recent IEEE TSE article by Chen et al. [47] reviewed various multi-objective optimization performance measures like hypervolume, Spread, Generational Distance, and Inverted Generational Distance. Subsequent work by Chen [2], as well as analogous research by Ganguly [28] suggests that these measures are somewhat misguided. At least for SE applications, when learning what
+> xleads to best yvalues, most data falls to a tiny corner of xspace and y
+> space. Hence, the issue is not how spread out is a search, nor what is the total volume of your search, but how quickly can you prune the search space to find the small portion relevant to your current tasks. Hence, here, we used
+> d2h rather than HV, spread, GD and IGD.
+
+For cross-comparability with the evolutionary computation (EC) literature, where multi-objective results are typically reported through hypervolume or Chebyshev distance, we also computed both metrics; the ranking is consistent, so we report 
+
+d2h -based results throughout. 
+
+C. Cost Metrics 
+
+For each (method, dataset, seed) triple, we measure five cost metrics: labels used, LLM tokens (input plus output), wall-clock seconds, number of LLM calls, and dollar cost in our setup. 
+
+D. Statistical Analysis 
+
+We ran twenty seeds per (method, dataset) pair. On each dataset, methods are sorted by median score; the leader (best median) plus all subsequent methods indistinguishable from it form the top tier (stopping at the first method that differs). Membership in this top tier is therefore a per-dataset significance decision, not a raw score comparison: a dataset may place several methods in its top tier, all credited equally. The top-tier rate we report (Table IV) thus aggregates 105 such per-dataset significance tests. To avoid significant-but-meaningless splits [48], two result sets X, Y (sizes n, m ) are judged indistinguishable if both of the following hold:  
+
+> •
+
+Cliff’s delta [49], |δ| = |#( x>y ) − #( x<y )| / (nm ), is below 0.195 (small [50]); and  
+
+> •
+
+the Kolmogorov-Smirnov statistic [51] (max distance between the empirical cumulative distributions) is below 
+
+1.36 p(n + m)/(nm ) (95% confidence). These two standard, distribution-free tests (a small effect size and no significant difference) together decide whether two result sets differ. 
+
+E. LLM and Hyperparameters 
+
+All our LLM methods use openai/gpt-oss-120b 3
+
+served through OpenRouter, with temperature 0.7, top-p 1.0,a 32K context window, and a 4000-token output cap ( SNAP 
+
+raises this to 8000 on datasets with ≥ 77 features). It is a reasoning model: roughly half of every completion token is an unshown reasoning token, billed at the output rate and included in the costs we report. Main runs used a deterministic disk cache; the cost-timing run disables it for real latency. Seeds were derived from a fixed base ( 12345 ) per repeat and dataset and control Python-side randomness only. A key hyperparameter here is the labeling budget. Each LLM labeling incurs a compute cost, so for fairness we fix the same labeling budget across all tools, LLM and otherwise. ( SNAP 2spends the first 10 of its 20 labels inside EZR , then the rest in the SNAP loop, so its total matches the others.) That budget is bounded by financial resources. University cloud clusters often run older kernels that cannot host the latest models, so these 
+
+> 3Why this model? We picked it for practical reasons, not novelty. It is inexpensive to run, popular and well served across providers, and widely used in the community. It is also open-weights, which matters most for replicability: other groups can mirror the exact model and reproduce these results without depending on a single vendor’s API staying available.
+
+TABLE III GANGULY ET AL . [28] ARGUE THAT WITH SUFFICIENT BACKGROUND KNOWLEDGE , ( E.G. FROM AN LLM), IT IS POSSIBLE TO FIND SOLUTIONS STATISTICALLY INDISTINGUISHABLE FROM THE BEST SOLUTION WITH AS FEW AS B ≤ 20 SAMPLES IN PRACTICE .Hamlet [52] comments on the number of samples B required to be C
+
+confident of finding a target with probability p is 
+
+C = 1 − (1 − p)B → B = log(1 − C)log(1 − p)
+
+With some background knowledge (e.g. an LLM) we can compare two events and heuristically guess if one is better than another. This means that assuming solutions are spread randomly over one dimension (e.g. the range of values seen in Eq. (2)), then a binary chop can isolate the best results in 
+
+log 2(B) comparisons. Cohen comments that events are indistinguishably different if they differ by less than .2σ [53]. For a Gaussian of range 
+
+−3σ to +3 σ, this 0.2 is a target of size p = .2/6 ≈ 0.033 . Combining all this, an unguided search needs B ≈ 137 samples to be 99% certain of hitting that target, but a binary chop with background knowledge isolates it in log 2(B) < 8 comparisons: 
+
+B(C = 0 .99 , p = 0 .033) = 
+
+
+
+log 2
+
+ log(1 − C)log(1 − p)
+
+ 
+
+< 8 (3) For many reasons, this analysis is overly optimistic. It rests on numerous assumptions: a uniform spread of good solutions, independence between draws, and the Gaussian normality premise behind Cohen’s rule, none of which hold exactly for our data. Empirically, too, Eq. (3) understates the cost: the optimizers need B = 20 samples, not 8, to find solutions within 80% of the optimum (median), and even then do not reach near-perfect results. Clearly, real-world data is far quirkier than the idealized settings assumed by Cohen, Hamlet, and colleagues. That said, given Eq. (3), it is plausible that B = 20 labels is a reasonable choice for this study. 
+
+studies were run on local machines with compute purchased at commercial rates. Consider a typical research group of five graduate students, each delivering three reports per year. Each report consumes up to six full LLM runs:  
+
+> •
+
+run one, to survey the options;  
+
+> •
+
+run two, to debug the scripts and prompts for the substantive analysis;  
+
+> •
+
+run three, to execute that substantive analysis;  
+
+> •
+
+runs four, five, and six, to repeat experiments that prior runs invalidated. We view LLMs as assistants, not replacements for human researchers. Hence, our annual LLM budget must stay below the cost of a graduate research assistant ($2,000 per month, plus 50% overhead). Across five students and three reports each, that caps every study like this one at 
+
+(12 × 1.5 × $2 ,000) /6/5/3 = $400 .
+
+This $400 is spread across all the optimizers, and all examples must be processed. In those terms, we need a labeling budget of B = 20 per optimizer per run, rising slightly for occasional ablation runs ( B ∈ { 5, 10 , 20 , 50 }). So is it useful running optimizers with labeling budgets as low as B = 20 ? Just to state the obvious: a budget of B = 20 
+
+labels would be inadequate for replacing an LLM. But the LLM methods of this paper are more about alternatives to few-shot prompting rather than LLM creation. 
+
+TABLE IV TOP -TIER COUNTS ACROSS THE 105 MOOT DATA SETS . A METHOD SCORES A top ON A DATA SET WHEN IT IS STATISTICALLY INDISTINGUISHABLE FROM THE BEST METHOD THERE , A PER -DATASET SIGNIFICANCE TEST (SEE SECTION IV-D). T HE TOP -TIER RATE AGGREGATES THESE 105 SIGNIFICANCE DECISIONS .Method Regime Tops Top-tier rate (tops/105) 
+
+> SNAP
+
+2 hybrid 89 85%  
+
+> SNAP
+
+opt1 79 75% 
+
+> BS
+
+_LLM opt2 78 74%  
+
+> EZR
+
+opt3 75 71% SYNTH CORE opt2 73 70%  
+
+> RANDOM
+
+opt3 51 49%  
+
+> RRP
+
+opt3 34 32% 
+
+Also, the methods of this paper are active learners; i.e. they reflect on the results seen so built so far in order to select the next example to label. By focusing on the most informative examples, our learners can avoid redundant and spurious items and build models with very few labeled examples. Also, Table III offers a mathematical argument from Ganguly et al. [28] that, with sufficient knowledge (e.g. from an LLM), it is possible to find good solutions with B ≤ 20 .V. R ESULTS 
+
+Under the conditions above, we ran the seven optimizers on 105 data sets, twenty repeats each. Results were scored with Eq. (2) and compared using the statistics of Section IV-D . We organize the findings as four questions. RQ1 asks whether any LLM involvement beats the classical state of the art. RQ2 and RQ3 correspond to the two claims in our title: that combining a classical learner with an LLM beats either alone, and that the order of combination matters. RQ4 reports what each method costs and who should run which. 
+
+RQ1 : Does LLM involvement beat the classical state of the art? 
+
+Table IV sorts our results. Recall that, for each data set, our statistical method sorts each method by its mean results. Then, it asks which methods are “top-tier”; i.e. which are statistically indistinguishable from the best method in that set. The numbers in Table IV show how often, across all 105 data sets, a method is top-tiered. The clear losers are the “no knowledge” methods. RANDOM 
+
+(49%) and RRP (32%) use neither an LLM nor an active learner, and every method with a knowledge source beats them. EZR 
+
+(71%) is the strongest no-LLM method and our classical anchor (and recall that Ganguly et al. showed EZR also beats many classical methods such as TPE, SMAC3, and DEHB on these same tasks [28]). The LLM-bearing methods SNAP (75%) and 
+
+BS _LLM (74%) sit just above EZR , and S YNTH CORE (70%) very nearly ties with it. So the answer to RQ1 is “yes”, with one caveat: the leading group is statistically clustered. These four methods span only five points (70 to 75%), inside the band our per-dataset tests cannot separate (Section IV-D ). No single LLM-assisted method pulls clear of EZR .One method is left out of the above analysis: SNAP 2, the subject of RQ2 and RQ3. 
+
+> RQ1
+
+Does LLM involvement beat the classical SOTA? Yes, but the results cluster. The knowledge-free floors ( RANDOM 49%,  
+
+> RRP
+
+32%) are dominated. Every LLM-bearing method matches or beats EZR (71%), which already beats TPE, SMAC3, and DEHB [28]. But SNAP , BS _LLM , S YNTH CORE , and EZR fall within a five-point band our tests cannot really separate. The open question is what breaks that cluster (see RQ2). 
+
+RQ2 : Does combining a classical learner with an LLM beat either alone? 
+
+> SNAP
+
+2 combines the two: EZR spends the first ten labels, then SNAP spends the rest. It reaches the top tier on 85% of tasks (89 of 105), clear of both ingredients alone ( SNAP 75%,  
+
+> EZR
+
+71%). It is the only method to break the 70-to-75% cluster of RQ1, by a margin our tests can separate. 
+
+> RQ2
+
+Does combining beat either alone? Yes. SNAP 2 reaches 85%, above SNAP alone (75%) and EZR alone (71%). It is the only method to escape the RQ1 cluster. 
+
+RQ3 : Does the order of combination matter? 
+
+The opt2 family ( BS _LLM , S YNTH CORE ) combines classical and LLM, but in the opposite order to SNAP 2 (the LLM seeds, and a classical learner then drives the search). SNAP 2 reverses this, seeding with EZR and finishing with SNAP . The reversal is decisive. SNAP 2 (85%) tops every LLM-first method by eleven points or more ( BS _LLM 74%, S YNTH CORE 70%), a gap outside the cluster band of RQ1. 
+
+> RQ3
+
+Does order matter? Yes. The LLM-first opt2 methods reach 74% ( BS _LLM ) and 70% (S YNTH CORE ). Classical-first SNAP 2reaches 85%. 
+
+RQ4 : What does each method cost, and who should run which? 
+
+Table V reports cost per repeat. The no-LLM methods make no API calls, so they cost almost nothing and run very fast. 
+
+> SNAP
+
+2 dominates pure SNAP on every measure: a higher top-tier rate (85% vs 75%), about 30% fewer tokens (19,000 vs 26,000), 1.4× faster (110.9 s vs 157.7 s), and roughly half the dollar cost. Pure SNAP is therefore never the right choice. The live trade-off is SNAP 2 against EZR . The top-tier rates differ (85% vs 71%), and our tests call that difference significant. But the two are close in absolute mean performance (mean ∆ 75.8% vs 73.0%, a 2.8-point gap; Fig. 3), while EZR 
+
+costs nothing and runs three orders of magnitude faster (0.037 s vs 110.9 s). So the small statistical gap can be worth conceding.                                                          
+
+> Fig. 3. Per-dataset mean ∆(higher is better, see Eq. (2)) across the 103 of 105 datasets with a defined ∆baseline (2 have none), sorted left to right by
+> SNAP 2 performance. Black line is SNAP 2. Top: SNAP 2 against the weaker methods (S YNTH CORE ,RANDOM ,RRP ); SNAP 2 sits above them on most datasets.
+> Bottom: SNAP 2 against the strongest competitors ( SNAP ,BS _LLM ,EZR ). TABLE V OPERATIONAL COST PER REPEAT ,FROM G P T -O S S -120 BWITH CACHE DISABLED .Method Type LLM calls Tokens Cost ($) Wall (s)
+> RANDOM opt3 0000.0001
+> EZR opt3 0000.037
+> RRP opt3 0000.227
+> BS _LLM opt2 11,800 0.0005 29.5 SYNTH CORE opt2 12,000 0.0005 28.2
+> SNAP 2hybrid 519,000 0.0039 110.9
+> SNAP opt1 826,000 0.0076 157.7
+
+We recommend running SNAP 2 for mission- or safety-critical work where quality is worth the dollars and latency. On the other hand, EZR might be useful when token budgets are capped, when response time is critical, or compute is scarce (e.g. for edge computing).            
+
+> RQ4
+> Who should run which? SNAP 2 dominates pure SNAP on quality (85% vs 75%) and cost, so pure SNAP is never the right choice. Against EZR , the top-tier gap is significant in relative terms (85% vs 71%) but small in absolute mean performance (mean
+> ∆75.8% vs 73.0%; Fig. 3). Also, EZR is virtually free and far faster. Run SNAP 2 when quality is worth the cost. Run EZR
+> when budget, latency, or compute is the binding constraint.
+
+VI. D ISCUSSION 
+
+A. Threats to Validity a) Dataset Selection: : are the datasets a representative sample of all SE? Every empirical study faces this threat to validity. The best we can do is make our case study library as large as possible, which is why we used MOOT. The 105 datasets used here are the subset of MOOT’s 127. The excluded datasets are method timeouts, not low-quality data. A method that fails more often is therefore filtered out silently. The datasets are also all tabular. Whether the conclusions transfer to non-tabular SE optimization (test generation, patch synthesis, code optimization) is an open problem. 
+
+b) Construct Validity: : do our evaluations measure what we think they measure? 
+
+∆ is normalized against the empirical minimum and median 
+
+d2h over the dataset rows, not against an external ground truth. Here “optimal” means reference optimal , a term from the empirical-algorithms literature [41], [54]: the best solution observed so far. The reference optimal may not be the true optimal. But in many engineering cases the true optimal is unknown. Because it is only the best observed row, a method’s held-out score can exceed it. This is why ∆ can pass 100% ,as SNAP 2 does on POM 3A (100 .9% ). We also computed hypervolume and Chebyshev distance, and the ranking is consistent. 
+
+c) Shared Machinery: : does SNAP 2 win only because it reuses a baseline? 
+
+> SNAP
+
+2 uses EZR as its first stage, then is compared against  
+
+> EZR
+
+in the same ranking. The two are not independent, so 
+
+> SNAP
+
+2’s advantage could reflect that shared substrate rather than the classical-then-LLM order. Three points bound this. The split was fixed in advance, not searched for the best result. And SNAP 2 also tops the LLM-first opt2 methods, which share 
+
+> SNAP
+
+’s machinery but reverse the order. So the order, not the shared parts, is what moves the ranking. A third point is decisive. SNAP 2 gives its EZR stage only B=10 labels, half the B=20 that the standalone EZR baseline gets (Table II). Its  
+
+> EZR
+
+stage is therefore a weaker EZR than the baseline, yet 
+
+> SNAP
+
+2 still wins. The gain cannot come from the EZR stage alone. 
+
+d) Sample Validity: : did we test enough of the design space? We explore some algorithmic options, but not all. Some omitted options were already assessed at FSE’26, where EZR 
+
+beat SMAC3, TPE, and the qEHVI/MOEA/D family [28]. The other omissions are the opt2 sub-roles: variation operator [22], [55], surrogate [23], caged sampler [24], [56], operator selec-tion [25], and algorithm designer [26], [57]–[59]. These are excluded by design. We hold the host optimizer fixed (the shared SMO loop at B = 20 ) and vary only the degree of LLM involvement. Warm-start seeding is the one sub-role that swaps cleanly onto that loop. Each other sub-role presupposes a different host: an evolutionary loop, a Bayesian surrogate loop, a partition scheduler, or a program-synthesis loop. Importing them would confound the regime effect with a host-optimizer effect. Several also abandon the fixed-B label axis, which makes them incommensurable in our ranking and cost tables. Testing which scaffold earns its keep is left to future work. 
+
+e) External Validity: : do the results generalize beyond our setting?  
+
+> SNAP
+
+and SNAP 2 propose configurations, then project each onto the nearest measured row. They select from a known table rather than generating unseen configurations. This bounds external validity. Our results speak to choosing among configurations whose objective values are already recorded, not to proposing configurations never evaluated. Extending this approach to generative settings, where the optimum may lie off-table, is future work. 
+
+B. Open Issues and Future Work a) A complexity measure for SE optimization.: The ceiling argument above turns the usual question around. Instead of “which optimizer is best,” ask “which problems are hard.” Most  
+
+> MOOT
+
+tasks yield to B = 20 labels (Section V); a few resist. A predictor of that resistance, computed from cheap surface features of a dataset before any optimizer runs, would let a practitioner budget labels per task. It would also explain why so many methods converge. The landscape-sparsity intuition behind our B = 20 argument (Table III) is the natural starting point. 
+
+b) A conditional cascade.: SNAP 2 runs EZR then SNAP 
+
+on every task. But EZR alone already reaches most of SNAP 2’s quality at near-zero cost (Tables IV and V). The open question is when the SNAP stage is worth running at all. A conditional cascade would run EZR first, then escalate to SNAP only on tasks whose EZR result looks uncertain. Paired with the complexity measure above, this could capture SNAP 2’s quality while paying the LLM cost only where it earns its keep. 
+
+c) Beyond tabular selection.: Our methods snap each proposed candidate to the nearest row in the MOOT table, a configuration whose objective values we have already measured. This snapping means the LLM only has to point toward a good region, not name an exact valid configuration, and it can never return an unmeasured or invalid answer. But it only works because MOOT gives us a finite table of scored configurations to snap onto. Other SE optimization tasks have no such table. Test generation, patch synthesis, and code optimization all search an open space, where no candidate is pre-scored and there is nothing to snap to. Whether our results hold once that safety net is removed, and what should replace it, is the main question this paper leaves open. 
+
+d) Scaling with the model.: Our results come from one open-weights model, one seed family, and B = 20 . As models improve, does SNAP 2’s margin over EZR widen, and does EZR remain the stable free anchor? Half of the LLM tokens are unshown reasoning tokens (Section IV). A study of cheaper, non-reasoning prompting would show how much of the advantage is reasoning and how much is the projection trick. VII. C ONCLUSION 
+
+The literature was too pessimistic about LLMs as optimizers for SE. On 105 SE tasks, the best method is neither a classical learner nor an LLM alone, but the two combined. SNAP 2 seeds a short EZR run, then hands its trajectory to an LLM to finish. It reaches the top tier on 85% of tasks, above the same LLM run alone (75%) and above EZR alone (71%). The order of that combination is what wins. Prior work runs the LLM first and lets a classical optimizer finish; those methods top out at 74%. SNAP 2 reverses the order, seeds with the cheap classical learner, and lets the LLM close. Same ingredients, opposite order, and an eleven-point gain (to 85%). The result also costs less. SNAP 2 dominates the LLM-alone method on every axis: higher quality, about 30% fewer tokens, and 1.4× faster, since the classical step does the cheap early work. To conclude, we offer the following guidance to practitioners. When optimizing some SE process:  
+
+> •
+
+First try a classical method (i.e. no LLM). Why? Well: 
+
+– Some of those classical methods, like EZR , are virtually free and perform close to the best known results (yet run three orders of magnitude faster). 
+
+– By first running a very fast classical optimizer, practitioners can get quick feedback. 
+
+– Such classical methods offer a baseline result against which the value of supposedly more valuable systems can be compared. 
+
+– Further, you will need the classical optimizer for the next step.  
+
+> •
+
+Second, try an LLM-based optimizer when developing (a) mission-critical applications or (b) safety-critical applications, or (c) when execution cost is not a concern. But first, bootstrap the LLM’s search with the results of a classical method. For a worked example of how to do that, see the SNAP 2 implementation in this paper. REFERENCES [1] A. Rayegan and T. Menzies, “Minimal data, maximum clarity: A heuristic for explaining optimization,” Journal of Systems and Software , p. 112897, 2026. [2] P. Chen and T. Chen, “Promisetune: Unveiling causally promising and explainable configuration tuning,” in 48th International Conference on Software Engineering . IEEE, 2026. [3] L. Senthilkumar and T. Menzies, “Can large language models improve se active learning via warm-starts?” ACM Transactions on Software Engineering and Methodology , 2024. [4] P. Chen, J. Gong, and T. Chen, “Accuracy can lie: On the impact of surrogate model in configuration tuning,” IEEE Transactions on Software Engineering , vol. 51, no. 2, pp. 548–580, 2025. [5] A. Lustosa and T. Menzies, “Learning from very little data: On the value of landscape analysis for predicting software project health,” ACM Transactions on Software Engineering and Methodology , vol. 33, no. 3, pp. 1–22, 2024. [6] ——, “iSNEAK: Partial ordering as heuristics for model-based reasoning in software engineering,” IEEE Access , vol. 12, pp. 142 915–142 929, 2024. [7] J. Chen, V. Nair, and T. Menzies, “Beyond evolutionary algorithms for search-based software engineering,” Information and Software Technology , vol. 95, pp. 281–294, 2018. [8] nyagami, “EA Sports FC 25 database — ratings and stats,” 2025, kaggle dataset. [9] blastchar, “Telco customer churn,” 2025, kaggle dataset. [10] K. A. Rajarshi, “Life expectancy (WHO) dataset,” 2025, kaggle dataset. [11] J. Daoud, “Marketing analytics — marketing data,” 2022, kaggle dataset. [12] Z. Yin, X. Ma, J. Zheng, Y. Zhou, L. N. Bairavasundaram, and S. Pasupathy, “An empirical study on configuration errors in commercial and open source systems,” in Proceedings of the Twenty-Third ACM Symposium on Operating Systems Principles , 2011, pp. 159–172. [13] L. Tang, C. Bhandari, Y. Zhang, A. Karanika, S. Ji, I. Gupta, and T. Xu, “Fail through the cracks: Cross-system interaction failures in modern cloud systems,” in Proceedings of the Eighteenth European Conference on Computer Systems , 2023, pp. 433–451. [14] P. Jamshidi and G. Casale, “Uncertainty-aware self-adaptation in cloud computing,” Ph.D. dissertation, Imperial College London, 2016, source for the S TORM 480x degradation result. [15] T. Xu, L. Jin, X. Fan, Y. Zhou, S. Pasupathy, and R. Talwadker, “Hey, you have given me too many knobs!: understanding and dealing with over-designed configuration in system software,” in 
+
+Proceedings of the 2015 10th Joint Meeting on Foundations of Software Engineering , ser. ESEC/FSE 2015. New York, NY, USA: Association for Computing Machinery, 2015, p. 307–319. [Online]. Available: https://doi.org/10.1145/2786805.2786852 [16] D. Van Aken, A. Pavlo, G. J. Gordon, and B. Zhang, “Automatic database management system tuning through large-scale machine learning,” in 
+
+Proceedings of the 2017 ACM international conference on management of data , 2017, pp. 1009–1024. [17] V. Nair, Z. Yu, T. Menzies, N. Siegmund, and S. Apel, “Finding faster configurations using flash,” IEEE Transactions on Software Engineering ,vol. 46, no. 7, pp. 794–811, 2020. [18] J. Chen, N. Xu, P. Chen, and H. Zhang, “Efficient compiler autotuning via bayesian optimization,” in 2021 IEEE/ACM 43rd International Conference on Software Engineering (ICSE) . IEEE, 2021, pp. 1198– 1209. [19] N. Siegmund, A. Grebhahn, S. Apel, and C. Kästner, “Performance-influence models for highly configurable systems,” in Proceedings of the 2015 10th Joint Meeting on Foundations of Software Engineering , 2015, pp. 284–294. [20] F. Hutter, H. H. Hoos, and K. Leyton-Brown, “Sequential model-based optimization for general algorithm configuration,” in International conference on learning and intelligent optimization . Springer, 2011, pp. 507–523. [21] C. Yang, X. Wang, Y. Lu, H. Liu, Q. V. Le, D. Zhou, and X. Chen, “Large language models as optimizers,” in International Conference on Learning Representations , vol. 2024, 2024, pp. 12 028–12 068. [22] S. Liu, C. Chen, X. Qu, K. Tang, and Y.-S. Ong, “Large language models as evolutionary optimizers,” in 2024 IEEE Congress on Evolutionary Computation (CEC) . IEEE, 2024, pp. 1–8. [23] T. Liu, N. Astorga, N. Seedat, and M. van der Schaar, “Large language models to enhance bayesian optimization,” The Twelfth International Conference on Learning Representations , 2024. [24] A. Schwanke, L. Ivanov, D. Salinas, F. Hutter, and A. Zela, “Multi-objective hierarchical optimization with large language models,” arXiv preprint arXiv:2601.13892 , 2026. [25] Y. Zhang, G. Yi, H. Geng, and H. Wang, “Leveraging large language models for dynamic multi-objective optimization in UAV sensor-target assignment,” IFAC PapersOnLine , vol. 59, no. 20, pp. 2314–2319, 2025. [26] B. Romera-Paredes, M. Barekatain, A. Novikov, M. Balog, M. P. Kumar, E. Dupont, F. J. R. Ruiz, J. S. Ellenberg, P. Wang, O. Fawzi, P. Kohli, and A. Fawzi, “Mathematical discoveries from program search with large language models,” Nature , vol. 625, no. 7995, pp. 468–475, 2024. [27] B. Huang, X. Wu, Y. Zhou, J. Wu, L. Feng, R. Cheng, and K. C. Tan, “Exploring the true potential: Evaluating the black-box optimization capability of large language models,” arXiv preprint arXiv:2404.06290 ,2024. [28] K. K. Ganguly and T. Menzies, “How low can you go? the data-light se challenge,” in FSE’26 , 2026. [29] M. Lindauer, K. Eggensperger, M. Feurer, A. Biedenkapp, D. Deng, C. Benjamins, T. Ruhkopf, R. Sass, and F. Hutter, “SMAC3: A versatile Bayesian optimization package for hyperparameter optimization,” Journal of Machine Learning Research , vol. 23, no. 54, pp. 1–9, 2022. [30] J. Bergstra, R. Bardenet, Y. Bengio, and B. Kégl, “Algorithms for hyper-parameter optimization,” Advances in neural information processing systems , vol. 24, 2011. [31] M. Balandat, B. Karrer, D. Jiang, S. Daulton, B. Letham, A. G. Wilson, and E. Bakshy, “Botorch: A framework for efficient monte-carlo bayesian optimization,” Advances in neural information processing systems , vol. 33, pp. 21 524–21 538, 2020. [32] Q. Zhang and H. Li, “Moea/d: A multiobjective evolutionary algorithm based on decomposition,” IEEE Transactions on evolutionary computa-tion , vol. 11, no. 6, pp. 712–731, 2007. [33] J. Bergstra and Y. Bengio, “Random search for hyper-parameter opti-mization,” Journal of Machine Learning Research , vol. 13, pp. 281–305, 2012. [34] T. Menzies, T. Chen, Y. Ye, K. K. Ganguly, A. Rayegan, S. Srinivasan, and A. Lustosa, “Moot: a repository of many multi-objective optimization tasks,” in 2026 IEEE/ACM 23rd International Conference on Mining Software Repositories (MSR) . IEEE, 2026. [35] P. Valov, J.-C. Petkovich, J. Guo, S. Fischmeister, and K. Czarnecki, “Transferring performance prediction models across different hardware platforms,” in Proceedings of the 8th ACM/SPEC on International Conference on Performance Engineering , 2017, pp. 39–50. [36] J. Wei, X. Wang, D. Schuurmans, M. Bosma, F. Xia, E. Chi, Q. V. Le, D. Zhou et al. , “Chain-of-thought prompting elicits reasoning in large language models,” Advances in neural information processing systems ,vol. 35, pp. 24 824–24 837, 2022. [37] L. Senthilkumar and T. Menzies, “From brittle to robust: Improving llm annotations for se optimization,” Empirical Software Engineering ,vol. 31, no. 6, p. 155, 2026. [38] S. Daulton, M. Balandat, and E. Bakshy, “Parallel bayesian optimization of multiple noisy objectives with expected hypervolume improvement,” 
+
+Advances in neural information processing systems , vol. 34, pp. 2187– 2200, 2021. [39] N. Awad, N. Mallik, and F. Hutter, “DEHB: Evolutionary hyperband for scalable, robust and efficient hyperparameter optimization,” in 
+
+Proceedings of the Thirtieth International Joint Conference on Artificial Intelligence (IJCAI-21) , Z.-H. Zhou, Ed. ijcai.org, 2021, pp. 2147–2153. [40] B. Settles, Active learning . Morgan & Claypool Publishers, 2012. [41] P. R. Cohen, Empirical methods for artificial intelligence . MIT press Cambridge, MA, 1995, vol. 139. [42] J. Chen, V. Nair, R. Krishna, and T. Menzies, ““sampling” as a baseline optimizer for search-based software engineering,” IEEE Transactions on Software Engineering , vol. 45, no. 6, pp. 597–614, 2018. [43] M. Ester, H.-P. Kriegel, J. Sander, and X. Xu, “A density-based algorithm for discovering clusters in large spatial databases with noise,” in 
+
+Proceedings of the Second International Conference on Knowledge Discovery and Data Mining , ser. KDD’96. AAAI Press, 1996, pp. 226–231. [44] N. Hansen, S. Finck, R. Ros, and A. Auger, “Real-parameter black-box optimization benchmarking 2009: Noiseless functions definitions,” Ph.D. dissertation, INRIA, 2009. [45] D. Port, A. Olkov, and T. Menzies, “Using simulation to investigate requirements prioritization strategies,” in 2008 23rd IEEE/ACM Interna-tional Conference on Automated Software Engineering . IEEE, 2008, pp. 268–277. [46] T. Menzies and J. Richardson, “Xomo: Understanding development options for autonomy,” in COCOMO forum , vol. 2005, 2005. [47] M. Li, T. Chen, and X. Yao, “How to evaluate solutions in pareto-based search-based software engineering: A critical review and methodological guidance,” IEEE Trans. Softw. Eng. , vol. 48, no. 5, p. 1771–1799, May 2022. [Online]. Available: https://doi.org/10.1109/TSE.2020.3036108 [48] V. B. Kampenes, T. Dybå, J. E. Hannay, and D. I. K. Sjøberg, “A systematic review of effect size in software engineering experiments,” 
+
+Information and Software Technology , vol. 49, no. 11–12, pp. 1073–1086, 2007. [Online]. Available: https://doi.org/10.1016/j.infsof.2007.02.015 [49] N. Cliff, “Dominance statistics: Ordinal analyses to answer ordinal questions,” Psychological Bulletin , vol. 114, no. 3, pp. 494–509, 1993. [Online]. Available: https://doi.org/10.1037/0033-2909.114.3.494 [50] M. R. Hess and J. D. Kromrey, “Robust confidence intervals for effect sizes: A comparative study of Cohen’s d and Cliff’s delta under non-normality and heterogeneous variances,” in Annual Meeting of the American Educational Research Association , San Diego, CA, 2004. [Online]. Available: https://api.semanticscholar.org/CorpusID:17670117 [51] F. J. Massey, “The Kolmogorov-Smirnov test for goodness of fit,” 
+
+Journal of the American Statistical Association , vol. 46, no. 253, pp. 68–78, 1951. [Online]. Available: https://www.tandfonline.com/doi/abs/ 10.1080/01621459.1951.10500769 [52] R. G. Hamlet, “Probable correctness theory,” Information processing letters , vol. 25, no. 1, pp. 17–25, 1987. [53] S. S. Sawilowsky, “New effect size rules of thumb,” Journal of modern applied statistical methods , vol. 8, no. 2, p. 26, 2009. [54] C. C. McGeoch, A guide to experimental algorithmics . Cambridge University Press, 2012. [55] S. Brahmachary, S. M. Joshi, A. Panda, K. Koneripalli, A. K. Sagotra, H. Patel, A. Sharma, A. D. Jagtap, and K. Kalyanaraman, “Large language model-based evolutionary optimizer: Reasoning with elitism,” 
+
+Neurocomputing , vol. 622, p. 129272, 2025. [56] A. Schwanke, L. Ivanov, D. Salinas, F. Ferreira, A. Klein, F. Hutter, and A. Zela, “Improving LLM-based global optimization with search space partitioning,” in The Fourteenth International Conference on Learning Representations , 2026. [57] F. Liu, X. Tong, M. Yuan, X. Lin, F. Luo, Z. Wang, Z. Lu, and Q. Zhang, “Evolution of heuristics: towards efficient automatic algorithm design using large language model,” Proceedings of the 41st International Conference on Machine Learning , 2024. [58] H. Ye, J. Wang, Z. Cao, F. Berto, C. Hua, H. Kim, J. Park, and G. Song, “Reevo: large language models as hyper-heuristics with reflective evolution,” Proceedings of the 38th International Conference on Neural Information Processing Systems , 2024. [59] S. Gao, C. Gao, W. Gu, and M. R. Lyu, “Search-based llms for code optimization,” Proceedings of the IEEE/ACM 47th International Conference on Software Engineering , p. 578–590, 2025. [Online]. Available: https://doi.org/10.1109/ICSE55347.2025.00021

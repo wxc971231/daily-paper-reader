@@ -1,0 +1,250 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-07T21:04:38.332833+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2607.03651v1",
+      "source": "arxiv",
+      "title": "LLM-Guided Transportation Hub Capacity Planning with Textual Business Inputs",
+      "abstract": "While traditional hub capacity planning models optimize effectively for quantitative inputs, they often fail to digest qualitative business context. We propose a novel framework where a large language model (LLM) agent iteratively proposes hub capacity decisions guided by natural-language business context descriptions. The key mechanism is a chain-of-thought reasoning protocol: the LLM constructs a structured decision table that maps each contextual item to specific capacity adjustments based on the implied direction and magnitude of changes. The new capacity decision is then validated through a feedback loop with an optimization model, which provides routing-based performance metrics to guide the agent's selection. On a real-world 13-hub freight network in the southeastern US, our framework achieves a 2.8% optimality gap relative to the hidden ground-truth, a significant improvement over the 11.0% gap produced by the traditional optimization model without textual business inputs. This demonstrates that LLMs can serve as a contextual bridge, integrating qualitative business insights into Operations Research workflows.",
+      "authors": [
+        "Xiaoyue Liu",
+        "Zheng Dong"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "math.OC"
+      ],
+      "published": "2026-07-04T00:26:19+00:00",
+      "link": "https://arxiv.org/pdf/2607.03651v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-guided optimization modeling for transportation hub capacity planning",
+      "llm_evidence_cn": "LLM引导的运输枢纽容量规划优化建模",
+      "llm_evidence": "LLM引导的运输枢纽容量规划优化建模",
+      "canonical_evidence": "LLM引导的运输枢纽容量规划优化建模",
+      "llm_tldr_en": "LLM agent iteratively proposes capacity decisions using chain-of-thought reasoning, validated by an optimization model, on a real-world freight network.",
+      "llm_tldr_cn": "针对传统容量规划模型无法处理定性业务上下文的问题，提出LLM代理框架。LLM通过思维链推理将自然语言上下文映射到容量调整决策，并由优化模型反馈验证。在真实13枢纽货运网络上验证了有效性。",
+      "llm_tldr": "针对传统容量规划模型无法处理定性业务上下文的问题，提出LLM代理框架。LLM通过思维链推理将自然语言上下文映射到容量调整决策，并由优化模型反馈验证。在真实13枢纽货运网络上验证了有效性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.05346v1",
+      "source": "arxiv",
+      "title": "OptiAgent: End-to-End Optimization Modeling via Multi-Agent Iterative Refinement",
+      "abstract": "We propose OptiAgent, a multi-agent framework that, given a natural language description of an Operations Research problem, is able to output a solver-ready mathematical formulation as well as executable code. Our architecture prioritizes the mathematical modeling step, where dedicated agents extract structures, such as decision variables and constraints, enabling iterative self-correction. We introduce a novel multi-loop validation architecture with four specialized feedback mechanisms, each targeting a distinct failure mode such as misinterpretation, structural defects, mathematical inconsistencies, validation failures, and code errors. Alongside accuracy, our modular design improves the process of solving optimization problems by improving transparency, as each agent exposes its reasoning and feedback, making the full modeling process auditable. Our framework achieves state-of-the-art performance on 3 out of 4 benchmarks across LP, MILP, and Nonlinear Programming tasks, while remaining highly competitive on the remaining dataset.",
+      "authors": [
+        "Adriana Laurindo Monteiro",
+        "Nayse Fagundes",
+        "Gabriel Mattos Langeloh",
+        "Gustavo de Oliveira Kanno",
+        "Priscila Louise Aguirre",
+        "Thiago Costa Rizuti da Rocha",
+        "Victor Leme Beltran"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.MA"
+      ],
+      "published": "2026-07-06T17:27:16+00:00",
+      "link": "https://arxiv.org/pdf/2607.05346v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "End-to-end optimization modeling and code generation using LLM",
+      "llm_evidence_cn": "利用LLM进行端到端的运筹优化建模与代码生成",
+      "llm_evidence": "利用LLM进行端到端的运筹优化建模与代码生成",
+      "canonical_evidence": "利用LLM进行端到端的运筹优化建模与代码生成",
+      "llm_tldr_en": "OptiAgent uses multi-agent iterative refinement with four feedback mechanisms to convert natural language OR problems into solver-ready mathematical formulations and executable code.",
+      "llm_tldr_cn": "本文针对运筹优化问题从自然语言到可求解代码的全流程自动化需求，提出OptiAgent多智能体框架。该框架通过专用代理提取决策变量与约束，结合四种反馈机制（误解、结构缺陷、数学不一致、代码错误）进行多循环修正。实验证明OptiAgent能高精度地输出数学公式和可执行代码，显著提升了建模效率和准确性。",
+      "llm_tldr": "本文针对运筹优化问题从自然语言到可求解代码的全流程自动化需求，提出OptiAgent多智能体框架。该框架通过专用代理提取决策变量与约束，结合四种反馈机制（误解、结构缺陷、数学不一致、代码错误）进行多循环修正。实验证明OptiAgent能高精度地输出数学公式和可执行代码，显著提升了建模效率和准确性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.02583v1",
+      "source": "arxiv",
+      "title": "Better Together, in the Right Order: Classical-then-LLM Optimization for SE",
+      "abstract": "A growing body of work combines large language models (LLMs) with classical optimizers for software engineering (SE) configuration tasks. Often, the classical optimizer is in charge: it owns the search loop and calls the LLM only to assist in subroutines (e.g. to warm-start the first generation, propose a mutation, or stand in as a surrogate). We report that there is much value in the reverse approach: seeding an LLM with the results from a cheap classical learner.   We call this method SNAP2. Applied to over 100 SE tasks, it is the single best of all methods studied, reaching the top tier on 85% of tasks, ahead of the same LLM run alone (75%) and ahead of every method in which the classical optimizer retains control. It is also less expensive: relative to the LLM-alone method, it uses roughly 30% fewer tokens and runs 1.4x faster, since the classical setup performs the inexpensive work, and the LLM is invoked only to finish.   We conclude that it is unwise to study classical learners or LLMs in isolation: there is much value in combining the two, and in the order that combination is applied.",
+      "authors": [
+        "Srinath Srinivasan",
+        "Tim Menzies"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-07-01T02:32:14+00:00",
+      "link": "https://arxiv.org/pdf/2607.02583v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "classical-then-LLM optimization for SE tasks",
+      "llm_evidence_cn": "先经典优化后LLM的SE任务优化",
+      "llm_evidence": "先经典优化后LLM的SE任务优化",
+      "canonical_evidence": "先经典优化后LLM的SE任务优化",
+      "llm_tldr_en": "Shows that seeding LLM with results from cheap classical optimizer outperforms LLM alone on SE configuration tasks, enabling automatic solution generation.",
+      "llm_tldr_cn": "经典优化器与LLM结合时通常以优化器主导。本文逆向操作：先用廉价经典学习器产生结果，再输入LLM进行优化。在100多个SE配置任务上，该方法SNAP2达到顶级性能（85%任务最优），且成本更低。思路可推广至运筹优化问题自动求解，为LLM辅助优化提供新范式。",
+      "llm_tldr": "经典优化器与LLM结合时通常以优化器主导。本文逆向操作：先用廉价经典学习器产生结果，再输入LLM进行优化。在100多个SE配置任务上，该方法SNAP2达到顶级性能（85%任务最优），且成本更低。思路可推广至运筹优化问题自动求解，为LLM辅助优化提供新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.05121v1",
+      "source": "arxiv",
+      "title": "From Failing to Passing: Evolving Natural Language Prompt Optimization Rules for LLM Code Generation",
+      "abstract": "Large language models are known to be sensitive to prompt formulation. Even minor variations in wording can substantially degrade performance. This sensitivity reveals an opportunity: if prompt phrasing can harm performance, can it be used to improve it? To investigate this question, we introduce a search-based approach that identifies and evolves a set of natural language transformation rules with strong downstream effects on coding performance. We then propose DUALFIX, a staged repair pipeline that combines the evolved transformation rules with execution-feedback repair, addressing both specification-level and implementation-level failures. A key strength of our approach lies in its generality: the evolved rules are error-agnostic, reusable across problems, and transferable across models. We evaluate DUALFIX against execution-feedback repair baselines across three models on two challenging benchmarks, LiveCodeBench and APPS. Our results show that the evolved transformations fix from 10-30% of failing cases, including 12-17% of failures that execution-based repair alone cannot resolve. Overall, DualFix recovers up to 30% of baseline failures and fixes 3-5 times more failing cases than Self-Fix across all evaluated settings. Furthermore, we also show that rules evolved on one model transfer zero-shot to other models, outperforming execution-feedback repair without any re-optimization.",
+      "authors": [
+        "Amal Akli",
+        "Melissa Akli",
+        "Cedric Richter",
+        "Mike Papadakis",
+        "Yves Le Traon"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-07-06T14:10:56+00:00",
+      "link": "https://arxiv.org/pdf/2607.05121v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "prompt optimization for LLM code generation",
+      "llm_evidence_cn": "针对LLM代码生成的提示优化",
+      "llm_evidence": "针对LLM代码生成的提示优化",
+      "canonical_evidence": "针对LLM代码生成的提示优化",
+      "llm_tldr_en": "Evolves natural language prompt rules to improve LLM code generation, then applies them in a staged repair pipeline for better coding performance.",
+      "llm_tldr_cn": "现有LLM对提示措辞敏感，微小变动可能导致性能下降。本文提出一种搜索方法，自动演化自然语言转换规则以提升代码生成质量，并结合执行反馈修复管道DUALFIX处理规格和实现错误。在编程任务上展示了规则可跨模型泛化，为提升LLM代码生成提供新途径。",
+      "llm_tldr": "现有LLM对提示措辞敏感，微小变动可能导致性能下降。本文提出一种搜索方法，自动演化自然语言转换规则以提升代码生成质量，并结合执行反馈修复管道DUALFIX处理规格和实现错误。在编程任务上展示了规则可跨模型泛化，为提升LLM代码生成提供新途径。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.03158v1",
+      "source": "arxiv",
+      "title": "Which Algorithm Specification Formats Help Language Models Implement Machine Learning Algorithms?",
+      "abstract": "Large language models (LLMs) are increasingly used to implement algorithms from research manuscripts, but papers often leave implementation choices implicit. This study examines how the written format of an algorithm specification affects first-pass LLM implementation accuracy. We compare ordinary prose, LaTeX algorithm-style pseudocode, PDF-like extracted pseudocode, Markdown fields, YAML-like specifications, JSON-like specifications, and Python code stubs across five machine learning tasks, three models, and four experimental settings, yielding 4,020 generated implementations. Hidden tests evaluate details that often determine correctness, including tie-breaking, array shapes, numerical rules, return structures, and invalid-input behavior. Under the core-information setting, LaTeX algorithm-style pseudocode has the largest average format effect, with YAML-like specifications and ordinary prose close behind. Under complete information, GPT-5.4 mini shows no format differences in the matched comparisons, whereas Gemma 3 4B and Llama 3.2 3B still do. Code stubs do not consistently improve correctness despite specifying the function signature. The results support a writing recommendation: authors should state the interface, computation steps, numerical rules, and boundary-case behavior explicitly, instead of relying on a particular surface format to carry those details.",
+      "authors": [
+        "Masahiro Kato",
+        "Taka Kato"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-07-03T09:58:38+00:00",
+      "link": "https://arxiv.org/pdf/2607.03158v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "examines how algorithm specification format affects LLM code generation accuracy directly applicable to optimization algorithm implementation",
+      "llm_evidence_cn": "研究算法规范格式对LLM代码生成准确性的影响直接适用于优化算法实现",
+      "llm_evidence": "研究算法规范格式对LLM代码生成准确性的影响直接适用于优化算法实现",
+      "canonical_evidence": "研究算法规范格式对LLM代码生成准确性的影响直接适用于优化算法实现",
+      "llm_tldr_en": "Investigates the impact of written algorithm specification formats on first-pass LLM implementation accuracy across ML tasks and models finding that format significantly affects correctness.",
+      "llm_tldr_cn": "针对LLM实现算法时因规范格式不清导致错误的问题系统比较了多种规范格式如伪代码JSON和Python存根对初版代码准确性的影响。在5个ML任务3个模型上进行了4020次实验发现格式选择显著影响实现正确性特别是细节处理。该发现对优化问题求解代码的自动生成具有直接指导意义提示应选择结构化的规范格式。",
+      "llm_tldr": "针对LLM实现算法时因规范格式不清导致错误的问题系统比较了多种规范格式如伪代码JSON和Python存根对初版代码准确性的影响。在5个ML任务3个模型上进行了4020次实验发现格式选择显著影响实现正确性特别是细节处理。该发现对优化问题求解代码的自动生成具有直接指导意义提示应选择结构化的规范格式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.03935v1",
+      "source": "arxiv",
+      "title": "Harness-Aware Self-Evolving: Co-Evolving Model Weights, Harness, and Task Solutions",
+      "abstract": "Self-evolving frameworks usually optimize task solutions while treating the surrounding harness as fixed. We introduce Harness-Aware Self-Evolving (HASE), an agentic reinforcement-learning framework in which a single model can generate task solutions or edit selected harness components in a multi-turn action space. HASE enables a single Qwen3-8B model to match the text-classification performance of a GPT-OSS-120B model that uses Claude Code as the harness proposer. In alpha factor mining, HASE outperforms the reported GPT-OSS-120B baseline. HASE also repairs imperfect evaluation components and converges to state-of-the-art performance in circle-packing algorithm discovery. These results show that HASE improves the harness and the solution through one unified agentic process.",
+      "authors": [
+        "Haochen Luo",
+        "Yi Huang",
+        "Sichun Luo",
+        "Fengyuan Liu",
+        "Lei Li",
+        "Zefa Hu",
+        "Junlan Feng",
+        "Qi Liu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-04T16:04:30+00:00",
+      "link": "https://arxiv.org/pdf/2607.03935v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning framework for automatic solution generation in optimization tasks",
+      "llm_evidence_cn": "强化学习框架自动生成优化问题解决方案",
+      "llm_evidence": "强化学习框架自动生成优化问题解决方案",
+      "canonical_evidence": "强化学习框架自动生成优化问题解决方案",
+      "llm_tldr_en": "HASE co-evolves model weights, harness, and task solutions, achieving SOTA in circle-packing algorithm discovery.",
+      "llm_tldr_cn": "针对自演进框架仅优化任务解而忽略环境的问题，提出HASE框架，通过多轮动作空间同时生成任务解和编辑环境组件。在文本分类、alpha因子挖掘和圆填充算法发现等任务上超越基线，证明了协同演化的有效性。",
+      "llm_tldr": "针对自演进框架仅优化任务解而忽略环境的问题，提出HASE框架，通过多轮动作空间同时生成任务解和编辑环境组件。在文本分类、alpha因子挖掘和圆填充算法发现等任务上超越基线，证明了协同演化的有效性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
