@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-08",
+  "date": "2026-07-08",
+  "generated_at": "2026-07-08T21:06:07",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/08/2607.04056v1-a-policy-decomposition-framework-for-dynamic-order-fulfillment-operations",
+      "section": "deep",
+      "title_en": "A Policy Decomposition Framework for Dynamic Order Fulfillment Operations",
+      "authors": "Gal Neria, Michal Tzur, Marlin W. Ulmer",
+      "date": "2026-07-04",
+      "pdf": "https://arxiv.org/pdf/2607.04056v1",
+      "score": "9.0",
+      "evidence": "使用马尔可夫决策过程和分解方法建模并求解新的运筹优化问题",
+      "tldr": "针对订单准备与配送环节协同不足问题，本文提出动态订单履行问题（DOFP）并建模为MDP。设计策略分解框架DDF-VFA，将配送策略作为主问题、准备策略作为约束子问题，通过大邻域搜索与神经网络价值近似迭代求解。在真实数据上，该方法优于独立或联合优化，并可扩展至批量准备等复杂场景。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Modern supply chains span diverse operational environments, ranging from e-commerce distribution networks to customized production-to-order manufacturing lines. Across these settings, operational efficiency depends on coordinating two highly interdependent stages: order preparation and downstream delivery. Although these stages are traditionally managed in isolation, real-world fulfillment systems must satisfy stringent delivery expectations under dynamic stochastic order arrivals. To bridge this gap, we introduce the Dynamic Order Fulfillment Problem (DOFP), a new problem class unifying logistical challenges previously studied separately. We model DOFP as a Markov decision process whose state and decision spaces are partitioned into preparation and delivery sub-spaces, linked by synchronization constraints. While recent approaches attempt to optimize both fulfillment stages simultaneously over myopic rolling horizons, our framework isolates and optimizes the downstream delivery policy, treating preparation strictly as a state-level constraint filter. To solve this, we develop the Decomposition-Driven Framework with Value Function Approximation (DDF-VFA), which utilizes a novel policy-level decomposition. This design partitions the search into a delivery-stage master problem and a preparation-stage compatibility subproblem, iteratively refined via feedback loops. DDF-VFA executes this strategy by combining a large-neighborhood search over partial delivery decisions with a neural-network value function approximation for the cost-to-go. Numerical illustrations on two example variants using real-world datasets show that DDF-VFA consistently outperforms benchmarks that optimize the two stages independently or jointly without decomposition. Finally, the framework naturally scales to accommodate additional real-world complexities such as batched or multi-stage preparation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/08/2607.04758v1-agenticpd-a-stage-aware-agentic-framework-for-physical-design-qor-optimization",
+      "section": "quick",
+      "title_en": "AgenticPD: A Stage-Aware Agentic Framework for Physical Design QoR Optimization",
+      "authors": "Shuo Ren, Zijin Cheng, Yaohui Han, Libo Shen, Leilei Jin, Wanting Tian, Rongliang Fu, Chao Wang, Bei Yu, Tsung-Yi Ho",
+      "date": "2026-07-06",
+      "pdf": "https://arxiv.org/pdf/2607.04758v1",
+      "score": "7.0",
+      "evidence": "利用LLM代理进行物理设计优化代码生成的框架",
+      "tldr": "物理设计QoR优化因阶段间相互影响和完整流程评估的高成本而困难。现有方法多视为平面参数调优或LLM脚本生成。AgenticPD提出阶段感知的智能体框架，围绕设计流程阶段边界组织，由Judge Agent导航搜索，阶段专门化智能体利用局部工具做出决策。通过分支从先前中间状态继续优化并重用检查点，每个候选在后布线签收评估。在多个基线上，AgenticPD实现了强后布线时序，功耗和面积保持竞争力。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Physical design quality-of-results~(QoR) optimization is hard and expensive. Choices made at one stage can help or hurt later stages. Each evaluation requires a costly EDA run through the full flow. While existing methods still treat optimization as flat parameter tuning or a LLM-based script generation task, we present AgenticPD, a stage-aware agentic framework for physical design QoR optimization. Instead of re-running the full flow after every trial, AgenticPD is organized around the stage boundaries of the physical design flow, where a Judge Agent navigates the search and stage-specialized agents make local decisions within their own stage using stage-local tools. Additionally, the agent harness in AgenticPD provides structured observations, execution history, and agent context management. As a result, the system can branch from prior intermediate states and reuse checkpoints to continue the optimization procedure, and every candidate is evaluated at the post-route signoff. Across these baselines, AgenticPD achieves strong post-route timing while remaining competitive in power and area.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

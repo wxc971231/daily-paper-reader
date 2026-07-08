@@ -1,0 +1,101 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-08T21:03:19.516693+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.04056v1",
+      "source": "arxiv",
+      "title": "A Policy Decomposition Framework for Dynamic Order Fulfillment Operations",
+      "abstract": "Modern supply chains span diverse operational environments, ranging from e-commerce distribution networks to customized production-to-order manufacturing lines. Across these settings, operational efficiency depends on coordinating two highly interdependent stages: order preparation and downstream delivery. Although these stages are traditionally managed in isolation, real-world fulfillment systems must satisfy stringent delivery expectations under dynamic stochastic order arrivals. To bridge this gap, we introduce the Dynamic Order Fulfillment Problem (DOFP), a new problem class unifying logistical challenges previously studied separately. We model DOFP as a Markov decision process whose state and decision spaces are partitioned into preparation and delivery sub-spaces, linked by synchronization constraints. While recent approaches attempt to optimize both fulfillment stages simultaneously over myopic rolling horizons, our framework isolates and optimizes the downstream delivery policy, treating preparation strictly as a state-level constraint filter. To solve this, we develop the Decomposition-Driven Framework with Value Function Approximation (DDF-VFA), which utilizes a novel policy-level decomposition. This design partitions the search into a delivery-stage master problem and a preparation-stage compatibility subproblem, iteratively refined via feedback loops. DDF-VFA executes this strategy by combining a large-neighborhood search over partial delivery decisions with a neural-network value function approximation for the cost-to-go. Numerical illustrations on two example variants using real-world datasets show that DDF-VFA consistently outperforms benchmarks that optimize the two stages independently or jointly without decomposition. Finally, the framework naturally scales to accommodate additional real-world complexities such as batched or multi-stage preparation.",
+      "authors": [
+        "Gal Neria",
+        "Michal Tzur",
+        "Marlin W. Ulmer"
+      ],
+      "primary_category": "math.DS",
+      "categories": [
+        "math.DS",
+        "cs.LG",
+        "math.CO",
+        "math.OC"
+      ],
+      "published": "2026-07-04T23:46:08+00:00",
+      "link": "https://arxiv.org/pdf/2607.04056v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Models and solves a novel OR optimization problem with Markov decision process and decomposition",
+      "llm_evidence_cn": "使用马尔可夫决策过程和分解方法建模并求解新的运筹优化问题",
+      "llm_evidence": "使用马尔可夫决策过程和分解方法建模并求解新的运筹优化问题",
+      "canonical_evidence": "使用马尔可夫决策过程和分解方法建模并求解新的运筹优化问题",
+      "llm_tldr_en": "Introduces the Dynamic Order Fulfillment Problem (DOFP), modeled as an MDP with decomposition, unifying logistical challenges for efficient supply chain operations.",
+      "llm_tldr_cn": "该论文针对现代供应链中订单准备与交付的协调问题，提出了动态订单履行问题（DOFP），并建模为马尔可夫决策过程。通过策略分解框架将问题分解为准备和交付两个独立阶段，实现了高效求解。实验证明该方法在动态随机订单环境下能提升运营效率。该工作为运筹优化建模提供了新问题和新方法，但未涉及LLM。",
+      "llm_tldr": "该论文针对现代供应链中订单准备与交付的协调问题，提出了动态订单履行问题（DOFP），并建模为马尔可夫决策过程。通过策略分解框架将问题分解为准备和交付两个独立阶段，实现了高效求解。实验证明该方法在动态随机订单环境下能提升运营效率。该工作为运筹优化建模提供了新问题和新方法，但未涉及LLM。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.04758v1",
+      "source": "arxiv",
+      "title": "AgenticPD: A Stage-Aware Agentic Framework for Physical Design QoR Optimization",
+      "abstract": "Physical design quality-of-results~(QoR) optimization is hard and expensive. Choices made at one stage can help or hurt later stages. Each evaluation requires a costly EDA run through the full flow. While existing methods still treat optimization as flat parameter tuning or a LLM-based script generation task, we present AgenticPD, a stage-aware agentic framework for physical design QoR optimization. Instead of re-running the full flow after every trial, AgenticPD is organized around the stage boundaries of the physical design flow, where a Judge Agent navigates the search and stage-specialized agents make local decisions within their own stage using stage-local tools. Additionally, the agent harness in AgenticPD provides structured observations, execution history, and agent context management. As a result, the system can branch from prior intermediate states and reuse checkpoints to continue the optimization procedure, and every candidate is evaluated at the post-route signoff. Across these baselines, AgenticPD achieves strong post-route timing while remaining competitive in power and area.",
+      "authors": [
+        "Shuo Ren",
+        "Zijin Cheng",
+        "Yaohui Han",
+        "Libo Shen",
+        "Leilei Jin",
+        "Wanting Tian",
+        "Rongliang Fu",
+        "Chao Wang",
+        "Bei Yu",
+        "Tsung-Yi Ho"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-06T07:55:34+00:00",
+      "link": "https://arxiv.org/pdf/2607.04758v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM-based agentic framework for physical design optimization code generation",
+      "llm_evidence_cn": "利用LLM代理进行物理设计优化代码生成的框架",
+      "llm_evidence": "利用LLM代理进行物理设计优化代码生成的框架",
+      "canonical_evidence": "利用LLM代理进行物理设计优化代码生成的框架",
+      "llm_tldr_en": "AgenticPD uses stage-aware LLM agents to generate optimization code for physical design, improving QoR without full-flow re-runs.",
+      "llm_tldr_cn": "针对物理设计质量优化（QoR）中全流程评估成本高的问题，本文提出AgenticPD，一个基于LLM的阶段感知代理框架。该框架将物理设计流程按阶段划分，由裁判代理导航搜索，各阶段专用代理利用本地工具做出局部决策，从而生成优化脚本。实验表明，AgenticPD在减少运行成本的同时有效提升了QoR。该方法为利用LLM自动生成优化问题求解代码提供了参考。",
+      "llm_tldr": "针对物理设计质量优化（QoR）中全流程评估成本高的问题，本文提出AgenticPD，一个基于LLM的阶段感知代理框架。该框架将物理设计流程按阶段划分，由裁判代理导航搜索，各阶段专用代理利用本地工具做出局部决策，从而生成优化脚本。实验表明，AgenticPD在减少运行成本的同时有效提升了QoR。该方法为利用LLM自动生成优化问题求解代码提供了参考。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
