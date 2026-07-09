@@ -1,0 +1,610 @@
+Title: Prompt engineering using order-of-addition experiments: An application to generating two-level fractional factorial designs
+
+URL Source: https://arxiv.org/pdf/2607.05537v1
+
+Published Time: Wed, 08 Jul 2026 00:07:30 GMT
+
+Number of Pages: 44
+
+Markdown Content:
+# Prompt engineering using order-of-addition experiments: An application to generating two-level fractional factorial designs 
+
+# Duoduo Danny Ying 1, Alan R. Vazquez ∗2, and Hongquan Xu †11Department of Statistics and Data Science, University of California, Los Angeles, USA 
+
+2School of Engineering and Sciences, Tecnologico de Monterrey, Mexico July 8, 2026 
+
+Abstract 
+
+Large language models (LLMs) are becoming ubiquitous in engineering and science because they can turn prompts into data analysis code, experimental designs, formu-lations of optimization problems, among other applications. However, many LLMs suffer from a phenomenon called order dependency, in which the order of phrases in the prompt affects their performance on a given task. To overcome this issue, we introduce a systematic method that uses order-of-addition experiments to quantify the ordering effect of elements in a prompt and identify their best positions. We demonstrate our methodology by constructing two-level fractional factorial designs using state-of-the-art LLMs. We show that order-of-addition experiments can elu-cidate order dependency in these LLMs, and can help us to identify a high-quality prompt configuration for the task. 
+
+Keywords: Artificial intelligence, chain-of-thought, experimental design, pairwise ordering, screening, zero-shot prompt. 
+
+> ∗
+
+Corresponding author, Email: alanrvazquez@tec.mx; ORCID: 0000-0002-3658-0911 
+
+> †
+
+ORCID: 0000-0002-3502-0664 
+
+1arXiv:2607.05537v1 [stat.AP] 6 Jul 2026 1 Introduction 
+
+In recent years, large language models (LLMs) have helped us tackle a wide variety of tasks due to their remarkable abilities to understand, analyze, and generate text (Alammar and Grootendorst, 2024). For instance, they have been used to formulate optimization prob-lems (Bertsimas and Margaritis, 2024), generate code for data analyses (Song et al., 2026), build smart reference systems for statistical quality control (Megahed et al., 2024), and plan experiments (Vazquez et al., 2026). Technically, LLMs are developed from deep neural net-works (Goodfellow et al., 2016) that are trained on vast amounts of text data obtained from books, blogs, social media, news and research articles, among other sources. In general, they can be classified in terms of their deep neural network architecture, the predominant one of which is the transformer architecture (Vaswani et al., 2017). For example, this ar-chitecture is in pretrained LLMs implemented in popular generative artificial intelligence chatbots, such as ChatGPT (OpenAI, 2025) and Gemini (Comanici et al., 2025). We refer to Ji et al. (2026) for a comprehensive treatment of LLMs, including their architectures, training, tuning, and other features. The main input of an LLM is a prompt, which is a text describing a task to be performed. Ideally, the prompt provides all the necessary information for the LLM to complete the task. To this end, it can contain several elements, such as the role of the LLM, the goal and context of the task, solved examples (called shots ), and requirements on the output format. The process of writing the prompt that optimizes the performance of the LLM on a given task is known as prompt engineering (Schulhoff et al., 2024). One of the main challenges in prompt engineering is order dependency (McIlroy-Young et al., 2024), which occurs when the performance of an LLM on a task depends on the order of sentences or phrases within the prompt, despite the semantics remaining identical. Lu et al. (2022), Pezeshkpour and Hruschka (2024), and Guan et al. (2025) show that many pretrained transformer-based LLMs exhibit order dependency on a wide variety of tasks and prompts. To overcome this issue, there are several prompt engineering methods in the literature. They include the algorithms of Kumar and Talukdar (2021), Lu et al. (2022), and Wu et al. (2024), which search for the order of shots in a prompt that optimizes the performance of LLMs on sentiment classification, fact retrieval, textual entailment, and instruction-induction tasks. Pezeshkpour and Hruschka (2024) introduce an algorithm that 2deals with the ordering of the answers in a multiple-choice question posed in a prompt. Their algorithm runs 10 versions of the prompt, each with a random order of the answers, on the LLM and outputs the answer that was most frequently selected. However, a limitation of these approaches is that they focus only on the ordering of shots or answers. Another prompt engineering method to cope with order dependency is the Gradient-free Instructional Prompt Search (GRISP) algorithm of Prasad et al. (2023), which does not focus solely on permuting shots or answers in a prompt. Instead, it modifies the phrases in a (predefined) base prompt to find its best formulation for the LLM. Specifically, the GRISP algorithm applies one of four possible changes at random: edit, add, and remove a phrase, and swap two phrases. Prasad et al. (2023) show that their GRISP algorithm can formulate prompts (with or without shots) that enhance the performance of LLMs on several instruction-based tasks. However, due to its lack of systematic changes, the algorithm may require a large number of executions of the LLMs, which can become expensive when using state-of-the-art paid LLMs, such as those in ChatGPT and Gemini. For the same reason, it also does not allow us to quantify the impact of the changes on the success rate of an LLM on a task. In this paper, we introduce a new prompt engineering method based on order-of-addition (OofA) experiments that can quantify and model order dependency. OofA experiments study the effect of the order of q components on a response (Lin and Rios, 2025). Typically, they consist of three stages. First, we conduct an OofA experiment according to an OofA design, which is a highly structured set of component orderings. The OofA design may have far fewer than q! test orderings if q is large (Peng et al., 2019; Stokes et al., 2024). Next, we analyze the data collected from the experiment using a regression model that links the response to the ordering effects of the components (Voelkel, 2019; Yang et al., 2021; Stokes and Xu, 2022). Finally, we use the model to identify the order of the components that optimizes the response. In our setup, the components are specific elements in a base prompt, and the response is the success rate of the LLM in achieving a given task. Using OofA experiments for prompt engineering provides two main benefits over the aforementioned methods that deal with order dependency. First, through the use of regres-sion models, we can estimate the effect of the order of elements in a prompt (e.g., sentences, phrases, shots, and answers) on the success rate of an LLM. To our knowledge, the esti-mation of ordering effects in prompts is new to the prompt engineering literature. Second, 3through the use of cost-efficient OofA designs, we can limit the number of executions of the LLM needed to optimize a prompt. This computational efficiency is particularly valuable when the number of prompt components, q, is large. We demonstrate OofA experiments for prompt engineering by analyzing and optimizing a base prompt that instructs an LLM to construct two-level fractional factorial designs (Vazquez et al., 2026). The prompt has several elements including the role of the LLM, the instruction, the output format, the Zero-shot-CoT technique (Kojima et al., 2022), and an example of an optimal two-level design. We use these elements because they have been shown to improve the performance of pretrained transformer-based LLMs across a variety of tasks (Schulhoff et al., 2024). In our application, we focus on tasks that require constructing 16-run two-level designs with seven to 12 factors, and primarily use gpt-4.1 
+
+(OpenAI, 2024a) and gemini-2.5-flash (Comanici et al., 2025) as our LLMs. We do this because these tasks are known to be challenging for these LLMs (Vazquez et al., 2026). Our application involves three OofA experiments to study the effect of modifying the elements of our base prompt. In the first experiment, we study permutations and rephrased versions of the instruction in the base prompt for tasks with seven to 12 factors using 
+
+gpt-4.1 . We show that the formulation of the instruction element has an effect on the performance of this LLM, and that this effect is different across tasks. In the second experiment, we permute the order of all elements in the base prompt to construct a 16-run 9-factor design using gpt-4.1 . We show that OofA designs and models allow us to identify high-quality orderings of the prompt elements. In particular, we show how to increase the success rate in constructing the 9-factor 16-run optimal design from 11.67% under the base prompt to 98.3% under the optimized prompt configuration. In the third experiment, we apply OofA experiments to gemini-2.5-flash and show that we can identify a prompt configuration that increases the success rate of constructing a 16-run 7-factor optimal design from 35% to 100%. Collectively, these experiments show that our prompt engineering method based on OofA experiments can estimate the ordering effects of prompt elements, efficiently identify high performing prompt element orderings, and be applied to different tasks and LLMs. The remainder of the paper is organized as follows. In Section 2, we introduce the de-sign and analysis of OofA experiments. In Section 3, we present the base prompt and the LLMs used in our three experiments. In Section 4, we discuss the design and analysis of the 4first two experiments and, to limit the length of the paper, defer the third experiment to Supplementary Section S3. In Section 5, we end the article with concluding remarks that include comments on the latest versions of the GPT and Gemini models at the time of writ-ing the article. The supplementary materials include sections with supporting information for the main manuscript and R and Python programs to reproduce our study. 
+
+# 2 Design and modeling for order-of-addition experi-ments 
+
+OofA experiments study the order in which q components are used in a system. We denote the q components as 1 , . . . , q . Following Prasad et al. (2023), we use phrases and sentences as components, as well as different levels of a component corresponding to different ways of rephrasing it. Our setup allows us to maintain the general structure of the prompt, while providing enough flexibility for its optimization. We now introduce the statistical models and designs used in our OofA experiments for prompt engineering. 
+
+# 2.1 Logistic regression model 
+
+If there are few components, an initial model to capture the potential relationship between their positions in a prompt and the success rate of an LLM in a task is the logistic regression model. This is because, in prompt engineering, the response under study ( Y ) is typically the number of times the LLM successfully completed a task in Nr independent repetitions. So, Y ∼ Bin( Nr, p ), where p is the probability of success (or success rate) in the task. In this initial model, the q! orderings of the q components are seen as the levels of a categorical variable, which is included in the model using dummy variables as follows. Let O be the set of all q! orderings in lexicographical order. For example, for q = 3, 
+
+O = {123 , 132 , 213 , 231 , 312 , 321 }. Let si be a binary dummy variable that takes the value of one if and only if the i-th element in O was used to obtain Y , where i = 1 , . . . , q !. The initial logistic regression model is (Y |s) ∼ Bin( Nr, p (s)) with p(s)−1 = 1 + e−(α0+Pq!−1 
+
+> i=1 αisi+1 )
+
+, (1) where s1 is the reference ordering and s = ( s2, . . . , s q!)T . For i ≥ 1, the value of αi is 5the change in the probability of success given by the i-th ordering, relative to that of the reference ordering. Excluding α0, if one of these αi’s differs from zero, the LLM exhibits order dependency. Following Tsai (2023), we extend the initial logistic model to accommodate two levels of each of the q components. Here, the two levels of a component are given by the original phrase (or sentence) and a predefined rephrase version. For example, a component in one of our OofA experiments to construct two-level fractional factorial designs is the phrase “ n
+
+runs and m factors”. One level of this component is given by the original phrase, and the other by the simple rephrase “ m factors and n runs”. We use the variable wi to denote the version of the i-th component. Specifically, wi
+
+equals −1 or 1 if and only if the component is in its original or rephrased form, respectively. Moreover, we collect the versions of all components in the vector w = ( w1, . . . , w q)T . In this model, ( Y |s, w) ∼ Bin( Nr, p (s, w)) and 
+
+p(s, w)−1 = 1 + e−(α0+Pq!−1  
+
+> i=1 αisi+1 +Pqi=1 γiwi)
+
+, (2) where γi is the coefficient associated with the two versions of component i. A negative value of γi implies that the original version of component i increases the probability of success in the task, while a positive value implies that this version reduces this probability. If γi = 0, the probability of success does not depend on the version of the i-th component. We use maximum likelihood estimation to estimate the logistic regression models in Equations (1) and (2), and use Wald tests to identify significant coefficients. We evaluate the goodness of fit of a model using McFadden’s pseudo R2 (Menard, 2000), which is one minus the log-likelihood ratio between the full and null models. The higher the value of this statistic, the better the fit of the model to the data. Additionally, we quantify overdispersion using the parameter ˆϕ =
+
+PNt 
+
+> i=1
+
+ˆr2
+
+> i
+
+Nt − p , (3) where ˆ ri is the Pearson residual of the model, p is the number of terms in it (including the intercept), and Nt is the total number of observations. A value of ˆϕ greater than one indicates the presence of overdispersion, meaning that the observed variability in the response exceeds the expected variability under the assumed binomial model. If this is 6the case, we adjust the standard errors of the coefficient estimates by a factor of 
+
+q
+
+ˆϕ, and recompute the p-values of the Wald tests with this adjustment. 
+
+# 2.2 Logistic pairwise-ordering model 
+
+The logistic regression models in the previous section are useful to identify general differ-ences between the orders and versions of the components on the success rate of an LLM. However, they do not allow us to study individual effects of placing one component before another. To overcome this issue, Van Nostrand (1995) introduced the pairwise-ordering (PWO) model, which is defined using pseudo factors that represent the relative ordering of two components. A pseudo factor between components i and j is 
+
+zij =
+
+
+
+1 if component i precedes component j, 
+
+−1 otherwise. To study q components, we need q(q − 1) /2 pseudo factors. The PWO model was originally developed for modeling quantitative responses with or without multiple levels of the components; see Van Nostrand (1995) and Tsai (2023). Here, we extend it to model our binomial response Y . Let z = ( z12 , z 13 , . . . , z (q−1) q)T . Our model is (Y |z, w) ∼ Bin( Nr, p (z, w)) with p(z, w)−1 = 1 + e−(β0+Pq−1    
+
+> i=1
+> Pqj=i+1 βij zij +Pqi=1 γiwi)
+
+, (4) where β0 is the intercept and βij is the coefficient associated with ordering component i
+
+before j. In particular, a positive value of βij implies that placing component i before j
+
+increases the probability of success in the task. A negative value implies the opposite, that placing component i after j increases this probability. If βij = 0, the probability of success is not affected by the order between components i and j. The interpretation of the wi’s and 
+
+γi’s and the estimation of the model in Equation (4) are as in Section 2.1. Following Tsai (2023), we call this model the compound logistic PWO model, which, to our knowledge, is new to the literature on OofA experiments. In some experiments, such as the ones in Section 4.2 and Supplementary Section S3, restricting to the main effects of the zij ’s and wi’s may not be enough to model the proba-bility of success of the LLM. For these cases, we consider a compound interaction logistic 7PWO model that includes two-way interactions among these terms. In this model, the distribution of Y is the same as before, but the exponent of p(z, w) in Equation (4) has additional interaction terms that are divided into three groups. The first group contains 
+
+q2(q − 1) 2/8 − q(q − 1) /4 interaction terms involving two different zij ’s. The second group has q2(q − 1) /2 interaction terms that involve a zij and a wi. The last group has q(q − 1) /2interaction terms involving two different wi’s. The total number of terms in the full PWO interaction model is ( q2 −q+2)( q2 +3 q+4) /8, which quickly increases with the number of components q. For situations in which the model is too large, we can use step-wise regression guided by information criteria (such as the Bayesian information criterion) to identify a good submodel. We refer to Claeskens and Hjort (2008) for details on model selection and information criteria for logistic regression. We also refer to Mee (2020) for a comprehensive treatment of interactions among the pseudo factors in the PWO model for a continuous response. 
+
+# 2.3 Full and fractional designs 
+
+In the absence of component levels, we can conduct an OofA experiment using the full ordering design with q! tests when the value of q is small. For example, if q is three or four, this design has six and 24 tests, respectively. If each component has two levels, we may use the full ordering factorial (OF) design with ( q!)(2 q) tests (Yang et al., 2023) provided that q is small. For q = 3, the number of tests is 48, which was feasible in our first OofA experiment in Section 4.1. However, as the number of components gets larger than three or four, the number of tests in these designs quickly becomes too expensive. To overcome this issue, we can use a fractional OofA design given by a well-chosen subset of tests from the full design. For the PWO model of Van Nostrand (1995) and the compound PWO model of Tsai (2023), there are several fractional designs with fewer tests than q! or ( q!)(2 q); see Voelkel (2019), Peng et al. (2019), Chen et al. (2020), Zhao et al. (2021), Schoen and Mee (2023) and Zhao et al. (2025), for example. However, in addition to the fact that they assume a continuous response, these designs are available for specific numbers of tests, which prevents them from being flexible. In the literature on optimal experimental designs, there are two main approaches to constructing designs for logistic regression models (Berger and Wong, 2009). One approach 8necessitates good initial values for the coefficients in Equation (4), and the other assumes that the coefficients are random variables that follow a user-specified prior distribution. However, in prompt engineering, it is difficult to specify these values or prior distribution due to the lack of practical applications of our logistic PWO models. To overcome this issue, we use a simple approach to constructing designs for our second and third OofA experiments in Section 4 and Supplementary Section S3. Specifically, we use the algorithm of Stokes and Xu (2022), which constructs fractional OofA designs with 
+
+q components, flexible numbers of tests, and high estimation efficiency for the standard PWO model. Our choice for this algorithm is also motivated by the fact that, when the run size exceeds the number of pseudo factors, the resulting design resembles a component orthogonal array (COA; Yang et al., 2021), which is a highly structured fractional OofA design. In fact, when the number of tests, N , is a multiple of q(q−1), the design obtained by the algorithm is guaranteed to be a COA. In this design, each component appears equally often at each position. Moreover, for any two positions, each component combination ( i, j )with i̸ = j also appears equally often. Yang et al. (2021) and Stokes and Xu (2022) show that COAs are robust under different OofA models beyond PWO-based models. Algorithm 1 shows the pseudo code for the algorithm of Stokes and Xu (2022), which works as follows. The inputs to the algorithm are the desired number of tests ( N ) and the number of components ( q), which must be a prime power. In the algorithm, the q
+
+components are labeled as 0 , . . . , q − 1, and the operations are performed over a Galois field of order q. That is, GF (q) = {ω0, ω 1, . . . , ω q−1}, where ω0 is the zero element (Barker, 1986). The algorithm starts by creating q − 1 basic matrices Lk whose entries are obtained by adding and multiplying elements of GF (q). Next, a parent matrix C1 is constructed by vertical concatenation of all basic matrices Lk. After that, the algorithm generates ( q − 2)! child matrices from the parent matrix C1. The first of these matrices is C1 and the rest are obtained by permuting the last q − 2 columns of C1. We denote these child matrices as 
+
+C2, . . . , C(m−2)! . The algorithm continues by constructing a generator matrix Fq by row-wise concatenation of C1, C2, . . . , C(q−2)! . The basic OofA design FN,q is obtained from the first N rows of Fq. Finally, the basic design FN,q is improved by permuting its columns to optimize, for instance, the estimation efficiency of the PWO model, measured by the D
+
+criterion (Atkinson et al., 2007). The improved design FN,q is the output of the algorithm. If the q components have two levels, we can construct a fractional OF design using 9Kronecker products involving FN,q and a two-level full or fractional factorial design (Tsai, 2023; Yang et al., 2023). Specifically, let X be the two-level Nf -run design involving the different versions of the q components. The fractional OF design is FN,q ⊗ 1Nf , 1N ⊗ X,where 1N is the N × 1 column of ones. 
+
+Algorithm 1 Pseudocode of the algorithm of Stokes and Xu (2022). 
+
+Input: N and prime power q. 
+
+> 1:
+
+For k = 1 , . . . , q − 1, define a q × q matrix Lk = ( l(k) 
+
+> ij
+
+) such that l(k) 
+
+> ij
+
+= ωi + ωkωj , for 
+
+i, j = 0 , . . . , q − 1, where the addition and multiplication are defined on GF (q).  
+
+> 2:
+
+Construct a ( q2 − q) × q matrix C1 by row-wise concatenating L1, . . . , Lq−1. 
+
+> 3:
+
+Keep the first two columns of C1 fixed and permute the last q − 2 columns of C1 in a systematic way. This results in ( q − 2)! permuted matrices, denoted as C1, . . . , C(q−2)! . 
+
+> 4:
+
+Construct a q! × q matrix Fq by row-wise concatenating C1, . . . , C(q−2)! and replacing 
+
+ωi with number i, for i = 0 , . . . , q − 1.  
+
+> 5:
+
+Let FN,q be the N × q design formed by the first N rows of Fq. 
+
+> 6:
+
+Permute the columns of FN,q to improve its performance under a chosen criterion. 
+
+Output: F N,q .
+
+# 3 Constructing two-level fractional factorial designs using an LLM 
+
+To demonstrate the effectiveness of OofA experiments for prompt engineering, we consider the construction of two-level fractional factorial designs using LLMs as Vazquez et al. (2026). These authors showed that Generative Pre-trained Transformer (GPT) models and Gemini models can construct good designs with up to 16 runs and nine factors. In our application, we use a base prompt, gpt-4.1 and gemini-2.5-flash as the LLMs, and statistical criteria to evaluate the resulting design. We discuss each of these building blocks separately, starting with the statistical criteria because it is used in our base prompt. 10 3.1 Criteria for two-level fractional factorial designs 
+
+Two-level fractional factorial designs are classified as regular and nonregular (Wu and Hamada, 2011). Regular designs have a defining relation and a run size that must be a power of two. In contrast, nonregular designs do not have a defining relation, but their run sizes are a multiple of four. Following Vazquez et al. (2026), we focus on regular two-level designs because they are commonly taught in experimental design courses (Vazquez and Xuan, 2025) and are widely used in practice (Mee, 2009). Because of their dominance over nonregular designs, these designs are simply called two-level fractional factorial designs. To evaluate a two-level design (regular or nonregular), we use the generalized word length pattern (GWLP; Xu and Wu, 2001). Let m and n be the numbers of factors and runs in the two-level design, respectively. Let Xk be an n×p matrix containing the contrast vectors of the k-factor interactions, where p =  mk
+
+. Let Ak = n−2∥1Tn Xk∥22, where 1n is the 
+
+n × 1 vector of ones and ∥x∥2 is the L2-norm of vector x. The GWLP of a two-level design is ( A1, A 2, . . . , A m). The generalized minimum aberration criterion (Xu and Wu, 2001) is to sequentially minimize the GWLP from left to right. The design that achieves this is called the generalized minimum aberration design which, among all comparable designs, has the smallest aliasing between low-order effects (e.g., main effects and two-factor interactions). If the design is regular, the GWLP reduces to the wordlength pattern containing the frequencies of the lengths of words in its defining relation. In this case, the generalized minimum aberration criterion reduces to the minimum aberration criterion and the reso-lution of a design is the smallest index i for which Ai > 0 (Wu and Hamada, 2011). Aminimum aberration design has maximum resolution, but the reverse is not necessarily true. Throughout the paper, we refer to the minimum aberration design as the optimal design for simplicity. 
+
+# 3.2 Base prompt 
+
+Our base prompt for constructing two-level fractional factorial designs using an LLM has five prompt elements. The first four are taken from Vazquez et al. (2026). Specifically, the first element informs the LLM that it must be an expert in the field of design of experiments when constructing a design. It is based on the prompting technique called role prompting (Wang et al., 2024), which assigns a role to the LLM to focus its expertise on a given 11 domain. We call this element ROLE and show it below. 
+
+ROLE 
+
+You are an expert in the subfield of statistics called design of experiments. The second element taken from Vazquez et al. (2026) informs the LLM about its goal, which is to construct the best two-level fractional factorial in terms of resolution and minimum aberration. This element also specifies the number of runs ( n), the number of factors ( m), and the coded levels of the design. We call this element INSTRUCTION. 
+
+INSTRUCTION 
+
+Your goal is to construct a two-level fractional factorial design with maximum reso-lution and minimum aberration. The number of factors is m and the number of runs is n. The factors have two levels coded as ‘-1’ and ‘+1’. The third element involves the prompting technique called Zero-shot-CoT, which has been shown to improve the performance of pretrained transformer-based LLMs on a variety of tasks (Kojima et al., 2022). The technique allows the LLM to break a task into smaller intermediate steps, solve each one, and thereby complete the overall task more effectively. Following Vazquez et al. (2026), this element requests that the LLM think step by step when constructing the design. For this reason, we call this element STEP BY STEP below. 
+
+STEP BY STEP 
+
+You will think step by step about how to construct the design. The fourth element is called FORMAT. It informs the LLM that the first row and column of the design table must contain the labels of the factors and runs, respectively. It also informs the LLM that the full design table must be in comma-separated values (CSV). This is needed because we use the Python functions from Vazquez et al. (2026) to evaluate a two-level design, which requires it to be in this format. Another feature of FORMAT is that it instructs the LLM to produce a design table only, avoiding the explanation of the design and its properties. This element is shown below. 12 FORMAT 
+
+You will only generate a table containing the design. You will not generate any text explaining the table or your answer. The table must be in a comma-separated values (CSV) format. Specifically, the values in the table must be separated by ‘,’ and each row must end with ‘ \\ ’. In the table, the first row will be used as a header row to label the factors using the letters in the English alphabet starting with ‘A’. The first column will be called “Run” and used to count the number of runs starting at ‘1’. Each design cell (excluding the header and Run columns) must contain either ‘-1’ or ‘1’. 
+
+The last element of the base prompt is a shot involving an optimal design in terms of resolution and minimum aberration. Brown et al. (2020) shows that adding shots to a prompt enhances the performance of pretrained transformer-based LLMs in question answer, translation, and completion tasks. Despite this fact, Vazquez et al. (2026) did not use shots in their prompt to construct two-level fractional factorial designs. They argued that the development and inclusion of shots in a prompt is challenging and may significantly increase the length of the prompt, causing it to be more expensive to run. To overcome this issue, the last element of our base prompt, called SHOT, is a simple example of an optimal design with eight runs and four factors. 
+
+SHOT 
+
+As an example, here is an 8-run 4-factor design with maximum resolution and mini-mum aberration: Run,A,B,C,D \\ 1,-1,-1,-1,-1 \\ 2,-1,-1,1,1 \\ 3,-1,1,-1,1 \\ 4,-1,1,1,-1 
+
+\\ 5,1,-1,-1,1 \\ 6,1,-1,1,-1 \\ 7,1,1,-1,-1 \\ 8,1,1,1,1. The motivation behind SHOT is threefold. First, Vazquez et al. (2026) show that GPT and Gemini LLMs have a 100% success rate in generating the optimal 8-run 4-factor design in terms of resolution and minimum aberration. Second, the example design is shown in CSV format, which further encourages the LLM to follow the output format in FORMAT. Third, Supplementary Section S1 shows the significant effect of this element on generating the optimal two-level design with 16 and nine factors. To our knowledge, the use of SHOT in a prompt to construct two-level fractional factorial designs is new to the literature. Using the five elements described previously, we develop Prompt 1 below, which is our 13 base prompt to construct a two-level fractional factorial design. 
+
+Prompt 1 
+
+{ROLE } { INSTRUCTION } { STEP BY STEP } { FORMAT } { SHOT }
+
+# 3.3 LLMs and their setup 
+
+In our application, we use gpt-4.1 and gemini-2.5-flash because they have demonstrated performance in tasks that involve coding, long input contexts, and following instructions (OpenAI, 2024b; Comanici et al., 2025). We use these LLMs through the Python pack-ages called openai (OpenAI, 2023) and google-genai (Google, 2023), and API keys from OpenAI and Google. However, the use of these LLMs has associated costs in terms of their input and output tokens. Essentially, tokens are the data units of an LLM and are constructed from text using a process called tokenization , which considers language punc-tuation, and context, among other features (Alammar and Grootendorst, 2024). OpenAI charges $2 and $8 for one million tokens involved in input and output text, respectively, of gpt-4.1 (OpenAI, 2024a). For gemini-2.5-flash , these costs of input and output text from Google are $0.3 and $2.5, respectively (Google AI for Developers, 2025). Since prompt optimization often requires hundreds or even thousands of LLM executions, the cumulative token cost can become substantial. Therefore, it is important to use cost-efficient OofA designs for prompt engineering with these LLMs. Both gpt-4.1 and gemini-2.5-flash have tuning parameters that drive their perfor-mance on a task. One of the most important ones is temperature because it controls the diversity and randomness of the model’s output (Alammar and Grootendorst, 2024). Ahigher value of this parameter generally results in a more diverse output, while a lower value creates a more deterministic output. In our application, we set temperature to zero to test the basic knowledge of gpt-4.1 and gemini-2.5-flash , and limit the noise in the data collected from them. This enhances the reproducibility of our OofA experiments conducted with these LLMs. Another important tuning parameter of gemini-2.5-flash is thinkingBudget , which de-fines the strategy for reasoning of this LLM. Because our goal is to test the basic knowledge of this LLM, we set this parameter to zero, which turns the reasoning feature off. In any 14 case, in Section 5, we comment on recent LLMs that have a reasoning feature and show that they also exhibit order dependency in some of our tasks. 
+
+# 4 Application 
+
+Our application of OofA designs and models for prompt engineering involves three experi-ments. In the first experiment, we demonstrate the presence of order dependency in gpt-4.1 
+
+by modifying the INSTRUCTION element of Prompt 1. In the second experiment, we show how OofA experiments allow us to efficiently identify orders of the elements in Prompt 1 that maximize the success rate of gpt-4.1 . Finally, the third experiment demonstrates the generalization of our approach by applying OofA experiments to gemini-2.5-flash . To save space, we discuss the third experiment in Supplementary Section S3. 
+
+# 4.1 First experiment with gpt-4.1 
+
+In this experiment, we investigate the effect of phrase ordering within INSTRUCTION. Specifically, we consider a modified version of it called INSTRUCTION(X-Y-Z). 
+
+INSTRUCTION(X-Y-Z) 
+
+Your goal is to construct a two-level fractional factorial design with {X}. The design has {Y}. The design has {Z}.The {X}, {Y}, and {Z} positions can each contain one of the following three phrases: “maximum resolution and minimum aberration,” “ m factors and n runs,” and “two levels for each factor coded as −1 and +1.” These phrases define the three components in the first experiment. We refer to these components as criteria, design dimensions, and level coding, and label them as 1, 2, and 3, respectively. For each component, we consider two levels (versions) coded as −1 and 1. The low level corresponds to the original phrase, while the high level corresponds to a semantically equivalent phrase. Specifically, the equivalent phrases for components 1, 2 and 3 are “minimum aberration and maximum resolution,” “ n
+
+runs and m factors,” and “two levels for each factor coded as +1 and −1”, respectively. The goal of the experiment is to detect differences in the success rates of gpt-4.1 for constructing 16-run designs with seven to 12 factors, caused by the different component 15 orderings and versions in INSTRUCTION(X-Y-Z). In what follows, we first show the OofA design used for collecting data in this experiment. Next, we analyze the data using de-scriptive statistics and the logistic regression model in Section 2.1. 
+
+4.1.1 Data collection 
+
+We use a full OF design with 3! × 23 = 48 tests (Yang et al., 2023). We denote each test in this design using the actual sequence of the components and their levels used, given by the variables w1, w2, and w3. For example, the test with the sequence 231 and w1 = −1, 
+
+w2 = 1, and w3 = −1, implies that the design dimensions, level coding, and criteria come in the {X}, {Y}, and {Z} position, respectively. Moreover, design dimensions is being used in its rephrased version, while the other components are in their original version. The final instruction for this test is shown below. 
+
+INSTRUCTION(2-3-1) 
+
+Your goal is to construct a two-level fractional factorial design with n runs and m
+
+factors. The design has two levels for each factor coded as −1 and +1. The design has maximum resolution and minimum aberration. For each test in the full OF design, we insert the resulting instruction into the prompt template shown in Prompt 2 below. We then submit Prompt 2 to gpt-4.1 with the number of runs and factors in the two-level design construction task. 
+
+Prompt 2 
+
+{ROLE } { INSTRUCTION(X-Y-Z) } { STEP BY STEP } { FORMAT } { SHOT }
+
+For each task, we conducted the full OF design with 40 replicates in a completely randomized way. Table 1 shows the success rates of gpt-4.1 given by the different tests for the six 16-run design construction tasks with seven to 12 factor. The first three columns of the table show the levels of the three components, and the following 12 columns show the success rates (or probabilities) of the LLM for the different component orderings and levels. The component orderings used to obtain each success rate are shown in bold. 16 Table 1: Success rates of gpt-4.1 for constructing 16-run optimal designs with seven to 12 factors obtained from the first OofA experiment. 
+
+Number of Factors 
+
+w1 w2 w3 7 8 9 10 11 12 7 8 9 10 11 12 
+
+123 231 
+
+−1 −1 −1 0.250 1.000 0.150 0.900 0.175 0.825 0.000 0.750 0.400 0.600 0.225 0.750 
+
+−1 −1 1 0.100 0.875 0.100 0.875 0.175 0.800 0.350 0.975 0.325 0.725 0.075 0.725 
+
+−1 1 −1 0.150 0.825 0.050 0.725 0.250 0.725 0.400 0.500 0.200 0.625 0.300 0.600 
+
+−1 1 1 0.700 0.425 0.000 0.675 0.325 0.800 0.525 0.125 0.075 0.925 0.275 0.625 1 −1 −1 0.625 0.950 0.125 0.925 0.150 0.825 0.125 0.325 0.550 0.600 0.200 0.675 1 −1 1 0.525 0.900 0.125 0.950 0.125 0.875 0.425 0.950 0.225 0.725 0.125 0.800 1 1 −1 0.850 0.800 0.100 0.750 0.175 0.825 0.475 0.100 0.400 0.650 0.075 0.875 1 1 1 0.550 0.925 0.025 0.850 0.275 0.750 0.125 0.375 0.175 0.825 0.125 0.650 
+
+132 312 
+
+−1 −1 −1 0.050 0.675 0.125 0.975 0.100 0.875 0.075 0.175 0.125 0.900 0.050 0.825 
+
+−1 −1 1 0.325 0.625 0.200 0.950 0.175 0.950 0.375 0.000 0.025 0.925 0.075 0.825 
+
+−1 1 −1 0.150 0.100 0.025 0.800 0.025 0.500 0.350 0.200 0.075 0.500 0.125 0.200 
+
+−1 1 1 0.150 0.025 0.000 0.950 0.250 0.700 0.500 0.000 0.100 0.775 0.075 0.275 1 −1 −1 0.100 0.475 0.175 0.950 0.200 0.925 0.425 0.875 0.150 0.975 0.050 0.900 1 −1 1 0.225 0.350 0.250 0.975 0.025 1.000 0.725 0.350 0.125 0.825 0.075 0.950 1 1 −1 0.300 0.200 0.100 0.700 0.475 0.850 0.325 0.825 0.100 0.625 0.075 0.550 1 1 1 0.050 0.125 0.025 0.775 0.175 0.800 0.250 0.250 0.100 0.850 0.175 0.650 
+
+213 321 
+
+−1 −1 −1 0.275 0.400 0.100 0.750 0.225 0.500 0.150 0.650 0.325 0.700 0.225 0.725 
+
+−1 −1 1 0.200 0.950 0.025 0.525 0.025 0.500 0.400 0.700 0.225 0.700 0.175 0.725 
+
+−1 1 −1 0.400 0.925 0.000 0.200 0.400 0.675 0.125 0.575 0.125 0.550 0.050 0.225 
+
+−1 1 1 0.700 0.750 0.025 0.575 0.050 0.450 0.125 0.825 0.100 0.450 0.025 0.050 1 −1 −1 0.400 0.775 0.175 0.725 0.075 0.425 0.225 0.875 0.250 0.850 0.150 0.875 1 −1 1 0.525 0.900 0.100 0.550 0.050 0.675 0.450 0.900 0.200 0.950 0.025 0.900 1 1 −1 0.500 0.925 0.050 0.475 0.100 0.400 0.000 0.375 0.125 0.300 0.000 0.325 1 1 1 0.575 0.450 0.075 0.700 0.075 0.475 0.050 0.625 0.150 0.575 0.125 0.100 
+
+17 4.1.2 Data analysis 
+
+We conduct an exploratory analysis of the data in Table 1. Figure 1 shows boxplots of the distributions of the success rates of the LLM for each combination of component orderings and tasks. There are clear differences among the orderings within a task. For example, when the task has m = 8 factors, the sequences 123 and 132 produce substantially different success rates. This indicates that, with criteria fixed at the beginning, placing design dimensions before level coding improves the success rate for this task. When m = 12, the sequences 123 and 213 also exhibit differences, indicating that, with level coding fixed at the end, placing criteria before design dimensions tends to improve the success rate. In addition to the effect of component ordering, we examine the effect of their ver-sions across tasks. Figure 2 shows main effect plots for w1, w2, and w3 for the six design construction tasks. For tasks with eight, nine, 10, and 12 factors, the version of design dimensions ( w2) appears to have the strongest main effect on the success rate. Specifically, the high level of this component—which specifies the number of runs before the number of factors—is associated with a lower success rate than the low level that involves the origi-nal phrase. Overall, Figures 1 and 2 suggest that both prompt component orderings and versions influence the success rate of gpt-4.1 in generating optimal two-level designs. To quantify the effects of component orderings and versions, we fit the logistic regression model in Equation (2) with q = 3 to the data in Table 1. Table 2 shows the estimated coefficients and some statistics of the model for each design construction task. To further assess the relative importance of the orderings and versions, Table S2 in the supplementary sections provides the sequential analysis of deviance for the logistic regression model, along with the percentage of explained deviance attributable to each term. The results confirm that both the orderings and versions of the prompt components contribute substantially to the variability in performance. Regarding the orderings, Table 2 shows that each of the dummy variables for the orderings is significant for the success rate in at least one task. Regarding the versions, the table shows that the effect of w2 is significant at a level of α = 0 .01 in at least four tasks. For these cases, the estimated value of γ2 is negative, indicating that the rephrased version of design dimensions decreases the success rate of the LLM in generating optimal designs with eight, nine, 10, and 12 factors. In other words, it is more effective to write “ m factors and n runs” in Prompt 2. Consistent with 18 16x10 16x11 16x12                    
+
+> 16x7 16x8 16x9
+> 123 132 213 231 312 321 123 132 213 231 312 321 123 132 213 231 312 321 0.00 0.25 0.50 0.75 1.00 0.00 0.25 0.50 0.75 1.00
+
+Sequence Success Rate Figure 1: Success rates of gpt-4.1 for constructing 16-run optimal designs with seven to 12 factors across sequences. 19 w1 w2 w3-1 1 -1 1 -1 10.2 0.4 0.6 0.8 
+
+16x7 
+
+w1 w2 w3-1 1 -1 1 -1 10.2 0.4 0.6 0.8 
+
+16x8 
+
+w1 w2 w3-1 1 -1 1 -1 10.2 0.4 0.6 0.8 
+
+16x9 
+
+w1 w2 w3-1 1 -1 1 -1 10.2 0.4 0.6 0.8 
+
+16x10 
+
+w1 w2 w3-1 1 -1 1 -1 10.2 0.4 0.6 0.8 
+
+16x11 
+
+w1 w2 w3-1 1 -1 1 -1 10.2 0.4 0.6 0.8 
+
+16x12 Figure 2: Success rates of gpt-4.1 for constructing 16-run optimal designs with seven to 12 factors across versions. 20 Table 2: Estimated coefficients and associated statistics of a logistic regression model for 16-run construction tasks with 7 to 12 factors. Number of Factors 7 8 9 10 11 12 Intercept −0.128 1.753** −2.502*** 1.677*** −1.368*** 1.537*** 
+
+s2 −1.500** −2.558*** 0.327 0.453 −0.183 0.154 
+
+s3 −0.090 −0.516 −0.226 −1.41*** −0.604 −1.482*** 
+
+s4 −0.724. −1.698** 1.566*** −0.732* −0.205 −0.537 
+
+s5 −0.382 −2.498*** 0.192 −0.236 −1.005* −0.867* 
+
+s6 −1.349** −0.885 0.947*** −1.092*** −0.892* −1.579*** 
+
+w1 0.206. 0.169 0.183* 0.096 −0.130 0.245* 
+
+w2 0.103 −0.550** −0.452*** −0.441*** 0.182 −0.618*** 
+
+w3 0.226. −0.098 −0.231** 0.222* −0.138 0.019 Null deviance 425.940 914.340 194.420 341.360 160.790 492.240 Deviance 263.130 459.310 46.380 130.850 113.870 184.870 
+
+R2 
+
+> M cF
+
+0.382 0.498 0.761 0.617 0.292 0.624 ˆϕ 6.015 11.196 1.084 3.199 2.777 4.511 Signif. codes: 0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1this finding, the effect of w2 accounts for between 12% and 28% of the explained deviance in four of our six tasks; see Table S2. This result highlights the sensitivity of gpt-4.1 
+
+performance to seemingly minor changes in prompt component rephrasing. Overall, these results provide formal statistical support for the patterns observed in Figures 1 and 2. They demonstrate that both prompt component orderings and versions significantly affect the success rate of design construction using gpt-4.1 , underscoring the importance of systematic prompt optimization. 
+
+# 4.2 Second Experiment with gpt-4.1 
+
+The goal of our second OofA experiment is to identify the order of the five elements in Prompt 1 that maximizes the success rate of gpt-4.1 . Here, the five elements define the 21 five components, with components 1, 2, 3, 4, and 5 corresponding to ROLE, INSTRUC-TION, STEP BY STEP, FORMAT, and SHOT, respectively, as introduced in Section 3.2. Building upon the results in the previous section, we also consider two levels for component 2. That is, the low level is the original INSTRUCTION element, and the high level is given by the semantically equivalent version below, which we call INSTRUCTION 1.
+
+INSTRUCTION 1
+
+Your goal is to construct a two-level fractional factorial design with maximum reso-lution and minimum aberration. The number of runs is n and the number of factors is m. The factors have two levels coded as ‘-1’ and ‘+1’. In INSTRUCTION 1, we replace the second sentence in INSTRUCTION with “The number of runs is n and the number of factors is m.” In this experiment, we focus on constructing the 16-run 9-factor two-level optimal de-sign, because Vazquez et al. (2026) showed that this task is challenging for Gemini and GPT models. As in the previous section, we first discuss the design used for conducting the experiment and then the results from the data analysis. 
+
+4.2.1 Data collection 
+
+A full OF design has (5!)(2) = 240 tests, which becomes computationally expensive when we consider multiple replicates. To overcome this issue, we constructed a 40-run COA design using Algorithm 1 with q = 5. Specifically, we first generated a 20 × 5 matrix C1.Next, we applied the permutation (1,2,3,5,4) to the columns of C1 to obtain C2. After that, we concatenated C1 and C2 to generate F40 ,5. We then applied the permutation (1,4,3,2,5) to F40 ,5 to improve the D-criterion of the standard PWO model. We obtain the final OF design as [ F40 ,5 ⊗ 12, 140 ⊗ w2], where w2 = ( −1, 1) T contains the levels of component 2. This OF design has 80 runs. Table 3 shows the 80-run OF design. To help the reader, we show the test prompt produced by test 41 (with sequence 14325 and w2 = 1) of this OF design below. 
+
+Test Prompt 
+
+{ROLE } { FORMAT } { STEP BY STEP } { INSTRUCTION 1} { SHOT }
+
+22 We conducted the 80-run OF design as a completely randomized design replicated 20 times. Compared to the previous experiment, we used a smaller number of replicates due to the larger number of tests of the OF design. For each test, we constructed a test prompt like the one above and submitted it to gpt-4.1 . Table 3 shows the success rate (among the 20 replicates) of this LLM in constructing the optimal 16-run 9-factor design for each test. 
+
+4.2.2 Data Analysis 
+
+Our exploratory analysis of the data in Table 3 revealed an interesting result regarding the effect of the two levels of component 2. Specifically, we found substantial differences in success rates for several paired test runs that differ only in the level of component 2, including tests 3 and 43, 5 and 45, 15 and 55, and 20 and 60. To further investigate this effect, Figure 3 presents box plots of the success rates obtained by gpt-4.1 under the −1and 1 level of component 2. The figure shows that the success rate tends to be higher when 
+
+w2 = −1 (corresponding to the original INSTRUCTION) than when w2 = 1 (corresponding to INSTRUCTION 1). In other words, specifying the desired number of factors before the desired number of runs tends to have a higher success rate than the reverse ordering. This is consistent with the first experiment. 0.00 0.25 0.50 0.75 1.00 -1 1w 2Success Rate 
+
+Figure 3: Success rates of gpt-4.1 for constructing the 16-run 9-factor optimal design across two versions of INSTRUCTION. To test the significance of w2, we fitted a logistic PWO model to the data in Table 3 23 Table 3: Ordering factorial design and success rates of gpt-4.1 for constructing optimal 16-run 9-factor designs. 
+
+Test Sequence w2 Rate Test Sequence w2 Rate Test Sequence w2 Rate 1 14325 −1 0.35 28 31254 −1 0.50 55 54132 1 0.00 2 25431 −1 0.40 29 42315 −1 0.15 56 13452 1 0.40 3 31542 −1 0.90 30 53421 −1 0.55 57 24513 1 0.40 4 42153 −1 0.05 31 13245 −1 0.15 58 35124 1 0.30 5 53214 −1 0.80 32 24351 −1 0.25 59 41235 1 0.15 6 12534 −1 0.35 33 35412 −1 0.55 60 52341 1 0.00 7 23145 −1 0.25 34 41523 −1 0.30 61 15324 1 0.50 8 34251 −1 0.30 35 52134 −1 1.00 62 21435 1 0.20 9 45312 −1 0.20 36 12453 −1 0.15 63 32541 1 0.60 10 51423 −1 0.10 37 23514 −1 0.20 64 43152 1 0.00 11 15243 −1 0.80 38 34125 −1 0.25 65 54213 1 0.10 12 21354 −1 0.30 39 45231 −1 0.00 66 14532 1 0.40 13 32415 −1 0.30 40 51342 −1 0.60 67 25143 1 0.10 14 43521 −1 0.10 41 14325 1 0.45 68 31254 1 0.80 15 54132 −1 0.65 42 25431 1 0.10 69 42315 1 0.20 16 13452 −1 0.60 43 31542 1 0.25 70 53421 1 0.00 17 24513 −1 0.45 44 42153 1 0.00 71 13245 1 0.20 18 35124 −1 0.50 45 53214 1 0.00 72 24351 1 0.25 19 41235 −1 0.30 46 12534 1 0.15 73 35412 1 0.05 20 52341 −1 0.70 47 23145 1 0.25 74 41523 1 0.05 21 15324 −1 0.90 48 34251 1 0.15 75 52134 1 0.55 22 21435 −1 0.00 49 45312 1 0.25 76 12453 1 0.05 23 32541 −1 0.45 50 51423 1 0.00 77 23514 1 0.00 24 43152 −1 0.10 51 15243 1 0.65 78 34125 1 0.35 25 54213 −1 0.50 52 21354 1 0.30 79 45231 1 0.00 26 14532 −1 0.55 53 32415 1 0.35 80 51342 1 0.05 27 25143 −1 0.10 54 43521 1 0.10 
+
+24 Table 4: Estimated coefficients and associated statistics of an initial logistic PWO model for the 16-run 9-factor design task. Estimate Std. Error z value Pr( > |z|)Intercept −0.951 0.125 −7.592 3.16e-14 
+
+z12 −0.039 0.179 −0.216 0.829 
+
+z13 0.264 0.180 1.466 0.143 
+
+z14 −0.150 0.177 −0.845 0.398 
+
+z15 0.291 0.181 1.604 0.109 
+
+z23 −0.370 0.179 −2.060 0.039 
+
+z24 0.434 0.182 2.387 0.017 
+
+z25 −0.334 0.178 −1.880 0.060 
+
+z34 0.122 0.176 0.693 0.488 
+
+z35 0.057 0.179 0.316 0.752 
+
+z45 −0.321 0.180 −1.786 0.074 
+
+w2 −0.461 0.122 −3.772 1.62e-4 Null deviance: 534.82 on 79 degrees of freedom Residual deviance: 332.34 on 68 degrees of freedom 
+
+R2 
+
+> M cF
+
+0.379 ˆϕ 4.266 with 
+
+p(z, w)−1 = 1 + e−(β0+P4   
+
+> i=1
+> P5
+> j=i+1 βij zij +γ2w2)
+
+. (5) Table 4 shows the estimated coefficients and a summary of fit of this model. The estimated dispersion parameter ˆϕ is higher than one, indicating the presence of overdispersion. We thus multiplied the standard errors for all coefficient estimates by 
+
+q
+
+ˆϕ and adjusted the p-values in Table 4 accordingly. We see that the most important variable is w2 and it is highly significant because its p-value is less than 0.001. The coefficient of w2 is negative, confirming our conclusion from Figure 3 that placing the number of factors before the number of runs in the prompt increases the success rate in obtaining optimal 16-run 9-factor designs. Other important variables in Table 4 are z23 , z24 , z25 and z45 , with p-values less than 25 0.1. The estimates of these coefficients indicate that placing component 3 and 5 before component 2, and placing component 4 after component 2, is associated with a higher success rate in generating the optimal 16-run 9-factor design with gpt-4.1 . Therefore, according to the model, we recommend a prompt in which STEP-BY-STEP and SHOT precede INSTRUCTION, which, in turn, precedes FORMAT. Moreover, in this prompt, we should place “number of factors is 9” before “number of runs is 16” in INSTRUCTION. Table 4 shows that R2 
+
+> M cF
+
+= 0 .379 for the model. However, it turns out that it can be improved by including two-way interactions among the pseudo factors and w2. The full interaction model has a total of 66 terms excluding the intercept. To find a reduced model, we applied step-wise regression to the model using the Bayesian information crite-rion (Claeskens and Hjort, 2008). Table 5 shows the final reduced model from this approach. Compared to the model in Table 4, the model in this table has 10 additional interaction terms and R2 
+
+> M cF
+
+= 0 .773. The estimated dispersion parameter ˆϕ value is also reduced by almost one half compared to that in Table 4, indicating a substantially improved fit. Table 5 shows that the variables z24 , w2, z14 z15 , z14 z25 , z24 z25 , z13 z15 , and z12 z45 are highly significant as their corresponding p-values are below 0.001. The p-values and stan-dard errors in Table 5 were adjusted for overdispersion. In conclusion, two-way interactions of the pseudo factors are important to model the success rate of gpt-4.1 in obtaining the optimal 16-run 9-factor design. Of course, a limitation of the model in Table 5 compared to that in Table 4 is its interpretability. However, the model in Table 5 belongs to the prediction rather than the inference framework (James et al., 2013) and enables us to identify a prompt that maximizes the success rate of gpt-4.1 in obtaining the optimal 16-run 9-factor design. To this end, Table 6 shows the five tests with the highest predicted success rates among all (5!)(2) = 240 possible tests, together with their standard errors (SE) adjusted for overdispersion, and actual success rates in a follow-up confirmation experiment with 60 independent runs of 
+
+gpt-4.1 for each test. Among the five tests, three were not in our 80-run OF design. Overall, the predicted success rates of our model are close to the actual ones from the confirmation experiment. Specifically, the sequence 13524 with INSTRUCTION has a success rate of 98.3%. For comparison, the base prompt (with sequence 12345 and INSTRUCTION) has a success rate of only 11.7%. Therefore, OofA experiments enabled us to improve the success rate of generating the 16-run 9-factor optimal design using gpt-
+
+26 Table 5: Estimated coefficients and associated statistics of a logistic regression model with interaction effects for the 16-run 9-factor construction task. Estimate Std. Error z value Pr( > |z|)(Intercept) −1.099 0.123 −8.927 < 2e − 16 
+
+z12 0.242 0.127 1.906 0.057 
+
+z13 0.232 0.133 1.750 0.08 
+
+z14 −0.082 0.142 −0.575 0.565 
+
+z15 0.073 0.139 0.526 0.599 
+
+z24 0.494 0.142 3.486 4.9e-4 
+
+z25 −0.332 0.144 −2.308 0.021 
+
+z34 0.181 0.125 1.448 0.148 
+
+z35 0.271 0.143 1.901 0.057 
+
+z45 −0.150 0.132 −1.140 0.254 
+
+w2 −0.540 0.098 −5.505 3.7e-8 
+
+z14 z25 −0.443 0.118 −3.760 3.43e-4 
+
+z14 z15 0.736 0.13 5.684 1.7e-4 
+
+z24 z25 −0.443 0.122 −3.640 1.32e-8 
+
+z13 z15 −0.505 0.125 −4.046 2.73e-4 
+
+z12 z45 0.277 0.106 2.627 5.21e-5 
+
+z34 z45 −0.319 0.116 −2.752 0.009 
+
+z13 z25 −0.295 0.118 −2.506 0.006 
+
+z25 w2 0.385 0.108 3.581 0.012 
+
+z35 w2 0.328 0.113 2.894 0.004 
+
+z34 w2 −0.295 0.106 −2.785 0.005 
+
+z14 w2 0.180 0.100 1.797 0.072 Null deviance: 534.82 on 79 degrees of freedom Residual deviance: 121.66 on 58 degrees of freedom 
+
+R2 
+
+> M cF
+
+0.773 ˆϕ 2.1 27 Table 6: Predicted top sequences and success rates obtained with gpt-4.1 .Success rate Sequence w2 Actual Predicted SE In dataset? 15234 −1 0.900 0.956 0.019 No 15324 −1 0.800 0.956 0.019 Yes (test 21) 13524 −1 0.983 0.951 0.023 No 31524 −1 0.867 0.949 0.025 No 52134 −1 0.933 0.927 0.033 Yes (test 35) 
+
+4.1 by rearranging the prompt elements. 
+
+# 5 Concluding remarks 
+
+In this paper, we showed that OofA experiments can be used as a prompt engineering method to assess and deal with order dependency in pretrained transformer-based LLMs. Specifically, we showed that order dependency is present in gpt-4.1 and gemini-2.5-flash 
+
+when constructing two-level fractional factorial designs with 16 runs. We discuss three OofA experiments to quantify and overcome this phenomenon at different degrees. In the first experiment, we estimated the effects of orderings and versions of specific phrases within the instruction submitted to gpt-4.1 for constructing designs with seven to 12 factors. A remarkable finding was the significant negative effect of specifying the desired number of runs before the desired number of factors in the instruction for many of these tasks. In the second experiment, we studied the ordering effects of our prompt elements in Section 3.2 in the performance of gpt-4.1 . In the third experiment, discussed in Supplementary Sec-tion S3, we did the same but using gemini-2.5-flash . Using an ordering factorial design and logistic PWO models, we optimized the success rates of these LLMs in constructing designs with nine and seven factors. Compared to our base prompt, the gains in success rates by gpt-4.1 and gemini-2.5-flash were 86.6% and 65%, respectively, in these tasks. Generative artificial intelligence is evolving rapidly, with new versions of LLMs released almost every month. In fact, when we were writing this article from January to June 2026, 28 OpenAI and Google released new versions of gpt-4.1 and gemini-2.5-flash , respectively. However, it turns out that some of these newer LLMs also exhibit order dependency on our tasks. To show this, Supplementary Section S4 provides additional OofA experiments involving gpt-5.4 and gemini-3-flash-preview both with and without their reasoning feature enabled. In these experiments, we studied the success rates of these LLMs in con-structing the 16-run 9-factor optimal design. To demonstrate order dependency, we used Prompt 1 and changed the position of the (original) INSTRUCTION element. That is, we used five sequences obtained by placing INSTRUCTION at each of the five positions in Prompt 1, while keeping the relative ordering of all other prompt elements fixed. Supple-mentary Section S4 shows that the success rates of gpt-5.4 and gemini-3-flash-preview 
+
+were lower than 18% for the five sequences when their reasoning feature was not enabled. When it was enabled, the success rates ranged from 85% to 97.5% and from 42.5% to 65%, respectively. Therefore, these LLMs are also candidates for our prompt engineering method involving OofA experiments, but we leave this application for future research. Our application of OofA experiments for prompt engineering suggests several directions for future research. For example, our first experiment motivates the development of OofA designs and models for a nested order structure. Recall that we considered two versions of the design dimension component, namely “ m factors and n runs” and its rephrased version “n runs and m factors.” Rather than treating these as two levels of a single component, an alternative is to regard the phrases “ n runs” and “ m factors” as two sub-components within the design dimension component. This would allow us to study both ordering effect of the sub-components within the main component—as well as its position effect relative to the other main components—on the performance of an LLM. This idea can be extended by introducing additional sub-components, such as “ l levels”, where l could be two or three. The study of sub-components and main components in this nested structure thus calls for novel cost-efficient OofA designs and extensions to the PWO model or the component position model (Yang et al., 2021). Another avenue for future research is to construct custom OofA designs to estimate the logistic PWO models in Section 2.2 using an optimal design approach (Berger and Wong, 2009). To this end, we could start by considering locally optimal designs which are constructed assuming good initial values for the coefficients in the model under study. Such initial values can be set according to, for example, our numerical results. To this end, we 29 could consider extending the metaheuristic algorithms of Stokes et al. (2024) developed to obtain optimal designs for the standard PWO and component position models. Finally, although we restricted ourselves to constructing two-level fractional factorial designs using LLMs, we could employ OofA experiments to study order dependency on other types of tasks. For instance, we could study the order of answer options in multiple-choice benchmarks such as CommonsenseQA (Talmor et al., 2019) or MMLU (Hendrycks et al., 2020), and the order of few-shot demonstrations in GSM8K (Cobbe et al., 2021). Compared to benchmark prompt engineering methods, an advantage of our method is the ability to estimate the effect of the positions of the prompt elements. This allows us to explain the performance of an LLM on a task in terms of the prompt configuration used. The application of OofA experiments to other tasks is another future research direction. 
+
+# SUPPLEMENTARY MATERIAL 
+
+Programs.zip . Zip file containing Python and R code to reproduce all our OofA experi-ments. 
+
+Supplementary sections.pdf . Pdf file with sections containing additional details on our OofA experiments. 
+
+# ACKNOWLEDGMENTS 
+
+The authors acknowledge that ChatGPT and Gemini were used for constructing two-level fractional factorial designs and for language assistance in some sentences through Writefull (https://www.writefull.com/ ). They were not used to generate ideas or classify liter-ature. The research of Vazquez is supported by the Challenge-Based Research Fund of Tecnologico de Monterrey under the project CI-EIC-HLT-D-58. 
+
+# DISCLOSURE OF INTEREST 
+
+The authors report that there are no competing interests to declare. 
+
+# DECLARATION OF FUNDING 
+
+No funding was received. 
+
+# DATA AVAILABILITY STATEMENT 
+
+All data and code related to this paper are in the supplementary material. 30 References 
+
+Alammar, J. and Grootendorst, M. (2024). Hands-On Large Language Models: Language Understanding and Generation . O’Reilly Media, Inc. Atkinson, A., Donev, A., and Tobias, R. (2007). Optimum Experimental Designs, with SAS . Oxford University Press, New York. Barker, H. (1986). Sum and product tables for galois fields. International Journal of Mathematical Education in Science and Technology , 17(4):473–485. Berger, M. P. and Wong, W.-K. (2009). An introduction to optimal designs for social and biomedical research . John Wiley & Sons. Bertsimas, D. and Margaritis, G. (2024). Robust and adaptive optimization under a large language model lens. arXiv preprint arXiv:2501.00568 .Brown, T., Mann, B., Ryder, N., Subbiah, M., Kaplan, J. D., Dhariwal, P., Neelakantan, A., Shyam, P., Sastry, G., Askell, A., et al. (2020). Language models are few-shot learners. Advances in neural information processing systems , 33:1877–1901. Chen, J., Mukerjee, R., and Lin, D. K. (2020). Construction of optimal fractional order-of-addition designs via block designs. Statistics & Probability Letters , 161:108728. Claeskens, G. and Hjort, N. L. (2008). Model selection and model averaging. Cambridge books .Cobbe, K., Kosaraju, V., Bavarian, M., Chen, M., Jun, H., Kaiser, L., Plappert, M., Tworek, J., Hilton, J., Nakano, R., et al. (2021). Training verifiers to solve math word problems. arXiv preprint arXiv:2110.14168 .Comanici, G., Bieber, E., Schaekermann, M., Pasupat, I., Sachdeva, N., Dhillon, I., Blis-tein, M., Ram, O., Zhang, D., Rosen, E., et al. (2025). Gemini 2.5: Pushing the frontier with advanced reasoning, multimodality, long context, and next generation agentic ca-pabilities. arXiv preprint arXiv:2507.06261 .Goodfellow, I., Bengio, Y., and Courville, A. (2016). Deep Learning . MIT press. 31 Google (2023). google-genai python package. https://googleapis.github.io/ python-genai/ . Accessed: 2025-11-28. Google AI for Developers (2025). Gemini developer api pricing — gemini 2.5 flash. https: //ai.google.dev/gemini-api/docs/pricing#gemini-2.5-flash . Accessed: 2025-12-15. Guan, B., Roosta, T., Passban, P., and Rezagholizadeh, M. (2025). The order effect: In-vestigating prompt sensitivity to input order in LLMs. arXiv preprint arXiv:2502.04134 .Hendrycks, D., Burns, C., Basart, S., Zou, A., Mazeika, M., Song, D., and Stein-hardt, J. (2020). Measuring massive multitask language understanding. arXiv preprint arXiv:2009.03300 .James, G., Witten, D., Hastie, T., and Tibshirani, R. (2013). An Introduction to Statistical Learning: With Applications in R . Spinger, New York. Ji, W., Yuan, W., Getzen, E., Cho, K., Jordan, M. I., Mei, S., Weston, J., Su, W. J., Xu, J., and Zhang, L. (2026). An overview of large language models for statisticians. The American Statistician , (just-accepted):1–106. Kojima, T., Gu, S. S., Reid, M., Matsuo, Y., and Iwasawa, Y. (2022). Large language models are zero-shot reasoners. In Koyejo, S., Mohamed, S., Agarwal, A., Belgrave, D., Cho, K., and Oh, A., editors, Advances in Neural Information Processing Systems ,volume 35, pages 22199–22213. Curran Associates, Inc. Kumar, S. and Talukdar, P. (2021). Reordering examples helps during priming-based few-shot learning. In Findings of the Association for Computational Linguistics: ACL-IJCNLP 2021 , pages 4507–4518. Lin, D. K. and Rios, N. (2025). Order-of-addition experiments: A review and some recom-mendations. Wiley Interdisciplinary Reviews: Computational Statistics , 17(2):e70024. Lu, Y., Bartolo, M., Moore, A., Riedel, S., and Stenetorp, P. (2022). Fantastically ordered prompts and where to find them: Overcoming few-shot prompt order sensitivity. In 
+
+Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) , pages 8086–8098. 32 McIlroy-Young, R., Brown, K., Olson, C., Zhang, L., and Dwork, C. (2024). Order-independence without fine tuning. Advances in Neural Information Processing Systems ,37:72818–72839. Mee, R. (2009). A comprehensive guide to factorial two-level experimentation . Springer. Mee, R. W. (2020). Order-of-addition modeling. Statistica Sinica , 30(3):1543–1559. Megahed, F. M., Chen, Y.-J., Zwetsloot, I. M., Knoth, S., Montgomery, D. C., and Jones-Farmer, L. A. (2024). Introducing ChatSQC: Enhancing statistical quality control with augmented AI. Journal of Quality Technology , 56:474–497. Menard, S. (2000). Coefficients of determination for multiple logistic regression analysis. 
+
+The American Statistician , 54(1):17–24. OpenAI (2023). OpenAI Python Library. https://github.com/openai/openai-python. OpenAI (2024a). Gpt-4.1: Advancing multimodal and long-context reasoning. https: //platform.openai.com/docs/models . Accessed: 2026-04-13. OpenAI (2024b). Introducing gpt-4.1 in the api. https://openai.com/index/gpt-4-1/ .Accessed: 2026-04-13. OpenAI (2025). ChatGPT: GPT-4 Language Model. https://chat.openai.com/ . Ac-cessed: 2025-05-28. Peng, J., Mukerjee, R., and Lin, D. K. (2019). Design of order-of-addition experiments. 
+
+Biometrika , 106(3):683–694. Pezeshkpour, P. and Hruschka, E. (2024). Large language models sensitivity to the order of options in multiple-choice questions. In Findings of the Association for Computational Linguistics: NAACL 2024 , pages 2006–2017. Prasad, A., Hase, P., Zhou, X., and Bansal, M. (2023). Grips: Gradient-free, edit-based instruction search for prompting large language models. In Proceedings of the 17th Con-ference of the European Chapter of the Association for Computational Linguistics , pages 3845–3864. 33 Schoen, E. D. and Mee, R. W. (2023). Order-of-addition orthogonal arrays to study the effect of treatment ordering. The Annals of Statistics , 51(4):1877–1894. Schulhoff, S., Ilie, M., Balepur, N., Kahadze, K., Liu, A., Si, C., Li, Y., Gupta, A., Han, H., Schulhoff, S., et al. (2024). The prompt report: A systematic survey of prompt engineering techniques. arXiv preprint arXiv:2406.06608 .Song, X., Lee, L., Xie, K., Liu, X., Deng, X., and Hong, Y. (2026). Statllm: A dataset for evaluating the performance of large language models in statistical analysis. Scientific Data , 13:369. Stokes, Z., Wong, W. K., and Xu, H. (2024). Metaheuristic solutions to order-of-addition design problems. Journal of Computational and Graphical Statistics , 33(3):1006–1016. Stokes, Z. and Xu, H. (2022). A position-based approach for design and analysis of order-of-addition experiments. Statistica Sinica , 32(3):1467–1488. Talmor, A., Herzig, J., Lourie, N., and Berant, J. (2019). Commonsenseqa: A question answering challenge targeting commonsense knowledge. In Proceedings of the 2019 Con-ference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers) , pages 4149–4158. Tsai, S.-F. (2023). Dual-orthogonal arrays for order-of-addition two-level factorial experi-ments. Technometrics , 65(3):388–395. Van Nostrand, R. (1995). Design of experiments where the order of addition is important. In ASA proceedings of the Section on Physical and Engineering Sciences , volume 155, page 160. American Statistical Association Alexandria, VA. Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, L., and Polosukhin, I. (2017). Attention is all you need. In Proceedings of the 31st Interna-tional Conference on Neural Information Processing Systems , NIPS’17, page 6000–6010, Red Hook, NY, USA. Curran Associates Inc. Vazquez, A. R., Rother, K. M., and Charles-Gonzalez, M. V. (2026). A systematic as-sessment of large language models for constructing two-level fractional factorial designs. 
+
+Quality Engineering , 38(3):496–508. 34 Vazquez, A. R. and Xuan, X. (2025). A review of Design of Experiments courses offered to undergraduate students at American universities. The American Statistician , 79:129– 139. Voelkel, J. G. (2019). The design of order-of-addition experiments. Journal of Quality Technology , 51(3):230–241. Wang, R., Mi, F., Chen, Y., Xue, B., Wang, H., Zhu, Q., Wong, K.-F., and Xu, R. (2024). Role prompting guided domain adaptation with general capability preserve for large language models. arXiv preprint arXiv:2403.02756 .Wu, C. F. J. and Hamada, M. S. (2011). Experiments: Planning, Analysis, and Optimiza-tion . John Wiley & Sons, 2nd edition. Wu, Z., Lin, X., Dai, Z., Hu, W., Shu, Y., Ng, S.-K., Jaillet, P., and Low, B. K. H. (2024). Prompt optimization with ease? efficient ordering-aware automated selection of exemplars. Advances in Neural Information Processing Systems , 37:122706–122740. Xu, H. and Wu, C. F. J. (2001). Generalized minimum aberration for asymmetrical frac-tional factorial designs. Annals of Statistics , 29(4):1066–1077. Yang, J.-F., Sun, F., and Xu, H. (2021). A component-position model, analysis and design for order-of-addition experiments. Technometrics , 63(2):212–224. Yang, L., Zhou, Y., and Liu, M.-Q. (2023). Ordering factorial experiments. Journal of the Royal Statistical Society Series B: Statistical Methodology , 85(3):869–885. Zhao, Q., Xiao, Q., Mandal, A., and Sun, F. (2025). Optimal designs for order-of-addition two-level factorial experiments. Technometrics , 67(4):716–724. Zhao, Y., Lin, D. K. J., and Liu, M.-Q. (2021). Designs for order-of-addition experiments. 
+
+Journal of Applied Statistics , 48(8):1475–1495. 35 Supplementary Sections 
+
+Duoduo Danny Ying, Alan R. Vazquez, and Hongquan Xu 
+
+# S1 Significance of the SHOT Element 
+
+Table S1 shows the success rates among 60 replicates of six tests used to construct the opti-mal 16-run 9-factor design using gpt-4.1 . These tests involve the original INSTRUCTION but different sequences of the prompt elements in Section 3.2 in the main text. The first five sequences were chosen so that the SHOT element appears in each of the five possible positions, whereas the last sequence omits this element entirely. These tests thus allow us to compare the contribution of SHOT in searching for the optimal 16-run 9-factor design. Table S1: Success rates of selected tests for constructing the 16-run 9-factor optimal design with gpt-4.1 .Sequence w2 Success rate 51234 −1 0.817 15234 −1 0.900 12534 −1 0.517 12354 −1 0.300 12345 −1 0.117 1234 −1 0.083 Table S1 shows a substantial difference in success rates between the first five sequences and the last sequence, indicating the importance of including SHOT. Moreover, the vari-ation in success rates among the first five sequences shows that its position within the prompt also has a significant effect on the performance of gpt-4.1 . This again supports the conclusion that this LLM exhibits order dependency in this task. 1S2 Sequential Analysis of Deviance 
+
+Table S2 presents the sequential analysis of deviance for the logistic PWO models fitted to the data in Table 1 in the main text. Across the six design construction tasks, the fitted model explains the largest proportion of deviance for the 9-factor design task (76%) and the smallest proportion for the 11-factor design task (29%). The contribution of the component ordering effects also varies across tasks, accounting for as much as 45% of the deviance for the 9-factor design task, but only 19% for the 11-factor design task. Among the version effects, that of design dimensions ( w2), which specifies the ordering of the numbers of factors and runs, is the most influential for four out of the six tasks, explaining between 12% of the deviance for the 8-factor design task and 28% for the 12-factor design task. Overall, these results demonstrate that both the prompt component orderings and ver-sions have substantial effects on the success rates of optimal design construction. Table S2: Sequential Analysis of Deviance for Table 1 in the main text. Number of Factors Source DF 7 8 9 10 11 12 Sequence 5 122.7 (29%) 330.7 (36%) 88.1 (45%) 127.4 (37%) 31.1 (19%) 147.7 (30%) 
+
+w1 1 16.2 (4%) 9.8 (1%) 6.9 (4%) 2.9 (1%) 3.9 (2%) 20.1 (4%) 
+
+w2 1 4.1 (1%) 111 (12%) 41.8 (21%) 63.8 (19%) 7.6 (5%) 139.5 (28%) 
+
+w3 1 19.8 (5%) 3.5 (0%) 11.3 (6%) 16.4 (5%) 4.4 (3%) 0.1 (0%) Residual 39 263.1 (62%) 459.3 (50%) 46.4 (24%) 130.9 (38%) 113.9 (71%) 184.9 (38%) Note: DF stands for degrees of freedom. 
+
+# S3 Third Experiment with gemini-2.5-flash 
+
+In this section, we discuss the third OofA experiment, which aims to optimize the perfor-mance of gemini-2.5-flash in constructing optimal two-level designs. As a first step, we identify a task that exhibits order dependency and is thus suitable for optimization using our approach. To this end, we consider the 16-run design construction tasks with seven to 212 factors, and evaluate specific sequences of the five prompt elements in Section 3.2 in the main text. Specifically, the five sequences are constructed by placing FORMAT at each of the five possible positions, while keeping the relative ordering of the remaining components fixed. All sequences involve the original INSTRUCTION element. Table S3 shows the success rates in 20 replicates obtained from these sequences using 
+
+gemini-2.5-flash . The table shows significant differences among the five sequences when the task has seven and eight factors, indicating that the order of the prompt elements has a noticeable impact on the success rate. In contrast, for tasks with nine or more factors, the success rates are virtually zero, leaving little variation between the sequences. For illustration, we therefore focus on the 16-run 7-factor design construction task, which has clear order effects and the potential for a successful optimization using OofA experiments. Table S3: Success rates of gemini-2.5-flash for constructing 16-run optimal designs with seven to 12 factors. Number of Factors Sequence w2 7 8 9 10 11 12 41235 −1 0.4 0.25 0.1 0.05 0 0.05 14235 −1 0.15 0.35 0 0.05 0 012435 −1 0.55 0.4 0.05 0.1 0 0.05 12345 −1 0.35 0.45 0.05 0 0 0.05 12354 −1 0.8 0.5 0 0 0 0.05 To identify the optimal prompt for the 16-run 7-factor design construction task, we con-ducted an OofA experiment according to the 80-run OF design in Table 3 in the main text. Table S4 shows the success rates obtained from each of the 80 tests using 20 independent executions of gemini-2.5-flash . Figure 4 shows the distribution of the responses from Table S4 under the two levels of component 2 (INSTRUCTION). When w2 = −1 (corre-sponding to the original INSTRUCTION), gemini-2.5-flash has an average success rate of 39.4%, compared with only 18.6% when w2 = 1 (corresponding to INSTRUCTION 1). So, specifying the desired number of factors before the desired number of runs is more ef-fective than the reverse ordering. The observed pattern is consistent with that for gpt-4.1 ,3indicating that gemini-2.5-flash is also sensitive to changes in the elements of a prompt. 0.00 0.25 0.50 0.75 -1 1w 2Success Rate 
+
+Figure 4: Success rates of gemini-2.5-flash for constructing 16-run 7-factor optimal de-signs across two versions of INSTRUCTION. To continue with our statistical analysis, we fit the logistic PWO model in Equation (5) in the main text to the data in Table S4. Table S5 shows the estimated coefficients of this model. Consistent with the findings for gpt-4.1 , the ordering of the phrases specifying the number of factors and runs is the most influential effect. The negative estimate of the coefficient for w2 indicates that placing the number of factors before the number of runs increases the success rate in generating the 16-run 7-factor optimal design. Among the component ordering effects, z25 is the most significant as its p-value is approximately 0.001. At a level of α = 0 .1, z24 is also statistically significant. The positive estimates for both z25 and z24 indicate that placing component 2 (INSTRUCTION) before component 4 (FORMAT) and 5 (SHOT) is associated with a higher success rate. This finding differs from the results for gpt-4.1 , where the preferred ordering places SHOT before INSTRUCTION. The difference suggests that effective element orderings depend on the underlying LLMs. Although the logistic PWO model achieves a R2 
+
+> M cF
+
+of 0.557, indicating a reasonable fit, its explanatory power can be improved by incorporating two-way interactions among the pseudo factors and w2. Because the full interaction model contains a large number of terms, we use a step-wise regression with the Bayesian Information Criterion to obtain a reduced model. The resulting model is shown in Table S6. Relative to the logistic PWO 4Table S4: Ordering factorial design and success rates of gemini-2.5-flash for constructing the optimal 16-run 7-factor design. 
+
+Test Sequence w2 Rate Test Sequence w2 Rate Test Sequence w2 Rate 1 14325 −1 0.55 28 31254 −1 0.70 55 54132 1 0.00 2 25431 −1 0.60 29 42315 −1 0.65 56 13452 1 0.30 3 31542 −1 0.55 30 53421 −1 0.05 57 24513 1 0.55 4 42153 −1 0.35 31 13245 −1 0.80 58 35124 1 0.00 5 53214 −1 0.00 32 24351 −1 0.75 59 41235 1 0.45 6 12534 −1 0.65 33 35412 −1 0.10 60 52341 1 0.00 7 23145 −1 0.65 34 41523 −1 0.00 61 15324 1 0.00 8 34251 −1 0.60 35 52134 −1 0.00 62 21435 1 0.30 9 45312 −1 0.25 36 12453 −1 0.50 63 32541 1 0.10 10 51423 −1 0.00 37 23514 −1 0.60 64 43152 1 0.00 11 15243 −1 0.65 38 34125 −1 0.10 65 54213 1 0.10 12 21354 −1 0.90 39 45231 −1 0.15 66 14532 1 0.05 13 32415 −1 0.85 40 51342 −1 0.00 67 25143 1 0.40 14 43521 −1 0.00 41 14325 1 0.10 68 31254 1 0.20 15 54132 −1 0.00 42 25431 1 0.70 69 42315 1 0.15 16 13452 −1 0.60 43 31542 1 0.20 70 53421 1 0.05 17 24513 −1 0.60 44 42153 1 0.15 71 13245 1 0.30 18 35124 −1 0.00 45 53214 1 0.00 72 24351 1 0.25 19 41235 −1 0.30 46 12534 1 0.15 73 35412 1 0.05 20 52341 −1 0.00 47 23145 1 0.60 74 41523 1 0.05 21 15324 −1 0.10 48 34251 1 0.00 75 52134 1 0.00 22 21435 −1 0.85 49 45312 1 0.35 76 12453 1 0.30 23 32541 −1 0.95 50 51423 1 0.00 77 23514 1 0.40 24 43152 −1 0.15 51 15243 1 0.50 78 34125 1 0.20 25 54213 −1 0.15 52 21354 1 0.40 79 45231 1 0.05 26 14532 −1 0.25 53 32415 1 0.00 80 51342 1 0.00 27 25143 −1 0.80 54 43521 1 0.05 
+
+5Table S5: Estimated coefficients and associated statistics of a logistic PWO model for the 16-run 7-factor design construction task with gemini-2.5-flash .Estimate Standard Error z value Pr( > |z|)(Intercept) −1.210 0.159 −7.602 2.91e-14 
+
+z12 −0.101 0.212 −0.475 0.635 
+
+z13 −0.027 0.210 −0.126 0.900 
+
+z14 0.149 0.213 0.700 0.484 
+
+z15 0.237 0.210 1.130 0.258 
+
+z23 0.048 0.212 0.225 0.822 
+
+z24 0.373 0.210 1.781 0.075 
+
+z25 0.687 0.212 3.248 0.001 
+
+z34 −0.338 0.211 −1.603 0.109 
+
+z35 0.273 0.215 1.267 0.205 
+
+z45 −0.112 0.209 −0.538 0.591 
+
+w2 −0.643 0.146 −4.401 1.08e-5 Null deviance: 712.75 on 79 degrees of freedom Residual deviance: 315.54 on 68 degrees of freedom 
+
+R2 
+
+> M cF
+
+0.557 ˆϕ 4.966 6model in Table S5, the final reduced model includes eight additional terms and an R2
+
+> M cF
+
+of 0.789. Furthermore, the estimated dispersion parameter ˆϕ decreases from 4.966 to 2.33. Therefore, incorporating two-way interactions yields a considerably better fit than a model containing main effects only. Table S6 reports the estimated coefficients and associated statistics for the reduced model. The variable w2 remains the most significant, followed by z25 , z34 z35 and z15 z25 .All terms except z12 appear as a main effect and within at least one interaction term. Comparing these results with those for gpt-4.1 in Table 5 in the main text, we have that 
+
+w2 is still the dominant effect in both models, whereas the remaining significant terms differ substantially. We then used the reduced logistic PWO model with interactions to predict the success rates of all 240 possible prompt sequences. We selected the five tests with the highest predicted rates for confirmation experiments. Table S7 shows the results from these ex-periments. In this table, the success rate is obtained using 60 independent executions of gemini-2.5-flash . The table reports the predicted success rate, the corresponding standard error after adjusting for overdispersion, and the observed success rate from each confirmation test. Overall, Table S7 shows that the predicted and observed rates agree for each test, suggesting that the fitted model provides accurate predictions. Moreover, the average success rate increases from approximately 35% under the original sequence in Table S3 to 100% for the selected sequences. These substantial improvements demonstrate that OofA experiments can effectively generate high-performing prompts for gemini-2.5-flash .
+
+# S4 Experiments on Other LLMs 
+
+Here, we demonstrate that order dependency persists in more recent GPT and Gemini models, including gpt-5.4 and gemini-3-flash-preview . To illustrate this phenomenon, we conducted a small experiment to construct the 16-run 9-factor optimal design using these LLMs. In this experiment, we considered the five elements in Section 3.2 in the main text. We considered five sequences obtained by placing component 2 (INSTRUCTION) at each of the five possible positions while keeping the relative ordering of all other prompt elements fixed. For each sequence, we constructed the corresponding prompt and submitted 7Table S6: Estimated coefficients and associated statistics of a reduced logistic PWO model with interaction effects for 16-run 7-factor design construction task with gemini-2.5-flash .Estimate Standard Error z value Pr( > |z|)(Intercept) −1.467 0.190 −7.721 1.15e-14 
+
+z13 −0.085 0.163 −0.521 0.603 
+
+z14 0.020 0.164 0.122 0.903 
+
+z15 0.502 0.156 3.221 0.001 
+
+z23 0.227 0.163 1.391 0.164 
+
+z24 0.146 0.164 0.893 0.372 
+
+z25 0.865 0.168 5.153 2.56e-7 
+
+z34 −0.349 0.170 −2.054 0.04 
+
+z35 0.340 0.183 1.858 0.063 
+
+z45 −0.179 0.150 −1.190 0.234 
+
+w2 −0.64 0.111 −5.757 8.57e-9 
+
+z15 z25 −0.506 0.129 −3.920 8.84e-5 
+
+z14 z15 0.399 0.134 2.982 0.003 
+
+z34 z35 0.576 0.147 3.924 8.72e-5 
+
+z13 z35 0.411 0.144 2.848 0.004 
+
+z13 z45 −0.255 0.121 −2.097 0.040 
+
+z23 z25 0.193 0.130 1.486 0.137 
+
+z35 w2 −0.241 0.115 −2.098 0.036 
+
+z24 w2 −0.259 0.114 −2.279 0.023 
+
+z23 w2 0.176 0.123 1.425 0.154 Null deviance: 712.75 on 79 degrees of freedom Residual deviance: 150.6 on 60 degrees of freedom 
+
+R2 
+
+> M cF
+
+0.789 ˆϕ 2.33 8Table S7: Predicted top sequences and success rates for constructing the 16-run 7-factor optimal design with gemini-2.5-flash .Success rate Sequence w2 Actual Predicted SE In dataset? 21354 −1 1.000 0.935 0.033 Yes (test 12) 12354 −1 0.880 0.935 0.033 No 13254 −1 0.880 0.899 0.046 No 24531 −1 0.820 0.879 0.057 No 13524 −1 0.700 0.864 0.069 No it 40 times to each LLM. Table S8 shows the success rates obtained by gpt-5.4 and gemini-3-flash-preview using both no and low thinking settings. Table S8 shows substantial differences in performance across the five sequences for both models under both settings. For instance, the success rate of gpt-5.4 ranges from 85% to 97.5% when using low thinking. For gemini-3-flash-preview , the success rate ranges from 42.5% to 65% under a similar setup. Therefore, these newer-generation LLMs still exhibit order dependency, thereby necessitating OofA experiments to optimize their performance. Table S8: Success rates for constructing 16-run 9-factor optimal designs using no or low thinking with gpt-5.4 and gemini-3-flash-preview .
+
+gpt-5.4 gemini-3-flash-preview 
+
+Sequence w2 No Thinking Low Thinking No Thinking Low Thinking 21345 −1 0.000 0.975 0.025 0.550 12345 −1 0.150 0.975 0.175 0.425 13245 −1 0.025 0.975 0.075 0.550 13425 −1 0.025 0.950 0.025 0.625 13452 −1 0.175 0.850 0.125 0.650 9

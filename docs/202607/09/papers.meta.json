@@ -1,0 +1,69 @@
+{
+  "label": "2026-07-09",
+  "date": "2026-07-09",
+  "generated_at": "2026-07-09T20:37:51",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202607/09/2607.05537v1-prompt-engineering-using-order-of-addition-experiments-an-application-to-generating-two-level-fractional-factorial-designs",
+      "section": "deep",
+      "title_en": "Prompt engineering using order-of-addition experiments: An application to generating two-level fractional factorial designs",
+      "authors": "Duoduo Danny Ying, Alan R. Vazquez, Hongquan Xu",
+      "date": "2026-07-06",
+      "pdf": "https://arxiv.org/pdf/2607.05537v1",
+      "score": "9.0",
+      "evidence": "使用LLM生成部分因子设计，一种经典优化问题；提示优化提升了输出质量",
+      "tldr": "大语言模型在工程和科学中广泛应用，但存在提示短语顺序依赖问题，影响任务性能。本文提出使用添加顺序实验的系统方法，量化提示中元素的排序效应并确定其最佳位置。通过生成两水平部分因子设计任务，在多个先进LLM上验证该方法能识别高质量提示配置。该工作为提示工程提供了统计实验框架，有效缓解顺序依赖，提升模型在实验设计等任务中的表现。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language models (LLMs) are becoming ubiquitous in engineering and science because they can turn prompts into data analysis code, experimental designs, formulations of optimization problems, among other applications. However, many LLMs suffer from a phenomenon called order dependency, in which the order of phrases in the prompt affects their performance on a given task. To overcome this issue, we introduce a systematic method that uses order-of-addition experiments to quantify the ordering effect of elements in a prompt and identify their best positions. We demonstrate our methodology by constructing two-level fractional factorial designs using state-of-the-art LLMs. We show that order-of-addition experiments can elucidate order dependency in these LLMs, and can help us to identify a high-quality prompt configuration for the task.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/09/2607.03962v1-distilling-models-of-bounded-rational-choice-a-constraint-programming-approach",
+      "section": "quick",
+      "title_en": "Distilling Models of Bounded-Rational Choice: A Constraint Programming Approach",
+      "authors": "Özgür Akgün, Georgios Gerasimou",
+      "date": "2026-07-04",
+      "pdf": "https://arxiv.org/pdf/2607.03962v1",
+      "score": "7.0",
+      "evidence": "使用约束规划方法建模有限理性选择；直接相关于运筹优化建模",
+      "tldr": "有限理性的短列表和有限注意模型虽影响力大但计算复杂，其福利预测存在不确定性。本文引入约束编程方法，构建分析框架以蒸馏其核心内容。应用于人类选择数据，发现两模型共同覆盖几乎所有行为，其中有限注意模型解释力更强但更宽松。引入的选择标准有效缩小了福利预测范围，提升了模型的实用性和可操作性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "We provide an analytical framework that allows for distilling the full explanatory and welfare-relevant content of influential yet computationally hard models of bounded-rational general choice. We do so by introducing constraint programming methods and tools from the optimization literature. We focus on the prominent \"shortlisting\" and \"limited-attention\" models. Applying our framework on imperfectly rational human choice data, we find that these models jointly account for nearly all behaviors, with limited-attention ones explaining better while being more permissive. Selection criteria that we introduce narrow down the models' welfare-relevant predictions, considerably alleviating their indeterminacy and contributing toward their practical applicability.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/09/2607.02949v1-bespec-behavior-level-specification-alignment-for-code-generation",
+      "section": "quick",
+      "title_en": "BeSpec: Behavior-Level Specification Alignment for Code Generation",
+      "authors": "Qinghua Xu, Guancheng Wang, Boxi Yu, Lionel Briand",
+      "date": "2026-07-03",
+      "pdf": "https://arxiv.org/pdf/2607.02949v1",
+      "score": "6.0",
+      "evidence": "行为级规格对齐用于代码生成；改进了从意图生成优化求解器的质量",
+      "tldr": "现有代码生成方法依赖执行反馈修正程序，但忽略了规范本身可能存在歧义，导致模型生成正确代码却误解用户意图。BeSpec通过构建可检查的行为模型来明确规范，将任务描述转化为预期输出性质。生成程序后，在探针输入上执行并对比实际行为与预测行为，若不符则修正规范或拒绝程序。在四个基准上，BeSpec显著提升Pass@1，错误多转为算法问题而非规范误解。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "LLMs have made substantial progress on automated code generation from natural-language descriptions of desired behavior (intent). Most existing methods improve generated programs through execution-guided code refinement: they generate a candidate solution, execute it, and patch the implementation using feedback, while leaving the underlying specification unchanged. This workflow implicitly assumes that the LLM's understanding of the intent is already correct and complete. In practice, however, intents are often ambiguous or underspecified. As a result, even a capable model may produce a correct implementation of the wrong intent, making specification mismatch a central bottleneck.   This paper presents BeSpec, a behavioral model-based approach to specification alignment. BeSpec treats the task description as partial evidence about the intended behavior of the correct program. It first builds an explicit behavioral model, which are checkable properties that valid outputs must satisfy. BeSpec then generates candidate programs, executes them on probe inputs, and compares their observed behavior with the predicted behaviors. When observed behavior does not match the predicted behaviors, BeSpec either refines the specification or rejects the candidate program.   We evaluate BeSpec with three LLMs on four benchmarks: CodeContests, xCodeEval, APPS, and the contamination-free LiveCodeBench. Against nine baselines, BeSpec achieves the highest Pass@1 and average pass rate across all settings, improving average Pass@1 over the strongest baseline by 8.1%--25.3% relative across the three LLMs. A failure analysis shows that after alignment, most remaining errors stem from algorithmic difficulty rather than misunderstood specifications, while ablation studies confirm that each major component of BeSpec contributes positively.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/09/2607.04631v1-formal-disco-scalable-open-ended-generation-of-formally-verified-programs",
+      "section": "quick",
+      "title_en": "Formal Disco: Scalable Open-Ended Generation of Formally Verified Programs",
+      "authors": "Gabriel Poesia, Simon Henniger, Tzu-Han Hsu, Yilun Du, Nada Amin",
+      "date": "2026-07-06",
+      "pdf": "https://arxiv.org/pdf/2607.04631v1",
+      "score": "6.0",
+      "evidence": "基于LLM的工人生成形式化验证代码；方法可迁移至优化代码生成",
+      "tldr": "代码生成成本降低，但形式验证程序因数据稀缺而滞后。Formal Disco 是一个分布式系统，协调三种 LLM worker（发起者、修复者、扩展者）进行开放式合成数据生成，通过记录轨迹实现蒸馏与自改进，并采用最大熵原则迭代微调以增加程序多样性。在 Dafny、Verus 和 Frama-C 上生成大规模合成验证程序，微调模型性能匹配或超越 Claude Opus 4.5。该方法为形式推理领域的数据稀缺问题提供了可扩展的解决方案。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "The cost of producing code is rapidly diminishing with increasingly capable AI agents, while quality assurance of generated programs has not kept pace. Formal verification provides the strongest possible guarantees, but the ability of AI models to work with verification-aware languages is hindered by the scarcity of human-written examples of programs in those languages. To tackle this prevalent data scarcity issue, we propose Formal Disco: a distributed system for coordination of LLM-based workers that can be easily applied to open-ended synthetic data generation at scale. We use Formal Disco to share tasks and programs between three classes of workers: \"initiators\", which read random READMEs from open-source repositories and documentation snippets to sketch a related verified program, \"fixers\" which take compiler and verifier feedback and attempt to resolve issues, and \"extenders\" that take working programs and propose patches to expand them. Formal Disco records all agent-generated traces and uses them both for initial distillation from a stronger model as well as self-improvement. We also propose a principle of maximum entropy for synthetic program generation, and use entropy maximization via iterative supervised fine-tuning to learn to generate increasingly diverse programs over time. We release large datasets of synthetic verified programs in three languages - Dafny, Verus, and Frama-C -, and fine-tune open models for verification-relevant tasks, often matching or exceeding the performance of Claude Opus 4.5. Overall, our work offers a path to create synthetic data at scale for formal reasoning domains and overcome the long-standing data barrier.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

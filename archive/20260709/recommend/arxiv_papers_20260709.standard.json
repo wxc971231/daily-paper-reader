@@ -1,0 +1,166 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-09T20:32:38.615530+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2607.05537v1",
+      "source": "arxiv",
+      "title": "Prompt engineering using order-of-addition experiments: An application to generating two-level fractional factorial designs",
+      "abstract": "Large language models (LLMs) are becoming ubiquitous in engineering and science because they can turn prompts into data analysis code, experimental designs, formulations of optimization problems, among other applications. However, many LLMs suffer from a phenomenon called order dependency, in which the order of phrases in the prompt affects their performance on a given task. To overcome this issue, we introduce a systematic method that uses order-of-addition experiments to quantify the ordering effect of elements in a prompt and identify their best positions. We demonstrate our methodology by constructing two-level fractional factorial designs using state-of-the-art LLMs. We show that order-of-addition experiments can elucidate order dependency in these LLMs, and can help us to identify a high-quality prompt configuration for the task.",
+      "authors": [
+        "Duoduo Danny Ying",
+        "Alan R. Vazquez",
+        "Hongquan Xu"
+      ],
+      "primary_category": "stat.AP",
+      "categories": [
+        "stat.AP"
+      ],
+      "published": "2026-07-06T18:18:44+00:00",
+      "link": "https://arxiv.org/pdf/2607.05537v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Uses LLM to generate fractional factorial designs, a classic optimization problem; prompt optimization enhances output",
+      "llm_evidence_cn": "使用LLM生成部分因子设计，一种经典优化问题；提示优化提升了输出质量",
+      "llm_evidence": "使用LLM生成部分因子设计，一种经典优化问题；提示优化提升了输出质量",
+      "canonical_evidence": "使用LLM生成部分因子设计，一种经典优化问题；提示优化提升了输出质量",
+      "llm_tldr_en": "Applies order-of-addition experiments to optimize LLM prompts for generating two-level fractional factorial designs, improving optimization problem formulation.",
+      "llm_tldr_cn": "该论文利用顺序添加实验系统优化LLM提示中元素的顺序，以生成两水平部分因子设计。实验表明，通过识别最佳短语位置，可以显著提高LLM在生成优化问题公式（如实验设计）时的性能。该方法为解决LLM的次序依赖问题提供了通用方案，并且直接展示了LLM在运筹优化建模中的应用。",
+      "llm_tldr": "该论文利用顺序添加实验系统优化LLM提示中元素的顺序，以生成两水平部分因子设计。实验表明，通过识别最佳短语位置，可以显著提高LLM在生成优化问题公式（如实验设计）时的性能。该方法为解决LLM的次序依赖问题提供了通用方案，并且直接展示了LLM在运筹优化建模中的应用。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.03962v1",
+      "source": "arxiv",
+      "title": "Distilling Models of Bounded-Rational Choice: A Constraint Programming Approach",
+      "abstract": "We provide an analytical framework that allows for distilling the full explanatory and welfare-relevant content of influential yet computationally hard models of bounded-rational general choice. We do so by introducing constraint programming methods and tools from the optimization literature. We focus on the prominent \"shortlisting\" and \"limited-attention\" models. Applying our framework on imperfectly rational human choice data, we find that these models jointly account for nearly all behaviors, with limited-attention ones explaining better while being more permissive. Selection criteria that we introduce narrow down the models' welfare-relevant predictions, considerably alleviating their indeterminacy and contributing toward their practical applicability.",
+      "authors": [
+        "Özgür Akgün",
+        "Georgios Gerasimou"
+      ],
+      "primary_category": "econ.TH",
+      "categories": [
+        "econ.TH"
+      ],
+      "published": "2026-07-04T17:39:06+00:00",
+      "link": "https://arxiv.org/pdf/2607.03962v1",
+      "tags": [
+        "keyword:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Constraint programming approach for modeling bounded-rational choice; directly relevant to OR optimization modeling",
+      "llm_evidence_cn": "使用约束规划方法建模有限理性选择；直接相关于运筹优化建模",
+      "llm_evidence": "使用约束规划方法建模有限理性选择；直接相关于运筹优化建模",
+      "canonical_evidence": "使用约束规划方法建模有限理性选择；直接相关于运筹优化建模",
+      "llm_tldr_en": "Introduces constraint programming methods to distill bounded-rational choice models, applied to human choice data showing strong explanatory power.",
+      "llm_tldr_cn": "该论文提出一个分析框架，利用约束规划方法从有限理性选择模型中提取可解释的动机和福利内容。应用于human choice data，发现有限注意模型解释力更强但更宽松。引入的选择标准显著减少了模型的模糊性，推动了理论模型在实际中的应用。",
+      "llm_tldr": "该论文提出一个分析框架，利用约束规划方法从有限理性选择模型中提取可解释的动机和福利内容。应用于human choice data，发现有限注意模型解释力更强但更宽松。引入的选择标准显著减少了模型的模糊性，推动了理论模型在实际中的应用。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.02949v1",
+      "source": "arxiv",
+      "title": "BeSpec: Behavior-Level Specification Alignment for Code Generation",
+      "abstract": "LLMs have made substantial progress on automated code generation from natural-language descriptions of desired behavior (intent). Most existing methods improve generated programs through execution-guided code refinement: they generate a candidate solution, execute it, and patch the implementation using feedback, while leaving the underlying specification unchanged. This workflow implicitly assumes that the LLM's understanding of the intent is already correct and complete. In practice, however, intents are often ambiguous or underspecified. As a result, even a capable model may produce a correct implementation of the wrong intent, making specification mismatch a central bottleneck.   This paper presents BeSpec, a behavioral model-based approach to specification alignment. BeSpec treats the task description as partial evidence about the intended behavior of the correct program. It first builds an explicit behavioral model, which are checkable properties that valid outputs must satisfy. BeSpec then generates candidate programs, executes them on probe inputs, and compares their observed behavior with the predicted behaviors. When observed behavior does not match the predicted behaviors, BeSpec either refines the specification or rejects the candidate program.   We evaluate BeSpec with three LLMs on four benchmarks: CodeContests, xCodeEval, APPS, and the contamination-free LiveCodeBench. Against nine baselines, BeSpec achieves the highest Pass@1 and average pass rate across all settings, improving average Pass@1 over the strongest baseline by 8.1%--25.3% relative across the three LLMs. A failure analysis shows that after alignment, most remaining errors stem from algorithmic difficulty rather than misunderstood specifications, while ablation studies confirm that each major component of BeSpec contributes positively.",
+      "authors": [
+        "Qinghua Xu",
+        "Guancheng Wang",
+        "Boxi Yu",
+        "Lionel Briand"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-07-03T04:48:45+00:00",
+      "link": "https://arxiv.org/pdf/2607.02949v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Behavior-level specification alignment for code generation; improves generation of optimization solvers from intent",
+      "llm_evidence_cn": "行为级规格对齐用于代码生成；改进了从意图生成优化求解器的质量",
+      "llm_evidence": "行为级规格对齐用于代码生成；改进了从意图生成优化求解器的质量",
+      "canonical_evidence": "行为级规格对齐用于代码生成；改进了从意图生成优化求解器的质量",
+      "llm_tldr_en": "BeSpec aligns specifications with user intent for code generation, addressing ambiguity to produce correct code for optimization problems.",
+      "llm_tldr_cn": "该论文提出BeSpec，一种行为模型驱动的规格对齐方法，用于从自然语言意图生成正确的代码。现有方法假设LLM对意图的理解正确，但意图常模糊不清。BeSpec通过生成行为模型并迭代完善规格，确保生成的代码与用户真实意图一致。该方法可显著提升优化问题求解代码的生成准确性。",
+      "llm_tldr": "该论文提出BeSpec，一种行为模型驱动的规格对齐方法，用于从自然语言意图生成正确的代码。现有方法假设LLM对意图的理解正确，但意图常模糊不清。BeSpec通过生成行为模型并迭代完善规格，确保生成的代码与用户真实意图一致。该方法可显著提升优化问题求解代码的生成准确性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.04631v1",
+      "source": "arxiv",
+      "title": "Formal Disco: Scalable Open-Ended Generation of Formally Verified Programs",
+      "abstract": "The cost of producing code is rapidly diminishing with increasingly capable AI agents, while quality assurance of generated programs has not kept pace. Formal verification provides the strongest possible guarantees, but the ability of AI models to work with verification-aware languages is hindered by the scarcity of human-written examples of programs in those languages. To tackle this prevalent data scarcity issue, we propose Formal Disco: a distributed system for coordination of LLM-based workers that can be easily applied to open-ended synthetic data generation at scale. We use Formal Disco to share tasks and programs between three classes of workers: \"initiators\", which read random READMEs from open-source repositories and documentation snippets to sketch a related verified program, \"fixers\" which take compiler and verifier feedback and attempt to resolve issues, and \"extenders\" that take working programs and propose patches to expand them. Formal Disco records all agent-generated traces and uses them both for initial distillation from a stronger model as well as self-improvement. We also propose a principle of maximum entropy for synthetic program generation, and use entropy maximization via iterative supervised fine-tuning to learn to generate increasingly diverse programs over time. We release large datasets of synthetic verified programs in three languages - Dafny, Verus, and Frama-C -, and fine-tune open models for verification-relevant tasks, often matching or exceeding the performance of Claude Opus 4.5. Overall, our work offers a path to create synthetic data at scale for formal reasoning domains and overcome the long-standing data barrier.",
+      "authors": [
+        "Gabriel Poesia",
+        "Simon Henniger",
+        "Tzu-Han Hsu",
+        "Yilun Du",
+        "Nada Amin"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-06T03:31:14+00:00",
+      "link": "https://arxiv.org/pdf/2607.04631v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-based workers generate formally verified programs; methodology transferable to optimization code generation",
+      "llm_evidence_cn": "基于LLM的工人生成形式化验证代码；方法可迁移至优化代码生成",
+      "llm_evidence": "基于LLM的工人生成形式化验证代码；方法可迁移至优化代码生成",
+      "canonical_evidence": "基于LLM的工人生成形式化验证代码；方法可迁移至优化代码生成",
+      "llm_tldr_en": "Formal Disco is a distributed system using LLM workers to generate formally verified programs at scale, addressing data scarcity in verification-aware languages.",
+      "llm_tldr_cn": "该论文提出Formal Disco，一个分布式系统，通过协调三类LLM工人（发起者、生成者、验证者）大规模生成形式化验证的程序。系统解决了验证感知语言中人工示例稀缺的问题，为生成高质量、可验证的代码提供了可扩展的方案。该方法可直接应用于优化问题求解代码的生成。",
+      "llm_tldr": "该论文提出Formal Disco，一个分布式系统，通过协调三类LLM工人（发起者、生成者、验证者）大规模生成形式化验证的程序。系统解决了验证感知语言中人工示例稀缺的问题，为生成高质量、可验证的代码提供了可扩展的方案。该方法可直接应用于优化问题求解代码的生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
