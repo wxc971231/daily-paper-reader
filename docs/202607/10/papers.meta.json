@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-10",
+  "date": "2026-07-10",
+  "generated_at": "2026-07-10T20:46:37",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/10/2607.01552v1-symbolic-discovery-of-iterative-algorithms-a-continuous-latent-space-bayesian-optimization-framework",
+      "section": "deep",
+      "title_en": "Symbolic Discovery of Iterative Algorithms: A Continuous Latent Space Bayesian Optimization Framework",
+      "authors": "Tongjia Liu, Ilias Mitrai",
+      "date": "2026-07-02",
+      "pdf": "https://arxiv.org/pdf/2607.01552v1",
+      "score": "8.0",
+      "evidence": "自动发现迭代优化算法",
+      "tldr": "算法发现任务面临离散搜索空间大、计算开销高的挑战。本文提出将迭代算法发现转化为离散优化问题，利用变分自编码器将离散更新函数空间映射到连续潜在空间，再采用贝叶斯优化高效搜索新算法。在两个案例中，该方法成功发现了符号形式的更新函数，无需先验函数假设，且计算时间显著低于传统数学规划方法。该框架为自动化发现迭代优化算法提供了一种高效、通用的解决方案。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "In this paper, we consider the automated discovery of iterative optimization algorithms. We formulate the algorithm discovery task as a discrete optimization problem and search for new update functions using latent space Bayesian Optimization. The proposed framework first learns a continuous representation of the discrete space of update functions using variational autoencoders, transforming the algorithm discovery task from a discrete to a continuous search problem. The continuous representation is subsequently used to search for new algorithms using Bayesian optimization. Application to two case studies shows that the proposed approach can discover new update functions in symbolic form without any assumptions on the functional form of the update function. Moreover, the computational time required to discover the new update functions is lower than existing mathematical programming-based approaches.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/10/2607.05014v1-geometric-characteristics-of-subproblems-in-ising-machine-assisted-large-neighborhood-search",
+      "section": "quick",
+      "title_en": "Geometric Characteristics of Subproblems in Ising-Machine-Assisted Large Neighborhood Search",
+      "authors": "Masashi Yamashita, Shu Tanaka",
+      "date": "2026-07-06",
+      "pdf": "https://arxiv.org/pdf/2607.05014v1",
+      "score": "7.0",
+      "evidence": "Ising机辅助组合优化子问题分析",
+      "tldr": "针对大规模QUBO问题超出Ising机器输入限制或解质量下降的问题，大邻域搜索通过顺序优化受限子问题来缓解。然而子问题除了变量数量外，其结构因素尚未充分刻画。本文以车辆路径问题为例，比较了基于当前解路径构建的子问题（LNS-K）和基于QUBO变量约束关系构建的子问题（LNS-Q），在控制子问题规模下进行实验。结果表明LNS-K获得了更短的总距离，且其选中的客户位置方差在迭代中减小，表明子问题设计应考虑继承当前解的语义和几何结构。该发现为Ising机器辅助的顺序优化提供了重要指导。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large-scale quadratic unconstrained binary optimization (QUBO) formulations of constrained combinatorial optimization problems often exceed the input-size limit of present Ising machines or suffer from degraded solution quality as the number of binary variables increases. Large neighborhood search (LNS) mitigates this difficulty by sequentially optimizing restricted subproblems, but the structural factors that distinguish subproblems beyond the number of binary variables remain insufficiently characterized. In this study, we examine vehicle routing problems and compare a construction based on the vehicle routes of the current solution, denoted by LNS-K, with a construction based on QUBO variables and constraint relations, denoted by LNS-Q, while controlling the number of binary variables in the subproblems. Under the tested conditions, LNS-K obtained shorter total distances than LNS-Q in the matched-size comparisons, and the position variance, a measure of the spatial spread of the selected customers, decreased during the iterations in LNS-K. These observations suggest that subproblem design for sequential optimization with Ising machines should consider not only subproblem size but also semantic and geometric structures inherited from the current solution.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/10/2607.05810v1-scope-leveraging-subgoal-critiques-for-code-generation",
+      "section": "quick",
+      "title_en": "SCOPE: Leveraging Subgoal Critiques for Code Generation",
+      "authors": "Yueke Zhang, Yifan Zhang, Zihan Fang, Kevin Leach, Wei Zhang, Yu Huang",
+      "date": "2026-07-07",
+      "pdf": "https://arxiv.org/pdf/2607.05810v1",
+      "score": "7.0",
+      "evidence": "使用子目标批评的LLM代码生成",
+      "tldr": "代码生成中，大语言模型常因违反语义约束而失败，现有反馈方法缺乏明确语义缺失识别。SCOPE提出基于证明者的子目标批评器，生成子目标、差距分析和鲁棒性检查三个结构化字段，结合监督微调、过程对齐强化学习和反馈引导推理，使用密集与稀疏双重奖励。在LiveCodeBench V6和BigCodeBench Hard上，SCOPE分别达到39.4%和42.6%的pass@1，超越Reflexion等基线，且收益集中于具体语义约束任务，代码修正更局部。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Code generation with large language models (LLMs) remains unreliable because generated programs can appear correct while still violating key semantic requirements in the natural language specification. Existing feedback-based methods improve over coder-only generation, but they often rely on unstructured critique or execution signals that do not explicitly identify what the code is semantically missing. We present SCOPE, a prover-initialized subgoal critic for code generation. SCOPE adapts a Lean-oriented prover model to produce three parseable feedback fields for downstream code generation: subgoals, gap analysis, and a robustness checklist. Our approach combines supervised fine-tuning, process-aligned reinforcement learning (RL), and feedback-guided inference, with two complementary rewards during RL: a dense reward for structured critique quality and a sparse reward based on whether the critique improves the coder's execution score.   Experiments show that SCOPE improves over the compared feedback baselines. On LiveCodeBench V6, SCOPE achieves 39.4% pass@1, compared with 36.6% for Reflexion and 20.6% for the coder-only baseline. On BigCodeBench (Hard), it reaches 42.6%, surpassing Reflexion at 36.5% and coder-only generation at 34.5%. Further analysis shows that SCOPE's gains are concentrated in tasks with concrete semantic constraints and that its code corrections are more localized than Reflexion's.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,131 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-10T20:44:34.947832+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2607.01552v1",
+      "source": "arxiv",
+      "title": "Symbolic Discovery of Iterative Algorithms: A Continuous Latent Space Bayesian Optimization Framework",
+      "abstract": "In this paper, we consider the automated discovery of iterative optimization algorithms. We formulate the algorithm discovery task as a discrete optimization problem and search for new update functions using latent space Bayesian Optimization. The proposed framework first learns a continuous representation of the discrete space of update functions using variational autoencoders, transforming the algorithm discovery task from a discrete to a continuous search problem. The continuous representation is subsequently used to search for new algorithms using Bayesian optimization. Application to two case studies shows that the proposed approach can discover new update functions in symbolic form without any assumptions on the functional form of the update function. Moreover, the computational time required to discover the new update functions is lower than existing mathematical programming-based approaches.",
+      "authors": [
+        "Tongjia Liu",
+        "Ilias Mitrai"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-07-02T00:20:09+00:00",
+      "link": "https://arxiv.org/pdf/2607.01552v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "automated discovery of iterative optimization algorithms",
+      "llm_evidence_cn": "自动发现迭代优化算法",
+      "llm_evidence": "自动发现迭代优化算法",
+      "canonical_evidence": "自动发现迭代优化算法",
+      "llm_tldr_en": "Proposes a framework using latent space Bayesian optimization to automatically discover iterative optimization algorithms in symbolic form.",
+      "llm_tldr_cn": "传统算法发现依赖人工设计，本文提出连续潜空间贝叶斯优化框架，通过变分自编码器将离散更新函数空间映射到连续空间，再利用贝叶斯优化搜索新算法。在案例中自动发现符号形式的迭代更新函数，无需先验假设。该方法为自动求解优化问题提供新途径。",
+      "llm_tldr": "传统算法发现依赖人工设计，本文提出连续潜空间贝叶斯优化框架，通过变分自编码器将离散更新函数空间映射到连续空间，再利用贝叶斯优化搜索新算法。在案例中自动发现符号形式的迭代更新函数，无需先验假设。该方法为自动求解优化问题提供新途径。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.05014v1",
+      "source": "arxiv",
+      "title": "Geometric Characteristics of Subproblems in Ising-Machine-Assisted Large Neighborhood Search",
+      "abstract": "Large-scale quadratic unconstrained binary optimization (QUBO) formulations of constrained combinatorial optimization problems often exceed the input-size limit of present Ising machines or suffer from degraded solution quality as the number of binary variables increases. Large neighborhood search (LNS) mitigates this difficulty by sequentially optimizing restricted subproblems, but the structural factors that distinguish subproblems beyond the number of binary variables remain insufficiently characterized. In this study, we examine vehicle routing problems and compare a construction based on the vehicle routes of the current solution, denoted by LNS-K, with a construction based on QUBO variables and constraint relations, denoted by LNS-Q, while controlling the number of binary variables in the subproblems. Under the tested conditions, LNS-K obtained shorter total distances than LNS-Q in the matched-size comparisons, and the position variance, a measure of the spatial spread of the selected customers, decreased during the iterations in LNS-K. These observations suggest that subproblem design for sequential optimization with Ising machines should consider not only subproblem size but also semantic and geometric structures inherited from the current solution.",
+      "authors": [
+        "Masashi Yamashita",
+        "Shu Tanaka"
+      ],
+      "primary_category": "cond-mat.stat-mech",
+      "categories": [
+        "cond-mat.stat-mech",
+        "cond-mat.dis-nn",
+        "quant-ph"
+      ],
+      "published": "2026-07-06T12:56:11+00:00",
+      "link": "https://arxiv.org/pdf/2607.05014v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "subproblem analysis for combinatorial optimization with Ising machines",
+      "llm_evidence_cn": "Ising机辅助组合优化子问题分析",
+      "llm_evidence": "Ising机辅助组合优化子问题分析",
+      "canonical_evidence": "Ising机辅助组合优化子问题分析",
+      "llm_tldr_en": "Examines geometric characteristics of subproblems in large neighborhood search for QUBO formulations of vehicle routing problems.",
+      "llm_tldr_cn": "大规模QUBO问题常超出Ising机规模限制，大邻域搜索通过优化子问题缓解。本文以车辆路径问题为例，比较基于路径和基于变量约束关系的子问题构建方法，揭示子问题的结构特征。研究有助于设计更有效的子问题选择策略，提升组合优化求解效率。",
+      "llm_tldr": "大规模QUBO问题常超出Ising机规模限制，大邻域搜索通过优化子问题缓解。本文以车辆路径问题为例，比较基于路径和基于变量约束关系的子问题构建方法，揭示子问题的结构特征。研究有助于设计更有效的子问题选择策略，提升组合优化求解效率。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.05810v1",
+      "source": "arxiv",
+      "title": "SCOPE: Leveraging Subgoal Critiques for Code Generation",
+      "abstract": "Code generation with large language models (LLMs) remains unreliable because generated programs can appear correct while still violating key semantic requirements in the natural language specification. Existing feedback-based methods improve over coder-only generation, but they often rely on unstructured critique or execution signals that do not explicitly identify what the code is semantically missing. We present SCOPE, a prover-initialized subgoal critic for code generation. SCOPE adapts a Lean-oriented prover model to produce three parseable feedback fields for downstream code generation: subgoals, gap analysis, and a robustness checklist. Our approach combines supervised fine-tuning, process-aligned reinforcement learning (RL), and feedback-guided inference, with two complementary rewards during RL: a dense reward for structured critique quality and a sparse reward based on whether the critique improves the coder's execution score.   Experiments show that SCOPE improves over the compared feedback baselines. On LiveCodeBench V6, SCOPE achieves 39.4% pass@1, compared with 36.6% for Reflexion and 20.6% for the coder-only baseline. On BigCodeBench (Hard), it reaches 42.6%, surpassing Reflexion at 36.5% and coder-only generation at 34.5%. Further analysis shows that SCOPE's gains are concentrated in tasks with concrete semantic constraints and that its code corrections are more localized than Reflexion's.",
+      "authors": [
+        "Yueke Zhang",
+        "Yifan Zhang",
+        "Zihan Fang",
+        "Kevin Leach",
+        "Wei Zhang",
+        "Yu Huang"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-07-07T04:09:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.05810v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "code generation with LLM using subgoal critiques",
+      "llm_evidence_cn": "使用子目标批评的LLM代码生成",
+      "llm_evidence": "使用子目标批评的LLM代码生成",
+      "canonical_evidence": "使用子目标批评的LLM代码生成",
+      "llm_tldr_en": "SCOPE improves code generation reliability by using a prover-initialized subgoal critic that provides structured feedback for LLMs, applicable to optimization code generation.",
+      "llm_tldr_cn": "现有代码生成方法常忽略语义需求，SCOPE提出基于证明器初始化的子目标批评方法，通过生成子目标、差距分析和鲁棒性检查表来引导LLM生成更可靠的代码。该方法结合监督微调、过程对齐强化学习和反馈引导推理，显著提升了代码语义正确性，为优化问题代码生成提供了可迁移的增强框架。",
+      "llm_tldr": "现有代码生成方法常忽略语义需求，SCOPE提出基于证明器初始化的子目标批评方法，通过生成子目标、差距分析和鲁棒性检查表来引导LLM生成更可靠的代码。该方法结合监督微调、过程对齐强化学习和反馈引导推理，显著提升了代码语义正确性，为优化问题代码生成提供了可迁移的增强框架。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
