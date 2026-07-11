@@ -1,0 +1,139 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-11T20:49:42.693226+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2607.03130v1",
+      "source": "arxiv",
+      "title": "Copper: Unifying Correctness and Performance Specification in Code Generation",
+      "abstract": "Generative AI has made remarkable progress in producing functionally correct code, yet ensuring both correctness and performance remains an open challenge. We present Copper, a framework that combines formal verification with performance-aware specification to generate code that is provably correct and efficiently executable. Our approach integrates AI-driven code synthesis with formal verification tools, and automated performance profiling loops. Evaluated on a diverse set of algorithmic and real-world programming tasks, Copper produces solutions that satisfy strict correctness guarantees while delivering significant improvements in runtime and memory efficiency compared to baseline AI-generated code. This work demonstrates that it is feasible to bridge the gap between trustworthiness and performance in AI-assisted programming, offering a practical pathway toward reliable, high-performance code generation.",
+      "authors": [
+        "André Lizardo",
+        "Raul Barbosa"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-07-03T09:19:34+00:00",
+      "link": "https://arxiv.org/pdf/2607.03130v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM code generation with formal verification and performance specification for optimization problems",
+      "llm_evidence_cn": "结合形式验证和性能规范的LLM代码生成，适用于优化问题求解",
+      "llm_evidence": "结合形式验证和性能规范的LLM代码生成，适用于优化问题求解",
+      "canonical_evidence": "结合形式验证和性能规范的LLM代码生成，适用于优化问题求解",
+      "llm_tldr_en": "Introduces Copper, a framework that integrates AI code synthesis with formal verification and performance profiling to generate provably correct and efficient code.",
+      "llm_tldr_cn": "该论文提出Copper框架，将AI代码合成与形式验证工具及自动化性能分析相结合，生成既保证正确性又高效的代码。在多种算法和实际编程任务上，Copper生成的解决方案在满足严格正确性保证的同时，在运行时和内存效率上相比基线AI生成代码有显著改进。该工作证明了在代码生成中统一正确性与性能规范的可行性，对于生成求解优化问题的高质量代码具有重要价值。",
+      "llm_tldr": "该论文提出Copper框架，将AI代码合成与形式验证工具及自动化性能分析相结合，生成既保证正确性又高效的代码。在多种算法和实际编程任务上，Copper生成的解决方案在满足严格正确性保证的同时，在运行时和内存效率上相比基线AI生成代码有显著改进。该工作证明了在代码生成中统一正确性与性能规范的可行性，对于生成求解优化问题的高质量代码具有重要价值。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.05391v1",
+      "source": "arxiv",
+      "title": "LLM-as-a-Verifier: A General-Purpose Verification Framework",
+      "abstract": "Scaling pre-training, post-training, and test-time compute have become the central paradigms for improving the capabilities of LLMs. In this work, we identify verification, the ability to determine the correctness of a solution, as a new scaling axis. To unlock this and demonstrate its effectiveness, we introduce LLM-as-a-Verifier, a general-purpose verification framework that provides fine-grained feedback for agentic tasks without requiring additional training. Unlike standard LM judges that prompt LLMs to produce discrete scores for candidate solutions, LLM-as-a-Verifier computes the expectation over the distribution of scoring token logits to generate continuous scores. This probabilistic formulation enables verification to scale along multiple dimensions: (1) score granularity, (2) repeated evaluation, and (3) criteria decomposition. In particular, we show that scaling the scoring granularity leads to better separation between positive and negative solutions, resulting in more calibrated comparisons. Moreover, scaling repeated evaluation and criteria decomposition consistently lead to additional gains in verification accuracy through variance and complexity reduction. We further introduce a cost-efficient ranking algorithm for selecting the best solution among candidates using the verifier's continuous scores. LLM-as-a-Verifier achieves state-of-the-art performance on Terminal-Bench V2 (86.5%), SWE-Bench Verified (78.2%), RoboRewardBench (87.4%), and MedAgentBench (73.3%). Beyond verification, the fine-grained signals from LLM-as-a-Verifier can also serve as a proxy for estimating task progress. We build an extension for Claude Code, enabling developers to monitor and improve their own agentic systems. Finally, we show that LLM-as-a-Verifier can provide dense feedback for RL, improving the sample efficiency of SAC and GRPO on robotics and mathematical reasoning benchmarks.",
+      "authors": [
+        "Jacky Kwok",
+        "Shulu Li",
+        "Pranav Atreya",
+        "Yuejiang Liu",
+        "Yixing Jiang",
+        "Chelsea Finn",
+        "Marco Pavone",
+        "Ion Stoica",
+        "Azalia Mirhoseini"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.LG",
+        "cs.MA",
+        "cs.RO"
+      ],
+      "published": "2026-07-06T17:59:35+00:00",
+      "link": "https://arxiv.org/pdf/2607.05391v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM verification framework useful for automatically verifying optimization solutions",
+      "llm_evidence_cn": "LLM验证框架可用于自动验证优化求解的正确性",
+      "llm_evidence": "LLM验证框架可用于自动验证优化求解的正确性",
+      "canonical_evidence": "LLM验证框架可用于自动验证优化求解的正确性",
+      "llm_tldr_en": "Introduces LLM-as-a-Verifier, a general-purpose verification framework that provides fine-grained feedback for agentic tasks without additional training, enabling scaled verification for solution correctness.",
+      "llm_tldr_cn": "本文提出LLM-as-a-Verifier框架，通过计算评分token对数概率的期望生成连续分数，为智能体任务提供细粒度验证反馈，无需额外训练。该框架可从多个维度扩展验证能力，适用于判断优化解的正确性，为自动求解生成中的验证环节提供高效工具。",
+      "llm_tldr": "本文提出LLM-as-a-Verifier框架，通过计算评分token对数概率的期望生成连续分数，为智能体任务提供细粒度验证反馈，无需额外训练。该框架可从多个维度扩展验证能力，适用于判断优化解的正确性，为自动求解生成中的验证环节提供高效工具。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.06175v1",
+      "source": "arxiv",
+      "title": "Improving LLM-Generated Process Model Quality Through Reinforcement Learning: The Role of Reward Function Design",
+      "abstract": "Large language models (LLMs) can generate BPMN process models from natural-language descriptions, yet supervised fine-tuning (SFT) limits their output quality to the patterns present in the training data. Reinforcement learning (RL) can optimize beyond this ceiling using external quality measures, but how the reward function should be designed when quality is multi-dimensional remains unexplored. We present a systematic investigation of reward function design for RL-based process model generation, training two LLM families (Llama~3.1 8B, Qwen~2.5 14B) under 48 configurations using Group Sequence Policy Optimization with rewards derived from an automated evaluation framework comprising 38 metrics across syntactic, pragmatic, and semantic quality. Three findings emerge. First, RL significantly improves pragmatic and syntactic quality while preserving semantic fidelity, reducing output variability by more than sixfold. Second, equal reward weighting consistently outperforms targeted weighting: emphasizing a specific dimension fails to improve it and can collapse the model into a low-quality mode. Third, design choices interact with model architecture in non-trivial ways: the invalidity penalty is essential for one model but irrelevant for the other, and SFT initialization is indispensable for one architecture but counterproductive for another. These results demonstrate that reward composition is a primary determinant of optimization outcomes, with effects as large as the decision to apply RL itself. The findings generalize to any structured generation task where quality is assessed along multiple automated dimensions. We release our implementation and experimental code at https://github.com/chlauer99/RL_for_process_modeling.",
+      "authors": [
+        "Alexander Rombach",
+        "Chantale Lauer",
+        "Nijat Mehdiyev"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-07-07T11:53:02+00:00",
+      "link": "https://arxiv.org/pdf/2607.06175v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-based generation of BPMN process models with RL, relevant to operations research modeling",
+      "llm_evidence_cn": "基于LLM生成BPMN流程模型并结合强化学习优化，与运筹学建模相关",
+      "llm_evidence": "基于LLM生成BPMN流程模型并结合强化学习优化，与运筹学建模相关",
+      "canonical_evidence": "基于LLM生成BPMN流程模型并结合强化学习优化，与运筹学建模相关",
+      "llm_tldr_en": "Systematic study of reward functions for RL-based process model generation from LLMs, using 48 configurations; shows RL improves quality over SFT on Llama and Qwen.",
+      "llm_tldr_cn": "本文系统研究了奖励函数设计对基于强化学习的LLM流程模型生成质量的影响，在Llama 3.1和Qwen 2.5上使用48种配置训练，发现RL能超越监督微调的上限。该工作直接关联运筹学中的业务流程建模问题，展示了LLM在生成结构化优化模型方面的潜力。",
+      "llm_tldr": "本文系统研究了奖励函数设计对基于强化学习的LLM流程模型生成质量的影响，在Llama 3.1和Qwen 2.5上使用48种配置训练，发现RL能超越监督微调的上限。该工作直接关联运筹学中的业务流程建模问题，展示了LLM在生成结构化优化模型方面的潜力。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "problem modeling for operations research",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

@@ -6,29 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-10
-- 运行时间：2026-07-10 20:46:29 UTC
+- 最新运行日期：2026-07-11
+- 运行时间：2026-07-11 20:52:36 UTC
 - 运行状态：成功
 - 本次总论文数：3
 - 精读区：1
 - 速读区：2
 
 ### 今日简报（AI）
-今日精读一篇高分论文，速读两篇算法优化与代码生成相关研究。最值得关注的是连续潜空间贝叶斯优化框架如何符号化发现迭代算法，以及Ising机器辅助搜索的几何特性。建议普通读者重点精读核心论文，并将贝叶斯优化思路作为算法设计的备选工具。
-- 详情：[/202607/10/README](/202607/10/README)
+今日精读1篇、速读2篇，重点关注代码生成正确性与性能统一规范。最值得看的是《Copper: Unifying Correctness and Performance Specification in Code Generation》（9.0/10），提出统一正确性与性能规范的新方法；速读中的LLM验证框架和强化学习奖励设计也值得参考。建议优先精读Copper论文，深入理解其如何提升代码生成质量。
+- 详情：[/202607/11/README](/202607/11/README)
 
 ### 精读区论文标签
-1. [Symbolic Discovery of Iterative Algorithms: A Continuous Latent Space Bayesian Optimization Framework](/202607/10/2607.01552v1-symbolic-discovery-of-iterative-algorithms-a-continuous-latent-space-bayesian-optimization-framework)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：自动发现迭代优化算法
+1. [Copper: Unifying Correctness and Performance Specification in Code Generation](/202607/11/2607.03130v1-copper-unifying-correctness-and-performance-specification-in-code-generation)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：结合形式验证和性能规范的LLM代码生成，适用于优化问题求解
 
 ### 速读区论文标签
-1. [Geometric Characteristics of Subproblems in Ising-Machine-Assisted Large Neighborhood Search](/202607/10/2607.05014v1-geometric-characteristics-of-subproblems-in-ising-machine-assisted-large-neighborhood-search)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：Ising机辅助组合优化子问题分析
-2. [SCOPE: Leveraging Subgoal Critiques for Code Generation](/202607/10/2607.05810v1-scope-leveraging-subgoal-critiques-for-code-generation)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：使用子目标批评的LLM代码生成
+1. [LLM-as-a-Verifier: A General-Purpose Verification Framework](/202607/11/2607.05391v1-llm-as-a-verifier-a-general-purpose-verification-framework)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：LLM验证框架可用于自动验证优化求解的正确性
+2. [Improving LLM-Generated Process Model Quality Through Reinforcement Learning: The Role of Reward Function Design](/202607/11/2607.06175v1-improving-llm-generated-process-model-quality-through-reinforcement-learning-the-role-of-reward-function-design)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：基于LLM生成BPMN流程模型并结合强化学习优化，与运筹学建模相关
 
 
 <div class="dpr-home-promo-card">
