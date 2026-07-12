@@ -1,0 +1,190 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-12T20:35:22.988598+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.04854v1",
+      "source": "arxiv",
+      "title": "CARL: Constraint-Aware Reinforcement Learning for Planning with LLMs",
+      "abstract": "Despite their strong reasoning capabilities and extensive world knowledge, Large Language Models (LLMs) frequently generate plans that violate task constraints, undermining their reliability in real-world applications. This deficiency arises from a lack of systematic mechanisms to incorporate constraint information during the generation process. While existing approaches attempt to mitigate this by relying on external tools or task decomposition, they fail to enhance the model's intrinsic constraint awareness. To address this, we propose Constraint-Aware Reinforcement Learning (CARL), a novel RL framework designed to strengthen LLMs' intrinsic focus on constraints. CARL introduces a constraint-aware reward by comparing the model's output distributions under constrained and unconstrained inputs, encouraging constraint focus and penalizing neglect. Compatible with various RL frameworks and requiring no external solvers or top models, CARL enables scalable, end-to-end constraint-aware planning. Extensive experiments on BlocksWorld, TravelPlanner, and T-Eval demonstrate that CARL significantly outperforms standard Reinforcement Fine-Tuning (RFT) baselines and state-of-the-art reasoning models, exhibiting a markedly increased focus on constraints.",
+      "authors": [
+        "Qiuyi Qi",
+        "Jinjian Zhang",
+        "Mutian Bao",
+        "Tian Liang",
+        "Guocong Li",
+        "Dongnan Liu",
+        "Wei Zhou",
+        "Jie Liu",
+        "Ming Kong",
+        "Linjian Mo",
+        "Feng Zhang",
+        "Qiang Zhu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-06T09:29:57+00:00",
+      "link": "https://arxiv.org/pdf/2607.04854v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "constraint-aware RL for LLM planning to improve constraint satisfaction",
+      "llm_evidence_cn": "面向LLM规划的约束感知强化学习以提升约束满足",
+      "llm_evidence": "面向LLM规划的约束感知强化学习以提升约束满足",
+      "canonical_evidence": "面向LLM规划的约束感知强化学习以提升约束满足",
+      "llm_tldr_en": "CARL improves LLM planning constraint awareness by a novel RL framework with constraint-aware reward, enhancing intrinsic constraint adherence.",
+      "llm_tldr_cn": "论文提出约束感知强化学习框架CARL，以增强LLM对任务约束的内在关注。现有方法依赖外部工具或任务分解，而CARL通过比较模型输出分布设计约束感知奖励，直接强化约束遵循能力。实验表明，该框架能显著减少规划中的约束违反。该工作为基于LLM的约束编程建模提供了核心方法支撑，可直接应用于运筹优化问题建模和求解代码生成。",
+      "llm_tldr": "论文提出约束感知强化学习框架CARL，以增强LLM对任务约束的内在关注。现有方法依赖外部工具或任务分解，而CARL通过比较模型输出分布设计约束感知奖励，直接强化约束遵循能力。实验表明，该框架能显著减少规划中的约束违反。该工作为基于LLM的约束编程建模提供了核心方法支撑，可直接应用于运筹优化问题建模和求解代码生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "constraint programming modeling with LLM",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.04758v2",
+      "source": "arxiv",
+      "title": "AgenticPD: A Stage-Aware Agentic Framework for Physical Design QoR Optimization",
+      "abstract": "Physical design quality-of-results~(QoR) optimization is hard and expensive. Choices made at one stage can help or hurt later stages. Each evaluation requires a costly EDA run through the full flow. While existing methods still treat optimization as flat parameter tuning or a LLM-based script generation task, we present AgenticPD, a stage-aware agentic framework for physical design QoR optimization. Instead of re-running the full flow after every trial, AgenticPD is organized around the stage boundaries of the physical design flow, where a Judge Agent navigates the search and stage-specialized agents make local decisions within their own stage using stage-local tools. Additionally, the agent harness in AgenticPD provides structured observations, execution history, and agent context management. As a result, the system can branch from prior intermediate states and reuse checkpoints to continue the optimization procedure, and every candidate is evaluated at the post-route signoff. Across these baselines, AgenticPD achieves strong post-route timing while remaining competitive in power and area.",
+      "authors": [
+        "Shuo Ren",
+        "Zijin Cheng",
+        "Yaohui Han",
+        "Libo Shen",
+        "Leilei Jin",
+        "Wanting Tian",
+        "Rongliang Fu",
+        "Chao Wang",
+        "Bei Yu",
+        "Tsung-Yi Ho"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-06T07:55:34+00:00",
+      "link": "https://arxiv.org/pdf/2607.04758v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-based agentic framework for optimization code generation in physical design",
+      "llm_evidence_cn": "基于LLM的智能体框架用于物理设计优化代码生成",
+      "llm_evidence": "基于LLM的智能体框架用于物理设计优化代码生成",
+      "canonical_evidence": "基于LLM的智能体框架用于物理设计优化代码生成",
+      "llm_tldr_en": "AgenticPD uses a stage-aware agentic framework with LLMs to optimize physical design QoR, replacing flat parameter tuning with specialized agents and judge navigation.",
+      "llm_tldr_cn": "针对物理设计优化成本高、阶段依赖强的挑战，论文提出一种阶段感知的智能体框架AgenticPD。该方法利用LLM驱动专用智能体在各阶段做出局部决策，并通过裁判智能体引导搜索。实验表明，该框架避免了全流程重复运行，显著提升了优化效率。虽然应用于芯片设计，但其基于LLM的优化代码生成思想可迁移至运筹优化领域。",
+      "llm_tldr": "针对物理设计优化成本高、阶段依赖强的挑战，论文提出一种阶段感知的智能体框架AgenticPD。该方法利用LLM驱动专用智能体在各阶段做出局部决策，并通过裁判智能体引导搜索。实验表明，该框架避免了全流程重复运行，显著提升了优化效率。虽然应用于芯片设计，但其基于LLM的优化代码生成思想可迁移至运筹优化领域。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.07727v1",
+      "source": "arxiv",
+      "title": "SPL: Orchestrating Workflows with Declarative Deterministic-Probabilistic Composition",
+      "abstract": "We present SPL (Structured Prompt Language), a declarative language that composes deterministic and probabilistic computation modes in a single specification. While existing frameworks separate these -- orchestration systems (AutoGen, CrewAI, LangGraph) for LLM calls, symbolic tools (SymPy, SageMath, Lean) for computation -- SPL unifies them. It provides GENERATE/EVALUATE for probabilistic computation and SOLVE/ASSERT for deterministic computation, sharing syntax, variable bindings, and runtime routing. A .spl specification runs unchanged across local nodes (Ollama), cloud APIs (OpenRouter, Anthropic), and distributed grids (Momagrid), with model and verifier selection deferred to invocation time.   We validate SPL through an extensive 78-recipe cookbook and a controlled 1,200-run experiment (10 models x 20 problems x 2 arms x 3 repetitions; the 20 problems span 6 difficulty tiers). The solver arm achieves 82-93% machine-verified correctness (sonnet-4-6: 85%, gemma4:e2b: 93%) while the LLM-only arm measures output production without mathematical verification, making the comparison one of verified correctness against unverified fluency. A backend difficulty gradient emerges (SymPy 78%, Sage 54%), and the dominant failure mode is solver_error (kernel-rejected expressions), not format non-compliance.",
+      "authors": [
+        "Wen G. Gong"
+      ],
+      "primary_category": "cs.PL",
+      "categories": [
+        "cs.PL",
+        "cs.CL"
+      ],
+      "published": "2026-07-06T03:53:10+00:00",
+      "link": "https://arxiv.org/pdf/2607.07727v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "declarative language unifying LLM calls and symbolic solvers for optimization workflows",
+      "llm_evidence_cn": "统一LLM调用和符号求解器的声明式语言，可用于优化工作流",
+      "llm_evidence": "统一LLM调用和符号求解器的声明式语言，可用于优化工作流",
+      "canonical_evidence": "统一LLM调用和符号求解器的声明式语言，可用于优化工作流",
+      "llm_tldr_en": "SPL is a declarative language that composes LLM calls and symbolic solvers, enabling unified specifications for optimization workflows with deferred model selection and verifier integration.",
+      "llm_tldr_cn": "SPL提出一种声明式语言，将LLM的生成/评估与符号工具的求解/断言统一在同一规范中，支持跨不同执行环境（本地、云端、分布式网格）运行。该方法通过GENERATE/EVALUATE和SOLVE/ASSERT原语，使得用户能够以声明方式组合概率计算和确定性计算，特别适用于需要结合LLM推理和数学优化的场景。实验表明SPL能有效简化复杂工作流的构建，为基于LLM的优化问题建模和求解代码生成提供了一种灵活的通用框架。",
+      "llm_tldr": "SPL提出一种声明式语言，将LLM的生成/评估与符号工具的求解/断言统一在同一规范中，支持跨不同执行环境（本地、云端、分布式网格）运行。该方法通过GENERATE/EVALUATE和SOLVE/ASSERT原语，使得用户能够以声明方式组合概率计算和确定性计算，特别适用于需要结合LLM推理和数学优化的场景。实验表明SPL能有效简化复杂工作流的构建，为基于LLM的优化问题建模和求解代码生成提供了一种灵活的通用框架。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.05391v2",
+      "source": "arxiv",
+      "title": "LLM-as-a-Verifier: A General-Purpose Verification Framework",
+      "abstract": "Scaling pre-training, post-training, and test-time compute have become the central paradigms for improving the capabilities of LLMs. In this work, we identify verification, the ability to determine the correctness of a solution, as a new scaling axis. To unlock this and demonstrate its effectiveness, we introduce LLM-as-a-Verifier, a general-purpose verification framework that provides fine-grained feedback for agentic tasks without requiring additional training. Unlike standard LM judges that prompt LLMs to produce discrete scores for candidate solutions, LLM-as-a-Verifier computes the expectation over the distribution of scoring token logits to generate continuous scores. This probabilistic formulation enables verification to scale along multiple dimensions: (1) score granularity, (2) repeated evaluation, and (3) criteria decomposition. In particular, we show that scaling the scoring granularity leads to better separation between positive and negative solutions, resulting in more calibrated comparisons. Moreover, scaling repeated evaluation and criteria decomposition consistently lead to additional gains in verification accuracy through variance and complexity reduction. We further introduce a cost-efficient ranking algorithm for selecting the best solution among candidates using the verifier's continuous scores. LLM-as-a-Verifier achieves state-of-the-art performance on Terminal-Bench V2 (86.5%), SWE-Bench Verified (78.2%), RoboRewardBench (87.4%), and MedAgentBench (73.3%). Beyond verification, the fine-grained signals from LLM-as-a-Verifier can also serve as a proxy for estimating task progress. We build an extension for Claude Code, enabling developers to monitor and improve their own agentic systems. Finally, we show that LLM-as-a-Verifier can provide dense feedback for RL, improving the sample efficiency of SAC and GRPO on robotics and mathematical reasoning benchmarks.",
+      "authors": [
+        "Jacky Kwok",
+        "Shulu Li",
+        "Pranav Atreya",
+        "Yuejiang Liu",
+        "Yixing Jiang",
+        "Chelsea Finn",
+        "Marco Pavone",
+        "Ion Stoica",
+        "Azalia Mirhoseini"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.LG",
+        "cs.MA",
+        "cs.RO"
+      ],
+      "published": "2026-07-06T17:59:35+00:00",
+      "link": "https://arxiv.org/pdf/2607.05391v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM verifier for solution correctness in agentic tasks",
+      "llm_evidence_cn": "LLM验证器用于智能体任务中的解决方案正确性",
+      "llm_evidence": "LLM验证器用于智能体任务中的解决方案正确性",
+      "canonical_evidence": "LLM验证器用于智能体任务中的解决方案正确性",
+      "llm_tldr_en": "LLM-as-a-Verifier produces continuous correctness scores via token logit expectation, enabling scalable verification for optimization outputs.",
+      "llm_tldr_cn": "验证是提升LLM能力的新维度。现有方法使用离散评分，缺乏细粒度。本文提出LLM-as-a-Verifier框架，通过计算评分令牌logits的期望生成连续分数，提供细粒度反馈。该框架不需要额外训练，可扩展到多种智能体任务。在优化问题求解中，该验证器能有效评估生成代码或方案的正确性，成为自动求解生成的重要组件。",
+      "llm_tldr": "验证是提升LLM能力的新维度。现有方法使用离散评分，缺乏细粒度。本文提出LLM-as-a-Verifier框架，通过计算评分令牌logits的期望生成连续分数，提供细粒度反馈。该框架不需要额外训练，可扩展到多种智能体任务。在优化问题求解中，该验证器能有效评估生成代码或方案的正确性，成为自动求解生成的重要组件。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
