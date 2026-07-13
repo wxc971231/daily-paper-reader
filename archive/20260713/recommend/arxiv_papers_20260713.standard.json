@@ -1,0 +1,185 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-13T20:58:32.493811+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2607.08791v1",
+      "source": "arxiv",
+      "title": "LLM-Driven Evolutionary Generation of Multi-Objective Bayesian Optimization Algorithms",
+      "abstract": "Designing effective multi-objective Bayesian optimization (MOBO) algorithms requires balancing many interdependent design choices whose optimal configuration is problem-dependent and typically demands deep expertise. We extend the LLaMEA framework to MOBO, using large language models as mutation and crossover operators within evolutionary strategies to generate complete algorithm implementations, with SMAC hyperparameter optimization integrated into the evolutionary loop. Across nine evolutionary runs we generated approximately 900 algorithms and benchmarked them on twelve synthetic problems (ZDT, DTLZ, WFG) and three real-world engineering problems (RE), using a BoFire qParEGO implementation as a state-of-the-art Bayesian-optimization baseline. On the synthetic suite the strongest generated algorithm attains the highest mean normalized hypervolume (0.971, vs. 0.869 for qParEGO) while requiring roughly 60x less wall-clock time; a Friedman test with post-hoc analysis places the two in a single top-performing group, and per-problem tests find the generated algorithm significantly better than qParEGO on 7 of the 12 problems and never worse, matching state-of-the-art accuracy at an order-of-magnitude lower cost. On the three unseen real-world engineering problems a generated algorithm attains the best mean normalized hypervolume (0.985, vs. 0.971 for qParEGO)--significantly better than qParEGO on two of the three problems--at roughly 3.4x lower wall-clock cost, confirming that the gains transfer beyond the synthetic regime. LLM-driven evolutionary search can thus discover algorithm designs that achieve Pareto-efficient trade-offs difficult to reach through manual design.",
+      "authors": [
+        "Georgios Laskaris",
+        "Reuben Brasher",
+        "Niki van Stein",
+        "Elena Raponi",
+        "Thomas Bäck",
+        "Florian Neukart"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE",
+        "cs.AI"
+      ],
+      "published": "2026-07-06T08:44:13+00:00",
+      "link": "https://arxiv.org/pdf/2607.08791v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLMs used to generate multi-objective Bayesian optimization algorithm code",
+      "llm_evidence_cn": "利用LLM生成多目标贝叶斯优化算法代码",
+      "llm_evidence": "利用LLM生成多目标贝叶斯优化算法代码",
+      "canonical_evidence": "利用LLM生成多目标贝叶斯优化算法代码",
+      "llm_tldr_en": "This paper uses LLMs as mutation and crossover operators to evolve complete implementations of multi-objective Bayesian optimization algorithms, generating about 900 algorithms and benchmarking them on synthetic and real-world problems.",
+      "llm_tldr_cn": "该论文将大型语言模型作为变异和交叉算子，通过进化策略生成完整的多目标贝叶斯优化算法实现。在九个进化运行中产生约900个算法，并在合成和实际工程问题上进行基准测试，展示了LLM在自动生成优化算法代码方面的潜力。",
+      "llm_tldr": "该论文将大型语言模型作为变异和交叉算子，通过进化策略生成完整的多目标贝叶斯优化算法实现。在九个进化运行中产生约900个算法，并在合成和实际工程问题上进行基准测试，展示了LLM在自动生成优化算法代码方面的潜力。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.05197v1",
+      "source": "arxiv",
+      "title": "Is Three the Magic Number? An Empirical Evaluation of LLM-Based Repair Loops",
+      "abstract": "Iterative repair loops have become a core design pattern in LLM-based software engineering systems. These workflows repeatedly generate, validate, and repair artifacts using feedback such as compiler errors or test failures. Despite their widespread use, the impact of repair-loop iteration limits remains poorly understood, as most prior work adopts fixed, often arbitrary, repair budgets. We study repair-loop effectiveness across multiple software engineering tasks, including code generation, test generation, and code translation. Across several representative workflows, datasets, and contemporary low-cost LLMs, we observe a consistent pattern of diminishing returns: the first three to four repair iterations account for most achievable gains, while later iterations contribute only marginal improvements. We further find that repair behavior is influenced more strongly by workflow orchestration and feedback design than by the underlying model itself. These results suggest that repair budgets should be treated as an explicit experimental variable, as they directly affect evaluation outcomes, computational cost, runtime, and reproducibility in LLM-based software engineering research.",
+      "authors": [
+        "Tobias Kiecker",
+        "Eik Reichmann",
+        "Hosung Kang",
+        "Gabin An",
+        "Lars Grunske"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-07-06T15:14:10+00:00",
+      "link": "https://arxiv.org/pdf/2607.05197v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-based repair loops for code generation",
+      "llm_evidence_cn": "基于LLM的修复循环用于代码生成",
+      "llm_evidence": "基于LLM的修复循环用于代码生成",
+      "canonical_evidence": "基于LLM的修复循环用于代码生成",
+      "llm_tldr_en": "Empirical study shows diminishing returns after 3-4 repair iterations in LLM code generation, test generation, and translation.",
+      "llm_tldr_cn": "系统评估了LLM修复循环在代码生成、测试生成和代码翻译任务中的效果，发现在前三到四次修复后收益递减。该结论为优化问题求解代码的LLM生成提供了修复预算指导。",
+      "llm_tldr": "系统评估了LLM修复循环在代码生成、测试生成和代码翻译任务中的效果，发现在前三到四次修复后收益递减。该结论为优化问题求解代码的LLM生成提供了修复预算指导。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.07619v1",
+      "source": "arxiv",
+      "title": "Rethinking Code Performance Benchmarks for LLMs",
+      "abstract": "Many function-level performance benchmarks have been proposed to evaluate whether large language models (LLMs) can generate efficient programs. However, results on these benchmarks often show that LLM-generated implementations have little or no execution-time difference from canonical solutions. In this paper, we revisit four popular benchmarks: EffiBench, Enamel, EvalPerf, and Mercury. We evaluate 1,538 tasks under more rigorous setting by running each task 30 times and assessing the runtime differences between the canonical solutions and benchmark-provided performant implementations with statistical testing. With the benchmark-provided test suites, only 6.11% of the performant implementations are significantly faster than the canonical solutions. In a manual analysis of 308 non-significant tasks, 99 performant implementations contain no meaningful performance change, while 209 contain potential performance improvements that are not exposed by the original tests. These results suggest that the main limitation is not only the evaluation method, but also the limited sufficiency of the benchmark-provided performance tests. To address this limitation, we propose an LLM-based multi-agent framework to generate performance-oriented tests that expose runtime differences more effectively than the original tests. The framework uses three separate agents to generate, diagnose, and repair deterministic tests that preserve functional correctness while better exposing performance differences. Across 1,345 benchmark tasks for which the original tests found no significant performance difference, tests generated by our framework with DeepSeek-v3.1 and GPT-4o reveal statistically significant improvements in 24.01% and 25.43% of the tasks, respectively, outperforming the SOTA LLM-based performance test generation method.",
+      "authors": [
+        "Nhat Minh Le",
+        "Yisen Xu",
+        "Zhijie Wang",
+        "Tse-Hsun",
+        "Chen"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-07-08T16:36:03+00:00",
+      "link": "https://arxiv.org/pdf/2607.07619v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "code generation for optimization problems using LLM, efficiency benchmarking",
+      "llm_evidence_cn": "LLM代码生成效率基准，可用于优化问题",
+      "llm_evidence": "LLM代码生成效率基准，可用于优化问题",
+      "canonical_evidence": "LLM代码生成效率基准，可用于优化问题",
+      "llm_tldr_en": "Re-evaluates LLM code performance benchmarks, finding only 6.11% of implementations are significantly faster, highlighting challenges for optimization code generation.",
+      "llm_tldr_cn": "本文重新审视了四个流行的LLM代码性能基准，通过更严格的统计测试发现，仅6.11%的LLM生成实现显著快于规范解。这表明LLM为优化问题生成高效代码仍面临挑战，强调了基准设计的重要性。",
+      "llm_tldr": "本文重新审视了四个流行的LLM代码性能基准，通过更严格的统计测试发现，仅6.11%的LLM生成实现显著快于规范解。这表明LLM为优化问题生成高效代码仍面临挑战，强调了基准设计的重要性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.08960v1",
+      "source": "arxiv",
+      "title": "Eluna: An Agentic LLM System for Automating Warehouse Operations with Reasoning and Task Execution",
+      "abstract": "Warehouse operations are governed by Standard Operating Procedures (SOPs) that encode complex, multi-system decision logic, which must be executed reliably under strict time constraints, yet LLM agents lack mechanisms to enforce procedural compliance and degrade under the context overload full SOP specifications introduce. We present Eluna, a production-deployed agentic system for reliable SOP execution. Eluna is a graph-guided, multi-agent framework that encodes SOPs as directed acyclic graphs with progressive disclosure and delegates independent tasks to parallel sub-agents, each with persistent code execution and live data access. To meet production latency and accuracy needs, we use asymmetric episodic distillation where a strong teacher is improved through episodic error memories, then a smaller student is fine-tuned on the corrected trajectories with memory stripped, internalizing corrections without inference-time overhead. On a 13-task benchmark and two production applications, our fine-tuned models match or exceed their teacher, beat all larger off-the-shelf baselines, and reach 94% expert agreement on the ticket processing application.",
+      "authors": [
+        "Ning Liu",
+        "Kalle Kujanpää",
+        "Zhaoxuan Zhu",
+        "P Aditya Sreekar",
+        "Kaiwen Liu",
+        "Chuanneng Sun",
+        "Jorge Marchena Menendez",
+        "Matthew Bales",
+        "Tianyu Yang",
+        "Shahnawaz Alam",
+        "Rose Yu",
+        "Baoyuan Liu",
+        "Kristina Klinkner",
+        "Shervin Malmasi"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-07-09T21:51:39+00:00",
+      "link": "https://arxiv.org/pdf/2607.08960v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM agent system for warehouse operations optimization",
+      "llm_evidence_cn": "用于仓库运营优化的LLM智能体系统",
+      "llm_evidence": "用于仓库运营优化的LLM智能体系统",
+      "canonical_evidence": "用于仓库运营优化的LLM智能体系统",
+      "llm_tldr_en": "Eluna is a graph-guided multi-agent system for executing warehouse SOPs with LLM agents, using directed acyclic graphs and parallel sub-agents.",
+      "llm_tldr_cn": "本文提出Eluna，一个生产部署的智能体系统，用于自动执行仓库标准操作流程（SOP）。系统将SOP编码为有向无环图，并逐步披露，将独立任务委托给并行子智能体，每个子智能体具有持久代码执行和实时数据访问能力。为了满足生产延迟和准确性需求，采用非对称情节式蒸馏。该方法有效解决了LLM智能体在复杂运营环境中的程序合规性问题，提升了执行可靠性和效率。",
+      "llm_tldr": "本文提出Eluna，一个生产部署的智能体系统，用于自动执行仓库标准操作流程（SOP）。系统将SOP编码为有向无环图，并逐步披露，将独立任务委托给并行子智能体，每个子智能体具有持久代码执行和实时数据访问能力。为了满足生产延迟和准确性需求，采用非对称情节式蒸馏。该方法有效解决了LLM智能体在复杂运营环境中的程序合规性问题，提升了执行可靠性和效率。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

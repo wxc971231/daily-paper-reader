@@ -6,33 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-12
-- 运行时间：2026-07-12 20:38:50 UTC
+- 最新运行日期：2026-07-13
+- 运行时间：2026-07-13 21:00:55 UTC
 - 运行状态：成功
 - 本次总论文数：4
-- 精读区：0
-- 速读区：4
+- 精读区：1
+- 速读区：3
 
 ### 今日简报（AI）
-今日共速读4篇论文，其中《CARL》和《SPL》获得7.0分，最具参考价值，分别探讨了LLM规划中约束感知的强化学习以及声明式确定-概率工作流编排。建议优先精读这两篇，以掌握当前LLM规划与工作流组合的前沿方法。
-- 详情：[/202607/12/README](/202607/12/README)
+今日推荐聚焦于LLM驱动多目标贝叶斯优化算法的一项高价值研究（9.0分）。最值得关注的是利用大模型自动生成进化优化算法，以及如何通过LLM修复循环提升代码质量。建议优先阅读精读论文，并留意LLM在代码性能基准和仓库自动化中的实际应用评测。
+- 详情：[/202607/13/README](/202607/13/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [LLM-Driven Evolutionary Generation of Multi-Objective Bayesian Optimization Algorithms](/202607/13/2607.08791v1-llm-driven-evolutionary-generation-of-multi-objective-bayesian-optimization-algorithms)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：利用LLM生成多目标贝叶斯优化算法代码
 
 ### 速读区论文标签
-1. [CARL: Constraint-Aware Reinforcement Learning for Planning with LLMs](/202607/12/2607.04854v1-carl-constraint-aware-reinforcement-learning-for-planning-with-llms)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：面向LLM规划的约束感知强化学习以提升约束满足
-2. [SPL: Orchestrating Workflows with Declarative Deterministic-Probabilistic Composition](/202607/12/2607.07727v1-spl-orchestrating-workflows-with-declarative-deterministic-probabilistic-composition)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：统一LLM调用和符号求解器的声明式语言，可用于优化工作流
-3. [AgenticPD: A Stage-Aware Agentic Framework for Physical Design QoR Optimization](/202607/12/2607.04758v2-agenticpd-a-stage-aware-agentic-framework-for-physical-design-qor-optimization)  
+1. [Is Three the Magic Number? An Empirical Evaluation of LLM-Based Repair Loops](/202607/13/2607.05197v1-is-three-the-magic-number-an-empirical-evaluation-of-llm-based-repair-loops)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：基于LLM的智能体框架用于物理设计优化代码生成
-4. [LLM-as-a-Verifier: A General-Purpose Verification Framework](/202607/12/2607.05391v2-llm-as-a-verifier-a-general-purpose-verification-framework)  
+   evidence：基于LLM的修复循环用于代码生成
+2. [Rethinking Code Performance Benchmarks for LLMs](/202607/13/2607.07619v1-rethinking-code-performance-benchmarks-for-llms)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：LLM验证器用于智能体任务中的解决方案正确性
+   evidence：LLM代码生成效率基准，可用于优化问题
+3. [Eluna: An Agentic LLM System for Automating Warehouse Operations with Reasoning and Task Execution](/202607/13/2607.08960v1-eluna-an-agentic-llm-system-for-automating-warehouse-operations-with-reasoning-and-task-execution)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：用于仓库运营优化的LLM智能体系统
 
 
 <div class="dpr-home-promo-card">

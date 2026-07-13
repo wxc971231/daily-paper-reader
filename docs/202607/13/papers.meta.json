@@ -1,0 +1,69 @@
+{
+  "label": "2026-07-13",
+  "date": "2026-07-13",
+  "generated_at": "2026-07-13T21:01:03",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202607/13/2607.08791v1-llm-driven-evolutionary-generation-of-multi-objective-bayesian-optimization-algorithms",
+      "section": "deep",
+      "title_en": "LLM-Driven Evolutionary Generation of Multi-Objective Bayesian Optimization Algorithms",
+      "authors": "Georgios Laskaris, Reuben Brasher, Niki van Stein, Elena Raponi, Thomas Bäck, Florian Neukart",
+      "date": "2026-07-06",
+      "pdf": "https://arxiv.org/pdf/2607.08791v1",
+      "score": "9.0",
+      "evidence": "利用LLM生成多目标贝叶斯优化算法代码",
+      "tldr": "设计多目标贝叶斯优化算法面临诸多权衡且依赖专家经验。本文利用大语言模型作为演化算子，自动生成完整算法并集成超参数优化，在合成和真实问题上均超越强基线qParEGO，同时大幅降低计算成本。该方法为算法自动发现开辟了新途径。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Designing effective multi-objective Bayesian optimization (MOBO) algorithms requires balancing many interdependent design choices whose optimal configuration is problem-dependent and typically demands deep expertise. We extend the LLaMEA framework to MOBO, using large language models as mutation and crossover operators within evolutionary strategies to generate complete algorithm implementations, with SMAC hyperparameter optimization integrated into the evolutionary loop. Across nine evolutionary runs we generated approximately 900 algorithms and benchmarked them on twelve synthetic problems (ZDT, DTLZ, WFG) and three real-world engineering problems (RE), using a BoFire qParEGO implementation as a state-of-the-art Bayesian-optimization baseline. On the synthetic suite the strongest generated algorithm attains the highest mean normalized hypervolume (0.971, vs. 0.869 for qParEGO) while requiring roughly 60x less wall-clock time; a Friedman test with post-hoc analysis places the two in a single top-performing group, and per-problem tests find the generated algorithm significantly better than qParEGO on 7 of the 12 problems and never worse, matching state-of-the-art accuracy at an order-of-magnitude lower cost. On the three unseen real-world engineering problems a generated algorithm attains the best mean normalized hypervolume (0.985, vs. 0.971 for qParEGO)--significantly better than qParEGO on two of the three problems--at roughly 3.4x lower wall-clock cost, confirming that the gains transfer beyond the synthetic regime. LLM-driven evolutionary search can thus discover algorithm designs that achieve Pareto-efficient trade-offs difficult to reach through manual design.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/13/2607.05197v1-is-three-the-magic-number-an-empirical-evaluation-of-llm-based-repair-loops",
+      "section": "quick",
+      "title_en": "Is Three the Magic Number? An Empirical Evaluation of LLM-Based Repair Loops",
+      "authors": "Tobias Kiecker, Eik Reichmann, Hosung Kang, Gabin An, Lars Grunske",
+      "date": "2026-07-06",
+      "pdf": "https://arxiv.org/pdf/2607.05197v1",
+      "score": "6.0",
+      "evidence": "基于LLM的修复循环用于代码生成",
+      "tldr": "LLM驱动的迭代修复循环广泛应用于代码生成等软件工程任务，但修复次数的影响缺乏系统研究。本文在多个任务上评估不同迭代次数效果，发现前三到四次修复贡献大部分收益，后续收益递减。修复行为更多受工作流和反馈设计影响，而非模型本身。研究建议将修复预算作为显式实验变量，以提升评估可靠性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Iterative repair loops have become a core design pattern in LLM-based software engineering systems. These workflows repeatedly generate, validate, and repair artifacts using feedback such as compiler errors or test failures. Despite their widespread use, the impact of repair-loop iteration limits remains poorly understood, as most prior work adopts fixed, often arbitrary, repair budgets. We study repair-loop effectiveness across multiple software engineering tasks, including code generation, test generation, and code translation. Across several representative workflows, datasets, and contemporary low-cost LLMs, we observe a consistent pattern of diminishing returns: the first three to four repair iterations account for most achievable gains, while later iterations contribute only marginal improvements. We further find that repair behavior is influenced more strongly by workflow orchestration and feedback design than by the underlying model itself. These results suggest that repair budgets should be treated as an explicit experimental variable, as they directly affect evaluation outcomes, computational cost, runtime, and reproducibility in LLM-based software engineering research.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/13/2607.07619v1-rethinking-code-performance-benchmarks-for-llms",
+      "section": "quick",
+      "title_en": "Rethinking Code Performance Benchmarks for LLMs",
+      "authors": "Nhat Minh Le, Yisen Xu, Zhijie Wang, Tse-Hsun, Chen",
+      "date": "2026-07-08",
+      "pdf": "https://arxiv.org/pdf/2607.07619v1",
+      "score": "6.0",
+      "evidence": "LLM代码生成效率基准，可用于优化问题",
+      "tldr": "现有LLM代码性能基准测试评估方法存在缺陷，仅6.11%的优化实现显著快于标准解法。多数性能差异未被原始测试暴露。提出基于LLM的多智能体框架，通过生成、诊断和修复确定性测试来暴露运行时间差异。在DeepSeek-v3.1和GPT-4o上，该框架分别将24.01%和25.43%的任务测试出显著性能提升，优于现有方法。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Many function-level performance benchmarks have been proposed to evaluate whether large language models (LLMs) can generate efficient programs. However, results on these benchmarks often show that LLM-generated implementations have little or no execution-time difference from canonical solutions. In this paper, we revisit four popular benchmarks: EffiBench, Enamel, EvalPerf, and Mercury. We evaluate 1,538 tasks under more rigorous setting by running each task 30 times and assessing the runtime differences between the canonical solutions and benchmark-provided performant implementations with statistical testing. With the benchmark-provided test suites, only 6.11% of the performant implementations are significantly faster than the canonical solutions. In a manual analysis of 308 non-significant tasks, 99 performant implementations contain no meaningful performance change, while 209 contain potential performance improvements that are not exposed by the original tests. These results suggest that the main limitation is not only the evaluation method, but also the limited sufficiency of the benchmark-provided performance tests. To address this limitation, we propose an LLM-based multi-agent framework to generate performance-oriented tests that expose runtime differences more effectively than the original tests. The framework uses three separate agents to generate, diagnose, and repair deterministic tests that preserve functional correctness while better exposing performance differences. Across 1,345 benchmark tasks for which the original tests found no significant performance difference, tests generated by our framework with DeepSeek-v3.1 and GPT-4o reveal statistically significant improvements in 24.01% and 25.43% of the tasks, respectively, outperforming the SOTA LLM-based performance test generation method.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/13/2607.08960v1-eluna-an-agentic-llm-system-for-automating-warehouse-operations-with-reasoning-and-task-execution",
+      "section": "quick",
+      "title_en": "Eluna: An Agentic LLM System for Automating Warehouse Operations with Reasoning and Task Execution",
+      "authors": "Ning Liu, Kalle Kujanpää, Zhaoxuan Zhu, P Aditya Sreekar, Kaiwen Liu, Chuanneng Sun, Jorge Marchena Menendez, Matthew Bales, Tianyu Yang, Shahnawaz Alam, Rose Yu, Baoyuan Liu, Kristina Klinkner, Shervin Malmasi",
+      "date": "2026-07-09",
+      "pdf": "https://arxiv.org/pdf/2607.08960v1",
+      "score": "6.0",
+      "evidence": "用于仓库运营优化的LLM智能体系统",
+      "tldr": "仓库操作依赖复杂SOP，LLM智能体难以保证程序合规且易受上下文过载影响。Eluna通过有向无环图编码SOP，渐进式披露任务，并派出并行子智能体执行。采用非对称情节蒸馏，用教师模型纠正轨迹后微调学生模型，消除推理时额外开销。在13任务基准和两个生产应用中达到94%专家一致性，超越所有基线。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Warehouse operations are governed by Standard Operating Procedures (SOPs) that encode complex, multi-system decision logic, which must be executed reliably under strict time constraints, yet LLM agents lack mechanisms to enforce procedural compliance and degrade under the context overload full SOP specifications introduce. We present Eluna, a production-deployed agentic system for reliable SOP execution. Eluna is a graph-guided, multi-agent framework that encodes SOPs as directed acyclic graphs with progressive disclosure and delegates independent tasks to parallel sub-agents, each with persistent code execution and live data access. To meet production latency and accuracy needs, we use asymmetric episodic distillation where a strong teacher is improved through episodic error memories, then a smaller student is fine-tuned on the corrected trajectories with memory stripped, internalizing corrections without inference-time overhead. On a 13-task benchmark and two production applications, our fine-tuned models match or exceed their teacher, beat all larger off-the-shelf baselines, and reach 94% expert agreement on the ticket processing application.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
