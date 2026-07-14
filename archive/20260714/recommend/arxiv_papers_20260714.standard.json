@@ -1,0 +1,130 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-14T21:34:14.056630+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2607.07727v1",
+      "source": "arxiv",
+      "title": "SPL: Orchestrating Workflows with Declarative Deterministic-Probabilistic Composition",
+      "abstract": "We present SPL (Structured Prompt Language), a declarative language that composes deterministic and probabilistic computation modes in a single specification. While existing frameworks separate these -- orchestration systems (AutoGen, CrewAI, LangGraph) for LLM calls, symbolic tools (SymPy, SageMath, Lean) for computation -- SPL unifies them. It provides GENERATE/EVALUATE for probabilistic computation and SOLVE/ASSERT for deterministic computation, sharing syntax, variable bindings, and runtime routing. A .spl specification runs unchanged across local nodes (Ollama), cloud APIs (OpenRouter, Anthropic), and distributed grids (Momagrid), with model and verifier selection deferred to invocation time.   We validate SPL through an extensive 78-recipe cookbook and a controlled 1,200-run experiment (10 models x 20 problems x 2 arms x 3 repetitions; the 20 problems span 6 difficulty tiers). The solver arm achieves 82-93% machine-verified correctness (sonnet-4-6: 85%, gemma4:e2b: 93%) while the LLM-only arm measures output production without mathematical verification, making the comparison one of verified correctness against unverified fluency. A backend difficulty gradient emerges (SymPy 78%, Sage 54%), and the dominant failure mode is solver_error (kernel-rejected expressions), not format non-compliance.",
+      "authors": [
+        "Wen G. Gong"
+      ],
+      "primary_category": "cs.PL",
+      "categories": [
+        "cs.PL",
+        "cs.CL"
+      ],
+      "published": "2026-07-06T03:53:10+00:00",
+      "link": "https://arxiv.org/pdf/2607.07727v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "declarative language combining LLM and symbolic solving, directly enables code generation for optimization problems",
+      "llm_evidence_cn": "声明式语言结合LLM与符号求解，直接支持优化问题代码生成",
+      "llm_evidence": "声明式语言结合LLM与符号求解，直接支持优化问题代码生成",
+      "canonical_evidence": "声明式语言结合LLM与符号求解，直接支持优化问题代码生成",
+      "llm_tldr_en": "SPL is a declarative language that unifies deterministic and probabilistic computation, enabling LLM-mediated code generation with SOLVE for optimization.",
+      "llm_tldr_cn": "现有框架将LLM调用与符号计算分离，SPL提出声明式语言统一两者，通过GENERATE/EVALUATE和SOLVE/ASSERT原语在单一规范中组合确定性与概率计算。该语言可跨本地、云和分布式网格运行，验证实验表明其表达能力与灵活性。SPL直接支持使用LLM生成优化求解代码，是相关需求的强匹配方法。",
+      "llm_tldr": "现有框架将LLM调用与符号计算分离，SPL提出声明式语言统一两者，通过GENERATE/EVALUATE和SOLVE/ASSERT原语在单一规范中组合确定性与概率计算。该语言可跨本地、云和分布式网格运行，验证实验表明其表达能力与灵活性。SPL直接支持使用LLM生成优化求解代码，是相关需求的强匹配方法。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.10768v1",
+      "source": "arxiv",
+      "title": "Opti-Agent-Bench: Benchmarking End-to-End Optimization R&D Agents on Real-World Business Problems",
+      "abstract": "LLM-based agents are increasingly deployed to solve optimization problems, yet existing benchmarks evaluate them on pre-structured mathematical formulations that bypass the most critical challenge: translating complex business requirements into correct models and solve efficiently. We introduce Opti-Agent-Bench, an end-to-end benchmark that evaluates Large Language Models (LLMs) across the complete optimization R&D pipeline, from understanding business-language descriptions through mathematical modeling, algorithm selection, and code implementation, to solution report generation. Our design rests on three pillars: (1) businesssemantic authenticity with anti-template traps that defeat pattern matching; (2) modular evaluation with cross-module consistency checking across Problem Understanding, Formal Modeling, Implementation, and Reporting; and (3) the ORAC bi-level validity framework that simultaneously ensures task quality and scoring integrity. Across several industrialscale tasks spanning integer programming, robust optimization, stochastic programming, and non-convex optimization, we expose critical failure modes of current models, including constraint omission, model-code inconsistency, and report-implementation divergence, that remain invisible under conventional single-metric evaluation.",
+      "authors": [
+        "Yongchang Fu",
+        "Xinjie Huang",
+        "Chengjun Dai",
+        "Chengzhe Feng",
+        "Junshao Zhang",
+        "Hong Zhu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-12T13:47:57+00:00",
+      "link": "https://arxiv.org/pdf/2607.10768v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "end-to-end optimization R&D agent benchmark covering modeling and code generation",
+      "llm_evidence_cn": "涵盖建模和代码生成的端到端优化R&D智能体基准",
+      "llm_evidence": "涵盖建模和代码生成的端到端优化R&D智能体基准",
+      "canonical_evidence": "涵盖建模和代码生成的端到端优化R&D智能体基准",
+      "llm_tldr_en": "Opti-Agent-Bench evaluates LLMs on the full optimization pipeline: from business language to mathematical modeling, algorithm selection, code implementation, and report generation, filling the gap of end-to-end benchmarking for optimization agents.",
+      "llm_tldr_cn": "现有基准仅评估预结构化数学公式，忽略了从业务需求到模型求解的关键步骤。本文提出Opti-Agent-Bench，一个端到端基准，评估LLM在完整优化研发流程中的表现，包括理解业务描述、数学建模、算法选择、代码实现和报告生成。通过业务语义真实性和反模板陷阱等设计，该基准能更真实衡量LLM解决实际优化问题的能力。",
+      "llm_tldr": "现有基准仅评估预结构化数学公式，忽略了从业务需求到模型求解的关键步骤。本文提出Opti-Agent-Bench，一个端到端基准，评估LLM在完整优化研发流程中的表现，包括理解业务描述、数学建模、算法选择、代码实现和报告生成。通过业务语义真实性和反模板陷阱等设计，该基准能更真实衡量LLM解决实际优化问题的能力。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.11358v1",
+      "source": "arxiv",
+      "title": "RefineEvo: Planning-Guided Heuristic Evolution with Bidirectional Experience",
+      "abstract": "Automatic Heuristic Design (AHD) has emerged as a transformative approach for solving combinatorial optimization problems. While recent Large Language Model (LLM)-based methods have shown promise, they predominantly rely on fixed evolutionary operators and struggle to effectively accumulate and reuse historical search experience. This paper proposes RefineEvo, a novel evolutionary framework that transforms AHD from a static trial-and-error process into a planning-guided, experience-driven system. RefineEvo introduces a Planner to dynamically schedule evolutionary operators and trigger refinement based on the current search state, and a Reflector to distill valuable lessons into a Bidirectional Experience Pool containing both positive insights and negative pitfalls. This synergistic framework enables the system to adapt its search tools to the evolving complexity of the problem and leverage trajectory-aware, situation-conditioned insights to guide generation. Experiments on several classic combinatorial optimization benchmarks demonstrate that RefineEvo consistently outperforms strong baselines. In particular, RefineEvo delivers superior solution quality while improving token efficiency, enabling more efficient and autonomous heuristic design.",
+      "authors": [
+        "Yang Wu",
+        "Junran Pan",
+        "Yifan Zhang",
+        "Ning Xu",
+        "Fanshuo Zeng",
+        "Jian Cheng"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-07-13T10:24:34+00:00",
+      "link": "https://arxiv.org/pdf/2607.11358v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-based automatic heuristic design for combinatorial optimization",
+      "llm_evidence_cn": "基于LLM的组合优化自动启发式设计",
+      "llm_evidence": "基于LLM的组合优化自动启发式设计",
+      "canonical_evidence": "基于LLM的组合优化自动启发式设计",
+      "llm_tldr_en": "RefineEvo uses LLMs to automatically design heuristics for combinatorial optimization, introducing a Planner and Reflector to guide evolution and reuse experience, outperforming static approaches.",
+      "llm_tldr_cn": "现有LLM方法在自动启发式设计中依赖固定算子且难以复用经验。本文提出RefineEvo框架，通过规划器动态调度演化算子，反射器将搜索历史提炼为双向经验池。实验表明其显著优于静态方法，将自动启发式设计转变为规划引导、经验驱动的智能系统。",
+      "llm_tldr": "现有LLM方法在自动启发式设计中依赖固定算子且难以复用经验。本文提出RefineEvo框架，通过规划器动态调度演化算子，反射器将搜索历史提炼为双向经验池。实验表明其显著优于静态方法，将自动启发式设计转变为规划引导、经验驱动的智能系统。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

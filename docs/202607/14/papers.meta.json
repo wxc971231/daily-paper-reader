@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-14",
+  "date": "2026-07-14",
+  "generated_at": "2026-07-14T21:37:42",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/14/2607.07727v1-spl-orchestrating-workflows-with-declarative-deterministic-probabilistic-composition",
+      "section": "deep",
+      "title_en": "SPL: Orchestrating Workflows with Declarative Deterministic-Probabilistic Composition",
+      "authors": "Wen G. Gong",
+      "date": "2026-07-06",
+      "pdf": "https://arxiv.org/pdf/2607.07727v1",
+      "score": "9.0",
+      "evidence": "声明式语言结合LLM与符号求解，直接支持优化问题代码生成",
+      "tldr": "现有框架将LLM调用与符号计算分离，SPL提出声明式语言统一两者。它提供GENERATE/EVALUATE用于概率计算，SOLVE/ASSERT用于确定性计算，共享语法和变量绑定。规格可在本地、云端和分布式网格上不变运行。通过78份配方和1200次实验验证，求解器臂达到82-93%的正确率，揭示了后端难度梯度。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "We present SPL (Structured Prompt Language), a declarative language that composes deterministic and probabilistic computation modes in a single specification. While existing frameworks separate these -- orchestration systems (AutoGen, CrewAI, LangGraph) for LLM calls, symbolic tools (SymPy, SageMath, Lean) for computation -- SPL unifies them. It provides GENERATE/EVALUATE for probabilistic computation and SOLVE/ASSERT for deterministic computation, sharing syntax, variable bindings, and runtime routing. A .spl specification runs unchanged across local nodes (Ollama), cloud APIs (OpenRouter, Anthropic), and distributed grids (Momagrid), with model and verifier selection deferred to invocation time.   We validate SPL through an extensive 78-recipe cookbook and a controlled 1,200-run experiment (10 models x 20 problems x 2 arms x 3 repetitions; the 20 problems span 6 difficulty tiers). The solver arm achieves 82-93% machine-verified correctness (sonnet-4-6: 85%, gemma4:e2b: 93%) while the LLM-only arm measures output production without mathematical verification, making the comparison one of verified correctness against unverified fluency. A backend difficulty gradient emerges (SymPy 78%, Sage 54%), and the dominant failure mode is solver_error (kernel-rejected expressions), not format non-compliance.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/14/2607.10768v1-opti-agent-bench-benchmarking-end-to-end-optimization-rd-agents-on-real-world-business-problems",
+      "section": "deep",
+      "title_en": "Opti-Agent-Bench: Benchmarking End-to-End Optimization R&D Agents on Real-World Business Problems",
+      "authors": "Yongchang Fu, Xinjie Huang, Chengjun Dai, Chengzhe Feng, Junshao Zhang, Hong Zhu",
+      "date": "2026-07-12",
+      "pdf": "https://arxiv.org/pdf/2607.10768v1",
+      "score": "9.0",
+      "evidence": "涵盖建模和代码生成的端到端优化R&D智能体基准",
+      "tldr": "现有LLM优化智能体基准仅评估预结构化数学问题，忽略业务需求到模型的关键转化。本文提出Opti-Agent-Bench，端到端评测智能体在业务理解、建模、算法选择、编码及报告生成全流程的能力，采用反模板陷阱、跨模块一致性检查和ORAC双层有效性框架。在整数规划、鲁棒优化等工业任务上，发现约束遗漏、模型-代码不一致等严重失败模式，弥补了传统单指标评估的盲区。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "LLM-based agents are increasingly deployed to solve optimization problems, yet existing benchmarks evaluate them on pre-structured mathematical formulations that bypass the most critical challenge: translating complex business requirements into correct models and solve efficiently. We introduce Opti-Agent-Bench, an end-to-end benchmark that evaluates Large Language Models (LLMs) across the complete optimization R&D pipeline, from understanding business-language descriptions through mathematical modeling, algorithm selection, and code implementation, to solution report generation. Our design rests on three pillars: (1) businesssemantic authenticity with anti-template traps that defeat pattern matching; (2) modular evaluation with cross-module consistency checking across Problem Understanding, Formal Modeling, Implementation, and Reporting; and (3) the ORAC bi-level validity framework that simultaneously ensures task quality and scoring integrity. Across several industrialscale tasks spanning integer programming, robust optimization, stochastic programming, and non-convex optimization, we expose critical failure modes of current models, including constraint omission, model-code inconsistency, and report-implementation divergence, that remain invisible under conventional single-metric evaluation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/14/2607.11358v1-refineevo-planning-guided-heuristic-evolution-with-bidirectional-experience",
+      "section": "deep",
+      "title_en": "RefineEvo: Planning-Guided Heuristic Evolution with Bidirectional Experience",
+      "authors": "Yang Wu, Junran Pan, Yifan Zhang, Ning Xu, Fanshuo Zeng, Jian Cheng",
+      "date": "2026-07-13",
+      "pdf": "https://arxiv.org/pdf/2607.11358v1",
+      "score": "9.0",
+      "evidence": "基于LLM的组合优化自动启发式设计",
+      "tldr": "自动启发式设计依赖固定进化算子，难以积累历史经验。本文提出RefineEvo框架，引入Planner动态调度算子并触发优化，Reflector将经验存入正反双向池。在组合优化基准上，该框架提升解质量并降低token消耗，实现了从静态试错到规划引导、经验驱动的转变。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Automatic Heuristic Design (AHD) has emerged as a transformative approach for solving combinatorial optimization problems. While recent Large Language Model (LLM)-based methods have shown promise, they predominantly rely on fixed evolutionary operators and struggle to effectively accumulate and reuse historical search experience. This paper proposes RefineEvo, a novel evolutionary framework that transforms AHD from a static trial-and-error process into a planning-guided, experience-driven system. RefineEvo introduces a Planner to dynamically schedule evolutionary operators and trigger refinement based on the current search state, and a Reflector to distill valuable lessons into a Bidirectional Experience Pool containing both positive insights and negative pitfalls. This synergistic framework enables the system to adapt its search tools to the evolving complexity of the problem and leverage trajectory-aware, situation-conditioned insights to guide generation. Experiments on several classic combinatorial optimization benchmarks demonstrate that RefineEvo consistently outperforms strong baselines. In particular, RefineEvo delivers superior solution quality while improving token efficiency, enabling more efficient and autonomous heuristic design.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
