@@ -1,0 +1,137 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-15T21:29:01.257199+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.10768v1",
+      "source": "arxiv",
+      "title": "Opti-Agent-Bench: Benchmarking End-to-End Optimization R&D Agents on Real-World Business Problems",
+      "abstract": "LLM-based agents are increasingly deployed to solve optimization problems, yet existing benchmarks evaluate them on pre-structured mathematical formulations that bypass the most critical challenge: translating complex business requirements into correct models and solve efficiently. We introduce Opti-Agent-Bench, an end-to-end benchmark that evaluates Large Language Models (LLMs) across the complete optimization R&D pipeline, from understanding business-language descriptions through mathematical modeling, algorithm selection, and code implementation, to solution report generation. Our design rests on three pillars: (1) businesssemantic authenticity with anti-template traps that defeat pattern matching; (2) modular evaluation with cross-module consistency checking across Problem Understanding, Formal Modeling, Implementation, and Reporting; and (3) the ORAC bi-level validity framework that simultaneously ensures task quality and scoring integrity. Across several industrialscale tasks spanning integer programming, robust optimization, stochastic programming, and non-convex optimization, we expose critical failure modes of current models, including constraint omission, model-code inconsistency, and report-implementation divergence, that remain invisible under conventional single-metric evaluation.",
+      "authors": [
+        "Yongchang Fu",
+        "Xinjie Huang",
+        "Chengjun Dai",
+        "Chengzhe Feng",
+        "Junshao Zhang",
+        "Hong Zhu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-12T13:47:57+00:00",
+      "link": "https://arxiv.org/pdf/2607.10768v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "benchmark for LLM agents in optimization R&D pipeline from business description to code",
+      "llm_evidence_cn": "评估LLM智能体在运筹优化研发全流程（从业务描述到代码生成）的基准",
+      "llm_evidence": "评估LLM智能体在运筹优化研发全流程（从业务描述到代码生成）的基准",
+      "canonical_evidence": "评估LLM智能体在运筹优化研发全流程（从业务描述到代码生成）的基准",
+      "llm_tldr_en": "Opti-Agent-Bench is an end-to-end benchmark evaluating LLMs across the complete optimization R&D pipeline, from business requirements to modeling, algorithm selection, code generation, and report generation, with anti-template traps to prevent pattern matching.",
+      "llm_tldr_cn": "该文提出Opti-Agent-Bench，一个端到端基准测试，评估大语言模型在运筹优化研发全流程中的能力，涵盖从商业语言描述到数学建模、算法选择、代码实现乃至解决方案报告生成。基准设计了抗模板陷阱以防止模式匹配，能够真实反映智能体在解决实际业务优化问题时的表现。实验表明现有LLM在建模环节存在明显短板，为后续研究提供了重要评估框架。",
+      "llm_tldr": "该文提出Opti-Agent-Bench，一个端到端基准测试，评估大语言模型在运筹优化研发全流程中的能力，涵盖从商业语言描述到数学建模、算法选择、代码实现乃至解决方案报告生成。基准设计了抗模板陷阱以防止模式匹配，能够真实反映智能体在解决实际业务优化问题时的表现。实验表明现有LLM在建模环节存在明显短板，为后续研究提供了重要评估框架。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.11358v1",
+      "source": "arxiv",
+      "title": "RefineEvo: Planning-Guided Heuristic Evolution with Bidirectional Experience",
+      "abstract": "Automatic Heuristic Design (AHD) has emerged as a transformative approach for solving combinatorial optimization problems. While recent Large Language Model (LLM)-based methods have shown promise, they predominantly rely on fixed evolutionary operators and struggle to effectively accumulate and reuse historical search experience. This paper proposes RefineEvo, a novel evolutionary framework that transforms AHD from a static trial-and-error process into a planning-guided, experience-driven system. RefineEvo introduces a Planner to dynamically schedule evolutionary operators and trigger refinement based on the current search state, and a Reflector to distill valuable lessons into a Bidirectional Experience Pool containing both positive insights and negative pitfalls. This synergistic framework enables the system to adapt its search tools to the evolving complexity of the problem and leverage trajectory-aware, situation-conditioned insights to guide generation. Experiments on several classic combinatorial optimization benchmarks demonstrate that RefineEvo consistently outperforms strong baselines. In particular, RefineEvo delivers superior solution quality while improving token efficiency, enabling more efficient and autonomous heuristic design.",
+      "authors": [
+        "Yang Wu",
+        "Junran Pan",
+        "Yifan Zhang",
+        "Ning Xu",
+        "Fanshuo Zeng",
+        "Jian Cheng"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-07-13T10:24:34+00:00",
+      "link": "https://arxiv.org/pdf/2607.11358v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "automatic heuristic design for combinatorial optimization using LLM",
+      "llm_evidence_cn": "利用LLM自动设计组合优化启发式算法，直接对应自动求解生成",
+      "llm_evidence": "利用LLM自动设计组合优化启发式算法，直接对应自动求解生成",
+      "canonical_evidence": "利用LLM自动设计组合优化启发式算法，直接对应自动求解生成",
+      "llm_tldr_en": "RefineEvo transforms automatic heuristic design into a planning-guided, experience-driven system using LLM, directly solving optimization problem code generation.",
+      "llm_tldr_cn": "针对组合优化问题的自动启发式设计，现有LLM方法依赖固定进化算子且难以积累经验。本工作提出RefineEvo，引入规划器动态调度算子，反射器提取正反经验存入双向经验池，将静态试错过程转变为规划引导的经验驱动系统。实验表明该方法能高效生成高质量启发式算法，直接服务于运筹优化问题的自动化求解代码生成。",
+      "llm_tldr": "针对组合优化问题的自动启发式设计，现有LLM方法依赖固定进化算子且难以积累经验。本工作提出RefineEvo，引入规划器动态调度算子，反射器提取正反经验存入双向经验池，将静态试错过程转变为规划引导的经验驱动系统。实验表明该方法能高效生成高质量启发式算法，直接服务于运筹优化问题的自动化求解代码生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.10474v1",
+      "source": "arxiv",
+      "title": "Reinforcement Learning with Verifiable Physics: Post-training LLMs with Continuous Rewards",
+      "abstract": "Partial differential equations (PDEs) are foundational to modeling in science and engineering, but constructing reliable numerical solvers remains labor-intensive, demanding expert knowledge of discretization schemes, stability conditions, and boundary treatments. Recent work has begun to frame PDE solving as a code-generation task for large language models (LLMs), yet existing approaches operate primarily at inference time: relying on prompting, debugging, self-refinement, and test-time scaling rather than adapting the model itself. In parallel, reinforcement learning with verifiable rewards has emerged as a post-training paradigm for code and math reasoning, but its verifiers are typically binary: a compiler runs, or a test passes. Such signals discard the graded structure of scientific correctness, where two solvers may both execute and yet differ in solution accuracy by orders of magnitude. In this work, we introduce RLVP: Reinforcement Learning with Verifiable Physics, an RL post-training framework for multi-PDE solver code generation. RLVP addresses this verifiability gap with a hybrid verifier: hard program-validity checks ensure executability, while continuous physics rewards score function-space accuracy and PDE-residual consistency. A single policy is post-trained across diverse PDE families spanning hyperbolic, parabolic, elliptic, and incompressible-flow systems. RLVP improves over both pre-trained and supervised-only baselines on PDE benchmarks, and shows zero-shot improvement transfer to held-out PDEs. We show that a smaller LLM post-trained with RLVP can outperform prompting a frontier model on in-distribution PDE solver generation. The trained policy shows evidence of compositionality in numerical motifs: it recombines stencils, time-stepping schemes, and boundary-handling primitives learned from the PDEs used in training into generated solvers for unseen PDE problems.",
+      "authors": [
+        "Pengfei Cai",
+        "Utkarsh Utkarsh",
+        "Alan Edelman",
+        "Christopher Vincent Rackauckas",
+        "Rafael Gomez-Bombarelli"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CE"
+      ],
+      "published": "2026-07-11T20:53:04+00:00",
+      "link": "https://arxiv.org/pdf/2607.10474v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "code generation for PDE solving using LLMs with RL",
+      "llm_evidence_cn": "使用强化学习后训练LLM生成PDE求解代码",
+      "llm_evidence": "使用强化学习后训练LLM生成PDE求解代码",
+      "canonical_evidence": "使用强化学习后训练LLM生成PDE求解代码",
+      "llm_tldr_en": "Proposes post-training LLMs with continuous rewards from PDE verifiers for code generation, analogous to automatic solution generation for optimization.",
+      "llm_tldr_cn": "论文将偏微分方程求解视为代码生成任务，利用可验证物理奖励的强化学习对LLM进行后训练。不同于仅推理时提示，该方法直接调整模型参数以生成更可靠的求解代码。在多个PDE问题上的实验表明，后训练显著提升了生成代码的准确性和稳定性。该工作展示了将连续奖励用于科学计算代码生成的潜力，与运筹优化中自动求解生成的方法论高度一致。",
+      "llm_tldr": "论文将偏微分方程求解视为代码生成任务，利用可验证物理奖励的强化学习对LLM进行后训练。不同于仅推理时提示，该方法直接调整模型参数以生成更可靠的求解代码。在多个PDE问题上的实验表明，后训练显著提升了生成代码的准确性和稳定性。该工作展示了将连续奖励用于科学计算代码生成的潜力，与运筹优化中自动求解生成的方法论高度一致。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

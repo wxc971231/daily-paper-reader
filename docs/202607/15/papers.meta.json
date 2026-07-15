@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-15",
+  "date": "2026-07-15",
+  "generated_at": "2026-07-15T21:31:46",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/15/2607.10768v1-opti-agent-bench-benchmarking-end-to-end-optimization-rd-agents-on-real-world-business-problems",
+      "section": "deep",
+      "title_en": "Opti-Agent-Bench: Benchmarking End-to-End Optimization R&D Agents on Real-World Business Problems",
+      "authors": "Yongchang Fu, Xinjie Huang, Chengjun Dai, Chengzhe Feng, Junshao Zhang, Hong Zhu",
+      "date": "2026-07-12",
+      "pdf": "https://arxiv.org/pdf/2607.10768v1",
+      "score": "9.0",
+      "evidence": "评估LLM智能体在运筹优化研发全流程（从业务描述到代码生成）的基准",
+      "tldr": "现有基准仅评估预结构化数学问题，忽略从业务需求到数学模型的关键转化。本文提出Opti-Agent-Bench，覆盖优化研发全流程，包含反模板陷阱、跨模块一致性检查和ORAC双层有效性框架。在整数规划等工业级任务上，发现约束遗漏、模型-代码不一致等失败模式，揭示了传统单指标评估无法暴露的缺陷。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "LLM-based agents are increasingly deployed to solve optimization problems, yet existing benchmarks evaluate them on pre-structured mathematical formulations that bypass the most critical challenge: translating complex business requirements into correct models and solve efficiently. We introduce Opti-Agent-Bench, an end-to-end benchmark that evaluates Large Language Models (LLMs) across the complete optimization R&D pipeline, from understanding business-language descriptions through mathematical modeling, algorithm selection, and code implementation, to solution report generation. Our design rests on three pillars: (1) businesssemantic authenticity with anti-template traps that defeat pattern matching; (2) modular evaluation with cross-module consistency checking across Problem Understanding, Formal Modeling, Implementation, and Reporting; and (3) the ORAC bi-level validity framework that simultaneously ensures task quality and scoring integrity. Across several industrialscale tasks spanning integer programming, robust optimization, stochastic programming, and non-convex optimization, we expose critical failure modes of current models, including constraint omission, model-code inconsistency, and report-implementation divergence, that remain invisible under conventional single-metric evaluation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/15/2607.11358v1-refineevo-planning-guided-heuristic-evolution-with-bidirectional-experience",
+      "section": "deep",
+      "title_en": "RefineEvo: Planning-Guided Heuristic Evolution with Bidirectional Experience",
+      "authors": "Yang Wu, Junran Pan, Yifan Zhang, Ning Xu, Fanshuo Zeng, Jian Cheng",
+      "date": "2026-07-13",
+      "pdf": "https://arxiv.org/pdf/2607.11358v1",
+      "score": "9.0",
+      "evidence": "利用LLM自动设计组合优化启发式算法，直接对应自动求解生成",
+      "tldr": "组合优化中的自动启发式设计常受困于固定进化算子与经验复用不足。RefineEvo框架引入规划器动态调度算子并触发精细调整，反射器则将正反经验存入双向经验池，实现轨迹感知的启发式生成。在多类经典基准上，该方法不仅显著提升解质量，还节省了token开销，推动更高效的自动启发式设计。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Automatic Heuristic Design (AHD) has emerged as a transformative approach for solving combinatorial optimization problems. While recent Large Language Model (LLM)-based methods have shown promise, they predominantly rely on fixed evolutionary operators and struggle to effectively accumulate and reuse historical search experience. This paper proposes RefineEvo, a novel evolutionary framework that transforms AHD from a static trial-and-error process into a planning-guided, experience-driven system. RefineEvo introduces a Planner to dynamically schedule evolutionary operators and trigger refinement based on the current search state, and a Reflector to distill valuable lessons into a Bidirectional Experience Pool containing both positive insights and negative pitfalls. This synergistic framework enables the system to adapt its search tools to the evolving complexity of the problem and leverage trajectory-aware, situation-conditioned insights to guide generation. Experiments on several classic combinatorial optimization benchmarks demonstrate that RefineEvo consistently outperforms strong baselines. In particular, RefineEvo delivers superior solution quality while improving token efficiency, enabling more efficient and autonomous heuristic design.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/15/2607.10474v1-reinforcement-learning-with-verifiable-physics-post-training-llms-with-continuous-rewards",
+      "section": "quick",
+      "title_en": "Reinforcement Learning with Verifiable Physics: Post-training LLMs with Continuous Rewards",
+      "authors": "Pengfei Cai, Utkarsh Utkarsh, Alan Edelman, Christopher Vincent Rackauckas, Rafael Gomez-Bombarelli",
+      "date": "2026-07-11",
+      "pdf": "https://arxiv.org/pdf/2607.10474v1",
+      "score": "6.0",
+      "evidence": "使用强化学习后训练LLM生成PDE求解代码",
+      "tldr": "偏微分方程求解依赖专家知识，现有LLM方法多在推理时增强且使用二元奖励，忽略科学精度的连续差异。本文提出RLVP，采用混合验证器：硬程序检查确保可执行，连续物理奖励评分函数精度。在多种PDE族后训练后，超越预训练和监督基线，小模型可超越前沿大模型，并展示零样本迁移和数值组合性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Partial differential equations (PDEs) are foundational to modeling in science and engineering, but constructing reliable numerical solvers remains labor-intensive, demanding expert knowledge of discretization schemes, stability conditions, and boundary treatments. Recent work has begun to frame PDE solving as a code-generation task for large language models (LLMs), yet existing approaches operate primarily at inference time: relying on prompting, debugging, self-refinement, and test-time scaling rather than adapting the model itself. In parallel, reinforcement learning with verifiable rewards has emerged as a post-training paradigm for code and math reasoning, but its verifiers are typically binary: a compiler runs, or a test passes. Such signals discard the graded structure of scientific correctness, where two solvers may both execute and yet differ in solution accuracy by orders of magnitude. In this work, we introduce RLVP: Reinforcement Learning with Verifiable Physics, an RL post-training framework for multi-PDE solver code generation. RLVP addresses this verifiability gap with a hybrid verifier: hard program-validity checks ensure executability, while continuous physics rewards score function-space accuracy and PDE-residual consistency. A single policy is post-trained across diverse PDE families spanning hyperbolic, parabolic, elliptic, and incompressible-flow systems. RLVP improves over both pre-trained and supervised-only baselines on PDE benchmarks, and shows zero-shot improvement transfer to held-out PDEs. We show that a smaller LLM post-trained with RLVP can outperform prompting a frontier model on in-distribution PDE solver generation. The trained policy shows evidence of compositionality in numerical motifs: it recombines stencils, time-stepping schemes, and boundary-handling primitives learned from the PDEs used in training into generated solvers for unseen PDE problems.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
