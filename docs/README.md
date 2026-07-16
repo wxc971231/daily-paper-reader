@@ -6,29 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-15
-- 运行时间：2026-07-15 21:31:40 UTC
+- 最新运行日期：2026-07-16
+- 运行时间：2026-07-16 20:01:25 UTC
 - 运行状态：成功
-- 本次总论文数：3
+- 本次总论文数：4
 - 精读区：2
-- 速读区：1
+- 速读区：2
 
 ### 今日简报（AI）
-今日精读两篇高分论文，聚焦端到端优化研发代理与规划引导的启发式进化。推荐重点关注《Opti-Agent-Bench》和《RefineEvo》，均获9.0高分。建议优先研读这两篇，深入理解真实业务优化与双向经验演化方法。
-- 详情：[/202607/15/README](/202607/15/README)
+今日精选4篇论文，精读2篇高分文献聚焦交通管理与AI引导。最值得关注的是成本最优的交通管理部署策略及基于双代理的LLM生成引导方法。建议从精读论文中提炼核心技术细节，再结合速读中的代码生成与图增强演化思路拓展应用。
+- 详情：[/202607/16/README](/202607/16/README)
 
 ### 精读区论文标签
-1. [Opti-Agent-Bench: Benchmarking End-to-End Optimization R&D Agents on Real-World Business Problems](/202607/15/2607.10768v1-opti-agent-bench-benchmarking-end-to-end-optimization-rd-agents-on-real-world-business-problems)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：评估LLM智能体在运筹优化研发全流程（从业务描述到代码生成）的基准
-2. [RefineEvo: Planning-Guided Heuristic Evolution with Bidirectional Experience](/202607/15/2607.11358v1-refineevo-planning-guided-heuristic-evolution-with-bidirectional-experience)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：利用LLM自动设计组合优化启发式算法，直接对应自动求解生成
+1. [Cost-Optimal Foundation Model Deployment Portfolio for Transportation Management](/202607/16/2607.13239v1-cost-optimal-foundation-model-deployment-portfolio-for-transportation-management)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：提出了交通管理中部署优化的混合整数规划模型，直接涉及运筹优化建模
+2. [How to Guide LLM Generation: Dual-Surrogate Guided Search for Automated Heuristic Design](/202607/16/2607.13911v1-how-to-guide-llm-generation-dual-surrogate-guided-search-for-automated-heuristic-design)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：LLM从任务描述生成可执行的优化启发式代码
 
 ### 速读区论文标签
-1. [Reinforcement Learning with Verifiable Physics: Post-training LLMs with Continuous Rewards](/202607/15/2607.10474v1-reinforcement-learning-with-verifiable-physics-post-training-llms-with-continuous-rewards)  
+1. [Functional and Secure Code Generation with Task Vectors](/202607/16/2607.07881v1-functional-and-secure-code-generation-with-task-vectors)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：使用强化学习后训练LLM生成PDE求解代码
+   evidence：LLM代码生成以生成功能正确且安全的代码
+2. [GAE: Graph-Augmented Evolution for Scientific Discovery via Reinforcement Optimization](/202607/16/2607.10127v1-gae-graph-augmented-evolution-for-scientific-discovery-via-reinforcement-optimization)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：LLM引导的进化程序搜索用于自动求解生成
 
 
 <div class="dpr-home-promo-card">

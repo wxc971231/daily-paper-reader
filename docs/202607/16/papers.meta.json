@@ -1,0 +1,69 @@
+{
+  "label": "2026-07-16",
+  "date": "2026-07-16",
+  "generated_at": "2026-07-16T20:01:31",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202607/16/2607.13239v1-cost-optimal-foundation-model-deployment-portfolio-for-transportation-management",
+      "section": "deep",
+      "title_en": "Cost-Optimal Foundation Model Deployment Portfolio for Transportation Management",
+      "authors": "Xi Cheng, Ke Liu, Siyuan Feng, Jane Lin, H. Oliver Gao",
+      "date": "2026-07-14",
+      "pdf": "https://arxiv.org/pdf/2607.13239v1",
+      "score": "8.0",
+      "evidence": "提出了交通管理中部署优化的混合整数规划模型，直接涉及运筹优化建模",
+      "tldr": "交通管理中心使用多种基础模型执行异常检测、事故报告等任务，面临功能分配、部署模式和共享GPU预算的组合优化问题。本文提出FMDP混合整数规划模型，最小化总拥有成本，并证明NP-hard，设计了多项式时间贪心启发式。案例中5个功能19个候选对，混合方案月成本34美元，较全闭源API节省97%。工作为交通管理模型部署提供了成本最优的决策框架。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Foundation models, including large language models (LLMs) and vision-language models (VLMs), are increasingly used for transportation management center (TMC) tasks such as anomaly detection, incident reporting, and traveler information. Deploying multiple such models across TMC functions raises a portfolio question: which model should serve each function, in which deployment mode, and under what shared hardware budget? We formulate this as the Foundation Model Deployment Portfolio (FMDP) problem, a mixed-integer program minimizing total cost of ownership (TCO) subject to per-function quality, latency, and safety constraints over shared GPU capacity. We prove the problem NP-hard by reduction from the 0-1 knapsack problem and propose a polynomial-time greedy heuristic. In an illustrative case study with five TMC functions and 19 candidate (model, mode) pairs, FMDP identifies a mixed portfolio costing $34/mo (97% below the cheapest feasible all-closed-API baseline) by routing four functions to open-source APIs and the one function whose quality floor no open-source model meets to a closed API. Break-even analysis shows that on-premise GPU investment becomes reasonable only above approximately 309 vision queries/hour or if API prices double.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/16/2607.13911v1-how-to-guide-llm-generation-dual-surrogate-guided-search-for-automated-heuristic-design",
+      "section": "deep",
+      "title_en": "How to Guide LLM Generation: Dual-Surrogate Guided Search for Automated Heuristic Design",
+      "authors": "Yuhan Wang, Chaoda Peng, Xingyu Wu, Sheng-Hao Wu, Zhi-Hui Zhan",
+      "date": "2026-07-15",
+      "pdf": "https://arxiv.org/pdf/2607.13911v1",
+      "score": "8.0",
+      "evidence": "LLM从任务描述生成可执行的优化启发式代码",
+      "tldr": "大语言模型用于自动启发式设计时，搜索效率依赖于预生成动作选择。现有方法使用预定义规则间接建模动作效果。本文提出双代理指导搜索，通过转移代理预测子代表示分布，实例条件效用代理估计子代性能，并采用不确定性感知规则选择动作。在多样化启发式设计基准上超越强基线，消融实验表明其行为超越简单排序或固定偏好，为LLM引导的自动设计提供了有效框架。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language models (LLMs) have made automated heuristic design (AHD) increasingly practical by generating executable heuristic code from task descriptions and evaluator feedback. Yet under a limited query and evaluation budget, search efficiency depends critically on a pre-generation decision. Before each LLM query and black-box evaluation, the system must choose which archived heuristics to reuse as parents and which generation operator should transform them. Existing methods typically choose such actions with predefined rules, leaving the expected outcome of each concrete operator-parent action only indirectly modeled. Therefore, we propose \\emph{\\fullmethod{}} (\\method{}), a surrogate-guided action-selection module for operator-parent selection in LLM-based AHD. \\method{} guides the LLM code-generation process by scoring pre-generation actions with two complementary surrogates. Specifically, a transition surrogate is proposed to predict the latent distribution of the child representation induced by an operator-parent action, while an instance-conditioned utility surrogate is proposed to estimate the expected performance of sampled child latents. Moreover, we propose an uncertainty-aware acquisition rule that combines predicted utility, utility uncertainty, and transition uncertainty to select the next LLM generation action. Across a diverse heuristic-design suite, \\method{} is competitive with strong LLM-AHD baselines, and ablation and action-selection analyses suggest that its behavior goes beyond simple archive ranking or fixed operator preferences.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/16/2607.07881v1-functional-and-secure-code-generation-with-task-vectors",
+      "section": "quick",
+      "title_en": "Functional and Secure Code Generation with Task Vectors",
+      "authors": "Felix Wang, Anudeep Das, Mei Nagappan, N. Asokan",
+      "date": "2026-07-08",
+      "pdf": "https://arxiv.org/pdf/2607.07881v1",
+      "score": "6.0",
+      "evidence": "LLM代码生成以生成功能正确且安全的代码",
+      "tldr": "大型语言模型生成代码时功能与安全性不足，现有工作通常分开评估或后处理。本文提出SecVecCoder方法，通过任务向量算术同时优化功能与安全对齐，无需后处理。在六个编码LLM上，可信代码完成率提升2.1-36个百分点，对未见CWE类型提升达39.1个百分点。解码延迟仅增加0.6%，实现了高效可信代码生成。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language models (LLMs) are increasingly used for code generation, but they struggle to generate functional code free of security vulnerabilities. Prior work to improve the secure code generation abilities of such coding LLMs has largely focused on evaluating code functionality and security separately using different datasets, or focused on finding vulnerabilities post-generation. At the same time, the text-generation domain has seen significant work on alignment techniques, where models are tuned such that their outputs exhibit certain qualities (e.g., helpfulness, harmlessness). Of particular interest is task-vector arithmetic, where linear operations on LLM weights can be used to arbitrarily enhance alignment while incurring only minimal computational overhead. We develop a novel method, SecVecCoder, leveraging task vectors to produce trustworthy code that is simultaneously functional and secure without the need for post-generation adjustment. Across six coding LLMs from three families on the CodeGuard+ benchmark, SecVecCoder improves the rate of trustworthy code completions by 2.1-36.0 percentage points over the base model, with improvements on unseen CWE types reaching up to 39.1 percentage points. Since the effectiveness of the coding LLM relies only on changing the model weights, SecVecCoder requires no method-specific decoding and hence achieves a decoding latency within 0.6% of the base model's, on average.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/16/2607.10127v1-gae-graph-augmented-evolution-for-scientific-discovery-via-reinforcement-optimization",
+      "section": "quick",
+      "title_en": "GAE: Graph-Augmented Evolution for Scientific Discovery via Reinforcement Optimization",
+      "authors": "Xuanzhou Chen, Taoli Cheng",
+      "date": "2026-07-11",
+      "pdf": "https://arxiv.org/pdf/2607.10127v1",
+      "score": "6.0",
+      "evidence": "LLM引导的进化程序搜索用于自动求解生成",
+      "tldr": "现有基于大语言模型的进化程序搜索存在三大瓶颈：结构盲选父代、稀疏整体奖励和静态变异算子。GAE框架提出三支柱架构：用图神经网络解析程序生成结构嵌入，强化学习元控制器根据奖励历史动态选择父代与变异方向，在线GRPO微调使LLM变异算子自适应适应。在复杂非线性振荡器符号回归任务中，GAE高效发现闭式物理方程，表现匹配或超越静态基线，达到分布外最优性能。该工作将随机进化搜索转变为有导向、自改进的轨迹，显著提升科学发现效率。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Evolutionary program search guided by Large Language Models (LLMs) has emerged as a powerful paradigm for automated scientific discovery. However, current approaches are fundamentally constrained by three bottlenecks: structurally blind parent selection, sparse whole-program evaluation rewards, and static mutation operators that fail to adapt during search. We present GAE (Graph-Augmented Evolution), a framework that resolves these limitations through a tightly coupled, three-pillar architecture. First, a relational graph neural network (GNN) parses programs into typed computation graphs, producing structure-aware embeddings. Second, an RL-optimized meta-controller leverages these embeddings to replace blind evolutionary sampling with a directed policy, dynamically selecting optimal parents and mutation directions based on reward history. Third, an online GRPO fine-tuning loop continuously updates the LLM mutation operator at test-time using group-normalized evaluation rewards, directly aligning the model's generation distribution with high-fitness structural edits. We evaluate GAE on a challenging scientific discovery task: symbolic regression for complex nonlinear oscillator systems. By transforming stochastic search into a directed, self-improving trajectory, GAE efficiently discovers closed-form physical equations, consistently matching or outperforming static LLM-driven baselines and achieving state-of-the-art out-of-distribution performance.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
