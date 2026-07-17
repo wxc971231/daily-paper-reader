@@ -1,0 +1,92 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-17T20:57:56.408160+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.14818v1",
+      "source": "arxiv",
+      "title": "Can LLMs Build a MaxSAT Solver from Papers? The CoreForge Experience",
+      "abstract": "We report on CoreForge, an experience in using large language models (LLMs) to build an unweighted MaxSAT solver from research papers rather than from an existing solver codebase. The project focuses on unsatisfiability-based MaxSAT algorithms and follows an iterative workflow that combines paper discussions with ChatGPT, implementation through Codex prompts, and repeated LLM-assisted code audits and revisions. Although the codebase implements several algorithms and solver components, our evaluation focuses on configurations that combine core-guided optimization, lightweight preprocessing, core minimization, integration with integer linear optimization backends, and a new core-sequence lookahead approach.   Our experience suggests that LLMs can support solver implementation from papers, while requiring external validation, benchmarking, and human guidance. In our experiments, fuzzing and MaxSAT Evaluation instances did not reveal wrong answers in the tested configurations, although performance remains below the best hand-engineered MaxSAT solvers. We summarize what worked, what remained difficult, and the lessons for future LLM-assisted solver development.",
+      "authors": [
+        "Ruben Martins"
+      ],
+      "primary_category": "cs.LO",
+      "categories": [
+        "cs.LO",
+        "cs.AI"
+      ],
+      "published": "2026-07-16T10:37:02+00:00",
+      "link": "https://arxiv.org/pdf/2607.14818v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "uses LLM to generate MaxSAT solver code from papers; code generation for optimization",
+      "llm_evidence_cn": "使用LLM从论文生成MaxSAT求解器代码；优化问题的代码生成",
+      "llm_evidence": "使用LLM从论文生成MaxSAT求解器代码；优化问题的代码生成",
+      "canonical_evidence": "使用LLM从论文生成MaxSAT求解器代码；优化问题的代码生成",
+      "llm_tldr_en": "CoreForge project uses LLMs to build an unweighted MaxSAT solver from research papers, demonstrating that LLMs can support code generation for optimization problems via iterative paper discussion and implementation.",
+      "llm_tldr_cn": "该论文报告了CoreForge项目，利用大型语言模型（LLM）从研究论文而非现有代码库构建未加权MaxSAT求解器。项目采用迭代工作流，结合ChatGPT讨论论文、使用Codex提示实现代码以及LLM辅助的代码审计与修订。评估聚焦于核心引导优化、轻量预处理、核心最小化、整数线性优化后端集成及核心序列前瞻等配置。结果表明LLM能够支持优化问题求解代码的自动生成，为运筹优化建模与代码生成提供了直接证据。",
+      "llm_tldr": "该论文报告了CoreForge项目，利用大型语言模型（LLM）从研究论文而非现有代码库构建未加权MaxSAT求解器。项目采用迭代工作流，结合ChatGPT讨论论文、使用Codex提示实现代码以及LLM辅助的代码审计与修订。评估聚焦于核心引导优化、轻量预处理、核心最小化、整数线性优化后端集成及核心序列前瞻等配置。结果表明LLM能够支持优化问题求解代码的自动生成，为运筹优化建模与代码生成提供了直接证据。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.09493v1",
+      "source": "arxiv",
+      "title": "Shared Selective Persistent Memory for Agentic LLM Systems",
+      "abstract": "Agentic LLM systems that generate code through multi-turn tool use face a fundamental context problem: each session starts from zero, discarding the configuration choices, domain constraints, data schemas, and tool-use patterns that made previous sessions productive. Naively persisting entire conversation histories is token-inefficient and counterproductive: irrelevant context degrades generation quality. We introduce shared selective persistent memory, an architecture that identifies and retains four categories of reusable context (task specifications, data schemas, tool configurations, and output constraints) while discarding session-specific reasoning traces. Crucially, this memory is shared: workspaces encapsulating selective memory can be transferred across users with role-based access control, enabling collaborative reuse without redundant specification. We implement it in a deployed collaborative workspace platform where LLM agents produce, edit, and maintain git-versioned artifacts (dashboards, reports, and data-driven documents) from heterogeneous sources (CSV, SQL, REST APIs, and MCP servers). A complementary zero-token data refresh mechanism decouples generated programs from runtime data, enabling artifact reuse without re-invocation. Across three enterprise scenarios, shared selective persistent memory achieves 96% task completion (vs. 79% without memory and 71% with full history). Zero-token refresh eliminates LLM re-invocation for recurring updates (14x task-time reduction), while summary-driven generation cuts per-invocation token cost by 97x versus raw data injection. A replication on four public datasets confirms generalizability, with zero-token refresh succeeding in 12/12 trials. Notably, naive full-history persistence actively degrades completion by biasing the agent with stale traces, while selective memory outperforms both extremes.",
+      "authors": [
+        "Sanjana Pedada",
+        "Aditya Dhavala",
+        "Neelraj Patil"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.MA",
+        "cs.SE"
+      ],
+      "published": "2026-07-10T15:07:00+00:00",
+      "link": "https://arxiv.org/pdf/2607.09493v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "selective persistent memory architecture for multi-turn code generation in agentic LLM systems",
+      "llm_evidence_cn": "面向智能体LLM系统的选择性持久记忆架构，支持多轮代码生成中的上下文复用",
+      "llm_evidence": "面向智能体LLM系统的选择性持久记忆架构，支持多轮代码生成中的上下文复用",
+      "canonical_evidence": "面向智能体LLM系统的选择性持久记忆架构，支持多轮代码生成中的上下文复用",
+      "llm_tldr_en": "Introduces shared selective persistent memory for agentic LLM systems, retaining reusable context from previous sessions to improve efficiency and quality of multi-turn code generation, directly applicable to optimization problem solving.",
+      "llm_tldr_cn": "现有智能体LLM系统在进行多轮代码生成时，每次会话从零开始，丢弃了之前的有用配置和约束信息。本文提出共享选择性持久记忆架构，自动识别并保留任务规格、数据模式、工具配置和输出约束四类可复用上下文，同时丢弃临时推理轨迹。该架构支持跨用户共享工作区，可显著提升优化问题求解代码生成的效率和质量，减少重复交互和错误。",
+      "llm_tldr": "现有智能体LLM系统在进行多轮代码生成时，每次会话从零开始，丢弃了之前的有用配置和约束信息。本文提出共享选择性持久记忆架构，自动识别并保留任务规格、数据模式、工具配置和输出约束四类可复用上下文，同时丢弃临时推理轨迹。该架构支持跨用户共享工作区，可显著提升优化问题求解代码生成的效率和质量，减少重复交互和错误。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

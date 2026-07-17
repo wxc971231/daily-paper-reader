@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-17",
+  "date": "2026-07-17",
+  "generated_at": "2026-07-17T20:59:33",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/17/2607.14818v1-can-llms-build-a-maxsat-solver-from-papers-the-coreforge-experience",
+      "section": "deep",
+      "title_en": "Can LLMs Build a MaxSAT Solver from Papers? The CoreForge Experience",
+      "authors": "Ruben Martins",
+      "date": "2026-07-16",
+      "pdf": "https://arxiv.org/pdf/2607.14818v1",
+      "score": "9.0",
+      "evidence": "使用LLM从论文生成MaxSAT求解器代码；优化问题的代码生成",
+      "tldr": "大语言模型能否依据论文而非现有代码构建MaxSAT求解器？CoreForge项目探索了这一问题，采用迭代工作流结合ChatGPT讨论、Codex代码生成和LLM辅助审计，实现了基于不可满足性驱动的MaxSAT算法。测试中虽未发现错误答案，但求解性能显著低于顶级人工求解器。研究表明LLM可辅助求解器开发，但需人类验证与性能优化。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "We report on CoreForge, an experience in using large language models (LLMs) to build an unweighted MaxSAT solver from research papers rather than from an existing solver codebase. The project focuses on unsatisfiability-based MaxSAT algorithms and follows an iterative workflow that combines paper discussions with ChatGPT, implementation through Codex prompts, and repeated LLM-assisted code audits and revisions. Although the codebase implements several algorithms and solver components, our evaluation focuses on configurations that combine core-guided optimization, lightweight preprocessing, core minimization, integration with integer linear optimization backends, and a new core-sequence lookahead approach.   Our experience suggests that LLMs can support solver implementation from papers, while requiring external validation, benchmarking, and human guidance. In our experiments, fuzzing and MaxSAT Evaluation instances did not reveal wrong answers in the tested configurations, although performance remains below the best hand-engineered MaxSAT solvers. We summarize what worked, what remained difficult, and the lessons for future LLM-assisted solver development.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/17/2607.09493v1-shared-selective-persistent-memory-for-agentic-llm-systems",
+      "section": "quick",
+      "title_en": "Shared Selective Persistent Memory for Agentic LLM Systems",
+      "authors": "Sanjana Pedada, Aditya Dhavala, Neelraj Patil",
+      "date": "2026-07-10",
+      "pdf": "https://arxiv.org/pdf/2607.09493v1",
+      "score": "7.0",
+      "evidence": "面向智能体LLM系统的选择性持久记忆架构，支持多轮代码生成中的上下文复用",
+      "tldr": "代理式LLM系统每次会话从零开始，浪费了之前的配置、模式等可复用上下文。本文提出共享选择性持久记忆架构，识别并保留任务规范、数据模式等四类关键上下文，丢弃无关推理轨迹，并支持跨用户共享。在部署平台上，该方法实现96%任务完成率，超过无记忆的79%和完整历史的71%；零令牌刷新机制使重复更新任务时间减少14倍，摘要驱动生成将令牌成本降低97倍。实验证明全面超越朴素持久化策略。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Agentic LLM systems that generate code through multi-turn tool use face a fundamental context problem: each session starts from zero, discarding the configuration choices, domain constraints, data schemas, and tool-use patterns that made previous sessions productive. Naively persisting entire conversation histories is token-inefficient and counterproductive: irrelevant context degrades generation quality. We introduce shared selective persistent memory, an architecture that identifies and retains four categories of reusable context (task specifications, data schemas, tool configurations, and output constraints) while discarding session-specific reasoning traces. Crucially, this memory is shared: workspaces encapsulating selective memory can be transferred across users with role-based access control, enabling collaborative reuse without redundant specification. We implement it in a deployed collaborative workspace platform where LLM agents produce, edit, and maintain git-versioned artifacts (dashboards, reports, and data-driven documents) from heterogeneous sources (CSV, SQL, REST APIs, and MCP servers). A complementary zero-token data refresh mechanism decouples generated programs from runtime data, enabling artifact reuse without re-invocation. Across three enterprise scenarios, shared selective persistent memory achieves 96% task completion (vs. 79% without memory and 71% with full history). Zero-token refresh eliminates LLM re-invocation for recurring updates (14x task-time reduction), while summary-driven generation cuts per-invocation token cost by 97x versus raw data injection. A replication on four public datasets confirms generalizability, with zero-token refresh succeeding in 12/12 trials. Notably, naive full-history persistence actively degrades completion by biasing the agent with stale traces, while selective memory outperforms both extremes.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
