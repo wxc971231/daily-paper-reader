@@ -6,28 +6,22 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-17
-- 运行时间：2026-07-17 20:59:26 UTC
+- 最新运行日期：2026-07-18
+- 运行时间：2026-07-18 20:56:02 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：1
-- 速读区：1
+- 本次总论文数：0
+- 精读区：0
+- 速读区：0
 
 ### 今日简报（AI）
-1) 今日精读9.0分论文《Can LLMs Build a MaxSAT Solver from Papers? The CoreForge Experience》，速读一篇7.0分共享内存研究。  
-2) 最值得关注：LLM能否根据论文自动构建MaxSAT求解器，揭示AI在算法实现中的突破性潜力。  
-3) 建议关注LLM驱动的自动化编程与持久内存系统设计，这两方向将显著影响未来AI工具链效率。
-- 详情：[/202607/17/README](/202607/17/README)
+> 今日无新推荐，系统未产出可展示论文。
+- 详情：[/202607/18/README](/202607/18/README)
 
 ### 精读区论文标签
-1. [Can LLMs Build a MaxSAT Solver from Papers? The CoreForge Experience](/202607/17/2607.14818v1-can-llms-build-a-maxsat-solver-from-papers-the-coreforge-experience)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：使用LLM从论文生成MaxSAT求解器代码；优化问题的代码生成
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Shared Selective Persistent Memory for Agentic LLM Systems](/202607/17/2607.09493v1-shared-selective-persistent-memory-for-agentic-llm-systems)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：面向智能体LLM系统的选择性持久记忆架构，支持多轮代码生成中的上下文复用
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
