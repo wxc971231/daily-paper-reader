@@ -6,22 +6,24 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-19
-- 运行时间：2026-07-19 19:53:50 UTC
+- 最新运行日期：2026-07-20
+- 运行时间：2026-07-20 21:09:39 UTC
 - 运行状态：成功
-- 本次总论文数：0
+- 本次总论文数：1
 - 精读区：0
-- 速读区：0
+- 速读区：1
 
 ### 今日简报（AI）
-> 今日无新推荐，系统未产出可展示论文。
-- 详情：[/202607/19/README](/202607/19/README)
+今日速读1篇论文，聚焦零维降阶模型规划的多智能体框架。最值得关注的是利用多智能体自动规划零维降阶模型，提升复杂系统建模效率。建议对模型简化或自动建模感兴趣的读者进一步了解该框架。
+- 详情：[/202607/20/README](/202607/20/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [A Multi-Agent Framework for Zero-Dimensional Reduced-Order Model Planning](/202607/20/2607.10994v1-a-multi-agent-framework-for-zero-dimensional-reduced-order-model-planning)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：用于0D简化模型规划的多代理LLM框架，涉及优化
 
 
 <div class="dpr-home-promo-card">

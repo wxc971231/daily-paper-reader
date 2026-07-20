@@ -1,0 +1,24 @@
+{
+  "label": "2026-07-20",
+  "date": "2026-07-20",
+  "generated_at": "2026-07-20T21:09:45",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202607/20/2607.10994v1-a-multi-agent-framework-for-zero-dimensional-reduced-order-model-planning",
+      "section": "quick",
+      "title_en": "A Multi-Agent Framework for Zero-Dimensional Reduced-Order Model Planning",
+      "authors": "Bingteng Sun, Hao Yin, Yiling Chen, Renjie Xiao, Lei Xie, Shanyou Wang, Ruonan Wang, Shubao Chen, Qingzong Xu, Lin Lu, Qiang Du, Junqiang Zhu",
+      "date": "2026-07-13",
+      "pdf": "https://arxiv.org/pdf/2607.10994v1",
+      "score": "7.0",
+      "evidence": "用于0D简化模型规划的多代理LLM框架，涉及优化",
+      "tldr": "零维降阶模型(0D ROM)规划依赖人工经验，限制了拓扑探索。本文提出Z-COPA多智能体框架，包含符号动作图引擎和MILP引导优化器，将规划转化为图结构优化问题。在航空发动机二次空气系统等基准测试中取得最优性能，颠覆了传统0D模型规划范式。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Zero-dimensional reduced-order models (0D ROMs) are central to multi-dimensional design workflows for high-end complex equipment. However, the planning process currently relies on manual expertise, limiting topological exploration and prolonging iterations. Even traditional optimization methods such as Genetic Algorithms (GA) are typically confined to local parameter tuning. Although Large Language Model (LLM) agents have shown promise in exploring large sample spaces, and frameworks such as Chain of Thought (CoT) and Reason and Act (ReAct) improve reasoning reliability, while Retrieval-Augmented Generation (RAG) overcomes domain knowledge barriers, a single agent still falls short for the long-horizon and highly coupled nature of complex 0D ROM planning. This paper proposes the Zero-dimensional reduced-order model CO-Planning framework (Z-COPA), a multi-agent architecture featuring a Symbolic Action Graph Engine (SAGE) and a MILP-Guided Navigation (MGN) optimizer. Its core innovation is a dedicated graph representation method that accurately encodes the 0D flow network topology, converting the empirical planning process into a rigorous graph structure optimization problem. We validate the forward and inverse design capabilities and generalization performance of Z-COPA on two real aircraft engine secondary-air systems, two IEEE power-distribution reconfiguration benchmarks, and two water-distribution network benchmarks. The results show superior task completion quality, obtaining the best performance in both forward and reverse design of air systems. Z-COPA disrupts the traditional 0D model planning paradigm, providing a new technical approach for exploring broader topological space and achieving highly automated, globally optimal air system architectures.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

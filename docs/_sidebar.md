@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-07-20 <!--dpr-date:20260720-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/20/2607.10994v1-a-multi-agent-framework-for-zero-dimensional-reduced-order-model-planning" data-sidebar-item="{&quot;title&quot;: &quot;A Multi-Agent Framework for Zero-Dimensional Reduced-Order Model Planning&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.10994v1-a-multi-agent-framework-for-zero-dimensional-reduced-order-model-planning&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;用于0D简化模型规划的多代理LLM框架，涉及优化&quot;}">A Multi-Agent Framework for Zero-Dimensional Reduced-Order Model Planning</a>
   * 2026-07-17 <!--dpr-date:20260717-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/17/2607.14818v1-can-llms-build-a-maxsat-solver-from-papers-the-coreforge-experience" data-sidebar-item="{&quot;title&quot;: &quot;Can LLMs Build a MaxSAT Solver from Papers? The CoreForge Experience&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.14818v1-can-llms-build-a-maxsat-solver-from-papers-the-coreforge-experience&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;使用LLM从论文生成MaxSAT求解器代码；优化问题的代码生成&quot;}">Can LLMs Build a MaxSAT Solver from Papers? The CoreForge Experience</a>
