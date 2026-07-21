@@ -1,0 +1,242 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-21T21:30:46.413394+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2607.16646v1",
+      "source": "arxiv",
+      "title": "Falsification-Based Verification of LLM-Generated Optimization Models: Sound Test Batteries and Their Detection Limits",
+      "abstract": "Large language models now translate natural-language descriptions of decision problems into solver-ready optimization models, but they fail silently. A generated model often runs and still formulates the wrong problem. This paper develops a theory of falsification-based verification for this setting. Every numeric quantity in the description is a typed slot, and a candidate model is tested only through solver calls on slot-transformed instances; no reference model or label is consulted. From duality, comparative statics, and polyhedral limit arguments we derive a battery of test classes covering directions, curvature, crush probes, prohibitive limits, annihilation, and exchange. Every test is sound, so a violation certifies unfaithfulness and the false-positive rate is zero by design. We characterize what such verification can never see, give conditions under which the canonical error classes are detected with certainty, and prove that no fixed-threshold perturbation tester is simultaneously sound and nontrivial. Experiments on 326 ground-truth models from NL4OPT and four benchmark families confirm the theory. The battery attains a 0.0% false-positive rate against 54.9% for a threshold tester, detects 70.0% of certified conditional-class mutants, convicts 40.4% of the mutants invisible to execution-accuracy scoring, and reproduces the predicted detectability pattern including its zeros.",
+      "authors": [
+        "Haifeng Li",
+        "Mo Hai"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI"
+      ],
+      "published": "2026-07-18T05:32:37+00:00",
+      "link": "https://arxiv.org/pdf/2607.16646v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-generated optimization models verification",
+      "llm_evidence_cn": "LLM生成的优化模型验证",
+      "llm_evidence": "LLM生成的优化模型验证",
+      "canonical_evidence": "LLM生成的优化模型验证",
+      "llm_tldr_en": "Proposes falsification-based verification for LLM-generated optimization models, covering sound test batteries from duality and comparative statics, addressing silent model errors.",
+      "llm_tldr_cn": "大型语言模型能将自然语言描述转化为求解器可直接运行的优化模型，但会无声地生成错误模型。本文提出了基于证伪的验证理论，通过从对偶性、比较静态和多项式极限等推导出一系列测试类（方向、曲率、湮灭等），无参考模型即可检测错误。所有测试都是可靠的，且不可判定区域存在检测界限。该方法为安全部署LLM生成的优化模型提供了实用保障，是首个系统性的验证框架。",
+      "llm_tldr": "大型语言模型能将自然语言描述转化为求解器可直接运行的优化模型，但会无声地生成错误模型。本文提出了基于证伪的验证理论，通过从对偶性、比较静态和多项式极限等推导出一系列测试类（方向、曲率、湮灭等），无参考模型即可检测错误。所有测试都是可靠的，且不可判定区域存在检测界限。该方法为安全部署LLM生成的优化模型提供了实用保障，是首个系统性的验证框架。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.16777v1",
+      "source": "arxiv",
+      "title": "JOR-Bench: Japanese Operations Research Benchmarks for Large Language Models",
+      "abstract": "We present JOR-Bench, a collection of five Japanese-language benchmarks for evaluating the ability of large language models (LLMs) to formulate and solve operations research (OR) problems. Each benchmark is a Japanese translation of an existing English benchmark: IndustryOR, MAMO Complex LP, NL4OPT, OptiBench, and OptMATH, covering 1,319 problems spanning linear programming, mixed-integer programming, non-linear programming, and combinatorial optimization. JOR-Bench is a solver-independent benchmark that can be used with any solver or programming language, and consists of pairs of Japanese problem statements and expected numerical answers. We evaluate seven LLMs, including multilingual general-purpose models and Japanese-specialized models, on both the original English and the new Japanese versions, and compare performance across languages. For the main evaluation, we standardize execution with the Python interface to OR-Tools to make model outputs comparable and reproducible with open-source software. Our results show that OR formulation ability is largely language-neutral for strong multilingual models; the overall average accuracy difference between English and Japanese is only $-0.3$ pp. Yet error analysis reveals subtle cross-lingual differences, including a pragmatic disambiguation failure in some domains that causes models to output decision-variable values instead of the objective value when the prompt is in Japanese.",
+      "authors": [
+        "Yuu Jinnai"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-07-18T11:24:10+00:00",
+      "link": "https://arxiv.org/pdf/2607.16777v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "evaluates LLMs on formulating and solving operations research problems",
+      "llm_evidence_cn": "评估大语言模型在运筹问题建模与求解方面的能力",
+      "llm_evidence": "评估大语言模型在运筹问题建模与求解方面的能力",
+      "canonical_evidence": "评估大语言模型在运筹问题建模与求解方面的能力",
+      "llm_tldr_en": "Presents JOR-Bench, a collection of five Japanese benchmarks for evaluating LLMs' ability to formulate and solve operations research problems, covering linear, integer, nonlinear, and combinatorial optimization.",
+      "llm_tldr_cn": "当前缺乏对LLM在运筹学领域能力的系统评估。本文构建了JOR-Bench，包含五个日语基准，涵盖线性规划、混合整数规划、非线性规划及组合优化共1319个问题。通过测试七个LLM在问题建模与数值求解上的表现，揭示了现有模型的优势与不足。该基准为未来LLM辅助运筹优化研究提供了标准化的评估平台。",
+      "llm_tldr": "当前缺乏对LLM在运筹学领域能力的系统评估。本文构建了JOR-Bench，包含五个日语基准，涵盖线性规划、混合整数规划、非线性规划及组合优化共1319个问题。通过测试七个LLM在问题建模与数值求解上的表现，揭示了现有模型的优势与不足。该基准为未来LLM辅助运筹优化研究提供了标准化的评估平台。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.17708v1",
+      "source": "arxiv",
+      "title": "LaT: LLM-as-Trainer for Multi-Task Vehicle Routing Solvers",
+      "abstract": "Multi-task neural solvers aim to handle multiple Vehicle Routing Problem (VRP) variants within a unified model, avoiding separate training for each constraint combination. However, VRP variants differ in optimization difficulty, while existing methods lack stage-wise feedback on their training status, making the model biased to some specific variants. Although meta-learning can support adaptive training, it typically requires bi-level optimization and additional gradient updates, increasing computational cost. To address this limitation, we propose LLM-as-Trainer (LaT), a plug-and-play training paradigm that uses a pretrained large language model as an external trainer. LaT periodically analyzes cross-task validation metrics to generate a stage-wise guidance vector. This vector is combined with the current task's constraint vector and injected into each encoder layer, providing the neural solver with additional training information during subsequent policy optimization. Experiments on 16 VRP variants show that LaT improves the solution quality of several state-of-the-art multi-task neural solvers on both trained and unseen variants, supporting the effectiveness and generality of the proposed training paradigm.",
+      "authors": [
+        "Yang Wang",
+        "Ya-Hui Jia",
+        "Wei-Neng Chen",
+        "Yi Mei",
+        "Wen Song",
+        "Zhiguang Cao"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-20T09:02:11+00:00",
+      "link": "https://arxiv.org/pdf/2607.17708v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM as trainer for multi-task vehicle routing solvers",
+      "llm_evidence_cn": "LLM作为多任务车辆路径求解器的训练器",
+      "llm_evidence": "LLM作为多任务车辆路径求解器的训练器",
+      "canonical_evidence": "LLM作为多任务车辆路径求解器的训练器",
+      "llm_tldr_en": "LaT uses a pretrained LLM as an external trainer to guide multi-task VRP solver training, addressing variant bias and improving optimization performance.",
+      "llm_tldr_cn": "针对多任务车辆路径问题（VRP）求解器中不同变体训练不平衡的问题，本文提出LLM-as-Trainer（LaT），利用预训练大语言模型作为外部训练器，通过分析跨任务验证指标生成阶段式引导向量，从而自适应调整训练权重。实验表明，LaT能有效提升多任务VRP求解器的整体性能和泛化能力，为LLM辅助优化求解提供了新范式。",
+      "llm_tldr": "针对多任务车辆路径问题（VRP）求解器中不同变体训练不平衡的问题，本文提出LLM-as-Trainer（LaT），利用预训练大语言模型作为外部训练器，通过分析跨任务验证指标生成阶段式引导向量，从而自适应调整训练权重。实验表明，LaT能有效提升多任务VRP求解器的整体性能和泛化能力，为LLM辅助优化求解提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.13820v1",
+      "source": "arxiv",
+      "title": "PROBE: Benchmarking Code Generation in Large Language Models",
+      "abstract": "Large Language Models (LLMs) are increasingly being used in everyday software engineering tasks, particularly in automated code generation. Despite their widespread adoption, these models remain far from perfect, making systematic and fair evaluation essential to understand their strengths and limitations. In the context of code generation, existing benchmarks are limited: they often target a single programming language and rely primarily on unit test outcomes, while overlooking other critical dimensions such as the overall quality of the generated code and its closeness to a valid solution. To address these gaps, we introduce PROBE, an extensible benchmark framework that, unlike prior work, establishes a systematic structure built on diverse and well-defined metrics, representative workloads, varied prompt templates, and a robust experimental procedure. In practice, the code generated by the LLMs is evaluated along three complementary dimensions: functional correctness, proximity to valid solutions, and code quality, enabling a comprehensive assessment of performance. We use PROBE to evaluate four open-source and two proprietary models under three prompting strategies across five programming languages. We further complement this analysis with a study of common errors in the code and provide concrete examples, offering clearer insight into where LLMs tend to struggle. Our findings show that, while LLMs achieve promising results, they struggle with harder problems and, in the case of smaller models, with programming languages that have fewer available resources for training, and they often fail due to fundamental and easily avoidable errors that underscore the unreliability of automatically generated code.",
+      "authors": [
+        "Rodrigo Pato Nogueira",
+        "Marco Vieira",
+        "João R. Campos"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-07-15T13:28:18+00:00",
+      "link": "https://arxiv.org/pdf/2607.13820v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "benchmarking code generation for LLMs",
+      "llm_evidence_cn": "评估LLM代码生成的基准框架",
+      "llm_evidence": "评估LLM代码生成的基准框架",
+      "canonical_evidence": "评估LLM代码生成的基准框架",
+      "llm_tldr_en": "PROBE provides an extensible benchmark for evaluating LLM code generation quality beyond unit tests, applicable to optimization problem code generation tasks.",
+      "llm_tldr_cn": "现有代码生成基准局限于单一语言和单元测试，忽略代码质量和解决方案接近度。本文提出PROBE，一个可扩展的基准框架，系统化评估LLM生成代码的多维度质量。该框架可用于评估优化问题求解代码生成，但未直接涉及运筹优化，仍属方法论桥梁。",
+      "llm_tldr": "现有代码生成基准局限于单一语言和单元测试，忽略代码质量和解决方案接近度。本文提出PROBE，一个可扩展的基准框架，系统化评估LLM生成代码的多维度质量。该框架可用于评估优化问题求解代码生成，但未直接涉及运筹优化，仍属方法论桥梁。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.13921v2",
+      "source": "arxiv",
+      "title": "Generative Compilation: On-the-Fly Compiler Feedback as AI Generates Code",
+      "abstract": "Languages with rich static semantics, such as Rust, provide stronger guarantees for AI-generated code, but their strictness makes generation more difficult. Off-the-shelf compilers can provide useful feedback post-generation, but does not guide intermediate generation steps, such as those during autoregressive LLM decoding. Constrained decoding intervenes earlier by rejecting invalid tokens during sampling, but requires white-box model access and costly reimplementation for semantic constraints.   We introduce generative compilation, the first approach to obtaining compiler feedback on partial programs during generation. The core technical device is a sealor: a lightweight, mostly syntax-guided transformation that converts partial programs into complete ones that standard compilers can diagnose. It is designed such that possible-to-complete partial programs are never rejected, while preserving enough code context to catch genuine dead ends early. We construct such a sealor on a core Rust-like calculus and prove that it satisfies these properties, all mechanized in Lean. We extend it to the first partial-program checker for real Rust.   We evaluate our method on challenging repository-level Rust coding tasks, across both frontier black-box and open-weight models. We show that generative compilation reduces non-compiling outputs and improves functional correctness, relative to standard post-generation feedback. It does so by detecting a broad range of errors close to their source and early during generation, thereby reducing errors cascades and enabling focused diagnostics. More broadly, generative compilation is a step toward making compilers a first-class citizen of AI-assisted programming active during generation, rather than a separate post-generation check.",
+      "authors": [
+        "Niels Mündler-Sasahara",
+        "Hristo Venev",
+        "Dawn Song",
+        "Martin Vechev",
+        "Jingxuan He"
+      ],
+      "primary_category": "cs.PL",
+      "categories": [
+        "cs.PL",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-07-15T15:00:22+00:00",
+      "link": "https://arxiv.org/pdf/2607.13921v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "on-the-fly compiler feedback during code generation",
+      "llm_evidence_cn": "生成过程中实时反馈编译器信息的代码生成方法",
+      "llm_evidence": "生成过程中实时反馈编译器信息的代码生成方法",
+      "canonical_evidence": "生成过程中实时反馈编译器信息的代码生成方法",
+      "llm_tldr_en": "Generative compilation introduces sealor transformation to obtain compiler feedback on partial programs during LLM decoding, improving generation quality for strict languages, transferable to optimization code generation where constraints are critical.",
+      "llm_tldr_cn": "编译型语言（如Rust）对AI生成代码有严格限制，传统约束解码需白盒访问且成本高。本文提出生成式编译，通过sealor变换在部分程序生成时获得编译器反馈，无需修改模型。该方法可应用于优化问题代码生成中的语义约束，提高生成代码正确性。",
+      "llm_tldr": "编译型语言（如Rust）对AI生成代码有严格限制，传统约束解码需白盒访问且成本高。本文提出生成式编译，通过sealor变换在部分程序生成时获得编译器反馈，无需修改模型。该方法可应用于优化问题代码生成中的语义约束，提高生成代码正确性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.17005v1",
+      "source": "arxiv",
+      "title": "Provably Good Prim-Dijkstra Revisited: New Theory and a Practical Algorithm for a Classical VLSI Routing Problem with LLMs",
+      "abstract": "Large language models may make precise but dormant algorithmic problems practical to revisit, and may expose new paths toward fundamental ones. We demonstrate this possibility through Prim-Dijkstra routing, a classic VLSI problem whose terminal-only Manhattan complexity remained open despite decades of practical work. We prove weak NP-completeness, derive a continuous cost-radius tradeoff with a balanced (2,2) guarantee, and build HP-RCRST, a height-partition-based multi-mode solver. On 28 development instances, its stronger modes Pareto-dominate the published-method union on 23 and tie on five. The case shows how conflicting conjectures, counterexamples, formal checks, and implementation can reopen neglected questions. Code and reproducibility materials are available at https://github.com/CODA-Team/hp-rcrst.",
+      "authors": [
+        "Keren Zhu"
+      ],
+      "primary_category": "cs.AR",
+      "categories": [
+        "cs.AR",
+        "cs.DS"
+      ],
+      "published": "2026-07-18T23:42:59+00:00",
+      "link": "https://arxiv.org/pdf/2607.17005v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM-driven revisit of VLSI routing optimization with new algorithm and solver",
+      "llm_evidence_cn": "利用LLM重新审视VLSI布线优化问题并提出新求解器",
+      "llm_evidence": "利用LLM重新审视VLSI布线优化问题并提出新求解器",
+      "canonical_evidence": "利用LLM重新审视VLSI布线优化问题并提出新求解器",
+      "llm_tldr_en": "Explores LLM's role in reviving classical VLSI routing optimization, proving NP-completeness and deriving a balanced (2,2) guarantee, then building HP-RCRST solver that Pareto-dominates existing methods on most instances.",
+      "llm_tldr_cn": "本文展示了大型语言模型如何使经典的VLSI布线优化问题重新变得可处理。作者首先证明了该问题的弱NP完全性，推导出连续的成本-半径权衡并给出(2,2)平衡保证。基于这些理论，构建了HP-RCRST多模式求解器，在28个开发实例中，其强模式在23个上帕累托优于已有方法并平局5个。这项工作说明了LLM如何通过引发猜想、反例、形式化检查及实现来重新打开算法问题。",
+      "llm_tldr": "本文展示了大型语言模型如何使经典的VLSI布线优化问题重新变得可处理。作者首先证明了该问题的弱NP完全性，推导出连续的成本-半径权衡并给出(2,2)平衡保证。基于这些理论，构建了HP-RCRST多模式求解器，在28个开发实例中，其强模式在23个上帕累托优于已有方法并平局5个。这项工作说明了LLM如何通过引发猜想、反例、形式化检查及实现来重新打开算法问题。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
