@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-23",
+  "date": "2026-07-23",
+  "generated_at": "2026-07-23T21:22:22",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/23/2607.19768v1-alpharoute-large-language-models-as-semantic-optimizers-for-multi-objective-routing",
+      "section": "deep",
+      "title_en": "AlphaRoute: Large Language Models as Semantic Optimizers for Multi-Objective Routing",
+      "authors": "Kabir Murjani, Mishri Bhavsar, Manish I. Patel, Jonti Talukdar",
+      "date": "2026-07-22",
+      "pdf": "https://arxiv.org/pdf/2607.19768v1",
+      "score": "9.0",
+      "evidence": "LLM作为语义优化器解决多目标路由组合优化问题",
+      "tldr": "VLSI全局布线是NP难组合优化问题，传统启发式方法在复杂拥塞拓扑上效果不佳。本文提出AlphaRoute框架，将拆线重布转化为动态优化系统，采用SHAP分解逐网拥塞并驱动子图提取，利用大语言模型作为语义策略优化器动态调整惩罚参数。在ISPD 2025基准上，MEMPOOL设计拥塞减少98.6%，ARIANE设计拥塞降低29.8倍，证明了算法搜索几何可克服解释型Python实现的延迟。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Very Large Scale Integration (VLSI) global routing is an NP-hard combinatorial optimization problem requiring signal net assignment across capacity-constrained 3D grids while minimizing congestion, wirelength, and via transitions. Because traditional heuristics rely on static penalty schedules that fail on complex congestion topologies, we present AlphaRoute: a multi-objective adaptive search framework reformulating rip-up and reroute (R&R) into a dynamic optimization system. We introduce SHAP-based overflow decomposition to isolate per-net congestion, driving targeted subgraph extraction via 3D Dijkstra maze routing and an adaptive PathFinder policy. Crucially, AlphaRoute employs Large Language Models (LLMs) as semantic policy optimizers. Bounded by a deterministic knowledge graph, the LLMs interpret congestion metrics to dynamically adjust penalty parameters. Evaluated on ISPD 2025 benchmarks, AlphaRoute reduces overflow by 98.6% on MEMPOOL. On the constrained ARIANE design, we achieve an overflow of 146,109 (a 29.8x reduction in overflow over the state of the art), yielding a penalized score of S_orig = 0.0538 versus the State-of-the-art (SOTA) 1.780. These results demonstrate that superior algorithmic search geometry can overcome the latency of interpreted Python implementations.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/23/2607.19822v1-wara-a-closed-loop-multi-agent-framework-for-wireless-optimization-autoresearch",
+      "section": "deep",
+      "title_en": "WARA: A Closed-Loop Multi-Agent Framework for Wireless Optimization Autoresearch",
+      "authors": "Yuan Guo, Yilong Chen, Chao Hu, Xianghao Yu, Liang Hong, Jie Xu",
+      "date": "2026-07-22",
+      "pdf": "https://arxiv.org/pdf/2607.19822v1",
+      "score": "9.0",
+      "evidence": "LLM智能体用于无线优化自动研究，包括代码生成",
+      "tldr": "无线资源分配优化是表征系统性能极限和提升实际性能的核心问题，在动态信道和网络条件下尤为复杂。现有大语言模型辅助研究缺乏闭环验证和端到端整合。WARA提出首个面向无线领域的闭环多智能体自动研究框架，通过三阶段工件介导流程（问题识别、建模实验、交付物构建）实现研究全自动化，控制器验证跨阶段一致性并在失败时仅局部修复。基于LLM的ScoringAgent评估稿件级研究有效性。实验显示WARA成果质量远优于一次性LLM生成，接近已接收的同行评议论文，为无线研究自动化树立了新标杆，代码已开源于GitHub。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language model (LLM) agents have shown growing capabilities in tool use, code execution, artifact inspection, and iterative revision, creating new opportunities for automating scientific research. To the best of our knowledge, this paper presents the first end-to-end autoresearch framework for the wireless domain, with a particular focus on wireless resource allocation optimization, an essential area for characterizing the fundamental performance limits of wireless systems and enhancing their practical performance under dynamic channel and network conditions. Specifically, we propose the Wireless AutoResearch Agent (WARA), a closed-loop multi-agent system that transforms an initial research topic into a complete research package. WARA organizes the research workflow into three phases: 1) research gap identification and problem proposal, 2) optimization modeling, algorithm design, and experimentation, and 3) research deliverable construction. Each phase follows an artifact-mediated process, in which structured upstream artifacts are consumed to generate downstream outputs. Controller-managed gates validate these artifacts and maintain consistency among problem formulations, algorithms, experiments, and research claims. When validation fails, WARA repairs only the affected artifact instead of restarting the entire workflow. We further design an LLM-based ScoringAgent to evaluate manuscript-level research validity. Comparative results show that WARA substantially outperforms one-shot LLM generation and approaches the quality profile of recently accepted peer-reviewed papers. These results demonstrate the potential of closed-loop artifact control for end-to-end LLM-assisted wireless optimization research. The source code is available at https://github.com/guoyuan-dotcom/WARA_CUHKSZ",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/23/2607.16978v1-real-world-large-scale-multi-period-log-truck-routing-and-scheduling--application-to-canadian-forestry",
+      "section": "quick",
+      "title_en": "Real-World, Large Scale, Multi-Period Log Truck Routing and Scheduling : Application to Canadian Forestry",
+      "authors": "Abdelhakim Abdellaoui, Issmail El Hallaoui, Loubna Benabbou, François Aubé, Mouloud Amazouz",
+      "date": "2026-07-18",
+      "pdf": "https://arxiv.org/pdf/2607.16978v1",
+      "score": "7.0",
+      "evidence": "解决多期木材卡车路径规划与调度这一运筹优化问题",
+      "tldr": "加拿大林业运输成本占总成本三分之一以上，面临地理距离远、季节变化等挑战。本文针对多周期原木卡车路径与调度问题，提出整合所有运营约束的改进MILP模型，并采用Relax&Fix和Fix&Optimize分解策略求解。在加拿大林业公司历史数据上，该方法在可行时间内获得接近最优解，显著降低了运输成本和温室气体排放，填补了林业VRP精确可扩展公式的空白。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "This paper addresses the multi-period log-truck routing and scheduling problem ($\\mathcal{LTRSP}$), a key operational activity in the forestry industry, where transportation accounts for more than one-third of total operational costs. The Canadian forestry sector faces significant logistical difficulties driven by vast geographic distances, seasonal variability, volatile markets, and environmental considerations. Our research tackles a long-standing open question in the forestry operations literature, namely the absence of an exact and scalable formulation of the forestry vehicle routing problem integrating the full range of operational constraints \\cite{ronnqvist2015operations}: \\textit{How can we model and solve an exact formulation of the forestry VRP problem?} In response, we analyze business rules specific to the forestry sector to construct a routing network reflecting real operational practices, and then propose a comprehensive improved mixed-integer linear programming (MILP) formulation incorporating all known forestry operational constraints, with a detailed justification of key modeling choices such as time discretization, along with a decomposition-based solution methodology tailored for large-scale, multi-period industrial instances. To address the inherent combinatorial complexity, we combine state-of-the-art solvers with a metaheuristic decomposition strategy based on \\textit{Relax\\&Fix} and \\textit{Fix\\&Optimize}. Computational experiments on historical data from a Canadian forest company demonstrate near-optimal results within practical computation times, with significant financial gains and reduced greenhouse gas emissions.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

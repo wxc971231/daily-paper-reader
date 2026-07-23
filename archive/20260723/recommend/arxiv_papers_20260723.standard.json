@@ -1,0 +1,132 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-23T21:19:16.520245+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.19768v1",
+      "source": "arxiv",
+      "title": "AlphaRoute: Large Language Models as Semantic Optimizers for Multi-Objective Routing",
+      "abstract": "Very Large Scale Integration (VLSI) global routing is an NP-hard combinatorial optimization problem requiring signal net assignment across capacity-constrained 3D grids while minimizing congestion, wirelength, and via transitions. Because traditional heuristics rely on static penalty schedules that fail on complex congestion topologies, we present AlphaRoute: a multi-objective adaptive search framework reformulating rip-up and reroute (R&R) into a dynamic optimization system. We introduce SHAP-based overflow decomposition to isolate per-net congestion, driving targeted subgraph extraction via 3D Dijkstra maze routing and an adaptive PathFinder policy. Crucially, AlphaRoute employs Large Language Models (LLMs) as semantic policy optimizers. Bounded by a deterministic knowledge graph, the LLMs interpret congestion metrics to dynamically adjust penalty parameters. Evaluated on ISPD 2025 benchmarks, AlphaRoute reduces overflow by 98.6% on MEMPOOL. On the constrained ARIANE design, we achieve an overflow of 146,109 (a 29.8x reduction in overflow over the state of the art), yielding a penalized score of S_orig = 0.0538 versus the State-of-the-art (SOTA) 1.780. These results demonstrate that superior algorithmic search geometry can overcome the latency of interpreted Python implementations.",
+      "authors": [
+        "Kabir Murjani",
+        "Mishri Bhavsar",
+        "Manish I. Patel",
+        "Jonti Talukdar"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AR"
+      ],
+      "published": "2026-07-22T05:27:55+00:00",
+      "link": "https://arxiv.org/pdf/2607.19768v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM as semantic optimizer for multi-objective routing, a combinatorial OR problem",
+      "llm_evidence_cn": "LLM作为语义优化器解决多目标路由组合优化问题",
+      "llm_evidence": "LLM作为语义优化器解决多目标路由组合优化问题",
+      "canonical_evidence": "LLM作为语义优化器解决多目标路由组合优化问题",
+      "llm_tldr_en": "AlphaRoute uses LLM as semantic policy optimizer for VLSI routing, directly addressing OR optimization with LLM, strong relevance.",
+      "llm_tldr_cn": "该论文提出AlphaRoute框架，利用大型语言模型作为语义策略优化器解决超大规模集成电路全局路由这一NP难组合优化问题。通过SHAP分解和自适应搜索，LLM指导路由优化，显著提升多目标性能。直接匹配运筹优化问题建模与LLM求解的主题。",
+      "llm_tldr": "该论文提出AlphaRoute框架，利用大型语言模型作为语义策略优化器解决超大规模集成电路全局路由这一NP难组合优化问题。通过SHAP分解和自适应搜索，LLM指导路由优化，显著提升多目标性能。直接匹配运筹优化问题建模与LLM求解的主题。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.19822v1",
+      "source": "arxiv",
+      "title": "WARA: A Closed-Loop Multi-Agent Framework for Wireless Optimization Autoresearch",
+      "abstract": "Large language model (LLM) agents have shown growing capabilities in tool use, code execution, artifact inspection, and iterative revision, creating new opportunities for automating scientific research. To the best of our knowledge, this paper presents the first end-to-end autoresearch framework for the wireless domain, with a particular focus on wireless resource allocation optimization, an essential area for characterizing the fundamental performance limits of wireless systems and enhancing their practical performance under dynamic channel and network conditions. Specifically, we propose the Wireless AutoResearch Agent (WARA), a closed-loop multi-agent system that transforms an initial research topic into a complete research package. WARA organizes the research workflow into three phases: 1) research gap identification and problem proposal, 2) optimization modeling, algorithm design, and experimentation, and 3) research deliverable construction. Each phase follows an artifact-mediated process, in which structured upstream artifacts are consumed to generate downstream outputs. Controller-managed gates validate these artifacts and maintain consistency among problem formulations, algorithms, experiments, and research claims. When validation fails, WARA repairs only the affected artifact instead of restarting the entire workflow. We further design an LLM-based ScoringAgent to evaluate manuscript-level research validity. Comparative results show that WARA substantially outperforms one-shot LLM generation and approaches the quality profile of recently accepted peer-reviewed papers. These results demonstrate the potential of closed-loop artifact control for end-to-end LLM-assisted wireless optimization research. The source code is available at https://github.com/guoyuan-dotcom/WARA_CUHKSZ",
+      "authors": [
+        "Yuan Guo",
+        "Yilong Chen",
+        "Chao Hu",
+        "Xianghao Yu",
+        "Liang Hong",
+        "Jie Xu"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "published": "2026-07-22T06:57:13+00:00",
+      "link": "https://arxiv.org/pdf/2607.19822v1",
+      "tags": [
+        "keyword:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM agents for wireless optimization auto-research including code generation",
+      "llm_evidence_cn": "LLM智能体用于无线优化自动研究，包括代码生成",
+      "llm_evidence": "LLM智能体用于无线优化自动研究，包括代码生成",
+      "canonical_evidence": "LLM智能体用于无线优化自动研究，包括代码生成",
+      "llm_tldr_en": "Proposes WARA, a multi-agent LLM framework that autonomously conducts wireless resource allocation optimization research, including code generation, directly matching the composite requirement.",
+      "llm_tldr_cn": "该论文针对无线资源分配优化研究的自动化需求，提出WARA闭环多智能体框架，利用LLM智能体进行工具使用、代码执行、迭代修订，自动完成从研究选题到完整研究包的全流程。实验表明WARA能有效生成优化代码和解决方案。该工作直接契合基于LLM进行运筹优化问题建模和求解代码生成的综合主题，是高度相关的使能方法。",
+      "llm_tldr": "该论文针对无线资源分配优化研究的自动化需求，提出WARA闭环多智能体框架，利用LLM智能体进行工具使用、代码执行、迭代修订，自动完成从研究选题到完整研究包的全流程。实验表明WARA能有效生成优化代码和解决方案。该工作直接契合基于LLM进行运筹优化问题建模和求解代码生成的综合主题，是高度相关的使能方法。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.16978v1",
+      "source": "arxiv",
+      "title": "Real-World, Large Scale, Multi-Period Log Truck Routing and Scheduling : Application to Canadian Forestry",
+      "abstract": "This paper addresses the multi-period log-truck routing and scheduling problem ($\\mathcal{LTRSP}$), a key operational activity in the forestry industry, where transportation accounts for more than one-third of total operational costs. The Canadian forestry sector faces significant logistical difficulties driven by vast geographic distances, seasonal variability, volatile markets, and environmental considerations. Our research tackles a long-standing open question in the forestry operations literature, namely the absence of an exact and scalable formulation of the forestry vehicle routing problem integrating the full range of operational constraints \\cite{ronnqvist2015operations}: \\textit{How can we model and solve an exact formulation of the forestry VRP problem?} In response, we analyze business rules specific to the forestry sector to construct a routing network reflecting real operational practices, and then propose a comprehensive improved mixed-integer linear programming (MILP) formulation incorporating all known forestry operational constraints, with a detailed justification of key modeling choices such as time discretization, along with a decomposition-based solution methodology tailored for large-scale, multi-period industrial instances. To address the inherent combinatorial complexity, we combine state-of-the-art solvers with a metaheuristic decomposition strategy based on \\textit{Relax\\&Fix} and \\textit{Fix\\&Optimize}. Computational experiments on historical data from a Canadian forest company demonstrate near-optimal results within practical computation times, with significant financial gains and reduced greenhouse gas emissions.",
+      "authors": [
+        "Abdelhakim Abdellaoui",
+        "Issmail El Hallaoui",
+        "Loubna Benabbou",
+        "François Aubé",
+        "Mouloud Amazouz"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-07-18T22:03:11+00:00",
+      "link": "https://arxiv.org/pdf/2607.16978v1",
+      "tags": [
+        "keyword:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Addresses multi-period log-truck routing and scheduling, an OR optimization problem",
+      "llm_evidence_cn": "解决多期木材卡车路径规划与调度这一运筹优化问题",
+      "llm_evidence": "解决多期木材卡车路径规划与调度这一运筹优化问题",
+      "canonical_evidence": "解决多期木材卡车路径规划与调度这一运筹优化问题",
+      "llm_tldr_en": "This paper presents a model and exact formulation for the multi-period log-truck routing and scheduling problem in Canadian forestry, addressing gaps in scalable OR formulations.",
+      "llm_tldr_cn": "该论文针对加拿大林业中的多期木材卡车路径规划与调度问题，提出了一个精确且可扩展的数学模型，整合了全部运营约束。该研究解决了林业运筹文献中长期悬而未决的公式化问题，为大规模车辆路径问题的求解提供了新方法。",
+      "llm_tldr": "该论文针对加拿大林业中的多期木材卡车路径规划与调度问题，提出了一个精确且可扩展的数学模型，整合了全部运营约束。该研究解决了林业运筹文献中长期悬而未决的公式化问题，为大规模车辆路径问题的求解提供了新方法。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

@@ -1,0 +1,1608 @@
+Title: Real-World, Large Scale, Multi-Period Log Truck Routing and Scheduling : Application to Canadian Forestry
+
+URL Source: https://arxiv.org/pdf/2607.16978v1
+
+Published Time: Tue, 21 Jul 2026 00:49:44 GMT
+
+Number of Pages: 33
+
+Markdown Content:
+# Real-World, Large Scale, Multi-Period Log Truck Routing and Scheduling : Application to Canadian Forestry 
+
+Abdelhakim Abdellaoui 1,3,∗ Loubna Benabbou 2 Issmail El Hallaoui 1
+
+Franc ¸ois Aub´ e3 Mouloud Amazouz 3
+
+> 1
+
+Department of Mathematics and Industrial Engineering, Polytechnique Montr´ eal, succ. Centre-ville,Montr´ eal, Qu´ ebec, H3C 3A7, Canada 
+
+> 2
+
+Department of Management Science, Universit´ e du Qu´ ebec ` a Rimouski (UQAR), Levis, QC G6V 0A6, Qu´ ebec, Canada 
+
+> 3
+
+Natural Resources Canada, CanmetENERGY, 1615 Lionel-Boulet Blvd, P.O. Box 4800, Varennes, Qu´ ebec, J3X 1P7, Canada 
+
+Abstract : This paper addresses the multi-period log-truck routing and scheduling problem ( LT RSP ), a key operational activity in the forestry industry, where transportation accounts for more than one-third of total operational costs. The Canadian forestry sector faces significant logistical difficulties driven by vast geographic distances, seasonal variability, volatile markets, and environmental considerations. Our research tackles a long-standing open question in the forestry operations literature, namely the absence of an exact and scalable formulation of the forestry vehicle routing problem integrating the full range of operational constraints [1]: How can we model and solve an exact formulation of the forestry VRP problem? In response, we analyze business rules specific to the forestry sector to construct a routing network reflecting real operational practices, and then propose a comprehensive improved mixed-integer linear programming (MILP) formulation incorporating all known forestry operational constraints, with a detailed justification of key modeling choices such as time discretization, along with a decomposition-based solution methodology tailored for large-scale, multi-period industrial instances. To address the inherent combinatorial complexity, we combine state-of-the-art solvers with a metaheuristic decomposition strategy based on Relax&Fix and Fix&Optimize . Computational experiments on historical data from a Canadian forest company demonstrate near-optimal results within practical computation times, with significant financial gains and reduced greenhouse gas emissions. 
+
+Keywords: Log truck, routing and scheduling, Forest site, Mill, Home base. 
+
+# 1 Introduction 
+
+In Canada, the forestry sector constitutes one of the primary drivers of economic activity. According to Canada’s Forests Annual Report 2023 [2], nominal GDP from forest-related activities reached 33.4$ billion in 2022, with logging operations contributing $5.9 billion. This sector not only generates economic value but also supports employment and sustainable development [2]. Such significance underscores the pressing need for efficient transportation, particularly as the industry faces evolving challenges. Log transportation in Canada is subject to a considerable number of challenges. With nearly 226 million hectares of managed forest land [2], the geographical scale of harvesting operations requires an extensive transportation infrastructure. Road accessibility is further affected by climate conditions, as winter and spring periods periodically restrict or degrade transportation routes. At the same time, the sector faces growing pressure to meet environmental sustainability requirements, adding further constraints to an already complex operational setting. In front of these challenges, Canadian forest companies strongly prioritize cost reduction in order to maintain adequate profit margins and remain competitive in an increasingly volatile market [3]. Log transportation makes up to 40 % of the expenses for a typical forest company [4]. Consequently, optimizing transportation costs can be considered as a potential field to bring economic added value. In addition, reducing transportation costs by minimizing the total distance traveled is inherently linked to a reduction in greenhouse gas emissions, supporting environmental sustainability. The ultimate goal of optimizing log-truck routing and scheduling fits within this perspective, in addition to ensuring operational efficiency. Furthermore, truck-based logistics is the primary mode of transport adopted by forestry companies [3]. To address all these considerations, the forestry sector is increasingly looking at digitization and optimization of their logistic operations through advanced techniques. The current business model involves 
+
+> ∗Corresponding author: abdelhakim.abdellaoui@polymtl.ca
+
+1arXiv:2607.16978v1 [math.OC] 18 Jul 2026 subcontracting harvesting and wood transportation to contractors. Studies have shown that a more centralized decision-making system improves operational efficiency [9]. In this context, some companies are turning to advanced operations research methods to design optimal and centralized transportation planning solvers. Moreover, the literature highlights that numerous open questions within forestry logistics remain to be addressed by the operations research community [1]. These primarily involve developing and solving an exact model that incorporates various critical aspects, such as managing queuing at loading and unloading locations, synchronizing trucks without self-loading capabilities with loaders at supply and demand points, and handling a combination of full and partial truckloads [16]. Considering the aforementioned challenges, this paper aims to design an end-to-end framework to tackle a rich problem that integrates key forestry-related aspects, focusing on a large-scale, multi-period log-truck routing and scheduling problem. Following comprehensive discussions with Canadian forest companies, we approached this problem from their perspective. Our goal is to provide a practical and effective solution that facilitates transportation planning, a process that currently relies heavily on manual and decentralized decision-making. The complete framework we propose begins with an improved mathematical model formulation grounded in standard practices prevalent in the Canadian forest industry. We then implement a generic methodology to generate a valid time-space routing network for any real-world instance. In this context, a routing network is defined as the set of all nodes and edges, while considering some conventional constraints such as product assignments to forest sites and mills, as well as vehicle assignments to home bases. In the next phase, the routing network undergoes a processing methodology according to specific rules to minimize its size and, consequently, reduce the combinatorial space. Finally, we design tailored solution approaches to generate optimal truck routes for a defined planning horizon, ensuring that all business constraints are satisfied. The present article has a fourfold contribution: (1) we formulate a mathematical model tailored to the large-scale, multi-period log-truck routing and scheduling problem, incorporating the common constraints found in the Canadian forest industry; (2) we discuss the characteristics and sources of complexity of the model and provide mathematical insights into time discretization; (3) we propose an efficient solving approach based on decomposition methods, and provide the intuition behind its use; and (4) we evaluate the performance of our proposed approach on several real-world instances and assess its financial, environmental, and operational impact. Through this research, we seek to provide insights that can help the Canadian forestry sector maintain its competitive edge while adapting to the evolving challenges of the 21st century. The findings may have implications not only for Canada but also for other countries with significant forestry industries facing similar logistical challenges. The following section presents an overview of the relevant literature. 
+
+# 2 Literature review 
+
+The optimization of log-truck routing and scheduling in forestry has been the subject of many research due to its significant operational, economic, and environmental implications. This review focuses on the evolution of approaches that address this complex problem in terms of formulation and solution methods. The foundational work in LT RSP emerged in the 1980s, emphasizing the attributes that distinguish these problems from general VRPs, such as full and partial truckloads, the need for multi-depot planning, and synchronization constraints at supply and demand sites [15]. The research then expanded significantly, incorporating more real-world constraints [7]. Since the 1990s, many researchers have proposed various formulations and solving techniques in this field. Weintraub et al. [17] developed a heuristic-based decision-making tool known as ASICAM, which integrated simulation with heuristic rules to create truck routes and schedules while managing queuing at supply and demand locations. This system was particularly effective in minimizing wait times, but was limited by its heuristic nature, which lacked mechanisms for iterative solution refinement. The work of R¨ onnqvist and al. [1] emphasized critical challenges in LT RSP modeling, such as handling full and partial truckloads, synchronization between loading equipment and vehicle schedules, and real-time adjustments. Further advancements came through network-based models and exact solution methods. Shen et al. [20] presented a capacitated linear programming network flow model, focusing on the optimal distribution of truck routes to minimize transportation costs under time window constraints. Robinson et al. [21] expanded on this by incorporating hetero-geneous vehicle fleets and multi-origin, multi-destination problems, showing the flexibility of network flow models in handling complex transportation networks. The use of decomposition methods gained traction as a way to tackle the inherent complexity of LT RSP . El Hachemi et al. [23] introduced a two-phase decomposition approach for weekly tactical scheduling, integrating mixed-integer programming (MIP) for strategic allocation and constraint programming (CP) for detailed daily routing and queuing time optimization. This combination allows efficient synchronization of truck and loader operations, addressing a major limitation of earlier heuristic-based methods. 2Later, the limitations of exact methods to solve large-scale LT RSP led to the development of heuristic and hybrid approaches. Palmgren et al. [19] utilized a column generation method to solve a combined timetabling and routing problem. This method effectively embedded supply and demand constraints, but faced computational challenges during the pricing phase, particularly when addressing resource-constrained shortest path problems. Yahiaoui et al.[16] introduced a metaheuristic approach for the LT RSP with queuing considerations ( LT RSP Q). This two-phase method involved generating an initial solution pool using a rolling horizon heuristic, followed by a column generation-based procedure to refine solutions by minimizing queuing times. The innovative aspect of this approach was its adaptive time slot allocation, which optimized the scheduling of loading and unloading operations. Dynamic and stochastic models have emerged to better represent real-world uncertainties, such as changes in log availability, delivery demands, and vehicle breakdowns. R¨ onnqvist at al.[24] proposed a method for real-time truck dispatching that incorporated dynamic data updates. Similarly, Marques et al. [25] combined optimization and simulation to manage the stochastic elements of truck arrivals, delays, and queuing, effectively bridging the gap between strategic planning and operational execution. Despite these advances, significant challenges remain unaddressed. Computational efficiency continues to be a barrier, especially when large-scale problems are addressed. Moreover, existing solutions lack a complete integration of all forestry challenges within a single solution. Key elements such as multi-horizon planning, synchronization, adherence to the most important business constraints, and flexibility for rescheduling in response to unforeseen events are often missing, as underscored in [5]. This table sums up the contributions the most significant works in this field:                                                                                                     
+
+> Paper Horizon planning Multi-Period Hetero.Fleet Time Windows Multi-products Queuing Incomplete trip Method Partial load Priority rules Self loading trucks Pairing
+> Weintraub et al. [17] (1996) daily ✓✓✓Heuristic ✓✓
+> Palmgren et al. [19] (2004) daily ✓✓Exact ✓
+> Rey et al. [27] (2009) daily ✓✓✓✓Exact
+> El Hachemi et al. [28] (2011) daily ✓✓✓✓Hybrid ✓
+> El Hachemi et al. [23] (2013) daily ✓✓✓✓Exact
+> Haridass et al. [29] (2014) daily ✓✓✓Exact ✓
+> Rix et al. [30] (2014) Annualy ✓✓✓✓✓Exact ✓
+> Acuna et al. [36] (2017) weekly ✓✓✓✓✓Exact ✓
+> Bordon et al. [35] (2020) weekly ✓✓✓✓Exact ✓
+> Melchiori et al. [37] (2022) weekly ✓✓✓✓✓Exact ✓✓
+> Ghotb et al. [40] (2022) daily ✓✓✓Metaheuristic ✓
+> Our paper [40] weekly ✓✓✓✓✓✓Exact/Metaheuristic ✓✓✓✓
+
+Table 1: Characteristics summary of past studies vs this paper. 
+
+These gaps were highlighted by business stakeholders who have tested various approaches in the real-world context. The existing solutions fail to capture the full complexity of real-world forestry operations. Consequently, both industry experience and academic literature indicate a strong trend toward integrated approaches that address all forestry challenges, taking into account the deployment of algorithmic solutions using user-friendly interfaces. The primary objective of this paper is to outline the key elements of such an integrated approach, aimed at tackling the common challenges in forestry transportation planning. Specifically, this paper presents an end-to-end framework for truck-log routing and scheduling. Future contributions will focus on the development of a rescheduling layer to adapt to unforeseen events. 
+
+# 3 Problem description 
+
+Given our intention in this paper to present a general approach to formulate and solve LT RSP , we divide this section into two parts. The first part introduces the used notation throughout the paper. Then, the second one sheds light on the Canadian forestry context and the problem statement. 
+
+3.1 Mathematical notation 
+
+We first provide a detailed overview of the mathematical notation used throughout this paper. The sets, indices, parameters and decision variables are introduced in Table 2. 3Table 2: Model sets and parameters 
+
+Symbol Definition 
+
+𝐹 set of forest sites 
+
+𝑀 set of mills 
+
+𝑉 set of trucks 
+
+𝑃 set of wood products 
+
+𝐼 set of time intervals 
+
+𝑁 set of nodes representing mills, forest sites, and home bases 
+
+H B 𝑣 set of eligible home bases for truck 𝑣 𝑇 set of days in the planning horizon 
+
+𝐴 set of arcs connecting pairs of nodes across time intervals 
+
+𝐴 + (𝑛 ) set of arcs leaving node 𝑛 𝐴 − (𝑛 ) set of arcs entering node 𝑛 𝐴 𝑚 𝑝 𝑓 set of loaded arcs from forest site 𝑓 to mill 𝑚 for product 𝑝 𝑆𝑜𝑢𝑟𝑐𝑒 𝑣 origin node for truck 𝑣 (departure from home base) 
+
+𝑆𝑖𝑛𝑘 𝑣 destination node for truck 𝑣 (return to home base) 
+
+𝐴 𝐿 𝑓 𝑖 loading arcs at forest site 𝑓 at time interval 𝑖 𝐴 𝑈 𝑚𝑖 unloading arcs at mill 𝑚 at time interval 𝑖 𝑐 ℎ𝑎 hauling cost for arc 𝑎 traversed by vehicle 𝑣 𝑐 𝑤 𝑎 waiting cost for arc 𝑎 traversed by vehicle 𝑣 𝑐 𝑚 𝑝 penalty cost per unit of unmet demand for product 𝑝 at mill 𝑚 𝜏 + 
+
+> 𝑎
+
+ending time interval of arc 𝑎 𝜏 − 
+
+> 𝑎
+
+starting time interval of arc 𝑎 𝑡 𝑓 last day of horizon 𝑇 𝑑 𝑚 𝑝 weekly demand for product 𝑝 at mill 𝑚 , expressed in GMT 
+
+𝑞 𝑣 payload capacity of vehicle 𝑣 , expressed in GMT 
+
+𝐾 𝑣 maximum number of trips allowed for vehicle 𝑣 𝛽 𝑣 indicator equal to 1 if vehicle 𝑣 lacks self-loading capability 
+
+𝑠 𝑓 𝑝 available supply of product 𝑝 at forest site 𝑓 , expressed in GMT 
+
+𝑆 𝑡 service duration, corresponding to loading time at forest sites and unloading time at mills 
+
+Λ𝑚𝑖 loader capacity at mill 𝑚 during time interval 𝑖 
+
+Λ 𝑓 𝑖 loader capacity at forest site 𝑓 during time interval 𝑖 𝑇 𝑣 𝑎 travel duration for arc 𝑎 by vehicle 𝑣 𝑇 𝑜 𝑛 , 𝑇 𝑐 𝑛 operating window (opening and closing times) at node 𝑛 
+
+BigM sufficiently large constant 
+
+3.2 Canadian forestry context and problem statement 
+
+The study is tailored to the general context of the wood industry, with a particular focus on the Canadian forestry sector. In collaboration with a Canadian forestry company, we model and solve a vehicle routing problem formulation that captures the key operational constraints of LT RSP . Our objective is to incorporate, to the greatest extent possible, the constraints faced by a broad range of forestry operations, thereby enabling the development of a generic solution approach. This comprehensive modeling framework differentiates our work from existing studies in the literature. In the context of LT RSP , a route consists of an ordered sequence of loaded and empty trips, each associated with defined departure and arrival times. Each route must begin and end at a corresponding home base, typically the truck 4operator’s residence or yard. Specifically, three types of empty trips are considered: a truck may travel from its home base to a forest site, from a mill to a forest site to pick up new products, or from a mill directly back to its home base at the end of the day. In addition, only one type of loaded trip exists, which is from a forest site to a mill. In rare instances, drivers may transport a loaded truck from a forest site back to their home base to spend the night, continuing the trip to the mill the following morning. Figure 1 represent different possible combinations of loaded and empty trips. 
+
+(a)      
+
+> Home base 𝐻𝐵 Home base 𝐻𝐵
+> Forest site 𝐹
+> Mill 𝑀
+
+(b)       
+
+> Home base 𝐻𝐵 Home base 𝐻𝐵
+> Forest site 𝐹 1
+> Mill 𝑀
+> Forest site 𝐹 2
+
+(c)        
+
+> Home base 𝐻𝐵 Home base 𝐻𝐵
+> Forest site 𝐹 1
+> Mill 𝑀 1
+> Forest site 𝐹 2
+> Mill 𝑀 2
+
+Loaded trip 
+
+Loading operation 
+
+Empty trip 
+
+Unloading operation 
+
+Start / End  
+
+> Figure 1: Possible truck route combinations in L T R S P : (a) a truck repeatedly travels between a single forest site and a mill; (b) a truck successively collects products from two distinct forest sites and delivers to a single mill; (c) a truck delivers products from two distinct forest sites to two separate mills. All routes begin and end at the home base.
+
+In Canada, the harvested areas are geographically extensive. For the most common products, such as hardwoods, it is standard practice to load and transport full truckloads by grouping similar product species destined for the same mill. Nevertheless, in certain situations, different assortments of products may be combined within a single truckload to improve truck utilization; this is known as partial truckload, and it happens especially with the remaining objective small quantities of some assortments of products from forest sites. Furthermore, harvesting companies rely on transportation contractors, which requires accounting for a heterogeneous fleet when designing routes. Regulatory constraints impose a maximum driving time per route and contractors may be available for only a limited number of trips per day. In addition, truck availability may be restricted to specific days, as some vehicles are committed to other clients on certain days. This study explicitly considers the maximum driving time constraint and driver swapping, but for simplicity, it does not model driver rest periods. The availability of loaders at forest sites and mills is limited, which is a critical aspect for business stakeholders seeking to minimize truck waiting times at these locations. Similarly, each location operates within defined opening and closing times, including home bases, forest sites, and mills. To preserve the generic nature of the proposed approach, as emphasized in response to [1], the model incorporates a set of priority rules reflecting business-driven operational constraints. In practice, certain trips are not permitted for business reasons; for example, specific products originating from given forest blocks may be exclusively assigned to designated mills. The main business rules considered in this study are the following: 
+
+𝑅 1: All supply from a forest block is dedicated to a specific mill. 
+
+𝑅 2: Some vehicles are dedicated to forest blocks within a specific region. 
+
+𝑅 3: Certain mills are accessible only to specific vehicle configurations. 
+
+𝑅 4: Some products from certain forest blocks are dedicated to specific mills. In real-world settings, truckers who partner with forest companies—including the industrial partner considered in this study—typically perform planning weekly, consistent with demand and supply information that is also specified 5weekly. More specifically, the industrial partner operates a supply network comprising approximately 50 mills that must be replenished with a variety of lumber products sourced from nearly 2270 forest blocks, of which around 30 are harvested and utilized on a daily basis. This operation relies on a heterogeneous fleet of approximately 299 log trucks with comparable capacity limits (30 GMT and 35 GMT), operated by about 59 independent transportation contractors. Trucks are classified into two main categories depending on whether they are equipped with self-loading capabilities. Within each category, four vehicle configurations are available —Quad, Tri, Tri-Drive, and B-Train— resulting in a total of eight distinct truck types. Payload capacities vary across configurations and are further affected by seasonal restrictions, road weight limits, and product densities. Truck speeds are also heterogeneous, depending on vehicle configuration, road conditions, and seasonal effects. Moreover, transportation availability is dynamic, as trucks may be temporarily leased to competitors within the forestry sector or to other industries, such as mining. Mills place weekly orders that may involve multiple product types. In total, five product families are considered: softwood, hardwood, poplar, birch, and cedar. Through discussions with business stakeholders, two primary concerns were identified: transportation cost mini-mization and reduction of greenhouse gas emissions. Emissions are directly proportional to fuel consumption and are therefore closely correlated with transportation costs. The goal of this study is to establish a centralized weekly planning process that produces weekly transportation schedules, while daily planning decisions are derived from a higher-level tactical plan. Consequently, transportation activities must be coordinated across multiple days to ensure feasibility and service continuity over the planning horizon. As a result, the cost to be minimized during a week is defined as comprising three components: the first component addresses transportation costs, the second minimizes waiting time at forest sites and mills, and the third penalizes unsatisfied demand at mills. 
+
+# 4 Routing representation 
+
+Discussions with forestry companies highlighted a critical operational challenge, in particular synchronization of trips. Forest sites and mills are equipped with a limited number of loaders; therefore, to prevent excessive waiting times, the number of trucks at any site must not exceed the available loading or unloading equipment. To address this issue, we opted for a time-space formulation of the problem based on time discretization. Specifically, we divide the operating time into fixed intervals using a specific discretization value that will be highlighted in Section 5. This enables us to introduce constraints that limit the number of trucks at each site during each time interval, along with additional operational constraints. Incorporating this time component helps to avoid queues at mills and forest sites. Figure 2 presents the time–space representation of LT RSP at mill 𝑀 ∗, where the operating time is divided into 12 equal intervals. Before introducing the MILP , we design a routing network consisting of nodes and arcs. Each node in the network corresponds to a specific location, namely a home base, a forest site, or a mill, at a given time interval 𝑖 , thereby combining spatial and temporal dimensions within a unified representation. Arcs connect node pairs and define the incoming and outgoing flow at each location. At forest sites, outgoing arcs allow a truck to wait for a loader or begin loading [39]. At mills, waiting and unloading are modeled separately, as illustrated in Figure 2 for mill 𝑀 ∗ at time interval 𝑖 = 2, where 𝑎 𝑤 and 𝑎 𝑢 denote the waiting and unloading arcs respectively. Time                                                                               
+
+> 𝑖 =0𝑖 =1𝑖 =2𝑖 =3𝑖 =4𝑖 =5𝑖 =6𝑖 =7𝑖 =8𝑖 =9𝑖 =10 𝑖 =11 𝑖 =12
+> Time
+> 𝑖 =0𝑖 =1𝑖 =2𝑖 =3𝑖 =4𝑖 =5𝑖 =6𝑖 =7𝑖 =8𝑖 =9𝑖 =10 𝑖 =11 𝑖 =12
+> Mill 𝑀 ∗
+> 𝑎 𝑤
+> 𝑎 𝑢
+> Figure 2: Time–space network at mill 𝑀 ∗, illustrating the conventional arcs associated with loading, unloading, and waiting opera-tions.
+
+Two categories of arcs are defined within the routing network. The first category, referred to as real arcs, links locations across time intervals, with associated costs reflecting travel time, which is generally proportional to distance. The second category, referred to as conventional arcs, models on-site operations such as loading, unloading, or waiting, with costs determined by the time required for each operation and any waiting time incurred. We only consider feasible incoming and outgoing arcs for each node in terms of travel-time consistency. Technically, for each arc, the expected truck arrival time is computed, and any arc whose destination node falls at a time interval prior to that arrival is discarded as infeasible. Figure 3 highlights these excluded arcs in red, since a truck travels from 𝑀 ★ at 𝑖 = 4 arrives at 𝐹 ★ at 𝑖 = 8. 6Home Base Home Base 
+
+Forest Site 𝐹 ∗
+
+Mill 𝑀 ∗
+
+𝑖 = 4
+
+𝑖 = 8
+
+> Figure 3: Infeasible arcs between the mill and the forest site are shown in red and removed from the network.
+
+The time–space representation is modeled as a graph 𝐺 = (V , 𝐴 ), where V = {𝑣 𝑛𝑖 = (𝑛, 𝑖 ) | 𝑛 ∈ 𝑁, 𝑖 ∈ 𝐼 𝑛 } is the set of nodes, and 𝐼 𝑛 ⊆ 𝐼 is the set of feasible time steps for location 𝑛 (home bases, forests, mills). The arc set 𝐴 is partitioned into two subsets, namely real arcs and conventional arcs, such that 𝐴 = 𝐴 real ∪ 𝐴 conv . Real arcs are given by 
+
+𝐴 real = {( 𝑣 𝑛 1𝑖 1 , 𝑣 𝑛 2𝑖 2 ) | 𝑛 1, 𝑛 2 ∈ 𝑁, 𝑖 2 ≥ 𝑖 1 + 𝑇 𝑛 1 𝑛 2 }
+
+and represent truck movements, ensuring arrival at 𝑛 2 after travel time 𝑇 𝑛 1 𝑛 2 . Conventional arcs are given by 
+
+𝐴 conv = {( 𝑣 𝑛𝑖 , 𝑣 𝑛𝑖 +1) | 𝑛 ∈ 𝑁 }
+
+and account for waiting, loading, or unloading with service time 𝑆 𝑛𝑖 . It is worth noting that the generation and processing of this graph explicitly incorporate business rules such as 𝑅 1, 𝑅 2, 𝑅 3 and 𝑅 4, which prevent the creation of arcs lacking operational relevance. As a result, the final graph 𝐺 = (V , 𝐴 ) contains only business-meaningful connections. Moreover, this graph is clearly directed and acyclic, as formalized in the following remark : 
+
+Remark 1. Let 𝐺 = (V , 𝐴 ) be a time-expanded transportation graph where: 
+
+• Each node 𝑣 𝑛𝑖 ∈ V represents a location 𝑛 at time 𝑖 ,
+
+• Each arc 𝑎 = (𝑣 𝑛𝑖 , 𝑣 𝑚 𝑗 ) ∈ 𝐴 satisfies 𝑖 < 𝑗 .Then 𝐺 is a directed acyclic graph. 
+
+Proof. Suppose, for the sake of contradiction, that 𝐺 contains a directed cycle 𝐶 = {𝑣 1, 𝑣 2, . . . , 𝑣 𝑘 , 𝑣 1 }.By construction of the graph, every arc (𝑣 𝑖 , 𝑣 𝑗 ) in 𝐴 satisfies 𝑖 < 𝑗 , which implies that time strictly increases along the path: 
+
+𝑡 (𝑣 1) < 𝑡 (𝑣 2) < · · · < 𝑡 (𝑣 𝑘 ) < 𝑡 (𝑣 1).
+
+But this leads to a contradiction: we cannot have 𝑡 (𝑣 𝑘 ) < 𝑡 (𝑣 1) and also 𝑡 (𝑣 1) < 𝑡 (𝑣 𝑘 ).Hence, such a cycle cannot exist. Therefore, 𝐺 contains no directed cycles, and is thus acyclic. □
+
+# 5 Queuing aspect within LT RSP 
+
+As stated above, the routing representation of LT RSP is based on time discretization to ensure trips synchronization under limited operating equipment, e.g., loaders. This time discretization aims to minimize congestion, truck waiting times and maximize the number of trucks served. In fact, the targeted LT RSP produces a plan of routes, and within each route, it includes an assignment of trucks to nodes at specific time intervals 𝑖 . For example, the following timeline illustrates the truck being loaded at forest site 𝐹 at 𝑖 = 5: Time                                       
+
+> 𝑖 =0𝑖 =1𝑖 =2𝑖 =3𝑖 =4𝑖 =5𝑖 =6𝑖 =7𝑖 =8𝑖 =9𝑖 =10 𝑖 =11 𝑖 =12
+
+# 4   
+
+> Truck at 𝑖 =5
+
+We study the impact of the scheduling interval between consecutive trucks. We aim to identify a fixed interval Δ
+
+(minutes) to discretize time that balances queueing delay and idle time over a planning horizon 𝑇 > 0. Let 𝐿 𝑗 be the random variable of loading time of the 𝑗 th truck, with mean E[𝐿 𝑗 ] = 𝐿 > 0 and variance Var (𝐿 𝑗 ) = 𝜎 2 < ∞. Trucks are scheduled deterministically every Δ > 0 minutes, corresponding to a 𝐷 /𝐺 /1 setting 7(deterministic interarrivals, general service times, one loader). Over a planning horizon 𝑇 , the number of scheduled trucks is 𝑁 (Δ) = ⌊𝑇 /Δ⌋. Let 𝑊 𝑗 (Δ) denote the waiting time of the 𝑗 th truck under FIFO service, and define the total expected waiting time 𝑊 (Δ) = Í𝑁 (Δ) 
+
+> 𝑗 =1
+
+E[𝑊 𝑗 (Δ)] . The corresponding traffic intensity is 𝜌 (Δ) = 𝐿 /Δ.
+
+Lindley recursion. Waiting times satisfy Lindley’s equation [31] : 𝑊 𝑗 +1 (Δ) = max {0, 𝑊 𝑗 (Δ) + 𝐿 𝑗 −Δ}, 𝑊 1 (Δ) = 0. To illustrate possible scenarios for a loader utilization, let us suppose that 𝐿 𝑗 ≡ 𝐿 the recursion becomes 𝑊 𝑗 +1 =
+
+max {0, 𝑊 𝑗 + 𝐿 − Δ}. If Δ < 𝐿 , then 𝑊 𝑗 increases linearly (trucks backlog). If Δ > 𝐿 , then 𝑊 𝑗 ≡ 0 but every cycle leaves Δ − 𝐿 minutes idle and number of trucks that can be served over 𝑇 is decreased as ⌊𝑇 /Δ⌋ ≤ ⌊ 𝑇 / ¯𝑥 ⌋. At Δ = 𝐿 ,
+
+𝑊 𝑗 ≡ 0 and no idle time occurs. Figure 4 illustrates the three cases.       
+
+> Time
+> Loader Activity
+> Δ> 𝐿 (Idle Time)
+> Δ = 𝐿 (Optimal)
+> Δ< 𝐿 (Backlog builds)
+> Figure 4: Loader utilization across scheduling regimes.
+
+In practice, 𝜎 2 > 0, as the forest industry is subject to considerable variability [32]. Therefore, exact zero waiting time is impossible in steady state unless 𝜌 (Δ) < 1 (and even then, variability may still induce positive waiting). For deterministic interarrivals ( 𝐷 /𝐺 /1), a sharp and widely used approximation called Kingman’s formula [34] gives the expected waiting time per truck : 
+
+E[𝑊 𝑗 (Δ)] ≈ 𝜌 (Δ)
+
+1 − 𝜌 (Δ) · 𝑐 2 
+
+> 𝑎
+
++ 𝑐 2
+
+> 𝑠
+
+2 𝐿 = 𝐿 
+
+Δ − 𝐿 · 𝜎 2
+
+2 𝐿 = 𝜎 2
+
+2  Δ − 𝐿  , (1) where 𝑐 2 
+
+> 𝑎
+
+= 0 (deterministic arrivals) and 𝑐 2 
+
+> 𝑠
+
+= 𝜎 2/𝐿 2. In long run, the idle fraction is 1 − 𝜌 (Δ) = 1 − 𝐿 /Δ, independent of 𝜎 2.Equation (1) yields a clear trade-off: increasing Δ reduces waiting but increases idle time of loaders; decreasing Δ
+
+increases loaded trucks number but eventually increases waiting time per truck. 
+
+Proposition 1. To evaluate the loading process delay frontier with variability, let’s fix weights 𝛼, 𝛽 > 0 two importance weights, and consider the queuing system loss function 
+
+C( Δ) ≡ 𝛼 𝑇 
+
+Δ E[𝑊 𝑗 (Δ)] 
+
+| {z }  
+
+> total expected waiting over [0,𝑇 ]
+
++ 𝛽 𝑇 
+
+
+
+1 − 𝐿 
+
+> Δ
+
+| {z }  
+
+> total idle time over [0,𝑇 ]
+
+, Δ > 𝐿. 
+
+Under the Kingman approximation (1) , the minimizer satisfies 
+
+Δ★ = 𝐿 + 𝑠 ★, 𝑠 ★ = 
+
+> 𝛼 𝜎 2
+> 2
+
++√︃   𝛼 𝜎 2
+
+> 2
+
+2 + 𝛼𝛽 𝐿 2𝜎 2
+
+𝛽 𝐿 > 0.
+
+In particular, as the variability vanishes ( 𝜎 2 ↓ 0), we obtain 𝑠 ★ ↓ 0 and thus Δ★ → 𝐿 . This recovers the intuitive result that when service times exhibit negligible variability, the time discretization can be chosen equal to the mean loading (or unloading) duration. 
+
+Proof. Using 𝑁 (Δ) ≈ 𝑇 /Δ and (1), minimize C( Δ)/ 𝑇 = 𝛼 1 
+
+> Δ
+
+· 𝜎 2 
+
+> 2(Δ−𝐿 )
+
++ 𝛽  1 − 𝐿 
+
+> Δ
+
+ over Δ > 𝐿 . Setting 𝑠 = Δ − 𝐿 > 0, algebra yields the first-order condition 𝛽 𝐿 𝑠 2 = 𝛼 𝜎 2 
+
+> 2
+
+(𝐿 + 2𝑠 ), whose positive root gives 𝑠 ★ as stated. □
+
+8Proposition 1 characterizes the discretization interval Δ★ = 𝐿 + 𝑠 ★ as the unique minimizer of a queueing-based loss function that balances total expected waiting time and total idle time through the weights 𝛼 and 𝛽 . The resulting buffer 
+
+𝑠 ★ therefore depends on the relative importance assigned to congestion (waiting) versus resource underutilization (idle time). In practice, however, these economic weights are often difficult to calibrate explicitly. Operationally, planners typically reason instead in terms of an acceptable risk level: namely, the maximum probability 𝜀 that a truck arrives while the loader is still busy. This motivates a complementary formulation in which the discretization interval is chosen to satisfy a probabilistic feasibility constraint rather than to minimize an explicit cost function. The optimal buffer in Appendix A admits the expansion 
+
+𝑠 ★ = 𝜎 √︂ 𝛼 𝛽 + O( 𝜎 2),
+
+which reveals that the leading-order behavior of the optimal discretization interval is governed by the ratio 𝛼 /𝛽 .Consequently, specifying a tolerance level 𝜀 implicitly fixes the magnitude of the safety buffer required to control the tail probability P(𝐿 𝑖 > 𝐿 + 𝑠 ). Independently of any distributional assumption, such a probabilistic feasibility constraint necessarily imposes that the buffer scales as 𝑠 = 𝜎 𝑔 (𝜀 ), where 𝑔 (𝜀 ) is a dimensionless function that increases as 𝜀 
+
+decreases. Since Proposition 1 shows that the optimal buffer satisfies 𝑠 ★ = 𝜎 √︁ 𝛼 /𝛽 + O( 𝜎 2), the ratio 𝛼 /𝛽 plays exactly the role of this dimensionless safety factor. Thus, specifying a tolerance level 𝜀 can be interpreted as implicitly selecting a corresponding value of 𝛼 /𝛽 , which we write in the generic form 
+
+𝛼 𝛽 ≈ 𝑔 (𝜀 )2,
+
+anticipating that an explicit expression for 𝑔 (𝜀 ) will be derived in the corollary below.  
+
+> Corollary 1.
+
+For any 𝜀 ∈] 0, 1[ choosing Δ = 𝐿 + 𝜎 √︃ 1− 𝜀 𝜀 guarantees P(𝐿 𝑖 > Δ) ≤ 𝜀 . Hence, with probability at least 1 − 𝜀 , each truck arrives when the loader is free.  
+
+> Proof.
+
+We want P(𝐿 𝑗 > Δ) ≤ 𝜀 . By Cantelli’s inequality [33], 
+
+P(𝐿 𝑗 − 𝐿 ≥ 𝑡 ) ≤ 𝜎 2
+
+𝜎 2 + 𝑡 2 , 𝑡 > 0.
+
+Setting 𝑡 = Δ − 𝐿 gives 
+
+P(𝐿 𝑖 > Δ) ≤ 𝜎 2
+
+𝜎 2 + ( Δ − 𝐿 )2 .
+
+To enforce this bound ≤ 𝜀 , it suffices that 
+
+𝜎 2
+
+𝜎 2 + ( Δ − 𝐿 )2 ≤ 𝜀, 
+
+which rearranges to 
+
+Δ ≥ 𝐿 + 𝜎 √︃ 1− 𝜀 𝜀 .
+
+Thus the stated choice of Δ ensures P(𝐿 𝑗 > Δ) ≤ 𝜀 . □  
+
+> Remark 2.
+
+In our practical case, we evaluate the average loading time as 𝐿 = 30 minutes with standard deviation 𝜎 = 5minutes. If we set the tolerance to 𝜀 = 0.1 ( at most 10% of the trucks can wait), then Δ = 30 + 5√︃ 1−0.10.1 = 30 + 5 × 3 ≈
+
+45 minutes. Thus, spacing trucks every ∼ 45 minutes ensures that at least 90% of them find the loader available upon arrival. This value is used to determine the time interval discretization when building the routing network. 
+
+# 6 Problem formulation 
+
+To address the aspects discussed earlier, we formulated a MILP model to generate routes comprising sequences of loaded and unloaded trips, assign trucks to these routes, and schedule truck arrivals at each node. The model can generate up to an entire week of 𝑇 days, ensuring that the demands of the mills are met while adhering to multiple constraints, including resource limitations, flow conservation, time windows and other usual constraints known in 9forestry. An overview of the mathematical notation used throughout this paper is provided. The model involves the following decision variables: 
+
+𝑥 𝑎𝑣𝑡 = 1 if arc 𝑎 is traversed by vehicle 𝑣 on day 𝑡 , and 0 otherwise. 
+
+𝛿 𝑚 𝑝 = unmet demand for product 𝑝 at mill 𝑚 .The objective function and constraints are subsequently described. The mathematical model capturing the most frequent planning aspects encountered by our industrial partner, denoted P𝑚 , comprises Equations (2)–(14). 
+
+min ∑︁  
+
+> 𝑡 ∈𝑇
+
+∑︁ 𝑣 ∈𝑉 ∑︁ 𝑎 ∈ 𝐴 
+
+(𝑐 ℎ𝑎 + 𝑐 𝑤 𝑎 )𝑥 𝑎𝑣𝑡 +∑︁  
+
+> 𝑚 ∈𝑀
+
+∑︁ 𝑝 ∈ 𝑃 
+
+𝑐 𝑚 𝑝 𝛿 𝑚 𝑝 (2) s.t. ∑︁   
+
+> 𝑎 ∈𝐴 +(ℎ)
+
+𝑥 𝑎𝑣𝑡 ≤ 1, ∀ 𝑣 ∈ 𝑉, ℎ ∈ H B 𝑣 , 𝑡 ∈ 𝑇 (3) ∑︁   
+
+> 𝑎 ∈𝐴 −(ℎ)
+
+𝑥 𝑎𝑣𝑡 =∑︁   
+
+> 𝑎 ∈𝐴 +(ℎ)
+
+𝑥 𝑎𝑣𝑡 , ∀ 𝑣 ∈ 𝑉, ℎ ∈ H B 𝑣 , 𝑡 ∈ 𝑇 (4) ∑︁   
+
+> 𝑎 ∈𝐴 +(𝑛 )
+
+𝑥 𝑎𝑣𝑡 =∑︁   
+
+> 𝑎 ∈𝐴 −(𝑛 )
+
+𝑥 𝑎𝑣𝑡 , ∀ 𝑣 ∈ 𝑉, 𝑛 ∈ 𝑁, 𝑡 ∈ 𝑇 (5) ∑︁  
+
+> 𝑡 ∈𝑇
+
+∑︁ 𝑓 ∈𝐹 ∑︁ 𝑣 ∈𝑉 ∑︁ 𝑎 ∈ 𝐴 𝑚 𝑝 𝑓 
+
+𝑞 𝑣 𝑥 𝑎𝑣𝑡 + 𝛿 𝑚 𝑝 = 𝑑 𝑚 𝑝 , ∀ 𝑚 ∈ 𝑀, 𝑝 ∈ 𝑃 (6) ∑︁  
+
+> 𝑡 ∈𝑇
+
+∑︁ 𝑚 ∈ 𝑀 ∑︁ 𝑣 ∈𝑉 ∑︁ 𝑎 ∈ 𝐴 𝑚 𝑝 𝑓 
+
+𝑞 𝑣 𝑥 𝑎𝑣𝑡 ≤ 𝑠 𝑓 𝑝 , ∀ 𝑓 ∈ 𝐹, 𝑝 ∈ 𝑃 (7) ∑︁  
+
+> 𝑡 ∈𝑇
+
+∑︁ 𝑚 ∈ 𝑀 ∑︁ 𝑓 ∈𝐹 ∑︁ 𝑝 ∈ 𝑃 ∑︁ 𝑎 ∈ 𝐴 𝑚 𝑝 𝑓 
+
+𝑥 𝑎𝑣𝑡 ≤ 𝐾 𝑣 , ∀ 𝑣 ∈ 𝑉 (8) ∑︁  
+
+> 𝑡 ∈𝑇
+
+∑︁ 𝑣 ∈𝑉 ∑︁ 𝑎 ∈ 𝐴 𝐿 𝑓 𝑖 
+
+𝛽 𝑣 𝑥 𝑎𝑣𝑡 ≤ Λ 𝑓 𝑖 , ∀ 𝑖 ∈ 𝐼, 𝑓 ∈ 𝐹, 𝑡 ∈ 𝑇 (9) ∑︁  
+
+> 𝑡 ∈𝑇
+
+∑︁ 𝑣 ∈𝑉 ∑︁ 𝑎 ∈ 𝐴 𝑈 𝑚𝑖 
+
+𝛽 𝑣 𝑥 𝑎𝑣𝑡 ≤ Λ𝑚𝑖 , ∀ 𝑖 ∈ 𝐼, 𝑚 ∈ 𝑀 (10) 
+
+𝜏 + 
+
+> 𝑎
+
+− BigM (1 − 𝑥 𝑎𝑣𝑡 ) + 𝑆 𝑡 ≤ 𝑇 𝑐 𝑎𝑛 , ∀ 𝑣 ∈ 𝑉, 𝑎 ∈ 𝐴, 𝑡 ∈ 𝑇 (11) 
+
+𝑇 𝑜 𝑎𝑛 ≤ 𝜏 + 
+
+> 𝑎
+
++ BigM (1 − 𝑥 𝑎𝑣𝑡 ), ∀ 𝑣 ∈ 𝑉, 𝑎 ∈ 𝐴, 𝑡 ∈ 𝑇 (12) 
+
+𝑥 𝑎𝑣𝑡 ∈ { 0, 1}, ∀ 𝑣 ∈ 𝑉, 𝑎 ∈ 𝐴, 𝑡 ∈ 𝑇 (13) 
+
+𝛿 𝑚 𝑝 ∈ { 0, . . . , 𝑑 𝑚 𝑝 }, ∀ 𝑚 ∈ 𝑀, 𝑝 ∈ 𝑃 (14) 
+
+The objective function (2) minimizes the total transportation and waiting costs across all trips. Constraint (3) limits each truck to a single departure arc. Constraints (4) and (5) impose flow conservation at every node, ensuring route continuity throughout the network. Constraint (6) requires that mill demand is fully met, whereas constraint (7) prevents the consumption of products from exceeding available supply at forest sites. Constraint (8) bounds the number of trips that each truck may perform. Constraints (9) and (10) enforce loader capacity limits at forest sites and mills, respectively. Constraints (11) and (12) guarantee that operations at each node remain within the prescribed time windows. Finally, constraints (13) and (14) specify the domain of the decision variables. This model P𝑚 , is the principal formulation used in collaboration with our industrial partner, as it encompasses all its common operational constraints. However, in forestry operations—both in Canada and worldwide—several additional constraints are frequently encountered. Since our objective is to introduce a comprehensive formulation. In what follows, we present the most important and critical constraints identified in [5], and we highlight how each of them can be integrated into our formulation through explicit mathematical constraints. 
+
+6.1 Multiple home bases & incomplete route 
+
+This work addresses the aspect of multiple home bases for a vehicle. In practice, a vehicle can be associated with more than one home base, for example, a contractor depot and the driver’s personal residence, both of which may serve 10 as valid end-of-day locations. Such flexibility must be incorporated into the planning of truck routes. To model this aspect, we introduce a new decision variable 𝑦 𝑣ℎ𝑡 , which equals 1 if truck 𝑣 finishes its operations on day 𝑡 at home base ℎ, and 0 otherwise. Consequently, constraints (3)–(4) in P𝑚 are replaced by the following set of constraints: ∑︁    
+
+> 𝑎 ∈𝐴 +(ℎ0
+> 𝑣 )
+
+𝑥 𝑎𝑣 0 ≤ 1 ∀𝑣 ∈ 𝑉, (15) ∑︁ 
+
+> ℎ∈ H B 𝑣
+
+∑︁ 𝑎 ∈ 𝐴 − (ℎ)
+
+𝑥 𝑎𝑣𝑡 =∑︁ 
+
+> ℎ∈ H B 𝑣
+
+∑︁ 𝑎 ∈ 𝐴 + (ℎ)
+
+𝑥 𝑎𝑣𝑡 ∀𝑣 ∈ 𝑉, ∀𝑡 ∈ 𝑇, (16) 
+
+𝑦 𝑣ℎ𝑡 =∑︁   
+
+> 𝑎 ∈𝐴 −(ℎ)
+
+𝑥 𝑎𝑣𝑡 ∀𝑣 ∈ 𝑉, ∀ℎ ∈ H B 𝑣 , ∀𝑡 ∈ 𝑇, (17) ∑︁ 
+
+> ℎ∈ H B 𝑣
+
+𝑦 𝑣ℎ𝑡 = 1 ∀𝑣 ∈ 𝑉, ∀𝑡 ∈ 𝑇, (18) 
+
+𝑦 𝑣ℎ𝑡 ≤ 𝑦 𝑣ℎ,𝑡 +1 +∑︁   
+
+> 𝑎 ∈𝐴 +(ℎ)
+
+𝑥 𝑎𝑣,𝑡 +1 ∀𝑣 ∈ 𝑉, ∀ℎ ∈ H B 𝑣 , ∀𝑡 ∈ 𝑇 \ { 𝑡 𝑓 }. (19) Constraint (15) ensures that each truck departs at most once from its initial home base at the beginning of the planning horizon. Constraint (16) guarantees that, for each day, the number of arrivals and departures at the set of home bases assigned to a vehicle remain balanced. Constraints (17)–(19) explicitly track the daily location of each vehicle at a home base: (17) defines whether a truck ends its day at a specific home base, (18) ensures that every truck is parked in exactly one home base at the end of each day, and (19) enforces continuity, requiring that a truck either remains in the same home base when inactive or departs from it if it resumes operations the next day. Incomplete routes correspond to the case where trucks can remain loaded overnight and spend the night either at the company’s home base or at the driver’s personal residence. This aspect is first handled during the generation of the routing network by creating 𝐴 1 = {(( 𝑛 1, 𝑖 1), (𝑛 2, 𝑖 2)) | 𝑛 1 ∈ 𝐹, 𝑛 2 ∈ 𝐻𝐵 }, which represents arcs from forest blocks to return locations, and 𝐴 2 = {(( 𝑛 1, 𝑖 1), (𝑛 2, 𝑖 2)) | 𝑛 1 ∈ 𝐻𝐵, 𝑛 2 ∈ 𝑀 }, which represents arcs from these return locations to mills to complete the route on the next day. The subset 𝐴 1 ∪ 𝐴 2 can be preprocessed using the operator 
+
+Preprocess ( 𝐴 1 ∪ 𝐴 2) in order to generate only meaningful arcs. To take into account this aspect, we add constraints (20) and (21). Explicitly, we add a new variable 𝑦 𝐿 𝑣ℎ𝑡 equal to 1 if vehicle 𝑣 ends its day 𝑡 at home base ℎ loaded, 0 otherwise: 
+
+𝑦 𝐿 𝑣ℎ𝑡 =∑︁   
+
+> 𝑎 ∈𝐴 1(ℎ)
+
+𝑥 𝑎𝑣𝑡 ∀𝑣 ∈ 𝑉, ∀ℎ ∈ H B 𝑣 , ∀𝑡 ∈ 𝑇, (20) 
+
+𝑦 𝐿 𝑣ℎ𝑡 ≤∑︁   
+
+> 𝑎 ∈𝐴 2(ℎ)
+
+𝑥 𝑎𝑣,𝑡 +1 ∀𝑣 ∈ 𝑉, ∀ℎ ∈ H B 𝑣 , ∀𝑡 ∈ 𝑇 \ { 𝑡 𝑓 }. (21) Constraint (20) identifies whether a vehicle finishes its day at a home base while still loaded, based on arcs in 𝐴 1.Constraint (21) enforces continuity of incomplete routes: if a vehicle ends a day loaded at a home base, it must start the following day with an arc in 𝐴 2, i.e., by traveling to a mill to unload. 
+
+6.2 Partial Load (LTL) 
+
+In timber transportation, it is common sometimes to find that the amount of a product available at a supply site is smaller than the truck capacity. This occurs, for example, when a harvesting operation is nearing completion and only a small residual pile remains, or when multiple sites each have partial quantities of the same product that must be cleared. In such cases, Less Than Truckload (LTL) consolidation is necessary: several partial loads can be combined in a single trip, provided the truck capacity is not exceeded. The industrial partner often requires that these residual piles be removed promptly to free storage areas or to complete harvesting in a given block. LTL consolidation in this context is challenging because it not only impacts route optimization but also interacts with truck capacity planning and harvesting site inventory management. Poor planning of LTL pickups may lead to inefficient trips, with many partial pickups increasing travel time and operational costs. In practice, however, the number of LTL items remains limited: at most five residual LTLs are typically observed per week, and within a given forest block there is usually no more than one LTL item per product. 11 We extend the principal model P𝑚 to allow the inclusion of residual LTL items. Let R ⊆ 𝐹 × 𝑃 denote the set of residual LTL items, where each element ( 𝑓 , 𝑝 ) ∈ R represents a partial quantity 𝑟 𝑓 𝑝 > 0 (in GMT) of product 𝑝 
+
+available at forest 𝑓 . The principal binary routing variable 𝑥 𝑎𝑣𝑡 is augmented with two new variables: 𝑥 𝐹 𝑎𝑣𝑡 , equal to 1 if arc 𝑎 of truck 𝑣 on day 𝑡 carries a full truckload of size 𝑞 𝑣 , and 𝑥 𝐿 𝑎𝑣𝑡 𝑓 𝑝 , equal to 1 if arc 𝑎 of truck 𝑣 on day 𝑡 carries the LTL item ( 𝑓 , 𝑝 ) of volume 𝑟 𝑓 𝑝 .The following additional constraints are introduced. First, the load type is partitioned so that each loaded arc is either a full truckload or the corresponding LTL item: 
+
+𝑥 𝐹 𝑎𝑣𝑡 + 𝑥 𝐿 𝑎𝑣𝑡 𝑓 𝑝 = 𝑥 𝑎𝑣𝑡 ∀𝑣 ∈ 𝑉, ∀𝑡 ∈ 𝑇, ∀( 𝑓 , 𝑝 ) ∈ R , ∀𝑎 ∈ 𝐴 𝐹 𝑓 𝑝 , (22) 
+
+𝑟 𝑓 𝑝 𝑥 𝐿 𝑎𝑣𝑡 𝑓 𝑝 ≤ 𝑞 𝑣 𝑥 𝑎𝑣𝑡 ∀𝑣 ∈ 𝑉, ∀𝑡 ∈ 𝑇, ∀( 𝑓 , 𝑝 ) ∈ R , ∀𝑎 ∈ 𝐴 𝑚 𝑓 𝑝 . (23) Second, the demand satisfaction and forest supply constraints of the principal model are updated so that the quantity contributions are expressed in GMT, with the FTL part contributing 𝑞 𝑣 per full load arc and the LTL part contributing the exact residual volumes: ∑︁  
+
+> 𝑓 ∈𝐹
+
+∑︁ 𝑣 ∈𝑉 ∑︁ 𝑡 ∈𝑇 ∑︁ 𝑎 ∈ 𝐴 𝑚 𝑝 𝑓 
+
+𝑞 𝑣 𝑥 𝐹 𝑎𝑣𝑡 +∑︁ 
+
+> 𝑣 ∈𝑉
+
+∑︁ 𝑡 ∈𝑇 ∑︁ 𝑎 ∈ 𝐴 𝑚 𝑝 𝑓 
+
+𝑟 𝑓 𝑝 𝑥 𝐿 𝑎𝑣𝑡 𝑓 𝑝 + 𝛿 𝑚 𝑝 = 𝑑 𝑚 𝑝 , ∀𝑚 ∈ 𝑀, ∀𝑝 ∈ 𝑃, (24) ∑︁  
+
+> 𝑚 ∈𝑀
+
+∑︁ 𝑣 ∈𝑉 ∑︁ 𝑡 ∈𝑇 ∑︁ 𝑎 ∈ 𝐴 𝑚 𝑝 𝑓 
+
+𝑞 𝑣 𝑥 𝑚 𝑎𝑣𝑡 +∑︁ 
+
+> 𝑣 ∈𝑉
+
+∑︁ 𝑡 ∈𝑇 ∑︁ 𝑎 ∈ 𝐴 𝑚 𝑓 𝑝 
+
+𝑟 𝑓 𝑝 𝑥 𝐿 𝑎𝑣𝑡 𝑓 𝑝 ≤ 𝑠 𝑓 𝑝 , ∀ 𝑓 ∈ 𝐹, ∀𝑝 ∈ 𝑃. (25) Finally, each residual LTL item must be transported exactly once, with its destination determined by the selected loaded arc: ∑︁ 
+
+> 𝑣 ∈𝑉
+
+∑︁ 𝑡 ∈𝑇 ∑︁ 𝑎 ∈ 𝐴 𝐹 𝑓 𝑝 
+
+𝑥 𝐿 𝑎𝑣𝑡 𝑓 𝑝 = 1, ∀ ( 𝑓 , 𝑝 ) ∈ R . (26) Constraints 22, 23 enforce capacity feasibility for LTL arcs, while 24, 25 ensure correct integration of LTL volumes into the flow balance. All other routing, timing, and operational constraints from the principal model remain unchanged. Adding these constraints requires augmenting the initial routing network with new arcs allowing trucks to travel from a forest block to another block to consolidate possible partial loads: 𝐴 3 = {(( 𝑛 1, 𝑖 1), (𝑛 2, 𝑖 2)) | 𝑛 1 ∈ F R , 𝑛 2 ∈ F R }
+
+where FR = { 𝑓 ∈ 𝐹 | ∃ 𝑝 ∈ 𝑃 s.t. ( 𝑓 , 𝑝 ) ∈ R} is the set of forest sites containing residual LTL items. 
+
+6.3 Priority Rules 
+
+In forest transportation operations, priority rules represent contractual, operational, or inventory-based requirements that must be respected when assigning loads, routing trucks, or scheduling trips. A first category is destination-specific supply rules , where certain forest products from a given forest site must be delivered only to a specific subset of mills due to contractual agreements or inventory policies. For a product 𝑝 from forest site 𝑓 allowed only to mills M 𝑓 𝑝 ⊆ 𝑀 ,this can be enforced by 
+
+𝑥 𝑎𝑣𝑡 = 0, ∀ 𝑣 ∈ 𝑉, 𝑎, 𝑡 ∈ 𝑇 ∈ 𝐴 𝐹 𝑓 𝑝 s.t. end (𝑎 ) ∉ M 𝑓 𝑝 (27) A second category is the minimum delivery requirement , where certain mills must receive a minimum quantity of specific products during a given day. If 𝐿 𝑚 𝑝𝑡 ′ denotes the minimum required quantity (in GMT) of product 𝑝 at mill 
+
+𝑚 upon day 𝑡 ′, this can be formulated as 
+
+> 𝑡 ′
+
+∑︁ 
+
+> 𝑡 =0
+
+∑︁ 𝑓 ∈𝐹 ∑︁ 𝑣 ∈𝑉 ∑︁ 𝑎 ∈ 𝐴 𝑚 𝑝 𝑓 𝑝 
+
+𝑞 𝑣 𝑥 𝐹 𝑎𝑣𝑡 +
+
+> 𝑡 ′
+
+∑︁ 
+
+> 𝑡 =0
+
+∑︁ 𝑣 ∈𝑉 ∑︁ 𝑎 ∈ 𝐴 𝑚 𝑝 𝑓 
+
+𝑟 𝑓 𝑝 𝑥 𝐿 𝑎𝑣𝑡 𝑓 𝑝 ≥ 𝐿 𝑚 𝑝𝑡 ′ (28) These constraints either filter infeasible arcs and enforce delivery quotas, without altering the main routing and timing structure of the model. 
+
+6.4 Driver Change Requirement 
+
+In long-haul transportation, regulations on driving hours require a driver to rest after reaching a maximum allowable continuous driving time, denoted by 𝐻 max . To model this, our framework allows for a driver change , where a truck 12 stops at a designated location and a relief driver takes over, effectively resetting the driving clock. Let 𝑁 𝐷𝐶 𝑣 denote the set of nodes where a driver change is permitted for truck 𝑣 .To enforce this time limit, we introduce a continuous variable 𝑢 𝑣, (𝑛,𝑖 ) ≥ 0 to track the cumulative driving time of the driver for truck 𝑣 upon arrival at node-time pair (𝑛, 𝑖 ). A binary variable 𝑦 𝐷𝐶 𝑣𝑖 ∈ { 0, 1} is used to indicate whether a driver change occurs for truck 𝑣 during time slot 𝑖 . For any arc 𝑎 in the network traversed by truck 𝑣 , let Start (𝑎 ) = (𝑛 1, 𝑖 1) and End (𝑎 ) = (𝑛 2, 𝑖 2), with an associated pure driving time of 𝑇 𝑎 𝑣 . The following constraints govern the propagation and reset of the cumulative driving time. 
+
+𝑢 𝑣, (𝑛 2 ,𝑖 2 ) ≥ 𝑢 𝑣, (𝑛 1 ,𝑖 1 ) + 𝑇 𝑎 𝑣 − 𝐻 max 𝑦 𝐷𝐶 𝑣𝑖 2 − BigM (1 − 𝑥 𝑎𝑣𝑡 ) ∀𝑣 ∈ 𝑉, 𝑎 ∈ 𝐴, 𝑡 ∈ 𝑇 (29) 
+
+𝑢 𝑣, (𝑛 2 ,𝑖 2 ) ≤ 𝑢 𝑣, (𝑛 1 ,𝑖 1 ) + 𝑇 𝑎 𝑣 + BigM 𝑦 𝐷𝐶 𝑣𝑖 2 + BigM (1 − 𝑥 𝑎𝑣𝑡 ) ∀𝑣 ∈ 𝑉, 𝑎 ∈ 𝐴, 𝑡 ∈ 𝑇 (30) 0 ≤ 𝑢 𝑣, (𝑛,𝑖 ) ≤ 𝐻 max (1 − 𝑦 𝐷𝐶 𝑣𝑖 ) + 𝜀 𝑦 𝐷𝐶 𝑣𝑖 ∀𝑣 ∈ 𝑉, (𝑛, 𝑖 ) ∈ 𝑁 × 𝑇 (31) 
+
+𝑦 𝐷𝐶 𝑣𝑖 ≤∑︁    
+
+> 𝑛 ′∈𝑁 𝐷𝐶 𝑣
+
+∑︁ 𝑎 ∈ 𝐴 𝑛 ′𝑖 
+
+𝑥 𝑎𝑣𝑡 ∀𝑣 ∈ 𝑉, 𝑖 ∈ 𝑇 (32) 
+
+𝑢 𝑣, Start (𝑣 ) = 0 ∀𝑣 ∈ 𝑉 (33) Constraints (29) and (30) manage the update of the cumulative driving time along a traversed arc 𝑎 . These constraints are activated by the term BigM (1 − 𝑥 𝑎𝑣𝑡 ) only if truck 𝑣 actually uses the arc (i.e., if 𝑥 𝑎𝑣𝑡 = 1). Constraint (31) enforces the driving time limits. If no driver change occurs ( 𝑦 𝐷𝐶 𝑣𝑖 = 0), it ensures the cumulative time does not exceed the maximum limit 𝐻 max . Conversely, if a driver change is performed ( 𝑦 𝐷𝐶 𝑣𝑖 = 1), this constraint forces 𝑢 𝑣, (𝑛,𝑖 ) to be reset to a very small value 𝜀 . Constraint (32) provides the logical link ensuring that a driver change can only be initiated (𝑦 𝐷𝐶 𝑣𝑖 = 1) if truck 𝑣 is physically present at an authorized driver change node ( 𝑛 ′ ∈ 𝑁 𝐷𝐶 𝑣 ) during time slot 𝑖 . Finally, constraint (33) initializes the cumulative driving time to zero for all trucks at the start of their routes. 
+
+# 7 Solution methodology 
+
+In this section, we present the solution approaches used to solve the main mathematical model of the LT RSP .To address the problem efficiently, we combine state-of-the-art MIP solvers with the well-established Relax & Fix – Fix & Optimize (R&F–F&O) metaheuristic framework, which has recently gained increasing attention and enables the computation of high-quality solutions within reduced computational time [41]. Before introducing the complete solution methodology, we summarize below the key empirical and theoretical observations that motivate and guide the choice of solving strategies: 
+
+• Small integrality gap: Preliminary solution tests of P𝑚 reveal that LP relaxation is consistently strong as highlighted in Appendix B: only a limited subset of routing variables remains fractional at optimality. This confirms that the formulation exhibits a tight polyhedral structure and provides branch-and-bound with high-quality lower bounds. 
+
+• Early-incumbent latency: Given the size of the routing network, the main computational challenge is not the quality of the bound, but the time required to construct the first feasible schedule that satisfies all operational constraints in the planning horizon 𝑇 . Once such a schedule is obtained, the optimality gap closes in a reasonnable runtime. Given the two preceding points, one can observe that the LT RSP formulation has a strong LP relaxation, while the main difficulty lies in generating the first feasible incumbent due to the problem size. R&F - F&O framework is therefore well suited for this formulation: by decomposing the model into sequential integer blocks, it mitigates the early-incumbent latency and allows the solver to obtain a first feasible solution more quickly on partially relaxed subproblems. This approach is further justified by the small integrality gap, since relaxation do not move the solution far from integrality. As a result, solution quality remains stable and the search stays close to the true integer optimum. In what follows, we describe in detail the main components of the solving approaches, namely the state-of-the-art MILP solver and the R&F–F&O framework. 13 7.1 MILP Solver Considerations 
+
+The performance of branch-and-bound for large-scale vehicle routing and scheduling problems critically depends on the strength of the LP relaxation and the solver’s ability to navigate the search tree efficiently. Let OPT LP denote the value of the LP relaxation and OPT IP the value of the integer optimum. The integrality gap 
+
+𝐺 𝐴𝑃 𝑖𝑛𝑡 = OPT IP − OPT LP 
+
+OPT IP 
+
+governs the branching effort. A small 𝐺 𝐴𝑃 𝑖𝑛𝑡 implies that only a limited number of nodes need to be explored before proving optimality. Once an incumbent solution of quality INC is identified. Obtaining the initial incumbent is particularly challenging, as the solver relies on primal heuristics and node relaxations to construct high-quality feasible solutions at early stages. To improve this phase, we configure the LP algorithm inside the branch-and-bound tree by enforcing the barrier method through Method = 2 . While the dual simplex method ( 𝑚 = 1) efficiently reuses previously computed bases, the barrier method is better suited for large and highly degenerate relaxations. Further, two parameter settings are employed to reduce branching inefficiencies. By setting DegenMoves = 0 ,we eliminate degeneracy-based pivot moves that add computational overhead without improving bounds in highly degenerate relaxations. Moreover, disabling crossover ( Crossover = 0 ) avoids reconstructing simplex bases after barrier solves, thereby reducing unnecessary post-processing time within each node. Finally, to mitigate the tailing-off effect inherent in MIP solvers, we impose a stopping criterion on the optimality gap. Let Δ(𝑘 ) denote the relative gap at iteration 𝑘 , defined as 
+
+Δ(𝑘 ) = INC (𝑘 ) − LB (𝑘 )
+
+INC (𝑘 ) ,
+
+where INC (𝑘 ) and LB (𝑘 ) denote the incumbent and the best lower bound, respectively. It is well known that once Δ(𝑘 )
+
+falls below 5%, further progress is dominated by improvements in LB (𝑘 ) rather than INC (𝑘 ). Thus, enforcing MIPGap = 0.01 guarantees termination once Δ(𝑘 ) ≤ 1%, ensuring solutions are practically optimal while avoiding excessive computational time in late-stage search. In summary, the combination of a barrier-based LP solution strategy, suppression of degeneracy moves, disabling crossover, and an early-gap termination rule provides an effective configuration for scaling MILP solvers to horizon-based LT RSP instances. These adjustments exploit both the structural strength of the formulation and solver-specific mechanisms to alleviate branching effort. 
+
+7.2 Relax-and-Fix ( R& F ) Strategy 
+
+R&F is an iterative decomposition technique designed to progressively construct a feasible and near-optimal solution by solving a sequence of restricted MILP subproblems [42]. It is particularly effective for time-dependent MILPs , where decisions evolve over a finite planning horizon. In our formulation, we divide the time horizon 𝑇 into nonoverlapping blocks 𝐵 , where each block consists of a subset of consecutive time periods. The key idea is to iteratively fix decision variables for past periods, solve a subset of integer variables in the current time block, and relax future decisions. At each iteration 𝑘 , the problem is reformulated by partitioning the decision variables into three sets. The variables corresponding to previous time blocks {𝐵 1, 𝐵 2, . . . , 𝐵 𝑘 −1 } are fixed to their integer values determined previously, ensuring consistency with previous decisions. The variables within the current time block 𝐵 𝑘 remain integer and are solved exactly, allowing the model to enforce discrete decisions over this subset. Finally, the variables associated with future time blocks {𝐵 𝑘 +1, . . . , 𝐵 𝑇 } are relaxed to their continuous counterparts, reducing the combinatorial complexity of the problem while preserving flexibility for subsequent iterations. Mathematically, this can be expressed as: 
+
+
+
+𝑥 𝑖 ∈ { 0, 1} ∀ 𝑖 ∈ 𝐵 𝑘 
+
+𝑥 𝑖 = 𝑥 ∗ 
+
+> 𝑖
+
+∈ { 0, 1} ∀ 𝑖 ∈ Ð𝑘 −1 
+
+> 𝑗 =1
+
+𝐵 𝑗 
+
+𝑥 𝑖 ∈ [ 0, 1] ∀𝑖 ∈ Ð𝑇 𝑗 =𝑘 +1 𝐵 𝑗 
+
+This structured approach ensures that the integer assignments are constructed progressively while maintaining computational tractability. This ensures that the size of the problem remains manageable, significantly reducing computational effort compared to solving the whole MILP at once. The entire approach is formally described in Algorithm 1. 14 Algorithm 1 Relax-and-Fix 
+
+Require: MILP model with planning horizon 𝑇 , block size 𝐵 
+
+Ensure: Near-optimal solution to the MILP  
+
+> 1:
+
+Load the MILP model and configure the objective function to minimize total cost  
+
+> 2:
+
+Declare decision variables and incorporate all relevant constraints into the model  
+
+> 3:
+
+Initialize storage structures for solutions and the list of variables to be fixed  
+
+> 4:
+
+for each block 𝑏 from 0 to 𝑇 with step 𝐵 do  
+
+> 5:
+
+Relax-and-Fix strategy: 
+
+• Fix variables associated with previously solved blocks 
+
+• Treat variables of the current block as integer 
+
+• Relax variables of upcoming blocks to continuous  
+
+> 6:
+
+Solve the resulting sub-problem using an MILP solver  
+
+> 7:
+
+if a feasible solution is found then  
+
+> 8:
+
+Record the solution for the current block  
+
+> 9:
+
+else  
+
+> 10:
+
+Stop: No feasible solution exists for the current block  
+
+> 11:
+
+end if  
+
+> 12:
+
+end for  
+
+> 13:
+
+Output: Final sol ution status and objective value 
+
+7.3 Fix-and-Optimize (F&O) Strategy 
+
+Once an initial solution is obtained using Relax-and-Fix , we apply a Fix-and-Optimize strategy to iteratively improve the integer solution or removing possible infeasibilities by focusing on small, overlapping subsets of decision variables. Unlike Relax-and-Fix , which progressively assigns integer values to variables over time, Fix-and-Optimize iteratively refines the solution by selecting subsets of decision variables for re-optimization while keeping others fixed as described by Algorithm 2. At each iteration 𝑘 , the optimization is restricted to a rolling time window 𝐼 𝑘 , where the integer variables within the window are re-optimized, while all other variables remain fixed at their previously assigned values. This can be mathematically formulated as: 
+
+𝑥 𝑖 = 𝑥 ∗ 
+
+> 𝑖
+
+, ∀ 𝑖 ∈
+
+> 𝑇
+
+Ø
+
+> 𝑗 =1, 𝑗 ≠𝑘
+
+𝐼 𝑗 
+
+where 𝑥 ∗ 
+
+> 𝑖
+
+represents the previously assigned integer value of 𝑥 𝑖 . This method ensures that only a small subset of variables is modified at each iteration, maintaining feasibility while improving the objective function in a controlled manner. By iteratively selecting different time windows 𝐼 𝑘 , the Fix-and-Optimize approach enhances solution quality without significantly increasing computational complexity. This approach ensures a controlled exploration of the solution space, allowing for localized improvements without significantly altering feasibility. By iteratively refining subsets of decision variables, Fix-and-Optimize enhances solution quality while maintaining computational efficiency. 15 Algorithm 2 Fix-and-Optimize 
+
+Require: MILP model with time horizon 𝑇 , set of time Intervals 𝐼 𝑘 
+
+Ensure: Improved solution to the MILP  
+
+> 1:
+
+Initialize the MILP model and set the objective to minimize total cost  
+
+> 2:
+
+Define decision variables and add relevant constraints to the model  
+
+> 3:
+
+Initialize solution storage and best-known objective value  
+
+> 4:
+
+Set 𝑘 = 1 
+
+> 5:
+
+for each block 𝐼 𝑘 do  
+
+> 6:
+
+Fix-and-Optimize Strategy: 
+
+• Fix variables outside the selected interval 𝐼 𝑘 
+
+• Optimize integer variables within 𝐼 𝑘  
+
+> 7:
+
+Solve the restricted MILP using the solver  
+
+> 8:
+
+if solution improves the objective value then  
+
+> 9:
+
+Update the best-known solution  
+
+> 10:
+
+end if  
+
+> 11:
+
+Move to the next time window: 𝑘 ← 𝑘 + 1 
+
+> 12:
+
+end for  
+
+> 13:
+
+Output: Final solution status, objective value, and selected variable values 
+
+7.4 Acceleration strategies 
+
+The proposed formulation P𝑚 involves a heterogeneous fleet, time-dependent routing decisions, and detailed service-time modeling, which collectively lead to a large and highly symmetric search space. Although the core formulation is theoretically sound, practical solvability strongly depends on additional modeling choices that influence relaxation strength and solver behavior. To improve computational efficiency without altering the feasible region or excluding optimal solutions, we incorporate two acceleration strategies directly into the formulation: (i) symmetry-breaking constraints for identical vehicles of the same contractor, and (ii) indicator constraints to replace big-𝑀 time-window formulations. 
+
+Symmetry breaking. For a given contractor 𝑐 ∈ 𝐶 , let 𝑉 𝑐 denote the set of vehicles operated by 𝑐 , and let 𝑉 𝜅 𝑐 ⊆ 𝑉 𝑐 
+
+be the subset of vehicles sharing the same configuration 𝜅 . Vehicles in 𝑉 𝜅 𝑐 are interchangeable, which induces a high degree of symmetry in the formulation. This symmetry allows the solver to generate multiple equivalent solutions that differ only by a permutation of identical vehicles, unnecessarily inflating the branch-and-bound tree. To mitigate this effect, we introduce symmetry-breaking constraints that impose a partial ordering on vehicle utilization within each group 𝑉 𝜅 𝑐 . Let 𝑉 𝜅 𝑐 = {𝑣 1, 𝑣 2, . . . , 𝑣 𝑘 𝑐 } be indexed arbitrarily. We enforce the following ordering constraints: ∑︁  
+
+> 𝑎 ∈𝐴
+
+∑︁ 𝑡 ∈𝑇 
+
+𝑥 𝑎𝑣 𝑖 𝑡 ≥∑︁  
+
+> 𝑎 ∈𝐴
+
+∑︁ 𝑡 ∈𝑇 
+
+𝑥 𝑎𝑣 𝑖 +1𝑡 , ∀𝑐 ∈ 𝐶, ∀𝜅, 𝑖 = 1, . . . , 𝑘 𝑐 − 1, (34) where 𝑥 𝑎𝑣𝑡 is the binary variable indicating whether arc 𝑎 is traversed by vehicle 𝑣 at time period 𝑡 . Constraints (34) ensure that lower-indexed vehicles are used at least as much as higher-indexed ones, thereby eliminating equivalent solutions obtained through vehicle permutations. 
+
+Indicator constraints. Time-window feasibility at nodes is enforced only when the corresponding routing arc is selected. Constraints 11, 12 weaken the linear relaxation and may cause numerical instability when 𝑀 is large. To address this issue, we replace them with indicator constraints that directly encode the underlying logical implication: 
+
+𝑥 𝑎𝑣𝑡 = 1 ⇒ 𝜏 + 
+
+> 𝑎
+
++ 𝑆 𝑎 ≤ 𝑇 𝐶 𝑛 , (35) 
+
+𝑥 𝑎𝑣𝑡 = 1 ⇒ 𝜏 + 
+
+> 𝑎
+
++ 𝑆 𝑎 ≥ 𝑇 𝑂 𝑛 , (36) for all 𝑎 ∈ 𝐴 , 𝑣 ∈ 𝑉 , and 𝑡 ∈ 𝑇 . Indicator constraints activate the time-window conditions only when arc 𝑎 is selected by vehicle 𝑣 at time 𝑡 , and remain inactive otherwise. This reformulation preserves the exact role of the original constraints while avoiding the use of constants. Conventional solvers such as Cplex and Gurobi support these kind of constraints. 
+
+# 8 Computational study 
+
+In this section, we report the computational experiments conducted on real-world data provided by a Canadian forest company. Recall that, in the Canadian forestry context, routing and scheduling planning are typically made on a weekly 16 basis. Accordingly, the demand and supply information of our industrial partner are specified at a weekly level. The proposed implementation is general and parametrized by the planning horizon 𝑇 enabling the generation of routing and scheduling plans for arbitrary horizons. To illustrate the outcomes of our study, we propose the following test plan. First, we provide details about the instances used, and then we present weekly routing and scheduling results (i.e., 𝑇 = 5). As will be explained later, for weekly planning we compare different solving methods in terms of computational runtime and solution quality. Finally, we conduct a post-computational analysis to discuss the obtained results and derive business insights. 
+
+8.1 Context and instances description 
+
+We obtained two years of historical operational data from our industrial partner. The full dataset spans a network of 2 379 distinct locations, consisting of 50 mills, 2 270 forest blocks, and 59 contractor facilities. From these data, we generated weekly instances containing detailed information on harvested forest sites, mill demands, contractor fleets, loaders availability, and service times for loading and unloading. In the following subsections, we provide a detailed characterization of these instances. Table 3 reports the set of weekly routing instances and their main characteristics. W1 
+
+> W2
+> W3
+> W4
+> W5
+> W6
+> W7
+> W8
+> W9
+> W10
+> W11
+> W12
+> W13
+> W14
+> W15
+> W16
+> W17
+> W18
+> W19
+> W20
+> Instances
+> 0
+> 10000
+> 20000
+> 30000
+> 40000
+> 50000
+> 60000
+> 70000
+> 80000
+> Number of arcs
+> Small
+> Medium
+> Large
+> Feasible routes
+> 0
+> 1
+> 2
+> 3
+> 4
+> 5
+> 6
+> Feasible routes
+> 1e12
+> Figure 5: Growth of feasible routes as a function of the number of arcs. The number of arcs serves as a proxy for network density, which directly affects computational complexity.
+
+Based on the number of arcs, the instances W are categorized into three groups: small W𝑠 , medium W𝑚 , and large W𝑙 . The number of arcs is used as a proxy for network density, i.e., the number of potential routes connecting supply and demand nodes. Density is the main factor influencing computational effort, as it increases symmetry and degeneracy, thereby directly affecting the branching effort. In addition, our problem structure is strongly impacted by other factors such as a heterogeneous truck fleet (with different capacities and loading equipment), multiple product types, and diverse client demands. To illustrate, Figure 5 shows that the routing network size grows exponentially with the number of arcs: even a small increase in arcs leads to an exponential increase in the number of feasible routes. 17 Table 3: Characteristics of the 20 weekly instances categorized by number of arcs. Instance: label of the weekly instance; Dates: planning horizon of the instance; Served Mills: number of mills served; Used Blocks: number of forest blocks used; Products: number of product types; Vehicles: number of available vehicles; Home bases: number of truck home bases; Nodes: number of nodes in the network; Arcs: number of arcs in the network; Total Demand (GMT): total demand expressed in GMT units; Avg Distance: average distance traveled per arc (km); Max Distance: maximum distance between any two points (km).                                                                                                                                                                                                                                                
+
+> Instance Dates Served Mills Used Blocks Products Vehicles Home bases Nodes Arcs Total Demand (GMT) Avg Distance Max Distance Small Instances (Arcs <30,000)
+> 𝑊 12025-01-10 – 2025-01-14 11 25 370 27 1295 26372 6140 242.06 574.00
+> 𝑊 22024-12-30 – 2025-01-04 13 24 360 19 1303 26504 8820 272.00 629.27
+> 𝑊 32024-12-24 – 2024-12-29 11 19 336 19 1063 17189 3820 259.31 651.28
+> 𝑊 42024-11-29 – 2024-12-03 13 23 351 25 1267 26934 7180 245.39 680.30
+> 𝑊 52024-11-24 – 2024-11-28 15 23 353 17 1321 29265 10440 206.22 628.94
+> Medium Instances (30,000 ≤Arcs ≤50,000)
+> 𝑊 62024-12-04 – 2024-12-08 14 24 357 25 1333 32603 9600 231.08 660.30
+> 𝑊 72024-12-09 – 2024-12-13 17 30 366 27 1629 45237 14250 227.31 574.37
+> 𝑊 82024-11-19 – 2024-11-23 14 22 367 27 1267 32044 10800 283.70 657.06
+> 𝑊 92024-11-14 – 2024-11-18 17 23 368 30 1376 37120 10320 229.56 660.30
+> 𝑊 10 2024-11-09 – 2024-11-13 16 21 362 26 1280 31172 9630 225.54 657.06
+> 𝑊 11 2024-10-30 – 2024-11-03 18 46 459 27 1465 44237 12930 241.16 728.76
+> 𝑊 12 2024-10-14 – 2024-10-18 16 26 456 26 1464 36989 8140 264.96 739.14
+> 𝑊 13 2024-10-10 – 2024-10-14 13 37 462 27 1777 40795 11330 252.04 739.14
+> 𝑊 14 2025-01-05 – 2025-01-09 16 31 388 27 1637 43155 20130 244.92 574.00
+> Large Instances (Arcs >50,000)
+> 𝑊 15 2024-10-25 – 2024-10-29 17 37 472 30 1888 53103 12850 246.67 657.06
+> 𝑊 16 2024-12-19 – 2024-12-23 17 35 371 28 1808 50238 10540 268.47 651.28
+> 𝑊 17 2024-12-14 – 2024-12-18 17 38 364 27 1917 52736 11630 257.75 659.57
+> 𝑊 18 2024-11-04 – 2024-11-08 18 46 472 27 2233 86959 20240 220.54 702.36
+> 𝑊 19 2024-10-20 – 2024-10-24 17 40 478 30 1996 60449 23500 234.08 721.61
+> 𝑊 20 2024-10-15 – 2024-10-19 16 36 485 27 1825 50790 17170 227.70 739.14
+
+8.2 Fleet characteristics and transportation costs 
+
+The heterogeneous fleet includes eight different truck configurations, varying by capacity and whether they are self-loading. Seasonal restrictions further influence effective payload capacity. Contractors operate between 1 and 30 trucks each, resulting in diverse availability levels across the network. The majority of contractors own a single truck. Overall, the fleet comprises 299 trucks operated by 59 contractors, with a weekly average of 64 active trucks and 26 contractors. The fleet includes 133 self-loader trucks, with an average of 29 per week. Eight truck configurations are available overall, with an average of 6 configurations active per week. As provided by our industrial partner, Table 4 reports the estimated hauling and stop costs (in $/hour) for each truck configuration across different seasons, highlighting the seasonal variability in fleet operating costs. 
+
+Winter 23–24 Summer 23 Winter 22–23 Summer 22 Winter 23–24 Configuration Hauling Stop Hauling Stop Hauling Stop Hauling Stop Hauling Stop ($/Hr) ($/Hr) ($/Hr) ($/Hr) ($/Hr) ($/Hr) ($/Hr) ($/Hr) ($/Hr) ($/Hr) QUADFLEET 107.23 96.67 104.01 93.77 101.87 91.84 98.81 89.08 110.40 99.84 TRIFLEET 107.23 96.67 104.01 93.77 101.87 91.84 98.81 89.08 110.40 97.29 QUADSELF 112.69 102.13 109.31 99.07 107.06 97.02 103.84 94.11 116.67 106.11 TRISELF 112.69 102.13 109.31 99.07 107.06 97.02 103.84 94.11 116.67 103.72 BTRAIN 113.24 97.84 109.84 94.90 107.58 92.95 104.35 90.16 116.75 101.35 BTRAINSELF 115.52 100.12 112.05 97.12 109.74 95.11 106.45 92.26 120.61 105.21 TRD 115.46 102.15 112.00 99.09 109.69 97.04 106.40 93.13 118.09 104.74 TRS 118.37 106.05 114.82 102.87 112.45 100.75 109.08 97.73 121.30 108.98 
+
+Table 4: Hauling and waiting costs ($/Hr) by fleet configuration across different seasons. 
+
+In our dataset, the travel speed between each forest block and mill is defined at the level of each pair ( 𝑓 , 𝑚 ) and varies across seasons. This information allows us to compute the effective travel time 𝑡 𝑓 𝑚 = 𝑑 𝑓 𝑚 /𝑣 𝑓 𝑚 , where 𝑑 𝑓 𝑚 is the distance (km) and 𝑣 𝑓 𝑚 is the observed average speed (km/h). To better characterize the network, we classify each connection into three categories: slow roads (𝑣 𝑓 𝑚 < 60 km/h), medium roads (60 ≤ 𝑣 𝑓 𝑚 < 80 km/h), and fast roads 
+
+(𝑣 𝑓 𝑚 ≥ 80 km/h). 
+
+8.3 Test plan 
+
+As described previously, we consider three categories of LT RSP weekly instances W. Based on these categories, we compare the performance of the following methods: 
+
+• P𝑚 -MILP 𝑑 : Main model solved by CPLEX with default parameter settings solved to a MILP gap 𝜀 = 1%. 
+
+• P𝑚 -MILP 𝑡 : Main model solved by CPLEX with tuned parameters solved to a MILP gap 𝜀 = 1%. 18 • P𝑚 -RF − F O 𝑑 : Hybrid metaheuristic (RF-FO) for the main model with default parameters. 
+
+• P𝑚 -RF − F O 𝑡 : Hybrid metaheuristic (RF-FO) for the main model with tuned parameters. The performance of each method is assessed using two well-established criteria: (i) the runtime 𝑇 (in minutes), and (ii) the optimality gap relative to the best known objective value GAP BS (in %). The best known objective for each instance 𝑊 𝑖 is defined as 
+
+𝑧 ★(𝑊 𝑖 ) = min { 𝑧 𝑚 (𝑊 𝑖 ) | 𝑚 ∈ {P 𝑚 -MILP 𝑑 , P𝑚 -MILP 𝑡 , P𝑚 -RF -F O 𝑑 , P𝑚 -RF -F O 𝑡 } } ,
+
+where 𝑧 𝑚 (𝑊 𝑖 ) denotes the objective value obtained by method 𝑚 for instance 𝑊 𝑖 .The relative gap of method 𝑚 on instance 𝑊 𝑖 is then given by 
+
+GAP BS (𝑚, 𝑊 𝑖 ) = 𝑧 𝑚 (𝑊 𝑖 ) − 𝑧 ★(𝑊 𝑖 )
+
+𝑧 ★(𝑊 𝑖 ) × 100 .
+
+All methods rely on the same model P𝑚 , incorporating the constraints described in Section 6. The routing network for each weekly instance 𝑊 𝑖 is generated using modular preprocessing functions that systematically eliminate infeasible arcs. The entire framework was implemented in Python. All computational experiments were conducted on a workstation equipped with a 3.20 GHz Intel ® Core ™ i7-8700 processor, 64 GB of system memory, and running a Linux operating system. The Integer Linear Programs (ILPs) were solved using the IBM ILOG CPLEX Optimizer (version 22.1.1.0), with the PuLP library (version 3.3.0) used as the modeling interface. 
+
+8.4 LT RSP numerical results 
+
+We compare various methods by reporting the execution time 𝑇 in minutes and the gap described above GAP BS . Table 5 reports results of different instances. These results highlight several important performance aspects across the different instance categories. The exact approaches P𝑚 -MILP 𝑑 and P𝑚 -MILP 𝑡 , which enforce a stopping gap of 𝜀 = 1%, provide reliable reference solutions across all instances. The choice of this tight optimality gap is motivated by extensive discussions with our industrial partner, for whom even marginal cost improvements are highly valuable due to the narrow profit margins in forestry transportation operations. In practice, any additional cost reduction—down to a few cents per unit—is considered meaningful. However, further tightening the gap below 1% was deemed impractical, as it would lead large computational times caused by the well-known tailing-off effect in branch-and-bound algorithms. Consistently with this observation, the computational effort remains significant: the average runtime 𝑇 rises from 12 .75 minutes for small instances to more than 45 .87 minutes for large ones. These values confirm the intrinsic difficulty of solving large-scale models, even when the termination criterion is relaxed to 𝜀 = 1%. Solver tuning in P𝑚 -MILP 𝑡 slightly improves performance, reducing the average runtime from 12 .75 to 7 .78 minutes on small instances and from 45 .87 to 40 .38 minutes on large ones without degrading solution quality. The average gaps GAP BS are very close between tuned and default MILP solving approach (0 .58% vs. 0 .54% on small instances, and 0 .56% vs. 0 .79% on large ones). These observations highlight the fact that even parameters calibration was not sufficient to significantly improve the execution time. The hybrid matheuristic approaches achieve the best overall balance between runtime and solution quality. The default version P𝑚 -RF -F O 𝑑 consistently identifies solutions that are extremely close to the best known objective, with average gaps of 0 .45% (small), 0 .21% (medium), and only 0 .14% (large). At the same time, its runtimes performance is: 5 .03 minutes on small, 10 .75 on medium, and 16 .11 on large instances. These results confirm that the relax-and-fix decomposition significantly accelerates convergence towards high-quality solutions, especially for large-scale instances where the runtime reduction is substantial. The tuned hybrid variant P𝑚 -RF -F O 𝑡 yields comparable solution quality, with average gaps ranging from 0 .52% on small to 0 .12% on large instances. However, this comes at the price of a slightly higher runtimes: 6 .1 minutes on small, 11 .7 minutes on medium, and 20 .8 minutes on large instances. This additional computational effort can be attributed to the iterative refinement loops introduced by the tuned configuration. Unlike in the exact approaches, where tuning proved beneficial due to the large number of integer variables that profit from advanced branching and search parameterization, the same mechanism is less efficient in the metaheuristic framework. In P𝑚 -RF -F O 𝑡 , many variables are relaxed during decomposition, which limits the advantages of tuning; instead, the refinement overhead becomes the dominant factor, turning tuning into a computational burden rather than an improvement. 19 Table 5: Performance comparison of different methods across all instances. The values reported in the Objective columns are scaled by a factor of  10 2 for readability. 
+
+> Instance  P𝑚 -M I L P 𝑑  P𝑚 -M I L P 𝑡  P𝑚 -R F -F O 𝑑  P𝑚 -R F -F O 𝑡  Best Known Obj. T (min)  Objective  G A P BS  (%)  T (min)  Objective  G A P BS  (%)  T (min)  Objective  G A P BS  (%)  T (min)  Objective  G A P BS  (%)
+> Small Instances  (| 𝐴 | < 30 ,000 )
+> 𝑊 1 13.99  24023  0.00  8.60  24197  0.72  7.84  24035  0.05  9.25  24089  0.27  24023
+> 𝑊 2 7.78  33752  0.00  6.21  34068  0.94  5.28  34188  1.29  6.04  33951  0.59  33752
+> 𝑊 3 13.32  15148  1.55  5.94  14917  0.00  2.10  15009  0.62  3.82  15033  0.78  14917
+> 𝑊 4 8.15  30002  0.67  7.21  29804  0.00  4.00  29890  0.29  5.62  30018  0.72  29804
+> 𝑊 5 20.53  40426  0.49  8.96  40740  1.27  5.95  40230  0.00  5.65  40318  0.22  40230
+> Avg  12.75  – 0.54  7.78  – 0.58  5.03  – 0.45  6.08  – 0.52  –
+> Medium Instances  (30 ,000  ≤ |  𝐴 | ≤  50 ,000 )
+> 𝑊 6 15.04  39966  0.45  10.88  40089  0.76  6.22  39805  0.05  9.57  39786  0.00  39786
+> 𝑊 7 38.52  55708  0.43  23.15  55674  0.37  15.85  55573  0.38  16.38  55467  0.00  55467
+> 𝑊 8 28.97  42232  0.08  11.08  42304  0.25  8.93  42198  0.00  9.50  42198  0.00  42198
+> 𝑊 9 25.78  41453  0.44  15.83  41629  0.86  9.54  41287  0.03  12.01  41273  0.00  41273
+> 𝑊 10  14.89  37709  0.00  11.67  37844  0.36  6.80  37727  0.05  7.15  37863  0.41  37709
+> 𝑊 11  18.85  46636  0.12  15.31  46743  0.35  15.62  46594  0.03  11.82  46581  0.00  46581
+> 𝑊 12  31.12  41746  1.66  22.10  41700  1.55  11.03  41063  0.00  12.60  41099  0.09  41063
+> 𝑊 13  13.44  32321  0.00  8.35  32344  0.07  7.26  32288  0.00  9.16  32299  0.03  32288
+> 𝑊 14  20.60  80175  1.51  13.30  79320  0.42  13.47  79341  0.45  19.19  78984  0.00  78984
+> Avg  23.25  – 0.63  14.63  – 0.44  10.75  – 0.21  11.71  – 0.17  –
+> Large Instances  (| 𝐴 | > 50 ,000 )
+> 𝑊 15  38.63  49386  0.14  41.51  49330  0.02  18.56  49315  0.00  18.04  49337  0.04  49315
+> 𝑊 16  35.71  42307  0.13  42.00  42568  0.74  15.50  42295  0.10  17.65  42254  0.00  42254
+> 𝑊 17  56.80  48445  1.85  44.54  48087  1.11  17.91  47562  0.00  20.73  47566  0.01  47562
+> 𝑊 18  28.36  77351  1.11  31.03  76989  0.63  15.25  76504  0.00  25.55  76713  0.27  76504
+> 𝑊 19  78.59  89172  0.16  46.47  89030  0.00  18.95  89392  0.41  21.80  89402  0.42  89030
+> 𝑊 20  37.13  62388  0.25  36.74  62780  0.87  16.78  62435  0.31  18.84  62232  0.00  62232
+> Avg  45.87  – 0.79  40.38  – 0.56  16.11  – 0.14  20.77  – 0.12  –
+
+20 Beyond solution quality, reductions in computational time are also of practical importance, even when they are on the order of a few minutes. In the operational context of our industrial partner, weekly routing and scheduling plans are subject to significant uncertainty and frequent last-minute changes, including demand updates, equipment availability, and operational disruptions. As a result, the planning process may need to be executed multiple times within a limited decision window. In such time-constrained settings, shorter execution times are strongly preferred, as they increase the responsiveness of the decision-support system and facilitate rapid re-optimization when new information becomes available. Overall, the results confirm that the proposed hybrid mataheuristic framework is the most effective approach in practice: it consistently achieves near-optimal solutions in very competitive runtimes, with gaps to the best known objective almost always below 1%. The robustness and scalability of the proposed framework are thus demonstrated, as all real-world problem instances can be solved to near-optimality within practical computing times. Figure 6 analyzes the average runtime decomposition of P𝑚 -MILP 𝑑 by instance category. Three phases are identified: (i) the search for the first feasible incumbent, (ii) the tailing-off phase after the integrality gap reaches 5%, and (iii) the remaining branching operations. The tailing-off effect dominates the runtime, accounting for more than half of the total time across all categories and increasing with instance size (from about 9 minutes on small instances to over 23 minutes on large ones). The time required to find the first incumbent also scales with problem size, representing roughly one quarter of the total runtime (4, 7, and more than 10 minutes for small, medium, and large instances, respectively), which reflects the difficulty of generating high-quality feasible solutions early in the search. In contrast, the contribution of other branching operations remains limited (around 10–15%) and grows smoothly with instance size. Overall, these observations indicate that the tailing-off effect remains the dominant bottleneck for large-scale instances, motivating the use of hybrid and matheuristic strategies. Figure 7 further illustrates this behavior on an instance, where the best bound improves gradually while the incumbent decreases in stepwise jumps, eventually reaching a gap of about 1%. 
+
+Small Medium Large 
+
+0
+
+20 
+
+40 
+
+60 
+
+> Runtime (min)
+> Incumbent search
+> Tailing-off
+> Other branching
+> Figure 6: Average runtime decomposition across categories.
+
+0 200 400 600 800 1,000 1,200 
+
+6.2
+
+6.4
+
+6.6
+
+·10 4
+
+Time (s) 
+
+> Objective value
+> Lower bound
+> Incumbent
+> Figure 7: Solver profile on one example instance to a gap of 1 %.
+
+21 Table 6: Comparison of operational KPIs across instance categories.                                                                                                                  
+
+> Category Instance 𝐷 𝑡𝑜𝑡 (km) 𝑊 (h) Δ(GMT) |𝑉 |
+> Small Instances (|𝐴 |<30 ,000 )
+> 𝑊 113995.9 66.1 20 23
+> 𝑊 217663.2 116.7 46 38
+> 𝑊 38556.7 44.6 18 18
+> 𝑊 418120.0 80.5 39 37
+> 𝑊 523943.2 108.8 48 48
+> Average (Small) 16455.8 83.4 34.2 33
+> Medium Instances (30 ,000 ≤ | 𝐴 | ≤ 50 ,000 )
+> 𝑊 626971.4 93.6 35 36
+> 𝑊 732797.7 145.4 57 48
+> 𝑊 827561.2 93.8 54 50
+> 𝑊 927232.4 89.3 48 52
+> 𝑊 10 24506.1 81.1 40 44
+> 𝑊 11 30996.0 106.0 39 43
+> 𝑊 12 23854.6 98.9 43 46
+> 𝑊 13 21327.3 78.4 43 41
+> 𝑊 14 44605.5 274.8 62 63
+> Average (Medium) 28827.9 117.3 46.8 47.0
+> Large Instances (|𝐴 |>50 ,000 )
+> 𝑊 15 30805.5 105.9 58 44
+> 𝑊 16 25683.3 117.3 49 41
+> 𝑊 17 31884.3 109.5 52 53
+> 𝑊 18 47668.4 189.3 62 53
+> 𝑊 19 50888.8 212.4 66 53
+> 𝑊 20 35267.6 131.9 52 37
+> Average (Large) 37033.0 144.8 56.5 47
+
+The analysis of operational KPIs reported in Table 6 provides further insights into the impact of instance size on resource utilization. Let 𝐷 tot denote the total traveled distance (km), 𝑊 the cumulative waiting time (h), Δ the unmet demand, and |𝑉 | the number of vehicles used. As expected, both 𝐷 tot and 𝑊 increase with the instance size. On average, small instances yield 𝐷 tot = 16 456 km and 𝑊 = 83 .4 h, while medium instances require 𝐷 tot = 28 828 km and 𝑊 = 117 .3 h, i.e., an increase of +75 .0% and 
+
++40 .6%, respectively. For large instances, the averages rise further to 𝐷 tot = 37 033 km and 𝑊 = 144 .8 h, confirming the growth in routing complexity and synchronization requirements when the number of arcs increases. Similarly, the number of vehicles 𝑉 grows with the problem size, from an average of 33 in small instances to 47 for medium and large ones. This increase shows that larger instances require more routes and also spread the workload across more vehicles, mainly due to heterogeneous truck configurations and tighter time-window constraints. Unmet demand Δ(𝐺 𝑀𝑇 ) also increases with instance size, averaging 34 .2 for small, 46 .8 for medium, and 56 .5 for large instances. This reflects the growing difficulty of satisfying all requests as networks become denser and capacity constraints tighten. It is worth mentioning that we also conducted alternative experiments where Δ was equal to zero across all instances. This outcome was obtained because the demand satisfaction constraint was enforced with greater-than inequalities and unmet demand was sufficiently penalized in the objective function, i.e., ∑︁  
+
+> 𝑡 ∈𝑇
+
+∑︁ 𝑓 ∈𝐹 ∑︁ 𝑣 ∈𝑉 ∑︁ 𝑎 ∈ 𝐴 𝑚 𝑝 𝑓 
+
+𝑞 𝑣 𝑥 𝑎𝑣𝑡 + 𝛿 𝑚 𝑝 ≥ 𝑑 𝑚 𝑝 , ∀ 𝑚 ∈ 𝑀, ∀ 𝑝 ∈ 𝑃 𝑡 ∈ 𝑇 
+
+which permits slight oversupply. This assumption, validated with our industrial partner, is operationally acceptable for mills with adequate storage capacity. From a business standpoint, oversupply is preferable to unmet demand, though it comes at the cost of longer total total distance and higher fleet usage. 
+
+8.5 Evaluation of advanced operational constraints 
+
+The results reported earlier are obtained using real operational data and focus on the most frequent planning configura-tions encountered by our industrial partner and formulated in model P𝑚 . However, forestry transportation planning is subject to intermittent but important operational constraints including partial truckloads, contractual priority deliveries, and driver change requirements. Although these situations do not occur on a daily basis, they can arise at any time and must be handled without redesigning the planning model. To demonstrate the extensibility of the proposed framework, we conduct an additional experimental study based on the same real instances but endowed with synthetic scenarios of these operational advanced constraints. The synthetic constraints used in this study were designed based on discussions with our forestry partner to ensure that the experiments reflect near-realistic planning situations: 22 • Partial truckloads: between 2 and 5 occurrences per week. 
+
+• Priority rules: applied to between 10% and 20% of mills. 
+
+• Driver change requirement: concerns between 10% and 20% of drivers. For each constraint configuration, we generate 10 scenarios for every instance 𝑊 𝑖 and measure the marginal impact on: (i) the average routing gap with respect to the lower bound when RF − F O 𝑑 is used for solving, and (ii) the computational runtime in comparison to the baseline instance without additional constraints. Let 𝑧 LB  
+
+> 𝑖
+
+denote the lower bound for instance 𝑊 𝑖 , and 𝑧 RF-FO  
+
+> 𝑖,𝑠
+
+the objective value obtained for scenario 𝑠 ∈ { 1, . . . , |𝑆 |} .The average routing gap over all instances is computed as Gap synth (%) = 100 
+
+|W| ∑︁ 𝑊 𝑖 ∈ W 
+
+1
+
+|𝑆 | 
+
+> |𝑆 |
+
+∑︁ 
+
+> 𝑠 =1
+
+𝑧 RF-FO  
+
+> 𝑖,𝑠
+
+− 𝑧 LB 
+
+> 𝑖
+
+𝑧 LB 
+
+> 𝑖
+
+!
+
+.
+
+Let 𝑡 base  
+
+> 𝑖
+
+be the runtime of the baseline instance and 𝑡 const  
+
+> 𝑖,𝑠
+
+the runtime under additional constraints. The average relative runtime increase (in percentage) over all instances is defined as 
+
+Δ𝑡 (%) = 100 
+
+|W| ∑︁ 𝑊 𝑖 ∈ W 
+
+1
+
+|𝑆 | 
+
+> |𝑆 |
+
+∑︁ 
+
+> 𝑠 =1
+
+𝑡 const  
+
+> 𝑖,𝑠
+
+− 𝑡 base 
+
+> 𝑖
+
+𝑡 base 
+
+> 𝑖
+
+!
+
+.
+
+Table 7 reports the detailed results of this study. The results quantify the additional economic and computational burden induced by each operational constraint and by their joint activation. 
+
+> Table 7: Impact of advanced operational constraints on solution quality and runtime.
+
+Constraint scenario Gap synth (%) 𝚫 𝒕 (%) 
+
+Partial loads 2.1 26.4 Priority rules 1.2 15.7 Driver change requirement 1.5 23.2 All constraints combined 3.4 49.6 The results indicate that each constraint type induces only a limited degradation in solution quality produced by 
+
+RF-FO , with Gap syth remaining below 4% even when all constraints are simultaneously activated. This confirms that 
+
+RF − F O 𝑑 effectively preserves near-optimal solutions under advanced operational settings. Similarly, the additional computational effort remains controlled, with a maximum average runtime increase of 50% in the most restrictive configuration. Notably, even with all advanced operational constraints enabled, the resulting instances can still be solved in under 30 minutes, which is compatible with practical weekly planning requirements. 
+
+8.6 Impact of discretization interval length 
+
+The choice of the time discretization interval Δ directly affects how waiting time is represented in the planning model and, consequently, the robustness of routing and scheduling decisions when executed under real-world operational variability. In Section 5, we derived a theoretical discretization interval Δ★ by balancing the expected waiting time and expected idle time. While this analysis provides theoretical guidance, an empirical sensitivity assessment is conducted to understand how discretization interacts with execution uncertainty. To do this, we conducted a two-stage evaluation. First, for each discretization interval Δ, the planning model is solved using deterministic service times equal to their known average. Second, the resulting plans are evaluated under stochastic execution conditions. Specifically, loading and unloading times are simulated using independent realizations drawn from a normal distribution with mean 30 minutes and standard deviation 5 minutes. For each discretization value, 20 independent execution scenarios are generated, and the objective function is averaged across scenarios and all instances. This evaluation focuses on the variation of the objective function under realistic simulated service times, thereby capturing the true operational cost of executing a plan designed under a given discretization granularity. The reported 23 cost variation corresponds to the average relative increase of this objective with respect to the original objective function. Formally, for a given discretization interval Δ, the average execution-induced objective variation is defined as 
+
+Δ𝑍 exec (Δ) = 1
+
+|W| · | 𝑆 |∑︁ 𝑊 𝑖 | ∈ W |𝑆 |∑︁ 
+
+> 𝑠 =1
+
+𝑧 exec  
+
+> 𝑖,𝑠
+
+(Δ) − 𝑧 plan  
+
+> 𝑖
+
+(Δ)
+
+𝑧 plan  
+
+> 𝑖
+
+(Δ) × 100 , (37) where 𝑧 plan  
+
+> 𝑖
+
+(Δ) denotes the objective value obtained by the planning model for instance 𝑊 𝑖 using discretization interval 
+
+Δ, and 𝑧 exec  
+
+> 𝑖,𝑠
+
+(Δ) is the realized objective value under execution scenario 𝑠 ∈ { 1, . . . , |𝑆 |} . The metric is averaged over all instances and execution scenarios. The results are summarized in Table 8. Small discretization intervals, such as Δ = 15 minutes, lead to a large increase in the objective function. This behavior is explained by the lack of temporal slack in the plan, which makes the solution highly sensitive to variations in loading and unloading times and results in truck backlogs during execution. As the discretization interval increases, the average objective variation decreases and reaches its minimum around 
+
+Δ = 45 minutes. For larger discretization intervals, the objective variation increases again. In this case, the model introduces excessive temporal slack, which translates into idle time and higher waiting costs. Overall, these results highlight the existence of a trade-off between robustness to execution variability and temporal discretization. They empirically confirm that intermediate discretization values provide the most balanced and robust performance under stochastic service times. 
+
+> Table 8: Average execution-induced objective variation for different discretization intervals.
+
+Discretization interval Δ (min) 𝚫 𝒁 exec (𝚫 ) (%) 
+
+15 +31 .20 30 +9.89 45 +3.82 60 +12 .03 75 +18 .34 
+
+8.7 Modeling and solver behavior study 
+
+In addition to the baseline performance analysis presented earlier, we now investigate key modeling and solver design choices that significantly impact solution quality and runtime: 1. Symmetry breaking across identical vehicles within each contractor. 2. Replacing big-𝑀 formulations with indicator constraints. 3. The effect of the penalty coefficient on unmet demand. The following paragraphs report the experimental results for each component, using the instances described previously. 
+
+Impact of vehicle symmetry breaking. Figure 8 reports solver runtimes with and without symmetry breaking for each instance. The baseline runtimes correspond to P𝑚 -RF -F O 𝑑 . Symmetry breaking reduces solver runtimes by an average of approximately 27% across the 20 weekly instances. The improvement is consistent across all instance sizes: small instances exhibit limited but non-negligible reductions, typically around 1–2 minutes per run; medium-sized instances benefit from more substantial savings of up to 4 minutes; and large-scale cases experience the most pronounced reductions, often exceeding 5 minutes per instance. These results confirm the effectiveness of symmetry breaking as a practical mechanism for eliminating redundant branching and accelerating convergence, particularly in heterogeneous fleet settings. Accordingly, symmetry breaking is systematically incorporated into all solution approaches preceding 
+
+P𝑚 -MILP 𝑑 , P𝑚 -MILP 𝑡 , P𝑚 -RF -F O 𝑑 , and P𝑚 -RF -F O 𝑡 .24 W1 
+
+> W2
+> W3
+> W4
+> W5
+> W6
+> W7
+> W8
+> W9
+> W10
+> W11
+> W12
+> W13
+> W14
+> W15
+> W16
+> W17
+> W18
+> W19
+> W20
+
+0
+
+10 
+
+20 
+
+30 
+
+> Runtime (min)
+
+Baseline (no SB) 
+
+With SB 
+
+> Figure 8: Runtime comparison with and without symmetry breaking for all instances.
+
+Impact of indicator constraints. Table 9 summarizes the impact of replacing big-𝑀 constraints with indicators. Across all categories, runtimes improve by about 23% on average. For small instances, the average runtime decreases from 7 .21 to 5 .03 minutes, while for medium instances it drops from 13 .52 to 10 .75 minutes. For large instances, the reduction is from 19 .70 to 16 .11 minutes. These results confirm that indicator constraints provide a more faithful relaxation of time windows, improving numerical stability and reducing the branch-and-bound effort needed to close the integrality gap.               
+
+> Table 9: Big-𝑀 vs indicator constraints across instance categories.
+> Category Setup Runtime (min) Small Big-𝑀 7.21 Indicators 5.03 Medium Big-𝑀 13.52 Indicators 10.75 Large Big-𝑀 19.70 Indicators 16.11
+> Avg Reduction –23%
+
+Penalty coefficient on unmet demand. The final modeling choice concerns the penalty coefficient 𝑐 applied to total unmet demand Δ𝑡𝑜𝑡 . This term enters the objective function as 𝑐 · Δ𝑡𝑜𝑡 , where Δ𝑡𝑜𝑡 is measured in GMT. Its role is to balance routing costs against the cost of shortages: a small 𝑐 allows the solver to neglect some demands in favor of shorter routes, while a large 𝑐 enforces near-complete demand coverage. Figure 9 reports the average percentage of unmet demand across instance categories when varying 𝑐 ∈ { 10 , 30 , 50 , 100 , 500 , 1000 , 10 4 }.For very small penalty values ( 𝑐 = 10), the solver tolerates between 2 .3% and 2 .7% of demand remaining unmet on average. Increasing 𝑐 rapidly reduces this percentage: at 𝑐 = 50 the average shortage falls below 2%, and from 
+
+𝑐 = 100 onward it stabilizes around 1 .6%–1 .8% across all categories. These results confirm that the penalty coefficient effectively prioritizes demand satisfaction, with diminishing returns beyond 𝑐 = 100. Thus, setting 𝑐 in the order of 10 2–10 3 is sufficient to ensure that nearly all demand is served without introducing unnecessary numerical stiffness in the model. 25 10 30 50 10 2 5×10 2 10 3 10 4
+
+0
+
+1
+
+2
+
+Penalty coefficient 𝑐 
+
+> Unmet demand (%)
+
+Small 
+
+Medium 
+
+Large  
+
+> Figure 9: Sensitivity of unmet demand to the penalty coefficient 𝑐 .
+
+8.8 Business insights 
+
+A key advantage of the proposed optimization framework to manage the LT RSP is its ability to produce near-optimal solutions within short computational times. This capability provides our industrial partner with several advantages. From an operational perspective, dispatchers benefit from an operational buffer, i.e., additional time to validate and adjust the proposed plans before implementation. In practice, this buffer increases the robustness of the planning process, as it allows for the anticipation and integration of last-minute adjustments arising from stochastic disruptions such as demand fluctuations, vehicle breakdowns, or road closures. From an economic standpoint, the solution contributes to a significant reduction in transportation costs, which represent a major component of the total operational expenses. Discussions with our partner revealed that the LT RSP 
+
+is currently handled manually, relying mostly on repetitive back-and-forth trips with little optimization and almost no systematic backhauling, except when it is trivial. Furthermore, transportation planning is decentralized, with each contractor managing its own fleet independently. This fragmented approach prevents the exploitation of substantial cost-reduction opportunities. In summary, the proposed optimization framework enhances both the operational robustness and the financial efficiency of our forestry partner. We conducted a comparative experiment over a period of 50 weeks to quantify the potential impact of the proposed 
+
+LT RSP optimization framework. Specifically, we compared the transportation plans actually executed by our industrial partner with those generated by the optimization tool. Table 10 summarizes the outcomes of this comparison                       
+
+> Table 10: Quantified impacts of the proposed solution across financial, environmental, and operational dimensions.
+> Dimension Metric Impact on the indutrial partner Impact on Canada scale Unit
+> Financial Cost savings 8×10 9CAD 377 ×10 9Annual transport budget Reduction in total traveled distance 35% —— Average (km) Environmental CO 2emission reduction 4800 521 700 Tons/year Operational Average planning time <20 —— Minutes/week
+
+As shown in Table 10, the proposed optimization framework consistently generates more efficient transportation plans in both financial and environmental dimensions. The cost savings can be formally expressed as follows: 
+
+Δ𝐶 = 𝐶 manual − 𝐶 opt ,
+
+where 𝐶 manual denotes the observed cost of manually generated plans and 𝐶 opt the optimized cost. In practice, 𝐶 is strongly correlated with the total traveled distance 𝐷 , i.e., 
+
+𝐶 ∝ 𝐷, 
+
+so that the relative saving ratio is Saving ratio = 𝐷 manual − 𝐷 opt 
+
+𝐷 manual 
+
+× 100% .
+
+26 The estimation of annual financial savings was performed by the management team of our forestry partner, using the reported reduction in distance and unmet demand. For instance, a 5% reduction of the current transportation budget (approximately 30 × 10 6 CAD annually) corresponds to 0.05 × 30 × 10 6 = 1.5 × 10 6 CAD/year ,
+
+The environmental impact is estimated using standard truck 𝐶𝑂 2 emission factors per unit distance, adjusted according to the vehicle load. The impact at the Canada scale is estimated as well based on a proportional extrapolation of the improvements observed for the industrial partner, using transported volume for all Canadian companies as the scaling factor. These reductions directly translate into fewer vehicles needed and a lower total operational time. Following discussions with our partner, it was agreed that part of these savings could be reinvested in increasing the remuneration rates of transportation contractors, thereby incentivizing their commitment and facilitating the deployment of the optimization tool in practice. From a decision-support perspective, rapid solution times enable the systematic evaluation of what-if scenarios under multiple operational contingencies. The capacity to explore such scenarios in real time strengthens the resilience of the forestry supply chain, reducing the risk of costly disruptions and enhancing coordination across different stakeholders (mills, contractors, and drivers). Finally, the optimization framework has been integrated into a web-based decision-support system accessible to dispatchers. This system offers advanced visualization capabilities, including interactive Gantt charts Figure 10, which illustrate a typical daily instance of the LT RSP . The Gantt chart displays the planned routes for each truck as sequences of forest blocks 𝐹 𝑖 and mills 𝑀 𝑖 , with every trip scheduled within a specific time interval. 03:00                                                                                                              
+
+> 04:00
+> 05:00
+> 06:00
+> 07:00
+> 08:00
+> 09:00
+> 10:00
+> 11:00
+> 12:00
+> 13:00
+> 14:00
+> 15:00
+> 16:00
+> Truck 0
+> Truck 1
+> Truck 2
+> Truck 3
+> Truck 4
+> Truck 22
+> Truck 23
+> Truck 24
+> Truck 5
+> Truck 6
+> Truck 7
+> Truck 8
+> Truck 9
+> Truck 10
+> Truck 11
+> Truck 32
+> Truck 12
+> Truck 13
+> Truck 14
+> Truck 15
+> Truck 16
+> Truck 17
+> Truck 18
+> Truck 19
+> Truck 25
+> Truck 26
+> Truck 27
+> Truck 30
+> Truck 31
+> Truck 33
+> Truck 34
+> Truck 35
+> Truck 36
+> Truck 37
+> Truck 38
+> F2 M1
+> F1 M7 F21 M9
+> F11 M1 F16 M4
+> F1 M7 F5 M7
+> F1 M7 F2 M7
+> F1 M7 F21 M9
+> F2 M1 F16 M4
+> F1 M1 F4 M1
+> F7 M6 F7 M5
+> F6 M3 F13 M3 F5 M2
+> F6 M3 F17 M11 F13 M3
+> F9 M4
+> F9 M4 F9 M4
+> F9 M4 F11 M5
+> F9 M4
+> F9 M4 F11 M1 F3 M1
+> F10 M8 F10 M7
+> F18 M10 F7 M5
+> F8 M5 F12 M5
+> F18 M10 F7 M5
+> F7 M6 F7 M6 F7 M10
+> F7 M10 F7 M10
+> F1 M1 F16 M4
+> F17 M11 F21 M11 F13 M11
+> F17 M11 F17 M11 F13 M3
+> F17 M11 F21 M9
+> F13 M3 F21 M9
+> F6 M3 F21 M9
+> F15 M4 F14 M5
+> F21 M11
+> F19 M1 F4 M4
+> F8 M5 F8 M1
+> F1 M7
+> F2 M7 F2 M7
+> F21 M11 F13 M11 F17 M11
+> TTVRP daily planning
+> F1
+> F2
+> F3
+> F4
+> F5
+> F6
+> F7
+> F8
+> F9
+> F10
+> F11
+> F12
+> F13
+> F14
+> F15
+> F16
+> F17
+> F18
+> F19
+> F20
+> F21
+> M1
+> M2
+> M3
+> M4
+> M5
+> M6
+> M7
+> M8
+> M9
+> M10
+> M11
+
+Figure 10: Visualization of daily truck schedules within the web-based application. 
+
+# 9 Conclusion 
+
+In conclusion, this work provides a comprehensive framework to address the complex multi-period log-truck routing and scheduling problem faced by the Canadian forestry sector. By developing an enhanced mathematical programming formulation and an efficient decomposition strategy, we tackle the challenges posed by the large-scale and multi-period nature of the problem. The proposed framework incorporates the most common business rules inherent to forestry 27 operations, and through a combination of preprocessing strategies, mathematical programming, and advanced solution techniques such as RF − F O , we demonstrate that near-optimal solutions can be obtained efficiently. Computational experiments conducted on real-world industrial data underscore the practical relevance of our approach, showing clear improvements in operational efficiency while contributing to environmental sustainability and economic competitiveness of the forest supply chain. Beyond its immediate results, this work is intended to serve as the kernel of a decision support system for transportation planning and routing, providing forest companies and contractors with a robust optimization engine that can be integrated into their daily operations. However, some limitations remain. The current formulation assumes deterministic travel times, loading times, and demand levels, whereas in practice these parameters are subject to uncertainty and variability [43]. Incorporat-ing stochastic elements into the model—such as probabilistic travel times, loading durations, and demand fluctua-tions—represents a natural and important extension of this work. Finally, as an avenue for future research, we are developing a second layer of real-time reoptimization to dynamically adapt plans in response to disruptions such as route cancelations, delays, or sudden demand changes. Together, these developments will move the framework closer to a fully operational decision support system capable of ensuring robust, efficient, and sustainable log transportation planning in highly uncertain environments. 
+
+# Author contributions statement 
+
+Abdelhakim Abdellaoui: Conceptualization, methodology, software, formal analysis, investigation, writing original draft, reviewing & editing. Issmail El Hallaoui: Supervision, conceptualization, reviewing, project administration. Loubna Benabbou: Supervision, conceptualization, reviewing, project administration. Franc ¸ois Aub´ e: Conceptualization, resources, funding acquisition, reviewing. Mouloud Amazouz: Resources, funding acquisition, project administration. All authors have read and approved the final version of the manuscript. 
+
+# Acknowledgements 
+
+During the preparation of this manuscript, the authors used ChatGPT (GPT-4o) and Claude (Sonnet) to assist with language editing, text reformulation, and manuscript writing. All content generated by these tools was carefully reviewed, revised, and validated by the authors. The authors take full responsibility for the integrity and accuracy of the work. 
+
+# Data Availability Statement 
+
+The Python code and other data that support the findings of this study are available from the corresponding author, Abdelhakim Abdellaoui, upon reasonable request. 
+
+# Disclosure Statement 
+
+No potential conflict of interest. 28 Notes on contributors 
+
+Abdelhakim Abdellaoui is a Ph.D. candidate in the Department of Mathematics and In-dustrial Engineering at Polytechnique Montr´ eal, conducting his research at GERAD and CanmetENERGY-Varennes, Natural Resources Canada (NRCan). His research focuses on mathematical programming, decomposition methods, and optimization of large-scale routing and scheduling problems, with applications in the forestry and transportation sectors. He is also interested in the integration of machine learning and deep learning techniques within operations research frameworks, particularly for combinatorial opti-mization and decision-making under uncertainty. 
+
+Loubna Benabbou is a Professor at the Departement management science, Universit´ e du Qu´ ebec ` a Rimouski (UQAR), Campus de L´ evis, and a member of GERAD. She holds an M.B.A. and a Ph.D. in machine learning and decision sciences from Universit´ e Laval, and a degree in industrial engineering from Ecole Mohammadia d’Ing´ enieurs. Her research focuses on the development and application of machine learning and decision science methods for supply chain management, industrial process digitalization, and climate change risk mitigation. 
+
+Issmail El Hallaoui is a Full Professor in the Department of Mathematics and Industrial Engineering at Polytechnique Montr´ eal, and a member of GERAD and IVADO. He holds an Ing. degree from ENSIAS (Rabat), and M.Sc. and Ph.D. degrees from Polytechnique Montr´ eal. His research interests include mathematical programming, combinatorial op-timization, online optimization and approximation algorithms, scheduling and vehicle routing, and transportation systems. 
+
+Franc ¸ois Aub´ e holds a Ph.D. and is a Research Scientist at CanmetENERGY-Varennes, Natural Resources Canada (NRCan). His research interests include process optimization, machine learning, algorithmic development, simulation, and value chain optimization in the forestry sector. 
+
+Mouloud Amazouz is a Senior Project Manager at CanmetENERGY-Varennes, Natural Resources Canada (NRCan), Varennes, Qu´ ebec, Canada. His work focuses on energy efficiency, industrial optimization, and the development of decision support tools for production and logistics systems in the Canadian forestry and energy sectors. 
+
+# References        
+
+> [1] R¨ onnqvist, M., D’Amours, S., Weintraub, A., Jofre, A., Gunn, E., Haight, R., Martell, D., Murray, A. & Romero, C. Operations research challenges in forestry: 33 open problems. Annals Of Operations Research .232 pp. 11-40 (2015) [2] Natural Resources Canada. (2022). The State of Canada’s Forests Annual Report 2022. [3] Statistics Canada. (2023). Lumber production, shipments and stocks, by Canada and provinces, monthly. [4] Audy, J., D’Amours, S., Favreau, J. & Rousseau, L. Virtual transportation manager: a decision support system for collaborative forest transportation. (CIRRELT Montreal,2013 [5] Audy, J., R¨ onnqvist, M., D’Amours, S. & Yahiaoui, A. Planning methods and decision support systems in vehicle routing problems for timber transportation: a review. International Journal Of Forest Engineering .34 , 143-167 (2023) [6] D’amours, S., R¨ onnqvist, M. & Weintraub, A. Using operational research for supply chain planning in the forest products industry. INFOR: Information Systems And Operational Research .46 , 265-281 (2008)
+
+29 [7] R¨ onnqvist, M. Optimization in forestry. Mathematical Programming . 97 pp. 267-284 (2003) [8] Ronnqvist, M. (2003). Optimization models for forestry. Forest Science , 49(3), 345-355. [9] Damaˇ seviˇ cius, R., Mozgeris, G., Kurti, A. & Maskeli¯ unas, R. Digital transformation of the future of forestry: an exploration of key concepts in the principles behind Forest 4.0. Frontiers In Forests And Global Change . 7 pp. 1424327 (2024) [10] Flisberg, P., Ronnqvist, M. (2009). A decision support system for wood flow problems. European Journal of Operational Research , 194(2), 490-502. [11] Andersson, K., Ronnqvist, M. (2008). RuttOpt: A decision support system for routing logging trucks. Operations Research ,56(4), 1010-1022. [12] Nadimi, S., Ronnqvist, M. (2015). Simulated annealing for the wood chip transportation problem. Computers and Operations Research , 62, 1-10. [13] Forsberg, J., Ronnqvist, M. (2005). FlowOpt: A decision support tool for strategic and tactical transportation planning in forestry. Forest Policy and Economics , 7(5), 765-776. [14] Ronnqvist, M. (2023). Hybrid methods for forest transportation distance calculations. Journal of Forestry Research , 34(1), 1-15. [15] Audy, J.-F., R¨ onnqvist, M., D’Amours, S., Yahiaoui, A.-E. (2023). Planning methods and decision support systems in vehicle routing problems for timber transportation: A review . International Journal of Forest Engineering, 34(2), 143–167. [16] Yahiaoui, A.-E., R¨ onnqvist, M., Audy, J.-F. (2024). A Mathheuristic Approach for the Vehicle Routing Problem with Queuing Considerations . CIRRELT. [17] Weintraub, A., Epstein, R., Morales, R., Seron, J., Traverso, P. (1996). A truck scheduling system improves efficiency in the forest industries . Interfaces, 26(4), 1–12. [18] R¨ onnqvist, M. (2003). Optimization models for forest planning . European Journal of Operational Research, 150(2), 115–130. [19] Palmgren, M., R¨ onnqvist, M., Varbrand, P. (2004). A column generation algorithm for a combined timetabling and transporta-tion problem . European Journal of Operational Research, 156(1), 69–92 [20] Shen, Z. Log truck scheduling by network programming. (1978) . [21] Robinson, T. Tour generation for log truck scheduling. 30th Annual Conference Of The Operational Research Society Of New Zealand, August . pp. 166-171 (1994) [22] Audy, J.-F., D’Amours, S., R¨ onnqvist, M. (2011). An operational weekly planning approach for forest transportation with a heterogeneous fleet . European Journal of Operational Research, 215(2), 329–339. [23] El Hachemi, N., R¨ onnqvist, M., Flisberg, P. (2013). Decomposition approaches for weekly log truck scheduling . European Journal of Operational Research, 224(2), 472–480. [24] R¨ onnqvist, M., Ryan, D. M. (1995). Solving truck dispatching problems in real-time . European Journal of Operational Research, 83(1), 94–110. [25] Marques, A., Pinho de Sousa, J., Ferreira, C. (2014). A hybrid approach for tactical and operational forest transportation planning . European Journal of Operational Research, 236(2), 681–693. [26] Joncour, C., Kritter, J., Michel, S. & Schepler, X. Generalized relax-and-fix heuristic. Computers & Operations Research . 149 
+
+pp. 106038 (2023) [27] Rey, P., Mu˜ noz, J. & Weintraub, A. A column generation model for truck routing in the Chilean forest industry. INFOR: Information Systems And Operational Research . 47 , 215-221 (2009) [28] El Hachemi, N., Gendreau, M. & Rousseau, L. A hybrid constraint programming approach to the log-truck scheduling problem. 
+
+Annals Of Operations Research . 184 , 163-178 (2011) [29] Haridass, K., Valenzuela, J., Yucekaya, A. & McDonald, T. Scheduling a log transport system using simulated annealing. 
+
+Information Sciences . 264 pp. 302-316 (2014) [30] Rix, G., Rousseau, L. & Pesant, G. A column generation algorithm for tactical timber transportation planning. Journal Of The Operational Research Society . 66 , 278-287 (2015) [31] Asmussen, S. Applied probability and queues. (Springer,2003) [32] Gil, A. & Frayret, J. Log classification in the hardwood timber industry: method and value analysis. International Journal Of Production Research . 54 , 4669-4688 (2016) [33] Cantelli, F. Sui confini della probabilita. Atti Del Congresso Internazionale Dei Matematici: Bologna Del 3 Al 10 De Settembre Di 1928 . pp. 47-60 (1929) [34] Kingman, J. The single server queue in heavy traffic. Mathematical Proceedings Of The Cambridge Philosophical Society . 57 ,902-904 (1961) [35] Bordon, M., Montagna, J. & Corsano, G. Mixed integer linear programming approaches for solving the raw material allocation, routing and scheduling problems in the forest industry. (Growing Science,2020) [36] Acuna, M. Timber and biomass transport optimization: A review of planning issues, solution techniques and decision support tools. Croatian Journal Of Forest Engineering: Journal For Theory And Application Of Forestry Engineering . 38 , 279-290 (2017) 
+
+30 [37] Melchiori, L., Nasini, G., Montagna, J. & Corsano, G. A mathematical modeling for simultaneous routing and scheduling of logging trucks in the forest supply chain. Forest Policy And Economics . 136 pp. 102693 (2022) [38] Vitale, I., Broz, D. & Dondo, R. Optimizing log transportation in the Argentinean forest industry by column generation. Forest Policy And Economics . 128 pp. 102483 (2021) [39] Amrouss, A., El Hachemi, N., Gendreau, M. & Gendron, B. Real-time management of transportation disruptions in forestry. 
+
+Computers & Operations Research . 83 pp. 95-105 (2017) [40] Ghotb, S., Sowlati, T. & Mortyn, J. An optimization model for detailed scheduling of heterogeneous fleet of log trucks considering synchronization. International Journal Of Forest Engineering . 35 , 313-325 (2024) [41] Wang, S., Zhang, H., Chu, F. & Yu, L. A relax-and-fix method for clothes inventory balancing scheduling problem. International Journal Of Production Research . 61 , 7085-7104 (2023) [42] Brahimi, N., Aouam, T. & Aghezzaf, E. Integrating order acceptance decisions with flexible due dates in a production planning model with load-dependent lead times. International Journal Of Production Research . 53 , 3810-3822 (2015) [43] Simard, V., R¨ onnqvist, M., LeBel, L. & Lehoux, N. Improving the decision-making process by considering supply uncertainty–a case study in the forest value chain. International Journal Of Production Research . 62 , 665-684 (2024) 
+
+# Appendix A. Analytical link between the optimal buffer and the probabilis-tic buffer. 
+
+We now make explicit the mathematical relationship between the optimal buffer 𝑠 ★ = Δ ★ − 𝐿 obtained in Proposition 1 and the probabilistic buffer derived in Corollary 1. This connection is essential to justify both the necessity of Proposition 1 and the practical relevance of the corollary. 
+
+Exact expression of the optimal buffer. From Proposition 1, the optimal buffer is given by 
+
+𝑠 ★ = 
+
+> 𝛼 𝜎 2
+> 2
+
++√︂  𝛼 𝜎 2
+
+> 2
+
+2
+
++ 𝛼𝛽 𝐿 2𝜎 2
+
+𝛽 𝐿 . (38) Factorizing 𝜎 2 inside the square root yields 
+
+ 𝛼𝜎 2
+
+2
+
+2
+
++ 𝛼𝛽 𝐿 2𝜎 2 = 𝜎 2
+
+ 𝛼 2𝜎 2
+
+4 + 𝛼𝛽 𝐿 2
+
+
+
+.
+
+Taking the square root gives √︄  𝛼𝜎 2
+
+2
+
+2
+
++ 𝛼𝛽 𝐿 2𝜎 2 = 𝜎 √︂ 𝛼𝛽 𝐿 2 + 𝛼 2𝜎 2
+
+4 .
+
+Substituting into (38), we obtain 
+
+𝑠 ★ = 𝛼𝜎 2
+
+2𝛽𝐿 + 𝜎 𝛽𝐿 √︂ 𝛼𝛽 𝐿 2 + 𝛼 2𝜎 2
+
+4 . (39) 
+
+Exact expansion with respect to 𝜎 . Extracting 𝛼𝛽𝐿 2 from the square root in (39) yields √︂ 
+
+𝛼𝛽 𝐿 2 + 𝛼 2𝜎 2
+
+4 = 𝐿 √︁ 𝛼𝛽 √︄ 1 + 𝛼𝜎 2
+
+4𝛽𝐿 2 .
+
+Using the Taylor expansion √1 + 𝑢 = 1 + 𝑢 
+
+2 + 𝑜 (𝑢 ) as 𝑢 → 0,
+
+We obtain √︄ 
+
+1 + 𝛼𝜎 2
+
+4𝛽𝐿 2 = 1 + 𝛼𝜎 2
+
+8𝛽𝐿 2 + 𝑜 (𝜎 2).
+
+31 Substituting the expansion of the square root into (39) yields 
+
+𝑠 ★ = 𝛼𝜎 2
+
+2𝛽𝐿 + 𝜎 𝛽𝐿 · 𝐿 √︁ 𝛼𝛽 1 + 𝛼𝜎 2
+
+8𝛽𝐿 2 + 𝑜 (𝜎 2)
+
+!
+
+.
+
+We now simplify each term explicitly. First, observe that 
+
+𝜎 𝛽𝐿 · 𝐿 √︁ 𝛼𝛽 = 𝜎 
+
+√𝛼𝛽 𝛽 = 𝜎 √︂ 𝛼 𝛽 .
+
+Therefore, the second term becomes 
+
+𝜎 √︂ 𝛼 𝛽 1 + 𝛼𝜎 2
+
+8𝛽𝐿 2 + 𝑜 (𝜎 2)
+
+!
+
+.
+
+Expanding the product gives 
+
+𝜎 √︂ 𝛼 𝛽 + 𝜎 √︂ 𝛼 𝛽 · 𝛼𝜎 2
+
+8𝛽𝐿 2 + 𝑜 (𝜎 2).
+
+Since 
+
+𝜎 √︂ 𝛼 𝛽 · 𝛼𝜎 2
+
+8𝛽𝐿 2 = O( 𝜎 3),
+
+this term is absorbed into the 𝑜 (𝜎 2) remainder. Collecting all contributions, we obtain 
+
+𝑠 ★ = 𝜎 √︂ 𝛼 𝛽 + 𝛼𝜎 2
+
+2𝛽𝐿 + 𝑜 (𝜎 2). (40) In particular, 
+
+𝑠 ★ = 𝜎 √︂ 𝛼 𝛽 + O( 𝜎 2) as 𝜎 → 0. (41) This establishes the exact linear dependence of the optimal buffer on the service-time standard deviation 𝜎 .
+
+# Appendix B. Fractionality of MILP P𝑚 .
+
+Table 11 reports the fractionality rate of routing variables across 20 instances for which the linear relaxation of P𝑚 is solved. The results indicate that, in all tested cases, the proportion of fractional routing variables at optimality remains below 0 .5%, and is often substantially lower. These empirical values demonstrate that the LP relaxation of the LT RSP 
+
+is consistently close to integral across all industrial instances. Only a very small fraction of the binary routing variables require explicit enforcement of integrality, while the vast majority are already fixed at 0 or 1 by the LP relaxation itself.  
+
+> Table 11: Percentage of fractional routing variables in the LP relaxation for instances 𝑊 1–𝑊 20 .
+
+Instance 𝑊 1 𝑊 2 𝑊 3 𝑊 4 𝑊 5 𝑊 6 𝑊 7 𝑊 8 𝑊 9 𝑊 10 
+
+Frac(%) 0.42 0.37 0.18 0.25 0.31 0.40 0.21 0.16 0.33 0.29 Instance 𝑊 11 𝑊 12 𝑊 13 𝑊 14 𝑊 15 𝑊 16 𝑊 17 𝑊 18 𝑊 19 𝑊 20 
+
+Frac(%) 0.35 0.27 0.19 0.22 0.38 0.41 0.33 0.24 0.28 0.30 
+
+# Appendix C. Illustration of decomposition strategies 
+
+We provide a visual illustration of the two decomposition strategies employed in this work: the Relax-and-Fix and the Fix-and-Optimize heuristics. Both operate by partitioning the planning horizon into blocks and iteratively solving sub-problems over these blocks. 32 Relax-and-Fix 
+
+The scheme below illustrates the iterative process of the Relax-and-Fix heuristic, which progressively fixes decision variables to integer values across planning intervals. First Iteration Planning Horizon Interval 1 Interval 2 Interval 3 Interval 4 Interval 5 Integer Block Relaxed Block Second Iteration Interval 1 Interval 2 Interval 3 Interval 4 Interval 5 Fixed Block Integer Block Relaxed Block Last Iteration Interval 1 Interval 2 Interval 3 Interval 4 Interval 5 Fixed Block Integer Block 
+
+Fix-and-Optimize 
+
+The scheme below illustrates the Fix-and-Optimize heuristic, which refines an existing solution by alternately fixing and re-optimizing blocks of variables across the planning horizon. First Iteration Planning Horizon Interval 1 Interval 2 Interval 3 Interval 4 Interval 5 Integer Block Fixed Block Fixed Block 
+
+𝑛 -th Iteration Interval 1 Interval 2 Interval 3 Interval 4 Interval 5 Fixed Block Integer Block Fixed Block 33
