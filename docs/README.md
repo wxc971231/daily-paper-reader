@@ -6,31 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-23
-- 运行时间：2026-07-23 21:22:15 UTC
+- 最新运行日期：2026-07-24
+- 运行时间：2026-07-24 20:09:33 UTC
 - 运行状态：成功
-- 本次总论文数：3
+- 本次总论文数：4
 - 精读区：2
-- 速读区：1
+- 速读区：2
 
 ### 今日简报（AI）
-1) 今日收录3篇路由与优化论文，精读2篇高分研究聚焦大模型与多智能体在复杂优化问题中的创新应用。  
-2) 最值得关注的方向：大模型作为语义优化器解决多目标路由（AlphaRoute），以及多智能体闭环框架实现无线优化自动化（WARA）。  
-3) 建议后续跟进大模型与智能体在真实物流或通信场景中的部署验证，探索语义理解如何提升传统运筹效率。
-- 详情：[/202607/23/README](/202607/23/README)
+今日共阅读4篇论文，精读2篇、速读2篇，重点关注LLM驱动的优化与自动化方法。最值得精读的是《Multi-Source and Cross-Scenario Strategy-Guided Code Optimization》和《Search Hardness-Aware LLM-Based Problem Formulation》，均获8.0高分。建议优先消化这两篇，深入理解LLM在代码优化与仿真设计难题中的前沿应用。
+- 详情：[/202607/24/README](/202607/24/README)
 
 ### 精读区论文标签
-1. [AlphaRoute: Large Language Models as Semantic Optimizers for Multi-Objective Routing](/202607/23/2607.19768v1-alpharoute-large-language-models-as-semantic-optimizers-for-multi-objective-routing)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：LLM作为语义优化器解决多目标路由组合优化问题
-2. [WARA: A Closed-Loop Multi-Agent Framework for Wireless Optimization Autoresearch](/202607/23/2607.19822v1-wara-a-closed-loop-multi-agent-framework-for-wireless-optimization-autoresearch)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：LLM智能体用于无线优化自动研究，包括代码生成
+1. [Multi-Source and Cross-Scenario Strategy-Guided Code Optimization](/202607/24/2607.20353v1-multi-source-and-cross-scenario-strategy-guided-code-optimization)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：基于LLM的策略引导代码优化
+2. [Search Hardness-Aware LLM-Based Problem Formulation for Expensive Simulation-Driven Design](/202607/24/2607.21220v1-search-hardness-aware-llm-based-problem-formulation-for-expensive-simulation-driven-design)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：基于LLM的优化问题公式化
 
 ### 速读区论文标签
-1. [Real-World, Large Scale, Multi-Period Log Truck Routing and Scheduling : Application to Canadian Forestry](/202607/23/2607.16978v1-real-world-large-scale-multi-period-log-truck-routing-and-scheduling--application-to-canadian-forestry)  
+1. [On the Effectiveness of Pretraining for Graph Combinatorial Optimization](/202607/24/2607.19072v1-on-the-effectiveness-of-pretraining-for-graph-combinatorial-optimization)  
    标签：评分：7.0/10、query:llm-opt-code
-   evidence：解决多期木材卡车路径规划与调度这一运筹优化问题
+   evidence：图组合优化预训练
+2. [An LLM-Driven Workflow for Automated Process Control Strategy Generation and Tuning from Dynamic Process Models](/202607/24/2607.21292v1-an-llm-driven-workflow-for-automated-process-control-strategy-generation-and-tuning-from-dynamic-process-models)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：基于LLM生成控制优化代码
 
 
 <div class="dpr-home-promo-card">

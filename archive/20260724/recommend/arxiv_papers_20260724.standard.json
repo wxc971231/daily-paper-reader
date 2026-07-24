@@ -1,0 +1,170 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-24T20:06:57.672361+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2607.20353v1",
+      "source": "arxiv",
+      "title": "Multi-Source and Cross-Scenario Strategy-Guided Code Optimization",
+      "abstract": "Automated code optimization improves program performance by refactoring source code, and recent studies use LLMs to generate optimization patches. The newest approaches are strategy-guided: they summarize strategies from historical optimization commits as static analysis rules, and use these rules to match code locations for LLMs to optimize. However, these approaches have two limitations: (1) the strategies may come from other knowledge sources, such as textbooks and web pages, but the existing approaches cannot utilize them; (2) a strategy may be applicable to different scenarios, e.g., different programming languages, but existing approaches can only formalize strategies for the scenario to which the source commit belongs. To address these limitations, we propose MoST, an LLM-based code optimization framework that integrates multiple knowledge sources across scenarios. MoST uniformly represents items in different knowledge sources as evidence objects, clusters them in a cross-source and cross-scenario manner to identify strategies, and transfers them to the target scenario when necessary for generating static analysis rules. To implement this process, MoST employs a novel self-balanced weighted clustering algorithm to balance evidence objects from different knowledge sources, and a novel example transfer procedure to ensure the quality of the generated rules when transferring across scenarios. On a benchmark containing 151 C/C++, 150 Python, and 50 Rust historical optimization tasks, compared with SemOpt, MoST yields 24.44%-180.00% and 21.88%-37.50% more patches that are exactly the same as or semantically equivalent to developer patches, respectively. When optimizing 15 real-world projects, MoST achieves 19.72%-717.42% maximum improvements and 4.44%-258.17% average improvements for the performance tests in the projects, significantly outperforming SemOpt and Codex.",
+      "authors": [
+        "Yuwei Zhao",
+        "Qianyu Xiao",
+        "Ye Cui",
+        "Yijun Yu",
+        "Yingfei Xiong"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-07-22T16:38:56+00:00",
+      "link": "https://arxiv.org/pdf/2607.20353v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based code optimization with strategy guidance",
+      "llm_evidence_cn": "基于LLM的策略引导代码优化",
+      "llm_evidence": "基于LLM的策略引导代码优化",
+      "canonical_evidence": "基于LLM的策略引导代码优化",
+      "llm_tldr_en": "This paper proposes a multi-source cross-scenario strategy-guided code optimization framework that extracts strategies from diverse sources like textbooks and enables cross-language transfer, improving LLM-generated optimization patch accuracy and generalization.",
+      "llm_tldr_cn": "现有策略引导的代码优化方法仅利用历史提交策略，且局限于单一场景（如单一编程语言）。本文提出多源跨场景策略引导框架，从教科书、网页等多源知识中提取优化策略，并构建跨场景匹配机制，使得LLM能在不同编程语言和任务中生成更准确的优化补丁。实验表明，该方法在多个代码优化基准上优于现有方法，显著提升了优化补丁的泛化能力，为利用多源知识指导LLM进行代码优化开辟了新途径。",
+      "llm_tldr": "现有策略引导的代码优化方法仅利用历史提交策略，且局限于单一场景（如单一编程语言）。本文提出多源跨场景策略引导框架，从教科书、网页等多源知识中提取优化策略，并构建跨场景匹配机制，使得LLM能在不同编程语言和任务中生成更准确的优化补丁。实验表明，该方法在多个代码优化基准上优于现有方法，显著提升了优化补丁的泛化能力，为利用多源知识指导LLM进行代码优化开辟了新途径。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.21220v1",
+      "source": "arxiv",
+      "title": "Search Hardness-Aware LLM-Based Problem Formulation for Expensive Simulation-Driven Design",
+      "abstract": "Expensive simulation-driven design is widely used in engineering to identify requirement-satisfying designs with as few high-fidelity simulations as possible. Most existing efforts address this challenge by improving optimization algorithms under fixed formulations, yet the formulation itself shapes the search landscape by defining the objectives and constraints optimized by the solver. Recent LLM-based automatic problem formulation methods generate formulations from natural-language requirements, but they mainly focus on design-intent alignment and overlook whether the formulation induces an efficient search process. To address this limitation, we propose SHA-PF, a search hardness-aware LLM-based problem formulation framework. We find that a formulation is more likely to guide efficient search when it prioritizes rare samples with greater progress potential. Based on this finding, SHA-PF defines a formulation search objective guided by search hardness, scoring each candidate formulation according to the priority. SHA-PF then searches the formulation space under this objective through LLM-based generation, repair, and evolutionary refinement. Experiments on the real-world multi-objective benchmark and five expensive antenna design benchmarks show that the formulations discovered by SHA-PF require significantly fewer evaluations to reach the design requirements than other baselines.",
+      "authors": [
+        "Yuchen Li",
+        "Handing Wang",
+        "Bing Xue",
+        "Mengjie Zhang"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE"
+      ],
+      "published": "2026-07-23T11:37:49+00:00",
+      "link": "https://arxiv.org/pdf/2607.21220v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based problem formulation for optimization",
+      "llm_evidence_cn": "基于LLM的优化问题公式化",
+      "llm_evidence": "基于LLM的优化问题公式化",
+      "canonical_evidence": "基于LLM的优化问题公式化",
+      "llm_tldr_en": "Proposes SHA-PF, an LLM-based framework that formulates optimization problems from natural-language requirements while considering search hardness, enabling more efficient simulation-driven design.",
+      "llm_tldr_cn": "为解决现有基于LLM的问题公式化方法忽略搜索难度的问题，该文提出SHA-PF框架。该框架首先生成与设计意图对齐的公式，再评估搜索难度并迭代优化。实验表明，该方法在减少仿真次数的同时找到更优设计，为利用LLM自动化优化建模提供了新范式。",
+      "llm_tldr": "为解决现有基于LLM的问题公式化方法忽略搜索难度的问题，该文提出SHA-PF框架。该框架首先生成与设计意图对齐的公式，再评估搜索难度并迭代优化。实验表明，该方法在减少仿真次数的同时找到更优设计，为利用LLM自动化优化建模提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "problem modeling for operations research",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.19072v1",
+      "source": "arxiv",
+      "title": "On the Effectiveness of Pretraining for Graph Combinatorial Optimization",
+      "abstract": "This paper introduces a self-supervised pretraining framework for graph combinatorial optimization specifically designed to address the nature of routing problems like the Traveling Salesman Problem. By utilizing graph contrastive learning with geometric augmentations (specifically, rotations and axial reflections) the model is forced to learn invariant structural representations and global relative distance distributions. Results demonstrate that this pretraining strategy outperforms non-pretrained models across various problem scales. Notably, the hybrid strategy (combining rotation and reflection) achieved a 6.57% improvement in tour length for TSP1000, proving that geometric pretraining is an important inductive bias for effectively scaling neural solvers to high-dimensional instances.",
+      "authors": [
+        "David Aguado",
+        "Daniel Fuertes",
+        "Carlos R. del-Blanco",
+        "Fernando Jaureguizar"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-21T13:04:13+00:00",
+      "link": "https://arxiv.org/pdf/2607.19072v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "graph combinatorial optimization pretraining",
+      "llm_evidence_cn": "图组合优化预训练",
+      "llm_evidence": "图组合优化预训练",
+      "canonical_evidence": "图组合优化预训练",
+      "llm_tldr_en": "Proposes self-supervised pretraining for graph combinatorial optimization, achieving 6.57% improvement on TSP1000, directly relevant to OR optimization modeling.",
+      "llm_tldr_cn": "该论文提出一种自监督预训练框架，用于图组合优化问题（如旅行商问题）。通过图对比学习与几何增广（旋转和反射），迫使模型学习不变的结构表示和全局相对距离分布。实验表明，该预训练策略在多尺度问题上均优于非预训练模型，在TSP1000上取得6.57%的路径长度改进。该研究直接针对运筹优化中的组合优化问题，提供了有效的学习方法，但未使用LLM进行代码生成。",
+      "llm_tldr": "该论文提出一种自监督预训练框架，用于图组合优化问题（如旅行商问题）。通过图对比学习与几何增广（旋转和反射），迫使模型学习不变的结构表示和全局相对距离分布。实验表明，该预训练策略在多尺度问题上均优于非预训练模型，在TSP1000上取得6.57%的路径长度改进。该研究直接针对运筹优化中的组合优化问题，提供了有效的学习方法，但未使用LLM进行代码生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.21292v1",
+      "source": "arxiv",
+      "title": "An LLM-Driven Workflow for Automated Process Control Strategy Generation and Tuning from Dynamic Process Models",
+      "abstract": "We present a structured large-language-model-driven workflow for automated multi-variable control design from dynamic process models. The workflow decomposes the design task into constrained code-generation steps: plant-interface construction, normalization, manipulated-variable controlled-variable (MV-CV) pairing, controller specification, closed loop simulation, scenario generation, performance evaluation and Bayesian-optimization (BO) based tuning. Generated artifacts are executed and validated before downstream tasks proceed, and failed artifacts are repaired using validation feedback. The proposed approach is demonstrated on a nonlinear gas-preheater benchmark with coupled pressure and temperature dynamics. The generated workflow produces a physically consistent decentralized PI (proportional-integral) feedback-feedforward control structure and an executable tuning environment. Bayesian optimization reduces the closed loop performance objective, which aggregates set-point tracking and disturbance-rejection errors for the controlled variables, by approximately 26.5% relative to the initial controller generated by the workflow, mainly through improved pressure-loop transient performance. This figure quantifies the automated tuning stage rather than a comparison against a manually designed controller. The results demonstrate the feasibility of using structured large-language-model-based code generation to construct executable control-design workflows, while also highlighting the need for broader validation on larger plantwide-control benchmarks.",
+      "authors": [
+        "Ari Luna Rueda",
+        "Eike Cramer",
+        "Klaus Hellgardt",
+        "Mehmet Mercangöz"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "eess.SY"
+      ],
+      "published": "2026-07-23T13:13:29+00:00",
+      "link": "https://arxiv.org/pdf/2607.21292v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM-driven code generation for control optimization",
+      "llm_evidence_cn": "基于LLM生成控制优化代码",
+      "llm_evidence": "基于LLM生成控制优化代码",
+      "canonical_evidence": "基于LLM生成控制优化代码",
+      "llm_tldr_en": "Presents a structured LLM-driven workflow that decomposes control design into constrained code-generation steps, generating and tuning multivariable controllers via verification and Bayesian optimization.",
+      "llm_tldr_cn": "该文提出一种基于LLM的结构化工作流，用于从动态过程模型自动生成多变量控制策略。工作流将设计任务分解为多个代码生成步骤，如接口构建、变量配对和控制器规范，并结合验证反馈和贝叶斯优化进行调优。在气体预热器基准上的实验证明了方法的有效性，为LLM在自动控制设计中的应用提供了可行路径。",
+      "llm_tldr": "该文提出一种基于LLM的结构化工作流，用于从动态过程模型自动生成多变量控制策略。工作流将设计任务分解为多个代码生成步骤，如接口构建、变量配对和控制器规范，并结合验证反馈和贝叶斯优化进行调优。在气体预热器基准上的实验证明了方法的有效性，为LLM在自动控制设计中的应用提供了可行路径。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
