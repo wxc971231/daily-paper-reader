@@ -6,32 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-24
-- 运行时间：2026-07-24 20:09:33 UTC
+- 最新运行日期：2026-07-25
+- 运行时间：2026-07-25 19:54:55 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：2
-- 速读区：2
+- 本次总论文数：1
+- 精读区：0
+- 速读区：1
 
 ### 今日简报（AI）
-今日共阅读4篇论文，精读2篇、速读2篇，重点关注LLM驱动的优化与自动化方法。最值得精读的是《Multi-Source and Cross-Scenario Strategy-Guided Code Optimization》和《Search Hardness-Aware LLM-Based Problem Formulation》，均获8.0高分。建议优先消化这两篇，深入理解LLM在代码优化与仿真设计难题中的前沿应用。
-- 详情：[/202607/24/README](/202607/24/README)
+今日综述：LLM代理助力量身定制查询处理代码生成，聚焦实例优化的个性化方案。  
+最值得关注：利用智能体实现数据库查询代码的自动优化与定制，提升性能与适配性。  
+下步建议：普通读者可留意LLM在数据库工程中的落地进展，尝试探索相关开源工具或案例。
+- 详情：[/202607/25/README](/202607/25/README)
 
 ### 精读区论文标签
-1. [Multi-Source and Cross-Scenario Strategy-Guided Code Optimization](/202607/24/2607.20353v1-multi-source-and-cross-scenario-strategy-guided-code-optimization)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：基于LLM的策略引导代码优化
-2. [Search Hardness-Aware LLM-Based Problem Formulation for Expensive Simulation-Driven Design](/202607/24/2607.21220v1-search-hardness-aware-llm-based-problem-formulation-for-expensive-simulation-driven-design)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：基于LLM的优化问题公式化
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [On the Effectiveness of Pretraining for Graph Combinatorial Optimization](/202607/24/2607.19072v1-on-the-effectiveness-of-pretraining-for-graph-combinatorial-optimization)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：图组合优化预训练
-2. [An LLM-Driven Workflow for Automated Process Control Strategy Generation and Tuning from Dynamic Process Models](/202607/24/2607.21292v1-an-llm-driven-workflow-for-automated-process-control-strategy-generation-and-tuning-from-dynamic-process-models)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：基于LLM生成控制优化代码
+1. [Demonstrating GenDB: Instance-Optimized and Customized Query Processing Code Generation via LLM Agents](/202607/25/2607.20630v1-demonstrating-gendb-instance-optimized-and-customized-query-processing-code-generation-via-llm-agents)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：LLM智能体生成实例优化的查询执行代码，类似生成优化问题求解代码
 
 
 <div class="dpr-home-promo-card">

@@ -1,0 +1,55 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-25T19:54:29.228002+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.20630v1",
+      "source": "arxiv",
+      "title": "Demonstrating GenDB: Instance-Optimized and Customized Query Processing Code Generation via LLM Agents",
+      "abstract": "Traditional query processing engines require continuous development and extensions to support new techniques and user requirements, and in some cases, entirely new systems must be built from scratch. However, these engines are difficult to extend due to their internal complexity, and building new systems demands significant engineering effort and cost. To address this, we demonstrate GenDB, a generative query engine that shifts query processing from manually engineered systems to query processing code generation driven by Large Language Models (LLMs). An early prototype of GenDB uses LLM agents to generate instance-optimized query execution code tailored to specific data, workloads, and hardware resources. This prototype suits offline code generation for repetitive, templated queries, since the upfront generation cost amortizes over many executions and correctness can be ensured through extensive fuzz testing and manual inspection. For ad-hoc queries, GenDB can work with a traditional DBMS in a hybrid architecture: the DBMS handles one-off queries, while GenDB speeds up frequent SQL templates. Our demonstration allows users to (1) visually and interactively explore how GenDB analyzes workloads, profiles hardware resources and underlying data, produces query plans, generates code based on them, and finally uses an optimizer to iteratively achieve a correct and efficient implementation; (2) use visual inspection and analysis to gain qualitative insights into why GenDB produces code that achieves significantly better performance than state-of-the-art query engines on two benchmarks: TPC-H and a newly constructed benchmark designed to reduce potential data leakage from LLM training data; and (3) upload their own data and queries to explore GenDB with different LLMs and query patterns.",
+      "authors": [
+        "Jiale Lao",
+        "Immanuel Trummer"
+      ],
+      "primary_category": "cs.DB",
+      "categories": [
+        "cs.DB",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-07-22T18:01:29+00:00",
+      "link": "https://arxiv.org/pdf/2607.20630v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM agents generate instance-optimized query execution code, analogous to optimization problem solving code generation",
+      "llm_evidence_cn": "LLM智能体生成实例优化的查询执行代码，类似生成优化问题求解代码",
+      "llm_evidence": "LLM智能体生成实例优化的查询执行代码，类似生成优化问题求解代码",
+      "canonical_evidence": "LLM智能体生成实例优化的查询执行代码，类似生成优化问题求解代码",
+      "llm_tldr_en": "GenDB uses LLM agents to generate instance-optimized query processing code, demonstrating a method for automatic code generation. This approach shifts from manually engineered systems to automated, customized code generation for optimization tasks.",
+      "llm_tldr_cn": "传统查询处理引擎扩展困难，该论文提出GenDB生成式查询引擎，利用LLM智能体为特定数据、工作负载和硬件生成查询执行代码。原型系统展示了代码生成的可行性和优化效果，为将LLM用于自动生成优化领域求解代码提供了参考。",
+      "llm_tldr": "传统查询处理引擎扩展困难，该论文提出GenDB生成式查询引擎，利用LLM智能体为特定数据、工作负载和硬件生成查询执行代码。原型系统展示了代码生成的可行性和优化效果，为将LLM用于自动生成优化领域求解代码提供了参考。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

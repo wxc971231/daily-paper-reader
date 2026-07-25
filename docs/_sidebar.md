@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-07-25 <!--dpr-date:20260725-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/25/2607.20630v1-demonstrating-gendb-instance-optimized-and-customized-query-processing-code-generation-via-llm-agents" data-sidebar-item="{&quot;title&quot;: &quot;Demonstrating GenDB: Instance-Optimized and Customized Query Processing Code Generation via LLM Agents&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.20630v1-demonstrating-gendb-instance-optimized-and-customized-query-processing-code-generation-via-llm-agents&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;LLM智能体生成实例优化的查询执行代码，类似生成优化问题求解代码&quot;}">Demonstrating GenDB: Instance-Optimized and Customized Query Processing Code Generation via LLM Agents</a>
   * 2026-07-24 <!--dpr-date:20260724-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/24/2607.20353v1-multi-source-and-cross-scenario-strategy-guided-code-optimization" data-sidebar-item="{&quot;title&quot;: &quot;Multi-Source and Cross-Scenario Strategy-Guided Code Optimization&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.20353v1-multi-source-and-cross-scenario-strategy-guided-code-optimization&quot;, &quot;score&quot;: &quot;8.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;基于LLM的策略引导代码优化&quot;}">Multi-Source and Cross-Scenario Strategy-Guided Code Optimization</a>
