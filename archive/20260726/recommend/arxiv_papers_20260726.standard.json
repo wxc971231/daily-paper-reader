@@ -1,0 +1,176 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-26T20:52:45.905311+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2607.20908v1",
+      "source": "arxiv",
+      "title": "Multi-turn RL with Structural and Performance Aware Rewards for CUDA Kernel Generation",
+      "abstract": "Reinforcement Learning with Verifiable Rewards (RLVR) has emerged as a powerful technique to enhance the reasoning capacity of LLMs for optimized code generation. However, existing RLVR approaches primarily rely on outcome-based signals such as correctness and speedup, overlooking performance-critical structural properties of programs that are essential for generating optimized code. In this work, we propose CudaPerf, a reflective RL framework that incorporates both verifiable execution rewards and structural code-aware rewards derived from parallelization features (e.g., memory coalescing, occupancy, Arithmatic Intensity, and synchronization patterns). CudaPerf operates in two stages: (1) an offline pairwise ranking module that learns to distinguish strong and weak program candidates via contrastive comparisons, and (2) an online RL training phase that jointly optimizes for correctness, performance, and structural efficiency through a unified reward signal. To further enhance learning, CudaPerf utilizes iterative refinement using execution feedback enabling progressive improvement of generated candidates. We also introduce a dataset comprising 2.9k C to CUDA and 1k PyTorch to CUDA programs, each paired with diverse input configurations and multiple CUDA implementations encompassing diverse optimization strategies. CudaPerf is evaluated across multiple benchmarks comprising both C to CUDA and PyTorch to CUDA transformations. Empirical findings suggest that CudaPerf significantly outperforms strong baselines, including Qwen-3-32B (for C to CUDA) and CUDA Agent (for PyTorch to CUDA) by achieving up to 5X & 3.32X improvements in speedup, and 17% & 7% improvements in correctness, respectively.",
+      "authors": [
+        "Quazi Ishtiaque Mahmud",
+        "Nesreen K. Ahmed",
+        "Ali Jannesari"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-07-23T04:06:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.20908v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM generates optimized CUDA kernel code using reinforcement learning",
+      "llm_evidence_cn": "LLM利用强化学习生成优化的CUDA内核代码",
+      "llm_evidence": "LLM利用强化学习生成优化的CUDA内核代码",
+      "canonical_evidence": "LLM利用强化学习生成优化的CUDA内核代码",
+      "llm_tldr_en": "CudaPerf uses RL with structural code rewards to generate optimized CUDA kernels, demonstrating automated code generation for performance-critical optimization.",
+      "llm_tldr_cn": "本文提出CudaPerf框架，在强化学习中引入结构感知奖励（如内存合并、占用率）来优化LLM生成的CUDA内核代码。该方法超越了仅基于执行结果的奖励，提升了代码性能。尽管面向GPU编程，其优化代码生成范式与运筹问题代码生成有方法上的可迁移性。",
+      "llm_tldr": "本文提出CudaPerf框架，在强化学习中引入结构感知奖励（如内存合并、占用率）来优化LLM生成的CUDA内核代码。该方法超越了仅基于执行结果的奖励，提升了代码性能。尽管面向GPU编程，其优化代码生成范式与运筹问题代码生成有方法上的可迁移性。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.17331v1",
+      "source": "arxiv",
+      "title": "Agentic ERP: Multi-Agent Large Language Model Architecture for Autonomous Enterprise Resource Planning",
+      "abstract": "Enterprise Resource Planning (ERP) systems record transactions reliably but still delegate almost all operational decision-making to human specialists, because classical rule-based automation cannot reason about exceptions and monolithic AI assistants degrade when asked to coordinate across functional boundaries. This paper presents Agentic ERP, an expert-system architecture that combines role-aligned large-language-model (LLM) agents with a risk-tiered human-in-the-loop harness and a graph-based orchestrator to execute end-to-end business workflows on a production ERP backend. First, autonomous ERP operation is formulated as a constrained sequential-decision problem over a structured enterprise state, with a decomposition argument linking role-aligned agents to a measurable reduction in per-step tool-selection complexity. Second, a graph-based Planner--Executor--Reflector--Responder orchestration decouples generation from evaluation through externalised grading criteria and sprint contracts, packaging recent harness-engineering principles as inspectable expert-system artefacts. Third, the system is evaluated at three levels: a scenario-based task suite, a comprehensive comparison of six orchestration paradigms on cross-functional crisis tasks, and a 365-day agent-in-the-loop simulation against rule-based RPA and no-intervention baselines. Across these levels the proposed multi-agent method is significantly better than the baseline, and the system sustains a simulated year of operation with zero stockouts while the rule-based baseline accumulates hundreds under the same demand stream. The work shows that role-aligned LLM agents under human oversight can move an ERP system from passively recording transactions to actively executing operational decisions, and it provides a reference architecture and an evaluation protocol for autonomous enterprise resource planning.",
+      "authors": [
+        "Zhihao Liu",
+        "Tianyu Wang",
+        "Xi Vincent Wang",
+        "Lihui Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.MA"
+      ],
+      "published": "2026-07-19T16:40:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.17331v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "multi-agent LLM for autonomous ERP with constrained sequential decision making",
+      "llm_evidence_cn": "多智能体大语言模型用于自主企业资源规划，涉及约束序列决策",
+      "llm_evidence": "多智能体大语言模型用于自主企业资源规划，涉及约束序列决策",
+      "canonical_evidence": "多智能体大语言模型用于自主企业资源规划，涉及约束序列决策",
+      "llm_tldr_en": "Proposes Agentic ERP architecture using role-aligned LLM agents and graph orchestrator for end-to-end autonomous ERP workflows, formulated as constrained sequential decision problem.",
+      "llm_tldr_cn": "该论文提出Agentic ERP架构，使用角色对齐的大语言模型智能体和基于图的协调器，实现端到端的自主企业资源规划工作流。将自主ERP操作形式化为约束序列决策问题，并在生产ERP后端上执行。该工作展示了LLM智能体在运营优化中的潜力，但未直接涉及优化代码生成。",
+      "llm_tldr": "该论文提出Agentic ERP架构，使用角色对齐的大语言模型智能体和基于图的协调器，实现端到端的自主企业资源规划工作流。将自主ERP操作形式化为约束序列决策问题，并在生产ERP后端上执行。该工作展示了LLM智能体在运营优化中的潜力，但未直接涉及优化代码生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.19653v1",
+      "source": "arxiv",
+      "title": "PerfAgent: Profiler-Guided Iterative Refinement for Repository-Level Code Optimization",
+      "abstract": "Large language model (LLM) agents now perform well on correctness-oriented repository-level tasks, including SWE-Bench issue resolution and feature implementation in real codebases. However, they still struggle with repository-level code optimization, which requires preserving behavior while improving runtime performance. Passing tests is not enough in this setting; a patch must preserve behavior, implement code optimization, and approach expert speedups. Current agents often miss bottlenecks hidden behind abstraction layers and native extensions, stop after shallow speedups, or insufficiently test the code patches that thus may silently break edge cases. We present PerfAgent, a profiler-guided, verifier-in-the-loop workflow that gives an off-the-shelf coding agent the feedback needed to find real hotspots, improve beyond the first passing patch, and use profiler evidence rather than timing alone to decide what to optimize next. On two challenging optimization benchmarks, GSO and SWE-fficiency-Lite, PerfAgent more than doubles the rate of expert-matching patches over OpenHands with GPT-5.1, improving from 19.6% to 39.2% on GSO and from 26% to 74% on SWE-fficiency-Lite. It also surpasses an oracle best-of-five baseline at substantially lower cost, showing that the gains come from better feedback rather than additional test-time sampling.",
+      "authors": [
+        "Ryan Deng",
+        "Yuanzhe Liu",
+        "Bastian Lipka",
+        "Yao Ma",
+        "Xuhao Chen",
+        "Tim Kaler",
+        "Jatin Ganhotra"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI"
+      ],
+      "published": "2026-07-22T01:19:42+00:00",
+      "link": "https://arxiv.org/pdf/2607.19653v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM agent for repository-level code optimization",
+      "llm_evidence_cn": "LLM代理进行仓库级代码优化",
+      "llm_evidence": "LLM代理进行仓库级代码优化",
+      "canonical_evidence": "LLM代理进行仓库级代码优化",
+      "llm_tldr_en": "A profiler-guided LLM agent iteratively refines repository-level code, identifying bottlenecks and generating optimized patches with behavior preservation.",
+      "llm_tldr_cn": "仓库级代码优化要求保持行为的同时提升性能，现有LLM代理常忽略深层瓶颈或引入错误。本文提出PerfAgent，利用性能剖析器引导LLM代理迭代识别热点并生成优化补丁，同时使用验证器确保正确性。在多个仓库上，PerfAgent实现了接近专家的加速比。",
+      "llm_tldr": "仓库级代码优化要求保持行为的同时提升性能，现有LLM代理常忽略深层瓶颈或引入错误。本文提出PerfAgent，利用性能剖析器引导LLM代理迭代识别热点并生成优化补丁，同时使用验证器确保正确性。在多个仓库上，PerfAgent实现了接近专家的加速比。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.17641v1",
+      "source": "arxiv",
+      "title": "Verify, Repair, Repeat, or Stop? Robust Stopping for Noisy Verify-Repair Loops in LLM Agents",
+      "abstract": "Verify-repair loops are a standard means for large language model (LLM) agents to correct faulty plans in code generation, mathematical reasoning, and tool use. When both the verifier and the repairer are noisy, repair can damage already-correct plans, and reported acceptance keeps rising while true validity falls, so existing methods lack a principled basis for deciding when repair should stop. We propose VRR-Stop, a robust stopping framework for noisy verify-repair-repeat (VRR) loops. A four-parameter noise model separates verifier false acceptance and false rejection from the repair and damage behavior of the repairer. Belief filtering turns repeated verification votes into an estimate of committed validity, and the loop commits or repairs according to the sign of the true marginal gain, which requires only sign identifiability rather than accurate recovery of all parameters. When verifier discrimination approaches zero, calibration itself fails and estimation error can flip the stopping sign, so we pair VRR-Stop with VRR-Guard, an estimation-free fallback that replaces the incumbent candidate only under a sufficient verification margin. On a GSM8K stress setting, VRR-Stop improves final true validity by 60.6 percentage points over fixed five-round repair at an average cost of 0.72 repair rounds. Across settings, stopping reliability is governed jointly by verifier discrimination and the decision margin rather than by the absolute size of estimation error.",
+      "authors": [
+        "Yitao Wu",
+        "Si Shen",
+        "Rui Yang",
+        "Hong Peng",
+        "Bin Hu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.SE"
+      ],
+      "published": "2026-07-20T07:52:36+00:00",
+      "link": "https://arxiv.org/pdf/2607.17641v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Robust stopping for noisy verify-repair loops in LLM code generation",
+      "llm_evidence_cn": "LLM代码生成中噪声验证-修复循环的鲁棒停止",
+      "llm_evidence": "LLM代码生成中噪声验证-修复循环的鲁棒停止",
+      "canonical_evidence": "LLM代码生成中噪声验证-修复循环的鲁棒停止",
+      "llm_tldr_en": "Proposes VRR-Stop, a robust stopping framework for noisy verify-repair-repeat loops in LLM agents, applicable to code generation and mathematical reasoning, enhancing reliability of automated solution generation.",
+      "llm_tldr_cn": "LLM智能体在代码生成和数学推理中常使用验证-修复循环来修正错误计划，但噪声验证器和修复器可能导致已正确计划被破坏且难以决定何时停止。本文提出VRR-Stop框架，通过四参数噪声模型分离验证器错误与修复器行为，利用信念滤波估计有效正确性，为循环停止提供鲁棒依据。实验表明该方法能有效提升修复可靠性，对于提升LLM生成优化求解代码的质量具有重要借鉴意义。",
+      "llm_tldr": "LLM智能体在代码生成和数学推理中常使用验证-修复循环来修正错误计划，但噪声验证器和修复器可能导致已正确计划被破坏且难以决定何时停止。本文提出VRR-Stop框架，通过四参数噪声模型分离验证器错误与修复器行为，利用信念滤波估计有效正确性，为循环停止提供鲁棒依据。实验表明该方法能有效提升修复可靠性，对于提升LLM生成优化求解代码的质量具有重要借鉴意义。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

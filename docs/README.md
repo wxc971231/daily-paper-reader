@@ -6,26 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-25
-- 运行时间：2026-07-25 19:54:55 UTC
+- 最新运行日期：2026-07-26
+- 运行时间：2026-07-26 20:56:37 UTC
 - 运行状态：成功
-- 本次总论文数：1
-- 精读区：0
-- 速读区：1
+- 本次总论文数：4
+- 精读区：1
+- 速读区：3
 
 ### 今日简报（AI）
-今日综述：LLM代理助力量身定制查询处理代码生成，聚焦实例优化的个性化方案。  
-最值得关注：利用智能体实现数据库查询代码的自动优化与定制，提升性能与适配性。  
-下步建议：普通读者可留意LLM在数据库工程中的落地进展，尝试探索相关开源工具或案例。
-- 详情：[/202607/25/README](/202607/25/README)
+今日推荐4篇论文，聚焦LLM驱动的代码生成与自主优化，精读《Multi-turn RL with Structural and Performance Aware Rewards for CUDA Kernel Generation》表现最佳。最值得关注方向：基于结构-性能奖励的多轮强化学习用于CUDA内核生成，以及多智能体架构在企业资源规划中的应用。建议普通读者优先精读这篇RL论文，并关注其奖励设计思路；速读中Agentic ERP的架构也有启发。
+- 详情：[/202607/26/README](/202607/26/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Multi-turn RL with Structural and Performance Aware Rewards for CUDA Kernel Generation](/202607/26/2607.20908v1-multi-turn-rl-with-structural-and-performance-aware-rewards-for-cuda-kernel-generation)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：LLM利用强化学习生成优化的CUDA内核代码
 
 ### 速读区论文标签
-1. [Demonstrating GenDB: Instance-Optimized and Customized Query Processing Code Generation via LLM Agents](/202607/25/2607.20630v1-demonstrating-gendb-instance-optimized-and-customized-query-processing-code-generation-via-llm-agents)  
+1. [Agentic ERP: Multi-Agent Large Language Model Architecture for Autonomous Enterprise Resource Planning](/202607/26/2607.17331v1-agentic-erp-multi-agent-large-language-model-architecture-for-autonomous-enterprise-resource-planning)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：多智能体大语言模型用于自主企业资源规划，涉及约束序列决策
+2. [Verify, Repair, Repeat, or Stop? Robust Stopping for Noisy Verify-Repair Loops in LLM Agents](/202607/26/2607.17641v1-verify-repair-repeat-or-stop-robust-stopping-for-noisy-verify-repair-loops-in-llm-agents)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：LLM代码生成中噪声验证-修复循环的鲁棒停止
+3. [PerfAgent: Profiler-Guided Iterative Refinement for Repository-Level Code Optimization](/202607/26/2607.19653v1-perfagent-profiler-guided-iterative-refinement-for-repository-level-code-optimization)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：LLM智能体生成实例优化的查询执行代码，类似生成优化问题求解代码
+   evidence：LLM代理进行仓库级代码优化
 
 
 <div class="dpr-home-promo-card">
