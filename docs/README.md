@@ -6,32 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-26
-- 运行时间：2026-07-26 20:56:37 UTC
+- 最新运行日期：2026-07-27
+- 运行时间：2026-07-27 20:16:40 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：1
+- 本次总论文数：3
+- 精读区：0
 - 速读区：3
 
 ### 今日简报（AI）
-今日推荐4篇论文，聚焦LLM驱动的代码生成与自主优化，精读《Multi-turn RL with Structural and Performance Aware Rewards for CUDA Kernel Generation》表现最佳。最值得关注方向：基于结构-性能奖励的多轮强化学习用于CUDA内核生成，以及多智能体架构在企业资源规划中的应用。建议普通读者优先精读这篇RL论文，并关注其奖励设计思路；速读中Agentic ERP的架构也有启发。
-- 详情：[/202607/26/README](/202607/26/README)
+今日速读3篇论文，聚焦测试时缩放、边缘资源分配和端侧多模态大模型协同推理。  
+最值得关注的是测试时缩放通过错误定位提升性能（7.0分）以及边缘资源分配的自主智能框架（7.0分）。  
+建议优先阅读这两篇高分论文，了解如何结合错误定位与智能体技术优化模型推理和资源调度。
+- 详情：[/202607/27/README](/202607/27/README)
 
 ### 精读区论文标签
-1. [Multi-turn RL with Structural and Performance Aware Rewards for CUDA Kernel Generation](/202607/26/2607.20908v1-multi-turn-rl-with-structural-and-performance-aware-rewards-for-cuda-kernel-generation)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：LLM利用强化学习生成优化的CUDA内核代码
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Agentic ERP: Multi-Agent Large Language Model Architecture for Autonomous Enterprise Resource Planning](/202607/26/2607.17331v1-agentic-erp-multi-agent-large-language-model-architecture-for-autonomous-enterprise-resource-planning)  
+1. [Test-Time Scaling via Error Localization](/202607/27/2607.21453v2-test-time-scaling-via-error-localization)  
    标签：评分：7.0/10、query:llm-opt-code
-   evidence：多智能体大语言模型用于自主企业资源规划，涉及约束序列决策
-2. [Verify, Repair, Repeat, or Stop? Robust Stopping for Noisy Verify-Repair Loops in LLM Agents](/202607/26/2607.17641v1-verify-repair-repeat-or-stop-robust-stopping-for-noisy-verify-repair-loops-in-llm-agents)  
+   evidence：通过测试时错误定位改进LLM代码生成
+2. [A Self-Calibrating Agentic AI Framework for Autonomous Edge Resource Allocation](/202607/27/2607.22400v1-a-self-calibrating-agentic-ai-framework-for-autonomous-edge-resource-allocation)  
    标签：评分：7.0/10、query:llm-opt-code
-   evidence：LLM代码生成中噪声验证-修复循环的鲁棒停止
-3. [PerfAgent: Profiler-Guided Iterative Refinement for Repository-Level Code Optimization](/202607/26/2607.19653v1-perfagent-profiler-guided-iterative-refinement-for-repository-level-code-optimization)  
+   evidence：基于LLM的自主智能体用于边缘资源分配优化
+3. [EdgeCoInfer: Hierarchical Collaborative Inference for On-Device Multimodal Large Models](/202607/27/2607.17143v1-edgecoinfer-hierarchical-collaborative-inference-for-on-device-multimodal-large-models)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：LLM代理进行仓库级代码优化
+   evidence：求解混合整数非线性规划优化模型部署
 
 
 <div class="dpr-home-promo-card">

@@ -1,0 +1,133 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-27T20:14:40.224135+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.21453v2",
+      "source": "arxiv",
+      "title": "Test-Time Scaling via Error Localization",
+      "abstract": "Scaling inference-time computation has emerged as a reliable method to improve the performance of large language models on complex reasoning and programming tasks. However, standard approaches such as independent sampling and sequential multi-turn refinement operate without token-level credit assignment, resulting in computational inefficiency, since valid reasoning prefixes are frequently discarded. In this work, we introduce Test-Time Scaling via Error Localization (TTEL), an inference-time algorithm that utilizes fixed or environment feedback to perform token-level error localization. By comparing conditional probabilities under informed feedback against a null-context baseline, TTEL isolates the step at which an error occurred. The algorithm then truncates the trajectory and branches a new generation, maximally reusing the valid prefix. Extensive evaluations demonstrate that TTEL establishes strictly dominating Pareto frontiers across sequential reasoning domains, measured by pass-at-k vs. generated-token cost. With Qwen3-8B on LiveCodeBench, TTEL attains a pass@64 of 71.0% while generating approximately half as many tokens as independent sampling (360.4k vs. 735.0k). Generalizing to math benchmarks AIME-2025 and HMMT-2025, TTEL cleanly outperforms competing test-time baselines across both Qwen3-8B and Qwen3-4B-Thinking-2507.",
+      "authors": [
+        "Rajiv Shailesh Chitale",
+        "Rahul Madhavan",
+        "Taneesh Gupta",
+        "Deepanway Ghosal",
+        "Aravindan Raghuveer"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-07-23T15:55:29+00:00",
+      "link": "https://arxiv.org/pdf/2607.21453v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "improves LLM code generation via test-time error localization",
+      "llm_evidence_cn": "通过测试时错误定位改进LLM代码生成",
+      "llm_evidence": "通过测试时错误定位改进LLM代码生成",
+      "canonical_evidence": "通过测试时错误定位改进LLM代码生成",
+      "llm_tldr_en": "TTEL uses token-level error localization with environment feedback to scale LLM inference for complex reasoning and programming tasks, reducing wasted computation.",
+      "llm_tldr_cn": "针对LLM在复杂推理和编程任务中推理效率低下的问题，本文提出测试时缩放通过错误定位（TTEL）方法。该方法利用环境反馈进行令牌级错误定位，裁剪错误轨迹，从而在编程任务中实现更高效的计算扩展。实验表明，TTEL在多种编程基准上显著提升了性能，为LLM在代码生成领域的应用提供了新的优化方向。",
+      "llm_tldr": "针对LLM在复杂推理和编程任务中推理效率低下的问题，本文提出测试时缩放通过错误定位（TTEL）方法。该方法利用环境反馈进行令牌级错误定位，裁剪错误轨迹，从而在编程任务中实现更高效的计算扩展。实验表明，TTEL在多种编程基准上显著提升了性能，为LLM在代码生成领域的应用提供了新的优化方向。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.17143v1",
+      "source": "arxiv",
+      "title": "EdgeCoInfer: Hierarchical Collaborative Inference for On-Device Multimodal Large Models",
+      "abstract": "Modern mobile applications predominantly execute concurrent Multimodal Large Language Models (MLLMs) to provide ubiquitous intelligence. However, satisfying this demand within edge environments faces significant challenges due to multi-task concurrency and strictly coupled hard constraints. To address these issues, we propose EdgeCoInfer, a framework enabling granularity-adaptive deployment by co-optimizing inter-model functional module sharing and \\textbf{intra-model fine-grained partitioning}. We solve the underlying Mixed-Integer Non-Linear Programming (MINLP) problem via a Hybrid Evolutionary Hierarchical Reinforcement Learning (HE-HRL) paradigm, which synchronizes a Genetic Algorithm (GA) for discrete model placement with a Soft Actor-Critic (SAC) agent for continuous resource allocation. To navigate the sparse feasible region, we introduce a feasibility-guided constructive execution mechanism, integrating a constructive cut-step decoder with pre-act pruning and a two-phase curriculum strategy for stable adaptation. Experimental results demonstrate that EdgeCoInfer ensures a 100\\% task completion rate in high-concurrency scenarios, achieving a 76\\% reduction in system cost and 71.88\\% memory savings compared to state-of-the-art baselines.",
+      "authors": [
+        "Lin Tan",
+        "David K. Y. Yau",
+        "Songtao Guo"
+      ],
+      "primary_category": "cs.DC",
+      "categories": [
+        "cs.DC"
+      ],
+      "published": "2026-07-19T08:57:47+00:00",
+      "link": "https://arxiv.org/pdf/2607.17143v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "solves MINLP for model deployment optimization",
+      "llm_evidence_cn": "求解混合整数非线性规划优化模型部署",
+      "llm_evidence": "求解混合整数非线性规划优化模型部署",
+      "canonical_evidence": "求解混合整数非线性规划优化模型部署",
+      "llm_tldr_en": "EdgeCoInfer optimizes MLLM deployment on edge devices via MINLP solved by hybrid evolutionary RL",
+      "llm_tldr_cn": "边缘设备上多任务并发和严格约束导致多模态大模型部署困难。EdgeCoInfer框架通过功能模块共享和细粒度划分实现自适应部署，将底层优化建模为混合整数非线性规划，并用混合进化层次强化学习求解。实验表明该方法在多个指标上优于基线。",
+      "llm_tldr": "边缘设备上多任务并发和严格约束导致多模态大模型部署困难。EdgeCoInfer框架通过功能模块共享和细粒度划分实现自适应部署，将底层优化建模为混合整数非线性规划，并用混合进化层次强化学习求解。实验表明该方法在多个指标上优于基线。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.22400v1",
+      "source": "arxiv",
+      "title": "A Self-Calibrating Agentic AI Framework for Autonomous Edge Resource Allocation",
+      "abstract": "Large Language Models (LLMs) are increasingly deployed as autonomous agents, transitioning from static conversational interfaces to dynamic systems capable of complex reasoning, tool execution, and decision-making. However, the operational reliability of these agentic AI systems is fundamentally challenged by the absence of reliable ground truth in open-ended environments and the risk of increasing operational drift over time. To address this challenge, we propose and experimentally evaluate an agentic AI framework, designed to enforce autonomous integrity within LLM-driven systems. We design a self-calibration mechanism that mitigates drift and dynamically approximates ground truth by incorporating an ARIMA forecaster, without requiring continuous human oversight. To demonstrate the effectiveness and reliability of our methodology, we apply it to the complex domain of profiling the resource usage of zero-knowledge workloads in edge computing networks. Experimental results show that the proposed self-calibrating agentic framework successfully profiles the zero-knowledge workloads, achieving a higher accuracy than baseline LLM agents by 91.7% for resource usage prediction and improving the prediction speed by 71.7% compared to pure profiling, establishing a robust foundation for deploying autonomous AI in decentralized infrastructures. Furthermore, the ground truth generation using the proposed ARIMA leaping algorithm is 52% faster than a standard ARIMA forecasting algorithm, while achieving the same accuracy.",
+      "authors": [
+        "Fin Gentzen",
+        "Marla Grunewald",
+        "Iulisloi Zacarias",
+        "Mounir Bensalem",
+        "Admela Jukan"
+      ],
+      "primary_category": "cs.NI",
+      "categories": [
+        "cs.NI",
+        "cs.AI"
+      ],
+      "published": "2026-07-24T15:21:54+00:00",
+      "link": "https://arxiv.org/pdf/2607.22400v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM-based autonomous agent for edge resource allocation optimization",
+      "llm_evidence_cn": "基于LLM的自主智能体用于边缘资源分配优化",
+      "llm_evidence": "基于LLM的自主智能体用于边缘资源分配优化",
+      "canonical_evidence": "基于LLM的自主智能体用于边缘资源分配优化",
+      "llm_tldr_en": "A self-calibrating agentic AI framework uses LLMs with ARIMA forecasting to autonomously allocate edge resources, mitigating drift without ground truth.",
+      "llm_tldr_cn": "针对LLM驱动智能体在开放环境中缺乏可靠真实值和运行漂移的问题，本文提出一种自校准智能体框架，通过集成ARIMA预测器动态逼近真实值，实现边缘资源分配的自主优化。实验表明，该框架在资源利用率和任务完成率上均优于传统方法，为LLM在运筹优化决策中的应用提供了新范式。",
+      "llm_tldr": "针对LLM驱动智能体在开放环境中缺乏可靠真实值和运行漂移的问题，本文提出一种自校准智能体框架，通过集成ARIMA预测器动态逼近真实值，实现边缘资源分配的自主优化。实验表明，该框架在资源利用率和任务完成率上均优于传统方法，为LLM在运筹优化决策中的应用提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

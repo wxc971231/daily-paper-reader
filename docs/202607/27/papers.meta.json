@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-27",
+  "date": "2026-07-27",
+  "generated_at": "2026-07-27T20:16:47",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/27/2607.21453v2-test-time-scaling-via-error-localization",
+      "section": "quick",
+      "title_en": "Test-Time Scaling via Error Localization",
+      "authors": "Rajiv Shailesh Chitale, Rahul Madhavan, Taneesh Gupta, Deepanway Ghosal, Aravindan Raghuveer",
+      "date": "2026-07-23",
+      "pdf": "https://arxiv.org/pdf/2607.21453v2",
+      "score": "7.0",
+      "evidence": "通过测试时错误定位改进LLM代码生成",
+      "tldr": "针对推理时计算扩展效率低的问题，本文提出TTEL方法，利用环境反馈进行token级错误定位，通过比较条件概率隔离错误步骤，截断轨迹并分支新生成以重用有效前缀。在LiveCodeBench上Qwen3-8B以约一半的生成token达到71.0% pass@64，在AIME-2025和HMMT-2025数学基准上全面超越现有基线，建立了严格占优的帕累托前沿。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Scaling inference-time computation has emerged as a reliable method to improve the performance of large language models on complex reasoning and programming tasks. However, standard approaches such as independent sampling and sequential multi-turn refinement operate without token-level credit assignment, resulting in computational inefficiency, since valid reasoning prefixes are frequently discarded. In this work, we introduce Test-Time Scaling via Error Localization (TTEL), an inference-time algorithm that utilizes fixed or environment feedback to perform token-level error localization. By comparing conditional probabilities under informed feedback against a null-context baseline, TTEL isolates the step at which an error occurred. The algorithm then truncates the trajectory and branches a new generation, maximally reusing the valid prefix. Extensive evaluations demonstrate that TTEL establishes strictly dominating Pareto frontiers across sequential reasoning domains, measured by pass-at-k vs. generated-token cost. With Qwen3-8B on LiveCodeBench, TTEL attains a pass@64 of 71.0% while generating approximately half as many tokens as independent sampling (360.4k vs. 735.0k). Generalizing to math benchmarks AIME-2025 and HMMT-2025, TTEL cleanly outperforms competing test-time baselines across both Qwen3-8B and Qwen3-4B-Thinking-2507.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/27/2607.22400v1-a-self-calibrating-agentic-ai-framework-for-autonomous-edge-resource-allocation",
+      "section": "quick",
+      "title_en": "A Self-Calibrating Agentic AI Framework for Autonomous Edge Resource Allocation",
+      "authors": "Fin Gentzen, Marla Grunewald, Iulisloi Zacarias, Mounir Bensalem, Admela Jukan",
+      "date": "2026-07-24",
+      "pdf": "https://arxiv.org/pdf/2607.22400v1",
+      "score": "7.0",
+      "evidence": "基于LLM的自主智能体用于边缘资源分配优化",
+      "tldr": "LLM自主代理在开放环境中缺少可靠地面真值，易发生操作漂移。本文提出自校准框架，利用ARIMA预测器动态逼近地面真值，无需人工持续监督。在边缘零知识工作负载资源分配实验中，框架的预测准确率比基线LLM代理高91.7%，速度比纯分析快71.7%。此外，ARIMA跳跃算法生成地面真值比标准ARIMA快52%，精度不变。该工作为自主AI在去中心化基础设施中的可靠部署提供了基础。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large Language Models (LLMs) are increasingly deployed as autonomous agents, transitioning from static conversational interfaces to dynamic systems capable of complex reasoning, tool execution, and decision-making. However, the operational reliability of these agentic AI systems is fundamentally challenged by the absence of reliable ground truth in open-ended environments and the risk of increasing operational drift over time. To address this challenge, we propose and experimentally evaluate an agentic AI framework, designed to enforce autonomous integrity within LLM-driven systems. We design a self-calibration mechanism that mitigates drift and dynamically approximates ground truth by incorporating an ARIMA forecaster, without requiring continuous human oversight. To demonstrate the effectiveness and reliability of our methodology, we apply it to the complex domain of profiling the resource usage of zero-knowledge workloads in edge computing networks. Experimental results show that the proposed self-calibrating agentic framework successfully profiles the zero-knowledge workloads, achieving a higher accuracy than baseline LLM agents by 91.7% for resource usage prediction and improving the prediction speed by 71.7% compared to pure profiling, establishing a robust foundation for deploying autonomous AI in decentralized infrastructures. Furthermore, the ground truth generation using the proposed ARIMA leaping algorithm is 52% faster than a standard ARIMA forecasting algorithm, while achieving the same accuracy.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/27/2607.17143v1-edgecoinfer-hierarchical-collaborative-inference-for-on-device-multimodal-large-models",
+      "section": "quick",
+      "title_en": "EdgeCoInfer: Hierarchical Collaborative Inference for On-Device Multimodal Large Models",
+      "authors": "Lin Tan, David K. Y. Yau, Songtao Guo",
+      "date": "2026-07-19",
+      "pdf": "https://arxiv.org/pdf/2607.17143v1",
+      "score": "6.0",
+      "evidence": "求解混合整数非线性规划优化模型部署",
+      "tldr": "边缘多任务并发执行多模态大模型面临挑战。EdgeCoInfer框架通过跨模型功能模块共享和模型内细粒度划分，实现部署粒度自适应。采用混合进化分层强化学习解决MINLP问题，结合遗传算法与SAC代理。引入可行性引导构造执行机制，含构造性切割解码器、预剪枝和两阶段课程策略。在高并发场景下实现100%任务完成率，系统成本降低76%，内存节省71.88%，显著提升边缘智能效率。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Modern mobile applications predominantly execute concurrent Multimodal Large Language Models (MLLMs) to provide ubiquitous intelligence. However, satisfying this demand within edge environments faces significant challenges due to multi-task concurrency and strictly coupled hard constraints. To address these issues, we propose EdgeCoInfer, a framework enabling granularity-adaptive deployment by co-optimizing inter-model functional module sharing and \\textbf{intra-model fine-grained partitioning}. We solve the underlying Mixed-Integer Non-Linear Programming (MINLP) problem via a Hybrid Evolutionary Hierarchical Reinforcement Learning (HE-HRL) paradigm, which synchronizes a Genetic Algorithm (GA) for discrete model placement with a Soft Actor-Critic (SAC) agent for continuous resource allocation. To navigate the sparse feasible region, we introduce a feasibility-guided constructive execution mechanism, integrating a constructive cut-step decoder with pre-act pruning and a two-phase curriculum strategy for stable adaptation. Experimental results demonstrate that EdgeCoInfer ensures a 100\\% task completion rate in high-concurrency scenarios, achieving a 76\\% reduction in system cost and 71.88\\% memory savings compared to state-of-the-art baselines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
