@@ -1,0 +1,69 @@
+{
+  "label": "2026-07-28",
+  "date": "2026-07-28",
+  "generated_at": "2026-07-28T21:29:55",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202607/28/2607.23676v1-specahd-localize-to-specialize-for-automated-heuristic-design-in-large-scale-routing-problems",
+      "section": "deep",
+      "title_en": "SpecAHD: Localize to Specialize for Automated Heuristic Design in Large-Scale Routing Problems",
+      "authors": "Kezhao Lai, Yutao Lai, Hai-Lin Liu",
+      "date": "2026-07-26",
+      "pdf": "https://arxiv.org/pdf/2607.23676v1",
+      "score": "9.0",
+      "evidence": "LLM生成大规模路径优化问题的启发式算法",
+      "tldr": "大规模路径规划中，基于LLM的自动启发式设计通常使用固定规则应对所有局部修复区域，但不同区域结构差异大导致性能受限。本文提出SpecAHD双层框架，上层搜索确定暴露的修复区域，下层演化互补的启发式程序库。通过子模贪心选择实现近似最优。在四个路径问题多个LLM上，目标成本降低高达57.7%，远超最强基线，验证了实例内特化与耦合优化的有效性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "LLM-based automated heuristic design (AHD) typically scores executable programs on complete instances or within fixed solver components. In large-scale routing problems, localized reconstruction reduces the size of each optimization task, but repair regions within the same incumbent can exhibit substantially different structures. One construction rule must therefore compromise across them. In this paper, we propose SpecAHD, a coupled bilevel framework for within-instance specialization. An upper-level search learns where to expose bounded repair regions, while a lower-level search evolves a complementary repertoire of executable heuristics for the induced repair tasks. The upper-level program determines the repair tasks seen by the lower level, while checked repair outcomes determine how upper-level programs are evaluated. The lower-level objective favors heuristics that perform well on average or solve tasks that the current repertoire handles poorly. For the repair tasks induced by a fixed upper-level program and a fixed lower-level candidate pool, this objective is monotone submodular, allowing greedy repertoire selection with a (1-1/e) approximation guarantee. Across four routing problems and multiple LLM backbones, SpecAHD reduces held-out objective cost by up to 57.7% against the strongest competing AHD baseline and outperforms the per-instance baseline envelope on most public instances.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/28/2607.24051v1-helios-an-llm-driven-autonomous-indirect-trajectory-optimization-agent",
+      "section": "deep",
+      "title_en": "HELIOS: An LLM-Driven Autonomous Indirect Trajectory Optimization Agent",
+      "authors": "An-yi Huang",
+      "date": "2026-07-27",
+      "pdf": "https://arxiv.org/pdf/2607.24051v1",
+      "score": "9.0",
+      "evidence": "LLM驱动的轨迹优化代码生成",
+      "tldr": "低推力轨迹优化是深空任务的核心技术，间接法基于庞特里亚金最小值原理具有最优性保证，但应用受限于条件推导繁琐、代码需重复编写和初值敏感。HELIOS通过大型语言模型自主进行PMP符号推导、SymPy验证、C++代码生成与数值求解，无需人工干预。在11个渐进场景中实现100%编译成功率，支持从简单交会到多段停留转移等复杂问题。该工作验证了LLM在工程优化中自动化推导与编程的潜力，并揭示了模型规模与推导能力的正相关关系。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Low-thrust trajectory optimization is a core technology in deep-space mission design. Indirect methods based on Pontryagin's Minimum Principle (PMP) offer rigorous optimality guarantees, yet their practical application faces three bottlenecks: (1) transversality conditions must be derived case by case for each constraint type; (2) different dynamics models require repeated code rewrites; and (3) shooting equations are highly sensitive to initial guesses. This paper presents HELIOS (Heuristic Engine for Low-thrust Interplanetary Optimization System), a trajectory optimization agent built around a large language model (LLM). Given a physical problem described in natural language, the system autonomously performs PMP symbolic derivation, SymPy verification, C++ shooting-code generation, and numerical solution without human intervention. Key innovations include: (1) a constraint-adaptive derivation framework that unifies arbitrary constraints into psi(x,p)=0 form and automatically generates stationarity conditions for free parameters (e.g., gravity-assist turning angle); (2) dynamics-adaptive four-module code generation supporting non-standard dynamics (solar sail, J2 perturbation) without modifying the underlying template; and (3) a general derivation rule set covering critical error-prone points in PMP derivation. Experiments on 11 progressive test scenarios show that HELIOS correctly derives and solves problems from simple rendezvous (8 variables) to multi-leg stay transfers (48 variables), gravity-assist trajectories (17 variables), and solar-sail minimum-time transfers (8 variables). The best compilation success rate reaches 100% (11/11). A multi-model comparison (8 open-source LLM backends, total scores 250-905) verifies the model-agnostic architecture and reveals a positive correlation between model scale and derivation capability.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/28/2607.23665v1-multi-level-code-optimization-via-mixture-of-prompts",
+      "section": "deep",
+      "title_en": "Multi-level Code Optimization via Mixture of Prompts",
+      "authors": "Yun Peng, Jun Wan, Jiakun Liu, Shuzheng Gao, David Lo, Xiaoxue Ren",
+      "date": "2026-07-26",
+      "pdf": "https://arxiv.org/pdf/2607.23665v1",
+      "score": "8.0",
+      "evidence": "基于LLM的运行时效率代码优化",
+      "tldr": "针对动态语言代码优化困难及单一级别优化不充分的问题，提出基于Mixture-of-Prompts (MoP)架构的多级代码优化方法Optimo。通过差分剖析定位性能瓶颈，路由至特定优化策略，在算法、语句、API等四个抽象级别进行优化。在COFFE和Effibench基准上，Optimo的opt%（正确且加速≥10%的程序比例）最高达57.48%，加速比达3.97倍，较最佳基线提升96.51%，并有效优化LLM生成代码。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Runtime efficiency is a critical factor that impacts both software quality and user satisfaction. There are many approaches proposed for code optimization to improve runtime efficiency. Traditional code optimization methods operate on intermediate representations (IRs) during compilation for static languages. They are effective but struggle to handle dynamic languages that do not require compilation. Recently, large language models (LLMs) have been leveraged to directly optimize source code in dynamic languages. However, these methods fail to identify suitable optimization targets and usually conduct incomprehensive single-level optimization.   To address these challenges, we propose Optimo, a multi-level LLM-based code optimization approach built on a novel Mixture-of-Prompts (MoP) architecture. In the MoP architecture, Optimo identifies time-critical code structures as performance bottlenecks via differential profiling. These structures are then routed to some optimization strategies, akin to expert models in MoE, each tailored to optimize specific code patterns. Unlike traditional approaches that focus only on statement-level optimizations, Optimo operates at four levels of abstraction, ranging from coarse-grained algorithmic improvements to fine-grained optimizations in API usage. We evaluate Optimo on two code efficiency benchmarks, COFFE and Effibench. Our results demonstrate that Optimo achieves an up to 57.48% opt%, i.e., the percentage of optimized programs that are correct and at least 10% faster than the original programs, and an up to 3.97x speedup when optimizing human-written code, and it consistently outperforms the best baseline by up to 96.51% in terms of opt%. Furthermore, Optimo achieves an up to 42.42% opt% and an up to 13.51x speedup when optimizing LLM-generated code.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/28/2607.24259v1-generative-artificial-intelligence-genai-to-convert-images-of-queuing-networks-into-verifiable-simulation-models-an-open-weight-llm-workflow-approach",
+      "section": "deep",
+      "title_en": "Generative Artificial Intelligence (GenAI) to convert images of queuing networks into verifiable simulation models: an open-weight LLM workflow approach",
+      "authors": "Thomas Monks, Alison Harper, Amy Heather, Navonil Mustafee",
+      "date": "2026-07-27",
+      "pdf": "https://arxiv.org/pdf/2607.24259v1",
+      "score": "8.0",
+      "evidence": "使用LLM从排队网络示意图生成仿真模型代码；直接适用于运筹优化建模",
+      "tldr": "针对直接使用大语言模型生成仿真代码存在验证和可重复性挑战的问题，提出Sketch2DES工作流，将排队网络图通过多模态LLM转为半结构化文本，再经LLM反射验证转为JSON，最后通过软件适配器生成可执行仿真模型。在8个不同复杂度图上评估，各阶段可靠性高，结果与人工编码和解析基准统计无差异。该结构化方法提升了模型可验证性和可重复性，降低了对编程技能的需求。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Recent work has explored the use of Large Language Models (LLMs) to automate simulation model building, typically by generating executable code directly from natural language descriptions. However, this raises challenges for verification and reproducibility particularly for users without programming expertise. We propose Sketch2DES, a sketch-to-simulation workflow that converts diagrammatic representations of queuing networks into verifiable discrete-event simulation models using open-weight LLMs. The workflow has three stages: (1) translation of a diagram into a semi-structured textual description using a multimodal LLM; (2) conversion into schema-validated structured data (JSON) via an LLM with a reflection-based verification loop; and (3) deterministic transformation into an executable simulation model using a software adapter. Intermediate artefacts can therefore be inspected and automatically validated before execution. We evaluate the approach on eight queuing-network diagrams of varying complexity. The workflow achieved high reliability for all stages, and results were statistically indistinguishable from human-coded and analytical benchmarks. Compared to direct code generation, the workflow improves reproducibility, transparency, and verifiability, while reducing the need for programming expertise. Limitations include restricted model scope and dependence on accurate visual interpretation. The results demonstrate the feasibility of structured, workflow-based model generation as a robust foundation for LLM-assisted simulation modelling.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

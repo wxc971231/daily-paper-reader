@@ -1,0 +1,575 @@
+Title: Multi-level Code Optimization via Mixture of Prompts
+
+URL Source: https://arxiv.org/pdf/2607.23665v1
+
+Published Time: Tue, 28 Jul 2026 01:26:06 GMT
+
+Number of Pages: 13
+
+Markdown Content:
+# Multi-level Code Optimization via Mixture of Prompts 
+
+## Yun Peng 
+
+Fudan University Shanghai, China yunpeng4@sigsoft.org 
+
+## Jun Wan 
+
+Zhejiang University Hangzhou, China 22451014@zju.edu.cn 
+
+## Jiakun Liu 
+
+Harbin Institute of Technology Harbin, China jiakunliu@hit.edu.cn 
+
+## Shuzheng Gao 
+
+Chinese University of Hong Kong Hong Kong, Hong Kong szgao23@cse.cuhk.edu.hk 
+
+## David Lo 
+
+Singapore Management University Singapore, Singapore davidlo@smu.edu.sg 
+
+## Xiaoxue Ren ∗
+
+Zhejiang University Hangzhou, China Hangzhou High-Tech Zone (Binjiang) Institute of Blockchain and Data Security Hangzhou, China xxren@zju.edu.cn 
+
+## Abstract 
+
+Runtime efficiency is a critical factor that impacts both software quality and user satisfaction. There are many approaches proposed for code optimization to improve runtime efficiency. Traditional code optimization methods operate on intermediate representations (IRs) during compilation for static languages. They are effective but struggle to handle dynamic languages that do not require compila-tion. Recently, large language models (LLMs) have been leveraged to directly optimize source code in dynamic languages. However, these methods fail to identify suitable optimization targets and usually conduct incomprehensive single-level optimization. To address these challenges, we propose Optimo , a multi-level LLM-based code optimization approach built on a novel Mixture-of-Prompts (MoP) architecture. In the MoP architecture, Optimo 
+
+identifies time-critical code structures as performance bottlenecks via differential profiling. These structures are then routed to some optimization strategies, akin to expert models in MoE, each tailored to optimize specific code patterns. Unlike traditional approaches that focus only on statement-level optimizations, Optimo operates at four levels of abstraction, ranging from coarse-grained algorith-mic improvements to fine-grained optimizations in API usage. We evaluate Optimo on two code efficiency benchmarks, Coffe and 
+
+Effibench . Our results demonstrate that Optimo achieves an up to 57.48% opt%, i.e., the percentage of optimized programs that are correct and at least 10% faster than the original programs, and an up to 3.97x speedup when optimizing human-written code, and it consistently outperforms the best baseline by up to 96.51% in terms of opt%. Furthermore, Optimo achieves an up to 42.42% opt% and an up to 13.51x speedup when optimizing LLM-generated code. 
+
+## CCS Concepts 
+
+• Software and its engineering → Automatic programming . 
+
+> ∗Corresponding author.
+> This work is licensed under a Creative Commons Attribution 4.0 International License.
+> ASE ’26, Munich, Germany
+> ©2026 Copyright held by the owner/author(s). ACM ISBN 979-8-4007-2882-2/2026/10 https://doi.org/10.1145/3832783.3834369
+
+## Keywords 
+
+Code Generation, Code Optimization, Large Language Model, Code Efficiency 
+
+ACM Reference Format: 
+
+Yun Peng, Jun Wan, Jiakun Liu, Shuzheng Gao, David Lo, and Xiaoxue Ren. 2026. Multi-level Code Optimization via Mixture of Prompts. In Proceedings of the 41st IEEE/ACM International Conference on Automated Software Engi-neering (ASE ’26), October 12–16, 2026, Munich, Germany. ACM, New York, NY, USA, 13 pages. https://doi.org/10.1145/3832783.3834369 
+
+## 1 Introduction 
+
+In the ISO/IEC 25010 quality model [ 31 ], runtime efficiency is an important software quality attribute beyond functionality. Even when software is functionally correct, poor runtime efficiency can lead to CWE issues [ 8] and performance bugs [ 23 , 28 ], which may reduce user satisfaction and even cause financial loss [ 15 ]. How-ever, time inefficiencies are pervasive in real-world software, and avoiding them completely during development is difficult in prac-tice [3, 22, 49]. Code optimization aims to automatically improve the runtime efficiency of software. Traditionally, it is integrated into the compi-lation process of static languages. For example, the C/C++ compiler GCC provides many optimization options [ 13 ] that apply differ-ent optimization techniques [ 1, 9, 42 , 44 , 45 ] on intermediate rep-resentations (IRs) during compilation. With the rapid growth of artificial intelligence, dynamic languages such as Python have be-come increasingly popular [ 18 ]. Without the need for compilation, developers can quickly build functional software using these lan-guages. However, software written in dynamic languages is often less efficient than that written in static languages, partly because it does not benefit from compiler-based optimization. For example, a recursive Python function takes more than 20 seconds to compute the Fibonacci sequence of length 40, whereas a similar C implemen-tation takes less than one second. 1 Unfortunately, many traditional code optimization techniques are not applicable to dynamic lan-guages because they rely on intermediate states generated during compilation. This limitation has motivated researchers to explore optimization techniques that work directly on source code. 
+
+> 1Evaluated on Ubuntu 20.04 with two Intel Xeon@2.20GHZ CPUs. arXiv:2607.23665v1 [cs.SE] 26 Jul 2026
+
+ASE ’26, October 12–16, 2026, Munich, Germany Yun Peng, Jun Wan, Jiakun Liu, Shuzheng Gao, David Lo, and Xiaoxue Ren n, m = map(int, input().split())                                                                 
+
+> d = {}
+> for _in range(m):
+> a, b = input().split()
+> if len(b) < len(a):
+> d[a] = b
+> else :
+> d[a] = a
+> lecture = input().split()
+> output = ' '.join(d[s] for sin lecture)
+> print(output)
+> n, m = map(int, input().split())
+> d = {a: (b if len(b) < len(a) else a)
+> for a, b in (
+> input().split() for _in range(m)
+> )}
+> lecture = input().split()
+> output = ' '.join(d[s] for sin lecture)
+> print(output)
+> n,m=map(int, input().split())
+> d={}
+> for iin range(m):
+> a,b=input().split()
+> d[a]=b
+> for sin input().split():
+> if (len(s)>len(d[s])):
+> print(d[s],end=' ')
+> else :
+> print(s,end=' ')
+> n, m = map(int, input().split())
+> d = {}
+> for _in range(m):
+> a, b = input().split()
+> d[a] = b
+> lecture = input().split()
+> result = []
+> for sin lecture:
+> mapped_value = d[s]
+> if len(s) > len(mapped_value):
+> result.append(mapped_value)
+> else :
+> result.append(s)
+> print(' '.join(result))
+> n, m = map(int, input().split())
+> d = {a: (b if len(b) < len(a) else a)
+> for a, b in (
+> input().split() for _in range(m)
+> )}
+> lecture = input().split()
+> output = ' '.join(map(d.get, lecture))
+> print(output)
+> n, m = map(int, sys.stdin.readline().split())
+> d = {a: (b if len(b) < len(a) else a)
+> for a, b in (
+> input().split() for _in range(m)
+> )}
+> lecture = sys.stdin.readline().split()
+> output = ' '.join(map(d.get, lecture))
+> print(output)
+> Optimized Program by Optimo: 29ms
+> Original Program: 69ms Optimized Program by EffiLearner: 57ms
+> Step 1: Algorithm Level
+> Step 2:
+> Statement Level
+> Step 3:
+> Expression Level
+> Step 4: API Level
+> Only
+> Statement
+> Level
+
+Figure 1: A motivating example from Coffe . The code in the dashed box is the optimization target for the next level, while the highlighted code is the optimized code from the identified optimization target at the last level. 
+
+Recent advances in large language models (LLMs) have shown strong capabilities in source code understanding [ 2, 5 , 27 , 48 ] and generation [ 6 , 21 , 41 , 47 ], leading to a growing line of work on LLM-based code optimization. For example, EffiLearner [ 19 ] ex-tracts execution traces and uses them to guide LLMs in optimizing code. RAPGEN [ 16 ] reformulates code optimization as an auto-mated program repair task and fixes inefficient code in source code. SBLLM [ 14 ] combines LLMs with evolutionary search to identify suitable optimization strategies. Although these approaches have advanced the state of the art, they still face two important chal-lenges. 
+
+Challenge 1: Failure to identify suitable optimization tar-gets. Early studies [ 33 , 37 ] optimize the entire program without first locating performance bottlenecks. More recent work, such as EffiLearner [ 19 ], relies solely on LLMs to analyze execution traces and identify lines or statements with high execution time as opti-mization targets. However, such lines or statements are not always appropriate targets because some operations do not meaningfully vary with input size and offer limited opportunities for optimization. For example, I/O operations, such as printing a number, often take longer than other operations, but they usually cannot be further optimized at the source code level without changing the underlying system calls. As a result, simply selecting expensive statements may mislead the optimization process. 
+
+Challenge 2: Incomprehensive single-level optimization. 
+
+Recent approaches [ 16 , 19 ] mainly focus on statement-level or line-level optimization. They detect and optimize inefficiencies in several statements or lines. While this can improve efficiency to some extent, such single-level optimization is inherently limited because runtime efficiency depends on multiple factors, includ-ing algorithm design, statement and expression structure, and API usage. For example, improving a recursive implementation often requires changes to the entire program rather than small edits to a few lines of code. Without a comprehensive view of bottlenecks, op-timization at a single level is often insufficient to achieve substantial performance gains. To address these challenges, we propose Optimo , a multi-level LLM-based code optimization approach built on a novel Mixture-of-Prompts (MoP) architecture. Inspired by the success of Mixture-of-Experts (MoE) architectures [ 10 , 12 , 26 , 36 ] in modern LLMs, 
+
+Optimo replaces expert models with optimization strategy prompts that encode domain knowledge in the MoP architecture for code op-timization. This eliminates the need for high-quality training data in the MoE architecture. Under the MoP architecture, Optimo first generates differential test case pairs with small and large inputs, and then profiles the program to identify time-critical code structures as optimization targets. Specifically, time-critical code structures are statements or expressions whose execution time is higher than average and changes significantly across differential test cases. Such structures are suitable targets for optimization because they are more likely to have scalable and efficient alternatives. Optimo then routes these targets to some optimization strategies. Optimization strategies are mined from existing slow-fast code pairs and capture rich optimization knowledge for different optimization targets. Op-timo applies the routed optimization strategies to the optimization targets for targeted optimization and fuses optimizations for multi-ple targets in the program to build an optimized program. Unlike prior approaches that only optimize at the statement level, Optimo 
+
+performs optimization at four levels sequentially: algorithm, state-ment, expression, and API. This ensures that Optimo can cover both coarse-grained and fine-grained opportunities for comprehensive improvement. We evaluate Optimo on Coffe and Effibench against six LLM-based code optimization approaches. The results show that Optimo 
+
+achieves an up to 57.48% opt%, i.e., the percentage of optimized programs that are correct and at least 10% faster than the original programs, and an up to 3.97x speedup for human-written code optimization. It consistently outperforms the best baseline by up to 96.51% in terms of opt%. Optimo is also highly effective on LLM-generated code optimization, delivering at least 3x higher opt% than the baselines on Effibench . More importantly, 26.82-54.60% of the LLM-generated code optimized by Optimo is even more efficient than human-written code. Our ablation study further confirms the effectiveness of both the MoP architecture and the multi-level optimization design. 
+
+Contributions. We summarize our contributions as follows. 
+
+• To the best of our knowledge, Optimo is the first multi-level LLM-based approach for code optimization. 
+
+• We propose a novel Mixture-of-Prompts architecture for code optimization. It uses differential profiling to identify time-critical code structures as optimization targets and routes them to mined optimization strategies for targeted optimization. Multi-level Code Optimization via Mixture of Prompts ASE ’26, October 12–16, 2026, Munich, Germany 
+
+• Extensive experiments demonstrate the superior performance of Optimo on both human-written and LLM-generated code optimization, and verify the effectiveness of the MoP architecture and the multi-level optimization design. 
+
+## 2 Motivation 
+
+We provide an example in Fig. 1 to better illustrate the challenges of current approaches and how Optimo addresses them. 
+
+Baseline. EffiLearner is a state-of-the-art LLM-based approach for code optimization. Given the original program, it runs it on some test cases and identifies two print statements with the high-est execution time as performance bottlenecks. It then optimizes the two print statements by moving them out of the loop, as highlighted in red. The final optimized program takes 57ms. Even though it is faster than the original program, the speedup is only 1.21x. There are two reasons for the limited improvement. Firstly, while print statements take the most time, the two for loops are the root causes for the inefficiency. Incorrectly identified bottle-necks mislead LLMs during the optimization process (Challenge 1). Secondly, EffiLearner focuses only on a few expensive statements, ignoring algorithm-level optimizations to reduce the overall time complexity (Challenge 2). 
+
+Our Approach. Our approach Optimo implements four opti-mization levels to obtain a comprehensive improvement. It first analyzes the time complexity of the original program at the algo-rithm level, and reduces it from O(m + n) to O(m), as highlighted in orange. It then applies differential profiling and identifies that the execution time of the for loop varies the most. Optimo replaces it with a list comprehension, as highlighted in blue. At the expression level, Optimo identifies that the list comprehension to calculate the value of output can be further replaced with a more efficient map 
+
+function. Finally, Optimo replaces the expensive input calls with 
+
+readline calls at the API level. Benefiting from the four levels of optimization, the program optimized by Optimo runs in only 29ms, achieving a 2.38x speedup, significantly faster than the program optimized by EffiLearner. Furthermore, Optimo correctly identifies 
+
+for loops for optimization based on differential profiling. The MoP architecture, with its rich domain knowledge, also ensures that Op-timo can implement more efficient modifications than EffiLearner. 
+
+## 3 Methodology 3.1 Mixture-of-Prompts (MoP) Architecture 
+
+Fig. 2 illustrates the workflow of Optimo . Given a program, Op-timo performs code optimization at four levels sequentially, i.e., algorithm, statement, expression, and API. We determine the four levels based on the node levels in abstract syntax trees (ASTs), from the root node representing the entire program (algorithm level) to the leaf node representing API calls (API level). This design reduces the risk that changes made at earlier levels are completely over-written by later optimizations. Optimo addresses the limitation of single-level optimization by covering both high-level functionality and low-level code structures. At each level except the API level, 
+
+Optimo employs a novel Mixture-of-Prompts (MoP) architecture for targeted optimization. Note that Optimo does not implement the MoP architecture for the API level, since inefficient APIs can be directly replaced with efficient alternatives via an efficient API map. Mixture-of-Experts (MoE) architectures [ 10 , 12 , 26 , 36 ] in mod-ern LLMs have demonstrated superior performance across diverse tasks. Despite their effectiveness, they cannot be directly applied to code optimization due to a lack of high-quality slow-fast code data for training. Inspired by the MoE architecture, Optimo introduces a MoP architecture for code optimization. At each level, Optimo iden-tifies optimization targets and routes them to the appropriate opti-mization strategies. Specifically, Optimo identifies algorithms and time-critical code structures through differential profiling, based on the insight that code structures whose cost grows significantly with input scale are more likely to admit more efficient variants. This design helps Optimo focus on targets that offer meaningful optimization opportunities, addressing the challenge of previous approaches in identifying inappropriate optimization targets. Instead of using multiple expert models that require training, Op-timo employs multiple optimization strategies that can be obtained in a small set of slow-fast code pairs, including special optimization strategies and shared optimization strategies . Special optimization strategies are specialized prompts tailored to optimize a specific algorithm or code structure under different conditions. Optimo 
+
+mines them from slow-fast code pairs in existing datasets. These strategies capture domain knowledge about how human developers optimize specific code elements in practice. Shared optimization strategies are general optimization prompts we manually defined for each level. They build the basic performance of Optimo by leveraging LLMs’ reasoning capabilities, and handle cases not cov-ered by special optimization strategies. For the edits generated by each optimization strategy, Optimo validates both correctness and runtime efficiency, and then merges the validated edits into the original program to produce the optimized program at each level. 
+
+## 3.2 Time-Critical Code Structure Identification 
+
+We define time-critical code structures as statements or expressions whose execution time (1) exceeds the average execution time of a statement in the program and (2) changes the most across different inputs. Such code structures not only contribute substantially to the total runtime but are also more likely to benefit from optimization under different input scales. Note that this process does not apply at the algorithm level, as it pertains only to a few code elements in the program. Instead, we use time complexity to characterize the program’s overall performance. 
+
+Differential Profiling. Given a program, Optimo first generates small and large test cases with inputs of different scales. Optimo 
+
+adopts the stress test case generation approach STGen [ 34 ] to gen-erate large test cases. Optimo directly uses public test cases as small test cases if available. Otherwise, it uses a modified version of STGen to generate small test cases. All test cases are validated against the program to ensure correctness. Optimo executes the program and applies LineProfiler [ 30 ] to collect line-by-line exe-cution information on all test cases, i.e., the time ratio, total time, execution count, and time per execution for each line. 
+
+Time-Critical Statement and Expression Identification. 
+
+Based on execution information collected through differential pro-filing, Optimo first identifies lines whose total time ratio exceeds ASE ’26, October 12–16, 2026, Munich, Germany Yun Peng, Jun Wan, Jiakun Liu, Shuzheng Gao, David Lo, and Xiaoxue Ren Algorithm-Level Code Optimization 
+
+> Original
+> Program
+> Algorithm
+> Router
+> Special Strategy #1
+> Shared Strategy
+> Special Strategy #2
+> Special Strategy #3
+> Special Strategy #N
+> ...
+> Performance
+> Validation
+> Optimized Program
+> from Algorithm Level
+> Time-Critical
+> Structure Router
+> Special Strategy #1
+> Shared Strategy
+> Special Strategy #2
+> Special Strategy #3
+> Special Strategy #N
+> ...
+> Time-Critical
+> Structure #1
+> Time-Critical
+> Structure #N
+> Time-Critical
+> Structure #2
+> ...
+> Performance
+> Validation
+> ...
+> Optimization
+> Fusion
+> Optimized Program for Time-
+> Critical Structure #1
+> Optimized Program for Time-
+> Critical Structure #2
+> Optimized Program for Time-
+> Critical Structure #N
+> Expression-level
+> optimization
+> Optimized Program
+> from Statement Level
+> Optimized Program
+> from Expression Level
+> API
+> Optimizer
+> Performance
+> Validation
+> Final Optimized Program
+> API-level optimization
+> API-Level Code Optimization
+> Statement/Expression-Level Code Optimization
+> Correctness
+> Reflection
+> Correctness
+> Reflection
+> Correctness
+> Reflection
+> Performance
+> Validation
+> Correctness
+> Reflection
+
+Figure 2: The overview of Optimo . It optimizes a program at four levels sequentially: algorithm, statement, expression, and API. At each level except API, the MoP architecture highlighted in the dashed box performs targeted optimization. 
+
+the program average in both small and large test cases, indicating that they are critical to time efficiency under any circumstance. It then compares the time ratios of these lines across small and large test cases, and selects those whose ratios increase on large test cases. We regard these lines as time-critical because they are both expensive and sensitive to input scale, offering more optimization opportunities. Next, Optimo classifies time-critical lines into potential time-critical statements or expressions. If the increased runtime is pri-marily due to a higher execution count, the line is treated as a time-critical statement. If it is mainly caused by increased time per execution, the line is treated as a time-critical expression. These candidates are then converted into ASTs by selecting the smallest subtree that contains them. In this way, both time-critical state-ments and expressions are represented as subtrees. For time-critical statements, Optimo keeps only statement-level AST nodes. For time-critical expressions, it keeps only expression-level AST nodes. 
+
+## 3.3 Optimization Strategy Mining 
+
+Apart from the optimization targets, optimization strategies are also important components in the MoP architecture of Optimo .Among them, shared optimization strategies are manually defined to handle general cases, while special optimization strategies encode domain knowledge from developers for code optimization. Unlike the expert models in the MoE architecture, which require larger training datasets, Optimo mines special optimization strategies from a few slow-fast code pairs. 
+
+3.3.1 Data Preparation. Programming competition datasets are a useful source for mining optimization strategies because they often contain multiple solutions to the same problem with varying runtime performance. In this work, we use a Python Codeforces sub-mission dataset [ 38 ] from HuggingFace. Its training split contains 621,000 Python solutions for a wide range of Codeforces problems. We clean this dataset by keeping only correct solutions that pass 
+
+Figure 3: An initial optimization strategy extracted from a time-critical statement in a fast-slow code pair. 
+
+all test cases and grouping them by problem. For each problem, we then select solutions whose execution time differs significantly from that of other solutions. Following prior work [ 14 , 37 ], we treat a runtime difference greater than 10% as significant. Prob-lems with fewer than two valid solutions are removed. After data cleaning, 98% of solutions are removed, leaving only 13,319 valid code solutions across 2,005 problems, with an average of 6.64 per problem. To identify time-critical code structures in these solutions, we treat the original test cases in the dataset as small test cases and use STGen [ 34 ] to generate large test cases. We then run the solutions on the large test cases and rank them by execution time. Finally, for each problem, we pair the fastest solution with the remaining slower solutions to construct slow-fast code pairs. 
+
+3.3.2 Optimization Strategy Mining. Given the slow-fast code pairs, 
+
+Optimo performs three phases to mine special optimization strate-gies at the algorithm, statement, and expression levels. 
+
+Phase I: Optimization Strategy Extraction. For each slow-fast code pair, Optimo identifies the time complexity of the slow code using LLMs at the algorithm level, and time-critical code structures Multi-level Code Optimization via Mixture of Prompts ASE ’26, October 12–16, 2026, Munich, Germany 
+
+using differential profiling at the statement and expression levels. These are treated as optimization targets at their corresponding lev-els. Given the identified targets in the slow code, Optimo then asks LLMs to analyze how these targets are transformed into more effi-cient versions in the fast code, and extracts an initial optimization strategy that describes the transformation. Fig. 3 shows an example of an initial optimization strategy at the expression level. It contains three parts: 
+
+• Routing Pattern (highlighted in yellow): an optimization target for syntactic routing, and a condition for semantic routing, where the optimization target is an algorithm or code structure to be optimized, and the condition specifies when the strategy applies if there are multiple strategies for the same optimization target. 
+
+• Optimization Method (highlighted in blue): a modification and a description, where the modification describes how to trans-form the target into a more efficient version, and the description provides a high-level summary to help better understanding. 
+
+• Optimization Result (highlighted in purple): an optimized tar-get and a benefit, where the optimized target is the algorithm or code structure after applying the optimization method, and the benefit states how runtime efficiency is improved. From the 13,319 cleaned code solutions, Optimo extracts 2,942, 11,172, and 13,885 initial optimization strategies at the algorithm, statement, and expression levels, respectively. The initial optimiza-tion strategies document how developers optimize specific pro-grams under specific circumstances. 
+
+Phase II: Optimization Method Summarization. Due to the similar methodologies developers use to optimize programs, there may be multiple initial optimization strategies with the same rout-ing pattern, and each individual strategy may be too specific to generalize across different scenarios. To improve generalizability, 
+
+Optimo summarizes the optimization methods of optimization strategies with the same routing pattern. Specifically, it groups all initial strategies by the routing pattern, and then uses LLMs to summarize one optimization method in each group by proposing broader modification steps. If more than 20 groups remain for an optimization target, Optimo further merges strategies with similar conditions to reduce the number of groups to 20. This avoids over-loading the MoP architecture with too many optimization strategies for a single optimization target. 
+
+Phase III: Optimization Target Abstraction. Due to the lim-ited volume of slow-fast code pairs, initial optimization strategies are not enough to cover all code patterns. Furthermore, code struc-tures follow a long-tail distribution, and some complex structures are covered by only a single initial optimization strategy, which can hardly generalize across different scenarios. To address this issue, Optimo abstracts complex code structures and enables them to share optimization strategies from simpler ones. As described in Sec. 3.2, Optimo represents time-critical code structures as subtrees in AST. Subtrees with greater depth have more nodes and are thus harder to match. Inspired by prior work [ 32 ], 
+
+Optimo simplifies subtrees by gradually removing leaf nodes, thereby discarding some details while preserving the overall structure. For example, we can remove the node of an assignment statement in the 
+
+for loop statement to produce a simpler subtree without changing the loop structure. Therefore, for all time-critical code structures associated with only one initial optimization strategy, Optimo re-duces their depth by one to create simplified structures. It then shares the optimization strategies of the simplified structures. This abstraction process can be repeated multiple times until simplified structures are found. The second and third phases may iterate several times until all initial optimization strategies are transformed into general opti-mization strategies that cover multiple scenarios. These strategies are used as special optimization strategies in the MoP architecture of Optimo . We finally obtained 191 special optimization strategies for 48 time complexities at the algorithm level, 851 at the statement level for 272 time-critical statements, and 805 at the expression level for 272 time-critical expressions. In addition, we manually design a shared optimization strategy for each level. Specifically, we follow the chain-of-thought prompt design from prior work [ 37 ] and ask LLMs to optimize the target solely based on their reasoning capabilities. Shared optimization strategies ensure that every optimization target is handled appro-priately, even when no special optimization strategy applies. 
+
+3.3.3 Efficient API Mining. Compared with algorithms and code structures, APIs are often too fine-grained and diverse to be compre-hensively covered by existing coding datasets. Therefore, Optimo 
+
+identifies efficient APIs based on API documentation and LLMs. Specifically, it first collects the APIs used in the coding dataset and retrieves relevant APIs from the corresponding documenta-tion to form an initial API set. It then groups APIs by functionality and asks LLMs to enumerate as many alternative APIs as possible within each group. We refer to APIs as functionally equivalent if they share the same inputs and outputs, as measured by test cases. Based on the expanded API set, Optimo generates test cases using LLMs to evaluate runtime efficiency and ranks the APIs in each group accordingly. Optimo discards groups in which the runtime difference between the fastest and slowest APIs is not significant (i.e., less than 10%). Finally, Optimo constructs an efficient API map covering 685 groups. 
+
+## 3.4 Multi-level Code Optimization 
+
+With optimization targets as the router and optimization strategies for targeted optimization, Optimo is now able to optimize pro-grams based on the MoP architecture. As shown in Fig. 2, Optimo 
+
+starts with coarse-grained algorithm-level optimization and ends with fine-grained API-level optimization. This order avoids later optimizations from overwriting earlier ones. 
+
+3.4.1 Algorithm-level Code Optimization. As highlighted in orange in Fig. 2, given a program, Optimo analyzes its time complexity and applies several special optimization strategies based on the time complexity, along with a shared optimization strategy for gen-eral optimization. Optimo then applies the optimization methods in the selected optimization strategies to the program based on LLMs and generates multiple optimized programs as candidates. However, Optimo does not directly adopt these candidates as final optimized programs, since previous work has shown that code op-timization can easily break functional correctness [ 33 ]. To mitigate this problem, Optimo introduces a correctness reflection process to verify candidate programs. The verified candidates, along with ASE ’26, October 12–16, 2026, Munich, Germany Yun Peng, Jun Wan, Jiakun Liu, Shuzheng Gao, David Lo, and Xiaoxue Ren 
+
+the original program, are then ranked by execution time, and the most efficient program is selected for further optimization at the next level. 
+
+Correctness Reflection. In this process, Optimo checks the functional correctness of candidate programs using the small test cases generated in Sec. 3.2. For incorrect candidates, Optimo applies a reflection process that uses failed test cases and corresponding error messages as feedback to repair them. Only repaired or pre-viously verified correct candidates are retained, while the remain-ing incorrect ones are discarded. This is a self-reflection process: 
+
+Optimo relies only on LLM-generated test cases rather than exter-nal feedback. Correctness reflection provides two benefits. First, it performs early filtering, removing incorrect candidates before they enter later optimization levels. Second, it provides correctness feedback, helping optimization strategies preserve the original pro-gram’s functionality. Note that Optimo does not assume that small test cases are sufficient to identify all incorrect programs, and the reflection process is not always successful. Therefore, this process is neither complete nor sound. 
+
+Performance Validation. After correctness reflection, Optimo 
+
+ranks the correct candidate programs by execution time on the large test cases. The original program is also included in this rank-ing to guard against performance regression. A candidate program is selected for the next level only if it is faster than the original program. Otherwise, the original program is retained, and all can-didate programs are discarded. In this way, performance validation serves as a gatekeeper, ensuring that the program passed to the next level is at least as efficient as the input program. 
+
+3.4.2 Statement-level and Expression-level Code Optimization. Given the optimized program from the algorithm level, Optimo identifies time-critical statements and time-critical expressions for statement-level and expression-level optimization, respectively. The optimiza-tion procedure is the same at both levels, as highlighted in blue in Fig. 2, but the corresponding optimization strategies differ. Unlike algorithm-level optimization, where each program has only one time complexity, a program may contain multiple time-critical code structures. Optimo therefore optimizes them in parallel and merges the edits afterward. To achieve this, Optimo creates an optimization pipeline for each time-critical code structure and executes these pipelines in parallel. In each pipeline, Optimo complements the optimization process at the algorithm level by adding an adaptive routing process to improve the coverage. 
+
+Adaptive Routing. Optimo uses an adaptive routing method to map rarely appearing time-critical code structures to optimiza-tion strategies. Given a code structure, Optimo first matches it to optimization strategies with exactly the same optimization target. If no strategy is matched, Optimo abstracts the time-critical code structure into a more general one by reducing its depth. This ab-straction continues until one or more special optimization strategies are found. Among the selected strategies, Optimo compares their conditions against the semantics of the time-critical code structure and removes inappropriate ones. Adaptive routing improves cov-erage by allowing complex code structures to fall back to more optimization strategies with simpler optimization targets. Within each pipeline, Optimo generates candidate programs and applies the same correctness reflection and performance validation process used at the algorithm level. Each pipeline then outputs a ranked list of candidates for the corresponding time-critical code structure. To integrate optimizations across multiple code struc-tures, Optimo asks LLMs to select suitable candidates and merge them into a single program. The integrated programs are also sub-jected to correctness reflection and performance validation before being passed to the next level. 
+
+3.4.3 API-level Code Optimization. At this level, Optimo identifies inefficient APIs used in the program and replaces them with more efficient alternatives based on the efficient API map. Because API-level changes usually have limited impact on program functionality, 
+
+Optimo does not create parallel optimization pipelines at this level. Instead, it iteratively replaces all inefficient APIs and applies the same correctness reflection and performance validation processes. The optimized program is regarded as the final output of Optimo .
+
+## 4 Experiment Setup 4.1 Research Questions 
+
+To evaluate the effectiveness of Optimo , we study the following research questions: 
+
+• RQ1: To what extent can the optimization strategies mined by 
+
+Optimo cover time-critical code structures in human-written and LLM-generated code? 
+
+• RQ2: How effective is Optimo compared with existing approaches in optimizing human-written code? 
+
+• RQ3: How effective is Optimo compared with existing approaches in optimizing LLM-generated code? 
+
+• RQ4: What are the impacts of different components in Optimo ?
+
+• RQ5: What are the costs of Optimo ?
+
+## 4.2 Baselines 
+
+We select the following approaches in LLM-based code optimization as our baselines: 
+
+• In-Context Learning (ICL) Prompt : We use the same in-context learning prompting setting as PIE [ 37 ], where several slow-fast code pairs are used as demonstrations. 
+
+• Chain-of-Thought (CoT) Prompt : We use the same chain-of-thought prompting strategy as PIE [37]. 
+
+• PIE [37 ]: PIE proposes a fine-tuning framework for code opti-mization. We use the fine-tuned model released by the authors as a baseline. 
+
+• SBLLM [14 ]: It is a search-based LLM framework that iteratively refines candidate solutions and discovers better strategies for code optimization. 
+
+• EffiLearner [ 19 ]: It is a self-optimization framework that lever-ages execution overhead profiles to improve runtime efficiency with LLMs. 
+
+• RAPGEN [16 ]: It is a retrieval-augmented generation approach for fixing code inefficiency issues. 
+
+## 4.3 Benchmark 
+
+We evaluate Optimo on Coffe [34 ] and Effibench [ 20 ], two bench-marks for evaluating the runtime efficiency for code generation and optimization approaches. Coffe contains 398 function-level problems and 294 file-level problems, while Effibench contains 707 Multi-level Code Optimization via Mixture of Prompts ASE ’26, October 12–16, 2026, Munich, Germany 
+
+Table 1: The coverage of special optimization strategies in Op-timo for time-critical statements and expressions in human-written and LLM-generated code. “Func” indicates the Coffe -Function and “File” indicates Coffe -File. “Method” indicates the method used to select optimization strategies for time-critical code statements and expressions. Method Source Statement Expression Func File Effibench Func File Effibench Exact Match                         
+
+> Human 73.68% 69.31% 60.17% 90.91% 91.23% 87.34% GPT-4o 68.36% 80.26% 72.62% 89.26% 98.18% 85.13%
+> Adaptive Routing
+> Human 89.47% 97.88% 98.79% 96.36% 99.68% 99.37% GPT-4o 87.57% 98.68% 99.51% 94.21% 100.00% 98.83%
+
+file-level problems. Note that Effibench originally included 1,000 problems, but we retain only the 707 problems whose ground-truth solutions strictly pass all provided test cases. We also remove 64 duplicate problems in Coffe that appear in the Codeforces datasets or Effibench , to avoid data contamination and potential bias in evaluation. 
+
+## 4.4 Metrics 
+
+We adopt the metrics from previous work [14, 37] on evaluation: 
+
+• Correct%: The percentage of optimized programs that pass all test cases. 
+
+• Opt%: The percentage of optimized programs 𝑜 that are correct and at least 10% faster than the original programs 𝑠 , i.e., 𝑡 𝑠 −𝑡 𝑜  
+
+> 𝑡 𝑜
+
+>
+
+10% , where 𝑡 𝑠 and 𝑡 𝑜 denote the execution time of the original and optimized programs, respectively. We use 10% as the threshold to maintain consistency with prior work [14, 37]. 
+
+• Speedup: The ratio 𝑡 𝑠  
+
+> 𝑡 𝑜
+
+, where 𝑡 𝑠 is the execution time of the original program and 𝑡 𝑜 is the execution time of the optimized program, when the optimized program is faster. Otherwise, the speedup is set to 1, indicating that optimization fails to improve runtime efficiency. In addition to the per-instance speedup, we also compute the overall speedup as   
+
+> Í𝑁
+> 1𝑡 𝑠
+> Í𝑁
+> 1𝑡 𝑜
+
+, which measures the aggregate speedup achieved by an approach over the en-tire benchmark. Compared with per-instance speedup, overall speedup provides a more stable benchmark-level evaluation. 
+
+## 4.5 Implementation 
+
+For all baselines and Optimo , we use GPT-4o [ 29 ] as the base model unless otherwise specified, to ensure a fair comparison. We adopt the evaluation framework from Coffe [34 ]. Specifically, each code solution is executed 12 times in independent Docker containers, and the average of the middle 10 runs is used as the final execution time. For all runtime measurements, we use wall-clock time, which captures the total time a program takes to execute, including CPU computation, I/O operations, and other system activities. All exper-iments are conducted on a Linux machine running Ubuntu 20.04, equipped with two Intel Xeon@2.20GHz CPUs and 1 TB RAM. 
+
+## 5 Experiment Results 5.1 RQ1: Coverage of Time-Critical Code Structures 
+
+Optimo optimizes time-critical code structures mainly by optimiza-tion strategies, so it is important to evaluate the coverage of these strategies. We first identify time-critical code structures in code written by both developers and GPT-4o across the two benchmarks, and then measure how many of these structures are covered by the optimization targets of optimization strategies in Optimo . The results are shown in Table 1. From Table 1, we observe that the optimization strategies in Op-timo can strictly cover 60.17-80.26% of time-critical statements and 85.13-98.18% of time-critical expressions under exact matching on the two benchmarks. When adaptive routing is enabled, coverage further increases to 87.57-99.51% and 94.21-100% for time-critical statements and expressions, respectively. These results suggest that time-critical code structures are highly repetitive across programs, and that the special optimization strategies mined from 2,005 prob-lems are sufficient to cover most of them with adaptive routing. In other words, Optimo does not require an extremely large dataset to mine effective and broadly applicable optimization strategies. In addition, Optimo achieves consistently high coverage across human-written and LLM-generated code, demonstrating its ability to handle both types of programs effectively. 
+
+Answer to RQ1: With adaptive routing, Optimo covers 87.57-100% of time-critical code structures in both human-written and LLM-generated code. 
+
+## 5.2 RQ2: Effectiveness on Human-written Code 
+
+In RQ2, we evaluate how effectively Optimo optimizes human-written code. Specifically, we compare the correctness and runtime efficiency achieved by Optimo and the baselines on human-written ground-truth solutions from the two benchmarks. 
+
+Overall Performance. Table 2 presents the results of all base-lines and Optimo . To calculate the overall speedup in the table, we use the execution time of the original program for incorrectly or slower optimized programs, since the original program is always available even when the optimized version is incorrect or slower. From Table 2, we observe that Optimo consistently achieves the best correct%, outperforming the strongest baseline by 16.27%, 12.46%, and 10.46% on Coffe -Function, Coffe -File, and Effibench ,respectively. We attribute this improvement to the correctness re-flection process in Optimo , which reuses the test cases generated during differential profiling to preserve program correctness after optimization. We also admit that the correctness reflection cannot guarantee a 100% correct% due to the limited number of test cases. 
+
+Optimo also delivers substantial gains in opt% and speedup over existing approaches. Although all optimization strategies are mined from file-level datasets, Optimo still achieves the best performance on Coffe -Function, reaching 45.48% opt% and an overall speedup of 3.97. This result demonstrates the generalizability of the optimiza-tion strategies used in Optimo . On file-level benchmarks, Optimo 
+
+outperforms all existing approaches by a large margin, achieving improvements of at least 96.51% and 42.40% in opt% on Coffe -File ASE ’26, October 12–16, 2026, Munich, Germany Yun Peng, Jun Wan, Jiakun Liu, Shuzheng Gao, David Lo, and Xiaoxue Ren 
+
+Table 2: The evaluation results of Optimo and baselines on two benchmarks. “Speedup” indicates the overall speedup of the entire benchmark. Numbers in gray indicate the best performance. COFFE-Function COFFE-File Effibench Approach Correct% Opt% Speedup Correct% Opt% Speedup Correct% Opt% Speedup ICL 70.60% 33.67% 2.67 77.21% 22.45% 1.11 45.54% 5.37% 1.01                                                       
+
+> CoT 64.57% 35.43% 2.61 66.33% 21.09% 1.12 55.02% 7.21% 1.04
+> EffiLearner 84.92% 44.72% 2.73 87.41% 29.25% 1.13 51.91% 11.32% 1.04
+> PIE 82.41% 36.18% 2.17 80.27% 15.31% 1.08 77.09% 2.40% 1.01
+> RAPGEN 78.64% 37.94% 3.30 79.93% 22.45% 1.12 63.93% 5.80% 1.04
+> SBLLM 65.83% 30.15% 2.09 62.24% 14.29% 1.02 48.66% 3.82% 1.02
+> Ours 98.74% 45.48% 3.97 98.30% 57.48% 1.33 85.15% 16.12% 1.10
+
+and Effibench , respectively. We further note that these gains can-not be explained solely by improvements in correct%. For example, EffiLearner achieves a similar correct% of 87.41% on Coffe -File, but its opt% is only about half that of Optimo . Similarly, PIE achieves a correct% of 77.09% on Effibench , yet its opt% is only 2.40%. These findings further highlight the effectiveness of the MoP architecture and the multi-level optimization design in Optimo .
+
+Per-instance Speedup Distribution. Beyond overall speedup, we also analyze the distribution of per-instance speedup on the two benchmarks. The corresponding boxplots are shown in Fig. 4(a), Fig. 4(c), and Fig. 4(e). Following prior work [ 14 ], we set the speedup of incorrectly optimized instances to 1. From Fig. 4(a) and Fig. 4(c), we observe that Optimo produces more optimized programs with larger speedups. In particular, about 25% of the optimized programs produced by Optimo achieve a speedup of 2.5x on Coffe -Function and 1.5x on Coffe -File. In contrast, the maximum speedup achieved by the baselines, excluding outliers, is even lower than 2.5x and 1.5x on the corresponding benchmarks. Fig. 4(e) further shows that 
+
+Optimo can still improve a substantial number of instances on 
+
+Effibench , even though most baselines make little or no improve-ment. To assess whether the observed differences are statistically significant, we compare Optimo with each baseline using Wilcoxon signed-rank tests [ 43 ] on paired per-instance speedups. The results show that Optimo significantly outperforms every baseline on both benchmarks (p < 0.05) and has positive effect sizes in every com-parison. The per-instance speedup distributions confirm that the effectiveness of Optimo stems from improvements across many instances rather than relying on a few extreme cases. 
+
+Uniquely Optimized Instances. We further analyze the in-stances that can be significantly improved by the baselines and 
+
+Optimo , and present the corresponding Venn diagrams in Fig. 4(b), Fig. 4(d), and Fig. 4(f). For clarity, we show only the four strongest baselines in these figures. Across all three benchmarks, Optimo 
+
+uniquely optimizes 23, 69, and 64 instances on Coffe -Function, 
+
+Coffe -File, and Effibench , respectively, whereas the best baseline uniquely optimizes only 17, 7, and 50 instances. This result suggests that the superior performance of Optimo cannot be obtained by simply combining existing approaches. By identifying more suitable optimization targets and applying targeted multi-level optimization under the MoP architecture, Optimo can optimize instances that remain difficult for prior code optimization methods. 
+
+Answer to RQ2: Optimo consistently improves both correct% and opt% on the two benchmarks, outperforming the strongest baselines by up to 16.27% and 96.51%, respectively. It also achieves the highest overall speedup and better per-instance speedup dis-tribution by uniquely optimizing the largest number of instances. 
+
+## 5.3 RQ3: Effectiveness on LLM-generated Code 
+
+To answer RQ3, instead of directly using ground truth solutions in the two benchmarks, we use GPT-4o to generate solutions at zero temperature for optimization. After validating the generated solutions on the test cases, we obtain 292, 264, and 503 correct solutions as the original programs for Coffe -Function, Coffe -File, and Effibench , respectively. We employ Optimo and baselines to optimize these programs. 
+
+Overall Performance. We report the results in Table 3. Firstly, we observe that simple prompting approaches such as ICL and CoT achieve much lower opt% on LLM-generated code than on human-written code. For example, ICL achieves an opt% of only 19.52% on LLM-generated code in Coffe -Function in Table 3, compared with 33.67% on human-written code in Table 2. In contrast, more advanced approaches, such as EffiLearner, achieve relatively stable performance across both settings. This suggests that simple prompt-ing approaches alone are often insufficient to further optimize code generated by the same LLM, as they rely solely on LLMs’ internal capabilities for code optimization. Advanced approaches remain effective since they usually incorporate domain knowledge and external feedback. By leveraging rich domain knowledge from optimization strate-gies, Optimo achieves the best performance in most settings. For example, it obtains an overall speedup of 13.51 and 6.41 on Coffe -Function and Effibench , respectively, substantially outperform-ing all baselines. In addition, Optimo achieves an opt% of 35.79% on Effibench , which is at least three times higher than that of any baseline and nearly twice the opt% achieved by Optimo on human-written code. These results demonstrate the strong ability of Optimo to optimize LLM-generated code. 
+
+Comparison with Human-written Solutions. We further study whether a program fully generated and optimized by LLMs can be as efficient as a program written by developers. To compare the runtime efficiency of LLM-generated code and human-written Multi-level Code Optimization via Mixture of Prompts ASE ’26, October 12–16, 2026, Munich, Germany 
+
+Table 3: The evaluation results of Optimo and baselines on correct solutions generated by GPT-4o on two benchmarks. All columns and labels are the same as Table 2. COFFE-Function COFFE-File Effibench Approach Correct% Opt% Speedup Correct% Opt% Speedup Correct% Opt% Speedup ICL 59.93% 19.52% 1.76 66.29% 9.09% 1.01 76.34% 2.98% 1.01                                                       
+
+> CoT 75.68% 28.77% 1.73 61.74% 12.12% 1.04 65.61% 3.58% 1.01
+> EffiLearner 90.07% 34.59% 7.15 81.06% 27.65% 1.06 60.04% 11.73% 1.15
+> PIE 89.38% 24.66% 1.58 68.18% 7.95% 1.02 89.86% 1.99% 1.03
+> RAPGEN 78.42% 23.63% 1.13 67.42% 14.77% 1.04 53.28% 8.15% 1.00
+> SBLLM 69.52% 19.86% 1.60 62.12% 12.12% 1.01 77.14% 3.58% 1.00
+> Ours 96.67% 41.78% 13.51 98.48% 42.42% 1.08 97.42% 35.79% 6.41
+
+code optimized by Optimo and baselines, we categorize the op-timized programs of Optimo and the baselines into four groups, following prior work [ 14 ]. “NC” includes code that is either in-correctly generated by GPT-4o or incorrectly optimized by the optimization approach. “NO” includes correctly optimized code that is not faster than the original code generated by GPT-4o. “NH” includes correctly optimized code that is faster than the original code generated by GPT-4o but still slower than human-written code. “FH” includes correctly optimized code that is faster than human-written code. Fig. 5 shows the proportion of instances in each category. Due to space constraints, we present only the four strongest baselines in the figure. From Fig. 5, we observe that Optimo consistently achieves the highest FH rate of 46.48%, 26.82%, and 54.60% on Coffe -Function, 
+
+Coffe -File, and Effibench , respectively. This indicates that Op-timo produces the most programs that are more efficient than human-written ones. Benefiting from the correctness reflection process, Optimo also achieves the lowest NC rate across the bench-marks. 
+
+Answer to RQ3: Optimo is also highly effective at optimiz-ing LLM-generated code. On Effibench , it achieves an opt% of 35.79%, which is at least three times higher than all baselines, and 26.82-54.60% of the optimized LLM-generated solutions are even more efficient than human-written code. 
+
+## 5.4 RQ4: Ablation Study 
+
+To answer RQ4, we examine the effects of two major components of Optimo : the multi-level optimization design and the MoP archi-tecture. For the multi-level optimization design, we remove each optimization level in turn and evaluate the resulting variants. For the MoP architecture, we remove either the shared optimization strategies or the special optimization strategies to assess their con-tributions. We also remove the correctness reflection process to study its impact. The ablation results are reported in Table 4. Due to the computational cost, we conduct these experiments only on 
+
+Coffe .
+
+Multi-level Optimization. Table 4 shows that removing any level leads to a decrease in both opt% and speedup. This confirms the necessity of a multi-level optimization design and reinforces the limitations of existing single-level optimization approaches. Even removing the finest-grained API level causes opt% to drop 
+
+Table 4: The ablation results of Optimo on Coffe . All columns are the same as Table 2. “Shared” and “Special” in-dicate the shared and special optimization strategies. COFFE-Function COFFE-File Ablation Correct% Opt% Speedup Correct% Opt% Speedup w/o Algorithm 98.74% 32.91% 2.66 99.32% 51.36% 1.25                                           
+
+> w/o Statement 98.99% 39.45% 3.57 98.98% 44.22% 1.21
+> w/o Expression 98.74% 43.72% 3.97 98.98% 46.26% 1.25
+> w/o API 98.74% 43.22% 3.86 98.30% 51.02% 1.24
+> w/o Fix 98.99% 44.22% 3.61 98.64% 48.30% 1.31
+> w/o Share 97.74% 37.69% 3.45 98.30% 48.98% 1.24
+> w/o Special 99.25% 38.69% 2.39 98.64% 47.28% 1.18
+> Optimo 98.74% 45.48% 3.97 98.30% 57.48% 1.33
+
+by 4.97% and 11.24% on Coffe -Function and Coffe -File, respec-tively. We further find that the largest drop occurs when removing the algorithm level on Coffe -Function (27.64%) and the statement level on Coffe -File (23.07%). This suggests that no single optimiza-tion level is sufficient for all programs. Instead, the full multi-level optimization design in Optimo covers a broader range of optimiza-tion scenarios and helps explain its consistent superiority across benchmarks. 
+
+Mixture-of-Prompts Architecture. As the core of Optimo , the MoP architecture also makes a substantial contribution. Removing either shared optimization strategies or special optimization strate-gies causes a clear decrease in opt%, showing that both components are important. Shared optimization strategies leverage the reason-ing ability of LLMs, while special optimization strategies provide domain knowledge derived from developer-written optimizations. More importantly, removing special optimization strategies leads to a much larger drop in overall speedup (e.g., from 3.97 to 2.39 on Coffe -Function) than removing shared optimization strategies (from 3.97 to 3.45 on Coffe -Function). This indicates that although LLMs have some inherent ability to optimize code, they still strug-gle to produce highly efficient solutions without domain knowledge from human-written examples. We also find that the correctness reflection process contributes substantially to the final opt% be-cause it repairs some efficient but initially incorrect optimizations, turning them into correctly optimized programs. ASE ’26, October 12–16, 2026, Munich, Germany Yun Peng, Jun Wan, Jiakun Liu, Shuzheng Gao, David Lo, and Xiaoxue Ren       
+
+> (a) Per-instance speedup distribution on Coffe -Func.
+> (b) Venn diagram on Coffe -Func.
+> (c) Per-instance speedup distribution on Coffe -File.
+> (d) Venn diagram on Coffe -File.
+> (e) Per-instance speedup distribution on Ef-fibench .
+> (f) Venn diagram on Effibench .
+
+Figure 4: The per-instance speedup distribution and Venn Diagrams of optimized problems of Optimo and baselines on Coffe and Effibench .Answer to RQ4: The multi-level optimization process consis-tently improves the performance of Optimo across different sce-narios, contributing 3.87-23.07% gains in opt%. The MoP archi-tecture further improves speedup by combining LLM reasoning with domain knowledge derived from developer optimizations. 
+
+## 5.5 RQ5: Cost Analysis 
+
+To answer RQ5, we compare the inference cost of Optimo and the baselines using the average numbers of input tokens, output tokens, and LLM API calls per instance. We use these model-independent metrics because monetary cost varies across model providers and deployment settings. The results on Coffe are shown in Table 5. 
+
+Overall Cost. Table 5 shows that Optimo consumes more to-kens and API calls than the baselines. This overhead mainly comes 
+
+Table 5: The average inference cost of Optimo and baselines on Coffe . “Input” and “Output” indicate the average num-bers of input and output tokens per program, respectively. “Calls” indicates the average number of LLM API calls per program. COFFE-Function COFFE-File Approach Input Output Calls Input Output Calls ICL 2,752.50 314.53 1.00 1,989.60 408.50 1.00                                     
+
+> CoT 750.88 823.60 2.00 787.85 840.26 2.00
+> EffiLearner 755.30 856.07 2.00 515.67 125.89 2.00
+> PIE 125.65 303.61 1.00 161.78 113.70 1.00
+> RAPGEN 2,924.37 323.16 1.00 2,385.67 203.36 1.00
+> SBLLM 839.58 1,171.60 2.83 601.43 1,408.06 2.85
+> Ours 9,521.17 2,076.49 8.46 20,386.64 3,813.09 16.69
+
+from its four-level optimization process, which generates and vali-dates multiple candidate programs. However, the additional cost is accompanied by stronger optimization performance. For example, on Coffe -File, Optimo consumes 2.71 times as many output tokens as SBLLM but achieves approximately four times its opt% (57.48% vs. 14.29% in Table 2). These results demonstrate the trade-off between inference cost and optimization effectiveness on Optimo .
+
+Answer to RQ5: Optimo incurs a higher inference cost than the baselines due to its multi-level optimization process, but achieves substantially stronger optimization performance. 
+
+## 6 Threats to Validity 
+
+LLM Selection and Data Leakage. Due to computational resource constraints, we use GPT-4o as the base model for both Optimo and all applicable baselines in our evaluation. Although Optimo and most baselines are model-agnostic, their performance may vary when instantiated with other LLMs. We use the same base model for all approaches to ensure a fair comparison. In addition, there is a risk of data leakage if the benchmarks used in this paper are included in the LLM training data. To reduce this risk, we choose GPT-4o, which was released in May 2024, earlier than or close to the release dates of Coffe and Effibench . We also avoid using more recent models, which may have a higher risk of benchmark contamination. 
+
+Generalizability to Other Programming Languages. Al-though code optimization is an important task across many dy-namic languages, this work focuses on Python because it is the most widely studied language in this line of research. The performance of Optimo and the baselines may differ on other programming languages. To mitigate this threat, Optimo is designed without components that are tightly coupled to Python-specific features. In principle, it can be extended to other languages as long as suitable datasets are available for mining optimization strategies. We leave a comprehensive evaluation of additional languages for future work. Multi-level Code Optimization via Mixture of Prompts ASE ’26, October 12–16, 2026, Munich, Germany      
+
+> (a) Coffe -Function (b) Coffe -File (c) Effibench
+
+Figure 5: The distribution of optimized LLM-generated solutions on two benchmarks. “NC”, “NO”, “NH”, “FH” indicate the final optimized solution is “not correct”, “correct but not optimized”, “optimized but not faster than human solutions”, and “faster than human solutions”, respectively. 
+
+## 7 Related Work 7.1 Code Optimization 
+
+Code optimization is essential for improving runtime efficiency. Early approaches [ 17 , 24 , 28 , 39 ] mainly relied on predefined rules and optimization patterns to address issues such as software miscon-figurations and loop inefficiencies. With the rise of deep learning, several studies [ 4, 7 , 11 , 15 ] began to learn optimization patterns from slow-fast code pairs. PIE [ 37 ] is a representative example, which learns performance-improving edits from slow-fast C/C++ and Python code pairs. More recently, researchers have explored the use of LLMs for more effective code optimization [ 33 , 35 ]. RAPGEN [ 16 ] formulates code optimization as a program repair task and fixes inefficiency issues in zero-shot for C# programs. EffiLearner [ 19 ] leverages light-weight profiling information to iteratively guide LLMs in improving code efficiency. SBLLM [ 14 ] further improves optimization perfor-mance through a search-based framework that iteratively refines the initial results generated by LLMs. Although these approaches have shown promising results, they often produce suboptimal op-timizations and may fail to identify appropriate performance bot-tlenecks. In contrast, Optimo adopts a multi-level optimization process based on the MoP architecture to identify suitable optimiza-tion targets and generate more efficient programs. 
+
+## 7.2 Code Efficiency Benchmarks 
+
+Performance engineering has been studied for many years, and sev-eral early benchmarks [ 25 , 40 , 46 ] were designed to rigorously eval-uate the execution time of programs and software systems. How-ever, these benchmarks are not well suited to evaluating Python programs due to Python’s dynamic nature. More recently, sev-eral benchmarks have been proposed to evaluate optimization ap-proaches for high-level languages. 
+
+Effibench [20 ] is the first benchmark designed to evaluate the time and memory efficiency of code generation. It selects efficiency-critical problems tagged with “LeetCode” and uses GPT-3.5 to gen-erate test cases with different input sizes and data distributions. Mercury [ 11 ] is another benchmark for evaluating the efficiency of Python programs. It contains 1,889 Python tasks, each with reference solutions that serve as real-world efficiency baselines, en-abling a comprehensive analysis of runtime behavior. Coffe [ 34 ] is a benchmark for evaluating both function-level and file-level code generation using LLM-generated stress test cases. By incorporating stress testing, it provides more reliable efficiency evaluation results. In this work, we use Effibench and Coffe to evaluate Optimo ,as they together provide a comprehensive and reliable basis for assessing code optimization performance. 
+
+## 8 Conclusion 
+
+This paper presents Optimo , a multi-level code optimization ap-proach built on a novel Mixture-of-Prompts architecture. Optimo 
+
+performs optimization at four levels to provide comprehensive per-formance improvement for input programs. At each level, Optimo 
+
+identifies suitable optimization targets, including algorithms and time-critical code structures, and routes them to the appropriate optimization strategies. To support this process, Optimo mines optimization strategies from existing code competition datasets and combines them with shared strategies that leverage LLMs’ reasoning capabilities. Experimental results show that Optimo con-sistently outperforms existing approaches on both human-written and LLM-generated code, demonstrating the effectiveness of its MoP architecture and multi-level optimization design. 
+
+## 9 Data Availability 
+
+The code and data in this paper are publicly available at https: //doi.org/10.5281/zenodo.19335907. 
+
+## Acknowledgment 
+
+This work is supported by the OUB Professorial Chair Fund awarded by the Singapore Management University, the National Natural Science Foundation of China (No. 62302437), and the Yongjiang Talent Program (No. 2023A-402-G). 
+
+## References     
+
+> [1] Thomas Ball and James R Larus. 1996. Efficient path profiling. In Proceedings of the 29th Annual IEEE/ACM International Symposium on Microarchitecture. MICRO 29 . IEEE, 46–57. doi:10.1109/MICRO.1996.566449 [2] Claas Beger and Saikat Dutta. 2025. CoCoNUT: Structural Code Understanding does not fall out of a tree. In Proceedings of the 2nd International Workshop on Large
+
+ASE ’26, October 12–16, 2026, Munich, Germany Yun Peng, Jun Wan, Jiakun Liu, Shuzheng Gao, David Lo, and Xiaoxue Ren 
+
+Language Models for Code (LLM4Code) . 128–136. doi:10.1109/LLM4CODE66737. 2025.00021 [3] François Belias, Leuson Da Silva, Foutse Khomh, and Cyrine Zid. 2025. Perfor-mance Smells in ML and Non-ML Python Projects: A Comparative Study. arXiv preprint arXiv:2504.20224 (2025). doi:10.48550/ARXIV.2504.20224 [4] Binghong Chen, Daniel Tarlow, Kevin Swersky, Martin Maas, Pablo Ariel Heiber, Ashish Naik, Milad Hashemi, and Parthasarathy Ranganathan. 2022. Learning to Improve Code Efficiency. CoRR abs/2208.05297 (2022). arXiv:2208.05297 doi:10.48550/ARXIV.2208.05297 [5] Junkai Chen, Zhiyuan Pan, Xing Hu, Zhenhao Li, Ge Li, and Xin Xia. 2025. Reasoning Runtime Behavior of a Program with LLM: How Far Are We?. In 
+
+2025 IEEE/ACM 47th International Conference on Software Engineering (ICSE) .IEEE/ACM, 1869–1881. doi:10.1109/ICSE55347.2025.00012 [6] Xinyun Chen, Maxwell Lin, Nathanael Schärli, and Denny Zhou. 2024. Teaching Large Language Models to Self-Debug. In The Twelfth International Conference on Learning Representations, ICLR 2024, Vienna, Austria, May 7-11, 2024 . OpenRe-view.net. https://openreview.net/forum?id=KuPixIqPiq [7] Zimin Chen, Sen Fang, and Martin Monperrus. 2024. Supersonic: Learning to Generate Source Code Optimizations in C/C++. IEEE Trans. Software Eng. 50, 11 (2024), 2849–2864. doi:10.1109/TSE.2024.3423769 [8] The MITRE Corporation. 2024. Performance efficiency CWEs. https://cwe.mitre. org/data/definitions/1132.html https://cwe.mitre.org/data/definitions/1132.html. [9] Ron Cytron, Jeanne Ferrante, Barry K Rosen, Mark N Wegman, and F Kenneth Zadeck. 1991. Efficiently computing static single assignment form and the control dependence graph. ACM Transactions on Programming Languages and Systems (TOPLAS) 13, 4 (1991), 451–490. doi:10.1145/115372.115320 [10] DeepSeek-AI et al . 2025. DeepSeek-V3 Technical Report. arXiv:2412.19437 [cs.CL] doi:10.48550/ARXIV.2412.19437 [11] Mingzhe Du, Anh Tuan Luu, Bin Ji, Qian Liu, and See-Kiong Ng. 2024. Mercury: A Code Efficiency Benchmark for Code Large Language Models. In Advances in Neural Information Processing Systems 38: Annual Conference on Neural Informa-tion Processing Systems 2024, NeurIPS 2024, Vancouver, BC, Canada, December 10 -15, 2024 , Amir Globersons, Lester Mackey, Danielle Belgrave, Angela Fan, Ulrich Paquet, Jakub M. Tomczak, and Cheng Zhang (Eds.). doi:10.52202/079017-0529 [12] William Fedus, Barret Zoph, and Noam Shazeer. 2022. Switch transformers: Scaling to trillion parameter models with simple and efficient sparsity. Journal of Machine Learning Research 23, 120 (2022), 1–39. [13] Inc. Free Software Foundation. 2026. Optimize Options in GCC Compiler. https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html. [14] Shuzheng Gao, Cuiyun Gao, Wenchao Gu, and Michael Lyu. 2024. Search-Based LLMs for Code Optimization. arXiv:2408.12159 [cs.SE] doi:10.48550/ARXIV.2408. 12159 [15] Spandan Garg, Roshanak Zilouchian Moghaddam, Colin B. Clement, Neel Sun-daresan, and Chen Wu. 2022. DeepDev-PERF: a deep learning-based approach for improving software performance. In Proceedings of the 30th ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering (Singapore, Singapore) (ESEC/FSE 2022) . Association for Computing Machinery, New York, NY, USA, 948–958. doi:10.1145/3540250.3549096 [16] Spandan Garg, Roshanak Zilouchian Moghaddam, and Neel Sundaresan. 2025. RAPGen: An Approach for Fixing Code Inefficiencies in Zero-Shot. arXiv:2306.17077 [cs.SE] doi:10.1109/ICSE-SEIP66354.2025.00017 [17] Rafail Giavrimis, Alexis Butler, Constantin Cezar Petrescu, Michail Basios, and Santanu Kumar Dash. 2021. Genetic Optimisation of C++ Applications. In 36th IEEE/ACM International Conference on Automated Software Engineering, ASE 2021, Melbourne, Australia, November 15-19, 2021 . IEEE, 1180–1182. doi:10.1109/ ASE51524.2021.9678650 [18] Inc. GitHub. 2022. GitHub Octoverse report on programming lan-guages. https://octoverse.github.com/2022/top-programming-languages https://octoverse.github.com/2022/top-programming-languages. [19] Dong Huang, Jianbo Dai, Han Weng, Puzhen Wu, Yuhao Qing, Heming Cui, Zhijiang Guo, and Jie M. Zhang. 2024. EffiLearner: Enhancing Efficiency of Generated Code via Self-Optimization. arXiv:2405.15189 [cs.SE] doi:10.52202/ 079017-2684 [20] Dong Huang, Yuhao Qing, Weiyi Shang, Heming Cui, and Jie M. Zhang. 2024. EffiBench: Benchmarking the Efficiency of Automatically Generated Code. CoRR 
+
+abs/2402.02037 (2024). arXiv:2402.02037 doi:10.48550/ARXIV.2402.02037 [21] Shuyang Jiang, Yuhao Wang, and Yu Wang. 2023. SelfEvolve: A Code Evo-lution Framework via Large Language Models. CoRR abs/2306.02907 (2023). arXiv:2306.02907 doi:10.48550/ARXIV.2306.02907 [22] Guoliang Jin, Linhai Song, Xiaoming Shi, Joel Scherpelz, and Shan Lu. 2012. Understanding and detecting real-world performance bugs. ACM SIGPLAN Notices 47, 6 (2012), 77–88. doi:10.1145/2345156.2254075 [23] Milan Jovic, Andrea Adamoli, and Matthias Hauswirth. 2011. Catch me if you can: performance bug detection in the wild. In Proceedings of the 2011 ACM international conference on Object oriented programming systems languages and applications . 155–170. doi:10.1145/2048066.2048081 [24] Rahul Krishna, Md Shahriar Iqbal, Mohammad Ali Javidian, Baishakhi Ray, and Pooyan Jamshidi. 2020. CADET: A Systematic Method For Debugging Mis-configurations using Counterfactual Reasoning. CoRR abs/2010.06061 (2020). arXiv:2010.06061 doi:10.48550/ARXIV.2010.06061 [25] Christoph Laaber, Stefan Würsten, Harald C. Gall, and Philipp Leitner. 2020. Dynamically reconfiguring software microbenchmarks: reducing execution time without sacrificing result quality. In Proceedings of the 28th ACM Joint Meeting on European Software Engineering Conference and Symposium on the Foundations of Software Engineering (Virtual Event, USA) (ESEC/FSE 2020) . Association for Computing Machinery, New York, NY, USA, 989–1001. doi:10.1145/3368089. 3409683 [26] Dmitry Lepikhin, HyoukJoong Lee, Yuanzhong Xu, Dehao Chen, Orhan Firat, Yanping Huang, Maxim Krikun, Noam Shazeer, and Zhifeng Chen. 2020. Gshard: Scaling giant models with conditional computation and automatic sharding. arXiv preprint arXiv:2006.16668 (2020). doi:10.48550/ARXIV.2006.16668 [27] Chengshu Li, Jacky Liang, Andy Zeng, Xinyun Chen, Karol Hausman, Dorsa Sadigh, Sergey Levine, Li Fei-Fei, Fei Xia, et al . [n. d.]. Chain of Code: Reasoning with a Language Model-Augmented Code Emulator. In Forty-first International Conference on Machine Learning .[28] Adrian Nistor, Tian Jiang, and Lin Tan. 2013. Discovering, reporting, and fixing performance bugs. In Proceedings of the 10th Working Conference on Mining Software Repositories, MSR ’13, San Francisco, CA, USA, May 18-19, 2013 , Thomas Zimmermann, Massimiliano Di Penta, and Sunghun Kim (Eds.). IEEE Computer Society, 237–246. doi:10.1109/MSR.2013.6624035 [29] OpenAI. 2024. GPT-4o. https://openai.com/index/hello-gpt-4o/ https://openai.com/index/hello-gpt-4o/. [30] The opensource community. 2025. Line Profiler. https://github.com/pyutils/line_ profiler https://github.com/pyutils/line_profiler. [31] International Standard Organization. 2026. ISO/IEC 25010:2023 -Product quality model. https://www.iso.org/standard/78176.html https://www.iso.org/standard/78176.html. [32] Yun Peng, Shuzheng Gao, Cuiyun Gao, Yintong Huo, and Michael R. Lyu. 2024. Domain Knowledge Matters: Improving Prompts with Fix Templates for Re-pairing Python Type Errors. In Proceedings of the 46th IEEE/ACM International Conference on Software Engineering, ICSE 2024, Lisbon, Portugal, April 14-20, 2024 .ACM, 4:1–4:13. doi:10.1145/3597503.3608132 [33] Yun Peng, Akhilesh Deepak Gotmare, Michael Lyu, Caiming Xiong, Silvio Savarese, and Doyen Sahoo. 2024. PerfCodeGen: Improving Performance of LLM Generated Code with Execution Feedback. arXiv:2412.03578 [cs.SE] doi:10.48550/ARXIV.2412.03578 [34] Yun Peng, Jun Wan, Yichen Li, and Xiaoxue Ren. 2025. COFFE: A Code Efficiency Benchmark for Code Generation. Proc. ACM Softw. Eng. 2, FSE, Article FSE012 (June 2025), 24 pages. doi:10.1145/3715727 [35] Xiaoxue Ren, Jun Wan, Yun Peng, Zhongxin Liu, Ming Liang, Dajun Chen, Wei Jiang, and Yong Li. 2025. PEACE: Towards Efficient Project-Level Efficiency Optimization via Hybrid Code Editing. In 40th IEEE/ACM International Conference on Automated Software Engineering, ASE 2025, Seoul, Korea, Republic of, November 16-20, 2025 . IEEE, 1831–1843. doi:10.1109/ASE63991.2025.00153 [36] Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le, Geoffrey Hinton, and Jeff Dean. 2017. Outrageously large neural networks: The sparsely-gated mixture-of-experts layer. arXiv preprint arXiv:1701.06538 (2017). doi:10.48550/ARXIV.1701.06538 [37] Alexander G Shypula, Aman Madaan, Yimeng Zeng, Uri Alon, Jacob R. Gardner, Yiming Yang, Milad Hashemi, Graham Neubig, Parthasarathy Ranganathan, Osbert Bastani, and Amir Yazdanbakhsh. 2024. Learning Performance-Improving Code Edits. In The Twelfth International Conference on Learning Representations .https://openreview.net/forum?id=ix7rLVHXyY [38] Matrix Studio. 2024. The Python Codeforces submission dataset. https://huggingface.co/datasets/MatrixStudio/Codeforces-Python-Submissions https://huggingface.co/datasets/MatrixStudio/Codeforces-Python-Submissions. [39] Luca Della Toffola, Michael Pradel, and Thomas R. Gross. 2015. Performance problems you can fix: a dynamic analysis of memoization opportunities. In 
+
+Proceedings of the 2015 ACM SIGPLAN International Conference on Object-Oriented Programming, Systems, Languages, and Applications, OOPSLA 2015, part of SPLASH 2015, Pittsburgh, PA, USA, October 25-30, 2015 , Jonathan Aldrich and Patrick Eugster (Eds.). ACM, 607–622. doi:10.1145/2814270.2814290 [40] Luca Traini, Vittorio Cortellessa, Daniele Di Pompeo, and Michele Tucci. 2023. Towards effective assessment of steady state performance in Java software: are we there yet? Empirical Softw. Engg. 28, 1 (Jan. 2023), 57 pages. doi:10.1007/s10664-022-10247-x [41] Chaozheng Wang, Yuanhang Yang, Cuiyun Gao, Yun Peng, Hongyu Zhang, and Michael R. Lyu. 2022. No more fine-tuning? an experimental evaluation of prompt tuning in code intelligence. In Proceedings of the 30th ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering, ESEC/FSE 2022, Singapore, Singapore, November 14-18, 2022 ,Abhik Roychoudhury, Cristian Cadar, and Miryung Kim (Eds.). ACM, 382–394. doi:10.1145/3540250.3549113 Multi-level Code Optimization via Mixture of Prompts ASE ’26, October 12–16, 2026, Munich, Germany 
+
+[42] Mark N Wegman and F Kenneth Zadeck. 1991. Constant propagation with conditional branches. ACM Transactions on Programming Languages and Systems (TOPLAS) 13, 2 (1991), 181–210. doi:10.1145/103135.103136 [43] Frank Wilcoxon. 1992. Individual comparisons by ranking methods. In 
+
+Breakthroughs in statistics: Methodology and distribution . Springer, 196–202. doi:10.1007/978-1-4612-4380-9_16 [44] Michael E Wolf and Monica S Lam. 1991. A data locality optimizing algorithm. In Proceedings of the ACM SIGPLAN 1991 conference on Programming language design and implementation . 30–44. doi:10.1145/113445.113449 [45] Michael E Wolf and Monica S Lam. 1991. A loop transformation theory and an algorithm to maximize parallelism. IEEE transactions on parallel and distributed systems 2, 4 (1991), 452–471. doi:10.1109/71.97902 [46] Dmitrijs Zaparanuks, Milan Jovic, and Matthias Hauswirth. 2009. Accuracy of performance counter measurements. In 2009 IEEE International Symposium on Performance Analysis of Systems and Software . 23–32. doi:10.1109/ISPASS.2009. 4919635 [47] Fengji Zhang, Bei Chen, Yue Zhang, Jacky Keung, Jin Liu, Daoguang Zan, Yi Mao, Jian-Guang Lou, and Weizhu Chen. 2023. RepoCoder: Repository-Level Code Completion Through Iterative Retrieval and Generation. In Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing, EMNLP 2023, Singapore, December 6-10, 2023 , Houda Bouamor, Juan Pino, and Kalika Bali (Eds.). Association for Computational Linguistics, 2471–2484. doi:10.18653/V1/ 2023.EMNLP-MAIN.151 [48] Yuze Zhao, Tianyun Ji, Wenjun Feng, Zhenya Huang, Qi Liu, Zhiding Liu, Yixiao Ma, Kai Zhang, and Enhong Chen. 2025. Unveiling the Magic of Code Rea-soning through Hypothesis Decomposition and Amendment. In The Thirteenth International Conference on Learning Representations .[49] Yutong Zhao, Lu Xiao, Andre B Bondi, Bihuan Chen, and Yang Liu. 2022. A large-scale empirical study of real-life performance issues in open source projects. IEEE Transactions on Software Engineering 49, 2 (2022), 924–946. doi:10.1109/TSE.2022. 3167628 
+
+Received 2026-03-26; accepted 2026-06-18
