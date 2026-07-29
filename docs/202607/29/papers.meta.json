@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-29",
+  "date": "2026-07-29",
+  "generated_at": "2026-07-29T20:04:04",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/29/2607.25956v1-large-language-model-for-operations-research-formulation-selection-in-multi-warehouse-inventory-allocation",
+      "section": "deep",
+      "title_en": "Large Language Model for Operations Research Formulation Selection in Multi-Warehouse Inventory Allocation",
+      "authors": "Jintao Xu, Yingzheng Ma, Jiong Dong, Yongzhi Qi, Jianshen Zhang",
+      "date": "2026-07-28",
+      "pdf": "https://arxiv.org/pdf/2607.25956v1",
+      "score": "9.0",
+      "evidence": "LLM用于库存分配中的运筹学公式选择",
+      "tldr": "多仓库库存分配通常建模为混合整数规划问题，但单一公式无法适应需求集中度、库存失衡等异构实例。本文提出求解器引导的大语言模型框架，通过监督微调、偏好优化和群体相对策略优化训练公式选择器。在京东实例上，GRPO将Hit Ratio@1从21.45%提升至50.42%，分配准确率增益12.57个百分点，缩小与事后最优的差距至4.85个百分点，证明了LLM在运筹学公式选择中的有效性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Multi-warehouse inventory allocation is typically formulated as a mixed-integer programming (MIP) problem, yet no single formulation consistently matches heterogeneous instance-level regimes induced by demand concentration, inventory imbalance, replenishment scale, service constraints, and forecast volatility. We study this issue as instance-wise operations research (OR) formulation selection, where each allocation instance is assigned to a solver-executable formulation from a candidate OR expert library. We propose a solver-guided large language model (LLM) framework for OR formulation selection, in which each OR expert corresponds to a MIP formulation encoding a distinct allocation priority. To train the selector, the framework first constructs balanced expert-conditioned supervised fine-tuning (SFT) records for schema learning, and then uses MIP solver evaluation on historical instances to convert solver-evaluated allocation-quality gaps into margin-weighted identity preference optimization (IPO) preferences and per-instance expert-score metadata for reward lookup during group relative policy optimization (GRPO) to assign rewards to sampled responses. Experiments on multi-warehouse inventory allocation instances from JD$\\mathord{.}$com, one of China's largest e-retailers, demonstrate that GRPO substantially improves expert-selection accuracy relative to the SFT+IPO selector and, more importantly, produces higher realized allocation quality than both the preference-trained selector and the best fixed formulation. With GRPO, Hit Ratio@1 and Hit Ratio@2 increase from 21.45% to 50.42% and from 70.47% to 82.31%. The resulting selector achieves an allocation accuracy gain of 12.57 percentage points over the incumbent baseline, outperforming both the SFT+IPO selector and the best fixed OR expert, and reduces the gap to the ex-post oracle to 4.85 percentage points.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/29/2607.22898v1-assumptionminer-extracting-tracing-and-revising-implicit-assumptions-in-llm-code-generation",
+      "section": "quick",
+      "title_en": "AssumptionMiner: Extracting, Tracing, and Revising Implicit Assumptions in LLM Code Generation",
+      "authors": "Jie \"JW\" Wu",
+      "date": "2026-07-24",
+      "pdf": "https://arxiv.org/pdf/2607.22898v1",
+      "score": "6.0",
+      "evidence": "在LLM代码生成中明确隐含假设，有助于生成可靠的优化代码",
+      "tldr": "LLM从自然语言提示生成代码时，因提示不完备而隐含假设，导致代码可能满足测试但违背开发者意图。AssumptionMiner框架将隐式假设显式化为可审查、确认或修改的结构化表示，并利用AST依赖图实现假设修订后的目标代码重生成。在开放源码LLM上，置信度加权集成在假设提取上F1达0.816，比最强离线基线提升3.6倍；AST引导的定位比关键词和全文件基线更精确；目标重生成修改代码更少但级联编辑仍有挑战。该工作使假设显式化，提高了LLM代码生成的透明度和可控性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language models (LLMs) generate code from natural-language prompts, yet real-world prompts rarely provide complete specifications. When prompts leave input formats, error handling, or design decisions unspecified, LLMs fill these gaps with implicit assumptions that shape the generated code's behavior and correctness. Because these assumptions remain hidden, generated code may satisfy tests while violating developer intent. We present AssumptionMiner, a framework that makes implicit assumptions a first-class artifact of LLM-based code generation. In addition to code, AssumptionMiner produces an explicit assumption layer, a structured representation of inferred constraints and design decisions that developers can inspect, confirm, or revise. An AST-based dependency graph enables targeted regeneration of only the code affected by a revised assumption. We also introduce a benchmark of 180 ambiguous programming tasks with 676 annotated assumptions, including a human-verified subset for evaluating code localization. We evaluate assumption extraction, code localization, and assumption-guided regeneration. Across open-source LLMs, a confidence-weighted ensemble achieves an F1 score of 0.816 for assumption extraction, improving on the strongest offline baseline by 3.6x. On the human-verified localization benchmark, AST-guided localization identifies more precise code regions than keyword-based and whole-file baselines. During assumption revision, targeted regeneration modifies less code than non-targeted alternatives while exposing challenges in handling cascading edits. These results demonstrate that making assumptions explicit improves the transparency and controllability of LLM-based code generation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

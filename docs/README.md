@@ -6,33 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-28
-- 运行时间：2026-07-28 21:29:48 UTC
+- 最新运行日期：2026-07-29
+- 运行时间：2026-07-29 20:03:59 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：4
-- 速读区：0
+- 本次总论文数：2
+- 精读区：1
+- 速读区：1
 
 ### 今日简报（AI）
-今日日报聚焦两篇高分论文：自动启发式设计优化大规模路由，以及LLM驱动的间接轨迹优化。最值得关注的是通过定位与专业化自动化启发式设计，以及利用大语言模型自主规划飞行轨迹。建议读者深入了解AI在组合优化与自动驾驶控制中的前沿应用。
-- 详情：[/202607/28/README](/202607/28/README)
+今日精读1篇、速读1篇，共处理2篇论文。最值得关注的多仓库库存分配问题（9.0分）和大模型代码生成中的隐式假设提取（6.0分）。建议优先精读高分论文，掌握运营研究公式选择方法。
+- 详情：[/202607/29/README](/202607/29/README)
 
 ### 精读区论文标签
-1. [SpecAHD: Localize to Specialize for Automated Heuristic Design in Large-Scale Routing Problems](/202607/28/2607.23676v1-specahd-localize-to-specialize-for-automated-heuristic-design-in-large-scale-routing-problems)  
+1. [Large Language Model for Operations Research Formulation Selection in Multi-Warehouse Inventory Allocation](/202607/29/2607.25956v1-large-language-model-for-operations-research-formulation-selection-in-multi-warehouse-inventory-allocation)  
    标签：评分：9.0/10、query:llm-opt-code
-   evidence：LLM生成大规模路径优化问题的启发式算法
-2. [HELIOS: An LLM-Driven Autonomous Indirect Trajectory Optimization Agent](/202607/28/2607.24051v1-helios-an-llm-driven-autonomous-indirect-trajectory-optimization-agent)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：LLM驱动的轨迹优化代码生成
-3. [Multi-level Code Optimization via Mixture of Prompts](/202607/28/2607.23665v1-multi-level-code-optimization-via-mixture-of-prompts)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：基于LLM的运行时效率代码优化
-4. [Generative Artificial Intelligence (GenAI) to convert images of queuing networks into verifiable simulation models: an open-weight LLM workflow approach](/202607/28/2607.24259v1-generative-artificial-intelligence-genai-to-convert-images-of-queuing-networks-into-verifiable-simulation-models-an-open-weight-llm-workflow-approach)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：使用LLM从排队网络示意图生成仿真模型代码；直接适用于运筹优化建模
+   evidence：LLM用于库存分配中的运筹学公式选择
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [AssumptionMiner: Extracting, Tracing, and Revising Implicit Assumptions in LLM Code Generation](/202607/29/2607.22898v1-assumptionminer-extracting-tracing-and-revising-implicit-assumptions-in-llm-code-generation)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：在LLM代码生成中明确隐含假设，有助于生成可靠的优化代码
 
 
 <div class="dpr-home-promo-card">
