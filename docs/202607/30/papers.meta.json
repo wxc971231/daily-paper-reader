@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-30",
+  "date": "2026-07-30",
+  "generated_at": "2026-07-30T21:41:26",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/30/2607.24007v1-smooth-learning-with-hard-constraints-via-legendre-regularized-policies",
+      "section": "deep",
+      "title_en": "Smooth Learning with Hard Constraints via Legendre-Regularized Policies",
+      "authors": "Zikun Lin, Rui Chen, Yijie Wang",
+      "date": "2026-07-27",
+      "pdf": "https://arxiv.org/pdf/2607.24007v1",
+      "score": "9.0",
+      "evidence": "运筹优化建模与硬约束处理",
+      "tldr": "针对上下文优化中策略类设计需同时满足表达力、硬约束和可微性的挑战，提出Legendre-正则化策略，将决策参数化为正则化优化问题的解。理论证明该映射单值、可微、Lipschitz连续且可任意光滑，并能逼近任意连续可行策略。实验表明在情境报童和资源分配任务中，该方法优于现有基准，统一了显式正则化与隐式扰动优化器。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "We revisit contextual optimization from the perspective of policy class design. A desirable policy class should be expressive enough to learn rich context-decision relationships, should enforce hard feasibility constraints rather than soft penalty terms, and should remain smooth enough for gradient-based training on downstream decision losses. Existing approaches usually emphasize only part of these requirements. We propose Legendre-regularized policies, which parameterize decisions as solutions of regularized optimization problems over the original feasible region. This construction yields policies that are feasible by construction and differentiable with respect to learned latent parameters. We prove that the associated optimizer map is single-valued, maps onto the relative interior of the feasible set, admits an explicit Jacobian, is Lipschitz continuous, and can be made arbitrarily smooth. We also establish a universal approximation result showing that the proposed class can approximate any continuous feasible policy on compact context sets. The framework unifies explicitly regularized optimizers and implicit perturbation-based smooth optimizers. Experiments on contextual newsvendor and resource allocation problems show that our approach improves prescriptive performance relative to the benchmark methods.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/30/2607.23089v1-compiler-grounded-hierarchical-diagnosis-for-llm-based-triton-kernel-optimization",
+      "section": "quick",
+      "title_en": "Compiler-Grounded Hierarchical Diagnosis for LLM-Based Triton Kernel Optimization",
+      "authors": "Dongjie Chen, Ping Zhao, Bohua Zhan, Yulong Wang, Shushu Chen, Liangjun Feng, Hao Zhou, Min Shen, Linmu Wang, Weijia Sheng, Xiangyu Wei, Weijie Ding, Jianhui Huang, Yaoqing Gao",
+      "date": "2026-07-25",
+      "pdf": "https://arxiv.org/pdf/2607.23089v1",
+      "score": "7.0",
+      "evidence": "基于LLM的内核优化代码生成",
+      "tldr": "现有基于LLM的内核优化方法仅依赖编译反馈和性能指标，无法揭示编译器未优化的根本原因。本文提出编译器引导的分层诊断框架，从轻量级模式筛查逐步升级到IR归因和编译器分析，生成证据支持的源码级重写。在Ascend NPU上对37个Triton内核实现几何平均4.35倍加速，中位数2.73倍，22个超过2倍。该工作首次将内核优化形式化为跨层诊断问题，显著提升了自动优化的可解释性和效果。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Recent advances in large language models (LLMs) have enabled automated kernel generation and optimization, but most existing approaches rely on surface signals such as compilation feedback and profiling metrics. These signals reveal that a kernel is slow, but not why the backend compiler fails to realize a profitable optimization, especially on emerging accelerators such as NPUs. We therefore formulate kernel optimization as a progressive cross-layer diagnosis problem that links runtime symptoms to IR structure and compiler behavior before rewriting source. Based on this insight, we present our system, a compiler-grounded and hierarchical optimization framework for Triton kernels. the system escalates from lightweight pattern triage and profiling diagnosis to IR attribution and compiler-grounded analysis only when deeper evidence is needed, then proposes evidence-backed source-level rewrites.   We implement the system on Triton for Ascend NPUs and evaluate it on 37 successfully converted entries from a standardized NPUKernelBench-derived Ascend 950 benchmark. Across these entries, the system attains a geometric-mean speedup of 4.35$\\times$ and a median speedup of 2.73$\\times$ from the initial to optimized Triton kernel; 22/37 exceed 2$\\times$ and 13/37 exceed 5$\\times$. The complete distribution ranges from near-baseline entries to large wins, motivating transparent reporting of the current system's scope and limitations.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

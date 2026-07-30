@@ -1,0 +1,104 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-30T21:39:17.489423+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.24007v1",
+      "source": "arxiv",
+      "title": "Smooth Learning with Hard Constraints via Legendre-Regularized Policies",
+      "abstract": "We revisit contextual optimization from the perspective of policy class design. A desirable policy class should be expressive enough to learn rich context-decision relationships, should enforce hard feasibility constraints rather than soft penalty terms, and should remain smooth enough for gradient-based training on downstream decision losses. Existing approaches usually emphasize only part of these requirements. We propose Legendre-regularized policies, which parameterize decisions as solutions of regularized optimization problems over the original feasible region. This construction yields policies that are feasible by construction and differentiable with respect to learned latent parameters. We prove that the associated optimizer map is single-valued, maps onto the relative interior of the feasible set, admits an explicit Jacobian, is Lipschitz continuous, and can be made arbitrarily smooth. We also establish a universal approximation result showing that the proposed class can approximate any continuous feasible policy on compact context sets. The framework unifies explicitly regularized optimizers and implicit perturbation-based smooth optimizers. Experiments on contextual newsvendor and resource allocation problems show that our approach improves prescriptive performance relative to the benchmark methods.",
+      "authors": [
+        "Zikun Lin",
+        "Rui Chen",
+        "Yijie Wang"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cs.LG"
+      ],
+      "published": "2026-07-27T05:09:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.24007v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "operations research optimization modeling with hard constraints",
+      "llm_evidence_cn": "运筹优化建模与硬约束处理",
+      "llm_evidence": "运筹优化建模与硬约束处理",
+      "canonical_evidence": "运筹优化建模与硬约束处理",
+      "llm_tldr_en": "Proposes Legendre-regularized policies for contextual optimization, ensuring hard constraint feasibility and differentiability for gradient-based training.",
+      "llm_tldr_cn": "本文针对上下文优化问题，提出勒让德正则化策略，将决策参数化为原始可行域上正则化优化问题的解，确保策略满足硬约束且可微，从而支持基于梯度的训练。实验证明该方法在多个基准上优于现有方法，为运筹优化中的约束处理提供了新范式。",
+      "llm_tldr": "本文针对上下文优化问题，提出勒让德正则化策略，将决策参数化为原始可行域上正则化优化问题的解，确保策略满足硬约束且可微，从而支持基于梯度的训练。实验证明该方法在多个基准上优于现有方法，为运筹优化中的约束处理提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.23089v1",
+      "source": "arxiv",
+      "title": "Compiler-Grounded Hierarchical Diagnosis for LLM-Based Triton Kernel Optimization",
+      "abstract": "Recent advances in large language models (LLMs) have enabled automated kernel generation and optimization, but most existing approaches rely on surface signals such as compilation feedback and profiling metrics. These signals reveal that a kernel is slow, but not why the backend compiler fails to realize a profitable optimization, especially on emerging accelerators such as NPUs. We therefore formulate kernel optimization as a progressive cross-layer diagnosis problem that links runtime symptoms to IR structure and compiler behavior before rewriting source. Based on this insight, we present our system, a compiler-grounded and hierarchical optimization framework for Triton kernels. the system escalates from lightweight pattern triage and profiling diagnosis to IR attribution and compiler-grounded analysis only when deeper evidence is needed, then proposes evidence-backed source-level rewrites.   We implement the system on Triton for Ascend NPUs and evaluate it on 37 successfully converted entries from a standardized NPUKernelBench-derived Ascend 950 benchmark. Across these entries, the system attains a geometric-mean speedup of 4.35$\\times$ and a median speedup of 2.73$\\times$ from the initial to optimized Triton kernel; 22/37 exceed 2$\\times$ and 13/37 exceed 5$\\times$. The complete distribution ranges from near-baseline entries to large wins, motivating transparent reporting of the current system's scope and limitations.",
+      "authors": [
+        "Dongjie Chen",
+        "Ping Zhao",
+        "Bohua Zhan",
+        "Yulong Wang",
+        "Shushu Chen",
+        "Liangjun Feng",
+        "Hao Zhou",
+        "Min Shen",
+        "Linmu Wang",
+        "Weijia Sheng",
+        "Xiangyu Wei",
+        "Weijie Ding",
+        "Jianhui Huang",
+        "Yaoqing Gao"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.PL"
+      ],
+      "published": "2026-07-25T07:49:38+00:00",
+      "link": "https://arxiv.org/pdf/2607.23089v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM-based kernel optimization code generation",
+      "llm_evidence_cn": "基于LLM的内核优化代码生成",
+      "llm_evidence": "基于LLM的内核优化代码生成",
+      "canonical_evidence": "基于LLM的内核优化代码生成",
+      "llm_tldr_en": "Proposes a compiler-grounded hierarchical diagnosis framework for LLM-based Triton kernel optimization, linking runtime symptoms to compiler behavior to improve code generation.",
+      "llm_tldr_cn": "现有LLM内核优化依赖表层信号，无法揭示编译器未能实现优化的根本原因。本文提出编译器接地层次诊断框架，将运行时症状与IR结构和编译器行为关联，从而指导Triton内核的代码重写。该系统从轻量模式分类逐步升级到精细诊断，实现了更高效的自动内核优化，对加速器代码生成具有重要价值。",
+      "llm_tldr": "现有LLM内核优化依赖表层信号，无法揭示编译器未能实现优化的根本原因。本文提出编译器接地层次诊断框架，将运行时症状与IR结构和编译器行为关联，从而指导Triton内核的代码重写。该系统从轻量模式分类逐步升级到精细诊断，实现了更高效的自动内核优化，对加速器代码生成具有重要价值。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
