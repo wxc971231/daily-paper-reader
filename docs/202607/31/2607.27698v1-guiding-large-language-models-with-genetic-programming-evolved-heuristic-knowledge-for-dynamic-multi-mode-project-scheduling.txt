@@ -1,0 +1,354 @@
+Title: Guiding Large Language Models with Genetic Programming-Evolved Heuristic Knowledge for Dynamic Multi-Mode Project Scheduling
+
+URL Source: https://arxiv.org/pdf/2607.27698v1
+
+Published Time: Fri, 31 Jul 2026 00:30:52 GMT
+
+Number of Pages: 13
+
+Markdown Content:
+# Guiding Large Language Models with Genetic Programming-Evolved Heuristic Knowledge for Dynamic Multi-Mode Project Scheduling 
+
+Yuan Tian 1, Yi Mei 1, and Mengjie Zhang 1
+
+Centre for Data Science and Artificial Intelligence & School of Engineering and Computer Science, Victoria University of Wellington, PO Box 600, Wellington 6140, New Zealand 
+
+{yuan.tian, yi.mei, mengjie.zhang}@ecs.vuw.ac.nz 
+
+Abstract. In dynamic multi-mode project scheduling, activities have al-ternative execution modes and uncertain durations, while precedence re-lations and limited resources constrain their execution. Heuristic priority rules support fast online decisions, but their design requires substantial domain expertise. Genetic programming (GP) hyper-heuristics can auto-matically evolve such rules. Large language models (LLMs), meanwhile, provide a flexible interface for interpreting scheduling information and explaining decisions. However, zero-shot LLM decisions may lack domain knowledge, consume many tokens, and vary across repeated queries. GP-evolved rules therefore provide a potential source of scheduling knowl-edge for guiding LLM decisions. Unlike existing LLM–GP hybrids that use LLMs to support heuristic evolution, we transfer knowledge in the reverse direction, using knowledge extracted from high-quality GP rules to guide an online LLM decision maker. We extract knowledge from high-quality GP rules and inject it through Feature Selection, Feature Hint, Rule Reference, and Rule Follow. These mechanisms are evaluated in terms of scheduling performance, token consumption, decision stability, and the feature focus expressed in generated rationales. GP-derived guid-ance generally improves the unguided LLM, but its representation mat-ters. Simplifying the decision context or supplying explicit decision logic is more effective than highlighting important features. Feature Selection offers the best token efficiency, whereas Rule Follow achieves strong per-formance at greater token cost. Guidance also improves decision stability and changes the features expressed in generated rationales. 
+
+Keywords: Dynamic project scheduling · Large Language Model · Ge-netic Programming · Heuristic Knowledge Guidance · Decision Making 
+
+1 Introduction 
+
+Project scheduling [6] is a fundamental problem in project management and planning. In dynamic multi-mode project scheduling, activities may have mul-tiple execution modes, compete for limited resources, and have uncertain dura-tions. Scheduling decisions, therefore, need to be made repeatedly as the project evolves, making fast and effective dispatching rules important. arXiv:2607.27698v1 [cs.AI] 30 Jul 2026 2 Y. Tian, et al. 
+
+Heuristic priority rules are widely used for dynamic scheduling because they can quickly select activities based on the current project state. However, man-ually designing effective rules requires domain expertise. Genetic programming (GP) hyper-heuristics [15,12] address this issue by automatically evolving pri-ority rules from training instances. These rules combine scheduling features through mathematical expressions and can be applied to unseen instances, mak-ing them a useful source of learnt heuristic knowledge. Recent work surveys the use of large language models (LLMs) in schedul-ing [13]. LLMs can combine scheduling information and heuristic knowledge at different levels of abstraction with the current context, and explain their deci-sions in natural language. However, an LLM does not inherently possess reliable scheduling knowledge or numerical rule-execution ability, so unguided decisions may be costly and unstable. Our goal is not to reproduce the numerical execution of a single GP rule, but to investigate whether knowledge extracted from GP– evolved rules at different levels of abstraction can guide an LLM’s contextual scheduling decisions. Existing LLM–GP research has largely transferred knowledge in the oppo-site direction, using LLMs to generate or improve heuristics within evolutionary search [5,14]. This paper instead investigates GP-to-LLM transfer: GP evolu-tion is completed first, and knowledge extracted from its high-quality rules then guides an LLM that selects one eligible activity–mode candidate at each decision point. We address the following research questions: 
+
+– RQ1: Can GP-derived feature- and rule-level knowledge improve zero-shot LLM scheduling decisions, and which forms of guidance are most effective? 
+
+– RQ2: How do the guidance mechanisms affect token consumption, decision stability, and the feature focus expressed in generated rationales, and what effectiveness–efficiency trade-offs result? To answer these questions, we extract feature- and rule-level knowledge from validated GP rules and evaluate four guidance mechanisms against an unguided LLM and the selected GP rule. 
+
+2 Background and Related Work 
+
+2.1 Dynamic Multi-Mode Project Scheduling 
+
+The dynamic multi-mode resource-constrained project scheduling problem (DM-RCPSP) considers a project comprising a set of activities J and renewable re-sources R. Each activity i ∈ J is subject to precedence constraints and can be executed in one mode m ∈ Mi. The selected mode determines its resource de-mand ki,m,r for each resource r ∈ R and its duration characteristics. An activity can start only after all its predecessors j ∈ Pi have completed, and the total demand of concurrently executing activities cannot exceed the resource capac-ity Kr . For each activity-mode pair, the actual duration di,m is uncertain and is revealed only when the activity starts, with its value sampled from a prede-fined distribution bounded by the optimistic and pessimistic durations dmin  
+
+> i,m
+
+and 
+
+dmax  
+
+> i,m
+
+. Scheduling decisions are therefore made dynamically as the project state Guiding LLM with GP-Evolved Heuristic Knowledge for DMRCPSP 3                                                                                
+
+> Act. i P iMode ˆdi,m dmin i,m dmax i,m K1
+> 1-1000021153711 26585311437728611 442,3 1436828710 552,4 1425427484641325929710 675,6 10000Resource availability 10 (a) Project information 0246810 12 14 16 18 20 22
+> Timestep
+> 0
+> 2
+> 4
+> 6
+> 8
+> 10
+> Resource 1
+> 2-2
+> 3-2
+> 4-1
+> 5-2
+> 6-2
+
+(b) Example Schedule 
+
+Fig. 1. An example project. 
+
+evolves. The objective is to construct a feasible schedule satisfying precedence and resource constraints while minimising the project makespan. Figure 1 illustrates an example DMRCPSP instance. The project informa-tion is presented in Fig. 1 (a). The project consists of seven activities and one renewable resource, where activities 1 and 7 are the dummy start and end ac-tivities, respectively. Each non-dummy activity can be executed in one of two modes. Fig. 1 (b) shows an example schedule in terms of resource usage. Each rectangle represents a scheduled activity-mode pair and is labelled in the form 
+
+〈act_id-mode_id 〉. The width of a rectangle represents the activity duration, while its height indicates the corresponding resource demand. 
+
+2.2 Genetic Programming Hyper-heuristics Population initialization Fitness evaluation Stop? NYReturn best individual Offspring generation via genetic operators Parent Selection Training instances 
+
+(a) GP evolution framework. LFT GRD mul (b) An example GP rule. 
+
+Fig. 2. GP hyper-heuristic framework and priority rule representation. 
+
+Genetic programming (GP) can be employed as a population-based hyper-heuristic to automatically evolve scheduling heuristics. As illustrated in Fig. 2 (a), GP starts with a population of randomly generated individuals. Each individual is evaluated on a set of training instances, after which promising individuals are selected to generate offspring through genetic operators. This evolutionary process is repeated until a stopping criterion is reached, and the best evolved individual is returned. GP individuals are commonly represented as tree-based mathematical ex-pressions composed of scheduling features and arithmetic operators. In project scheduling, an evolved expression can serve as a priority function that assigns a priority value to each eligible activity-mode candidate. The candidate with the smallest value has the highest priority and is selected for scheduling. For exam-ple, the rule LFT ×GRD represented in Fig. 2 (b) evaluates the candidates shown in 4 Y. Tian, et al.                                       
+
+> Table 1. Example of priority value calculation and candidate selection.
+> Candidate (act., mode) EST EFT LST LFT GRD GRPW Priority value Rank Choice
+> (2 ,1) 010 010 40 30 400 4
+> (2 ,2) 015 015 20 30 300 1✓
+> (3 ,1) 08210 32 15 320 2
+> (4 ,2) 012 315 24 13 360 3
+
+Table 1. Candidate (2,2) obtains the smallest priority value of 15 ×20=300 and is therefore selected. Through evolution, GP automatically searches for priority functions that produce effective scheduling decisions. 
+
+2.3 Large Language Model for Scheduling Decision Making 
+
+LLMs have recently been explored as direct solvers for scheduling problems. End-to-end LLM-based approaches [1,2] have been developed for job shop scheduling, where fine-tuned models directly generate scheduling solutions from problem instances. For dynamic flexible job shop scheduling, ReflecSched [3] employs heuristic-driven simulations to distil strategic experience that guides an LLM in making real-time scheduling decisions. Another research direction uses LLMs to automatically design scheduling heuristics. EoH [9] combines LLMs with evolu-tionary search for automatic heuristic generation. Population self-evolution [7] has been introduced to design dispatching rules for dynamic job shop schedul-ing, while specialised LLM agents [11] have been used to generate and reflect on dispatching rules for dynamic flexible assembly flow shop scheduling. Evolution-ary textual gradients [8] have also been employed to aggregate LLM-generated feedback and guide the iterative improvement of scheduling heuristics. The symbolic structure of GP-evolved rules can make them more inter-pretable than black-box models [10] and enable feature- and rule-level knowledge extraction. LLMs have been further integrated with GP to enhance heuristic evo-lution. LLM-generated individuals [5] have been introduced into GP populations to improve evolutionary search. More recently, knowledge extracted from high-quality GP heuristics has been used to warm-start evolution, support heuristic interpretation, and facilitate knowledge transfer across scheduling tasks [14]. These studies use the LLM primarily to create, improve, or interpret heuris-tics. In contrast, our framework reverses the usual LLM-to-GP knowledge flow: GP evolution is completed first, after which feature- and rule-level knowledge from evolved heuristics guides an LLM that directly makes online scheduling decisions. The framework also differs from ReflecSched, which distils strategic experience from heuristic-driven simulations, by transferring knowledge directly from a repository of symbolic GP rules. To the best of our knowledge, this GP-to-LLM transfer setting and LLM-based online decision making for the DMRCPSP have not been systematically investigated. 
+
+3 Heuristic-Guided LLM Decision Making 
+
+3.1 LLM-Based Scheduling Decision Framework 
+
+We consider an online scheduling setting in which scheduling decisions are made dynamically as the project progresses. At each decision point, a heuristic-based decision mechanism is used to select an activity-mode candidate that can be executed immediately under the current project state. In the proposed frame-Guiding LLM with GP-Evolved Heuristic Knowledge for DMRCPSP 5Offline Heuristic Knowledge Extraction Online LLM-based Scheduling Decision Making 
+
+> GP Training Runs Validation Evaluation of Collect Rules Pareto-Based Elite Rule Repository
+> Feature Knowledge Extraction Rule Knowledge Extraction Import Feature Set Reference GP Rule
+> Dynamic Scheduling Environment - Project status - Eligible candidates - Candidate feature table LLM Decision Maker
+> Basic : no heuristic knowledge
+> Feature-guided : selection or hint
+> Rule-guided : reference or follow Selected activity-mode Schedule Execution and State Update allocate resources, advance project state
+
+Fig. 3. Overview of the heuristic-guided LLM decision-making framework for dynamic multi-mode project scheduling. 
+
+work, an LLM is used as the decision maker to perform this selection based on the information available at the current decision point. As illustrated in Fig. 3, the dynamic scheduling environment first constructs a set of eligible activity-mode candidates. Let St denote the project state at decision point t, and let 
+
+Ct = {c1, c 2, . . . , c nt } denote the corresponding candidate set. Each candidate 
+
+ci = ( ai, m i, xi) consists of an activity ai, an execution mode mi, and a schedul-ing feature vector xi. All candidates in Ct satisfy the precedence and renewable resource requirements under the current project state and are therefore avail-able for immediate execution. The current project status, feature definitions, and candidate feature table are provided to the LLM. Given optional heuristic knowl-edge K, the LLM selects one candidate according to c∗ 
+
+> t
+
+= L(St, C t, K ), where L
+
+denotes the LLM-based decision process. For the basic LLM, K = ∅, whereas the guided variants receive feature-level or rule-level heuristic knowledge extracted from evolved GP rules. The selected activity-mode is returned in a structured format and passed to the scheduling environment for execution. The selected candidate is started, the project simulation progresses, and the project state is updated according to the realised project dynamics. Once the next decision point is reached, a new set of immediately executable activity-mode candidates is constructed and provided to the LLM. This decision–execution–state update cycle continues until all project activities have been completed. The prompt used at each decision point consists of a system instruction and a dynamically constructed user instruction. The system instruction specifies the scheduling decision task, candidate-selection constraints, decision procedure, explanation policy, and required output format. The user instruction provides the current project status, feature definitions, and eligible candidate table. Heuristic guidance is incorporated differently across the proposed LLM variants. As shown in Fig. 3, feature-guided variants use a selected feature set extracted from the GP rule repository, whereas rule-guided variants receive a selected GP priority rule. The detailed heuristic knowledge extraction and guidance mechanisms are introduced in the following subsections. 6 Y. Tian, et al.                          
+
+> Table 2. Summary of the LLM variants and heuristic guidance mechanisms.
+> Variant Features Feature Hint GP Rule Guidance
+> Basic All No No None Feature Selection Selected No No Information restriction Feature Hint All Yes No Attention guidance Rule Reference All No Yes Advisory Rule Follow All No Yes Prescriptive
+
+3.2 Extraction of Heuristic Knowledge from GP Evolution 
+
+To obtain heuristic knowledge for guiding LLM decisions, we collect evolved GP rules from multiple independent GP runs. Rather than retaining only the final best individual from each run, the best individual of every generation is stored. This is relevant to the GP training process, where a seed rotation mech-anism is used and the simulation seed changes across generations. Consequently, generation-best individuals are obtained under different simulated project condi-tions and may capture different scheduling behaviours. Retaining these individ-uals therefore provides a broader collection of evolved heuristics for subsequent knowledge extraction. All collected rules are then evaluated on a separate valida-tion set. GP evolution is performed using the training set, whereas the validation evaluation provides a consistent basis for comparing individuals collected from different runs and generations. For each rule, its effectiveness on the validation set and its rule size are recorded, representing scheduling quality and structural complexity, respectively. Based on the trade-off between effectiveness and rule size, rules from the lead-ing non-dominated fronts are prioritised to construct a Pareto-based elite rule repository. The corresponding knowledge extraction and guidance mechanisms are described in the following subsections. 
+
+3.3 LLM Variants and Heuristic Guidance 
+
+To investigate how evolved heuristic knowledge affects LLM-based scheduling decisions, we design five LLM variants with different levels and mechanisms of guidance. Table 2 summarises the differences between the five variants. The complete system and user prompt templates for all variants are provided in the supplementary material. 
+
+Basic: The Basic variant receives no GP-derived heuristic knowledge. It is pro-vided with the full feature definitions and candidate feature table and makes scheduling decisions based on the project information available at the current decision point. This variant serves as the baseline for evaluating the effect of heuristic guidance. 
+
+Feature-level guidance: To extract feature-level knowledge, a collection of high-quality rules is selected from the leading non-dominated fronts of the elite rule repository. The occurrence of each scheduling feature across these rules is analysed, where a feature is counted once for each rule in which it appears. Features are ranked by their occurrence frequency, and the most frequently oc-curring features covering 80% of the cumulative feature occurrences are retained as the selected feature set. The selected features are incorporated into the LLM in two ways. Feature Selection restricts the feature definitions and candidate table to the selected feature set, thereby controlling the information available Guiding LLM with GP-Evolved Heuristic Knowledge for DMRCPSP 7
+
+to the LLM. In contrast, Feature Hint retains all features but explicitly high-lights the selected features as important decision cues. Thus, the former modifies information availability, whereas the latter provides attention guidance. 
+
+Rule-level guidance: For explicit rule guidance, a compact high-quality GP rule is selected from the elite rule repository. A compact rule is preferred to limit the reasoning effort and token consumption required to interpret and evaluate the priority expression across multiple candidates. The selected rule is supplied to both rule-guided variants. In Rule Reference , the GP rule is provided as advisory guidance: the LLM is encouraged to consider the rule when comparing candidates but may deviate when other candidate information provides stronger evidence. In Rule Follow , the rule acts as prescriptive guidance, and the LLM is instructed to evaluate the candidates according to the supplied priority ex-pression and select the candidate with the best resulting priority. 
+
+4 Experimental Study 
+
+4.1 Experimental Design 
+
+The experiments investigate the scheduling performance and inference efficiency of LLM-based decision-making under different levels and mechanisms of heuris-tic knowledge guidance. The experiments were conducted on dynamic multi-mode project scheduling instances with 30 activities and three execution modes per activity. Three precedence-constraint scenarios were considered, with or-der strengths [4] of 0.75, 0.50, and 0.25. Five problem instances were used for each scenario. These scenarios represent different levels of scheduling decision complexity. A higher-order strength imposes stronger precedence constraints and generally results in fewer simultaneously eligible activity-mode candidates, whereas a lower-order strength produces less constrained and larger candidate sets. The scheduling features used for both GP training and LLM decision-making are provided in the supplementary material. GP was trained 30 times separately for each precedence scenario, follow-ing the procedure described in Section 3.2. The training, validation, and test sets share the same underlying project instances but use different realisations of actual activity durations. Heuristic knowledge extraction and rule selection were conducted based on the training and validation results only, without using the LLM test results. The GP configuration and evolutionary parameters are reported in the supplementary material. Five LLM variants were evaluated to represent different levels and mecha-nisms of heuristic guidance. All variants used deepseek-v4-flash with thinking mode enabled, the reasoning effort set to high , and the temperature set to 0 to reduce sampling variability. The LLMs were used in a zero-shot decision set-ting. At each scheduling decision point, the model received only the information contained in the current prompt and had no access to previous decision con-texts or conversation history. Unless explicitly modified by a variant, the system instructions, project-state representation, candidate constraints, and output for-mat were kept unchanged. For each precedence scenario, every LLM variant was evaluated on five test instances under the corresponding test duration realisa-8 Y. Tian, et al. 
+
+Table 3. Mean (standard deviation) normalised makespan obtained from 10 indepen-dent runs of the LLM variants under three scenarios.                                                                    
+
+> Scen. Ins. Basic Feature Hint Feature Selection Rule Reference Rule Follow GP Rule 0.75 11.72(0.07) 1.73(0.09)( ≈) 1.65(0.07)( ↓)( ↓)1.65(0.08)( ↓)( ≈)( ≈) 1.58(0.00)( ↓)( ↓)( ↓)( ↓)1.58 21.39(0.08) 1.50(0.14)( ↑)1.46(0.03)( ↑)( ≈)1.39(0.12)( ≈)( ↓)( ≈) 1.26(0.00)( ↓)( ↓)( ↓)( ↓)1.26 31.43(0.19) 1.45(0.10)( ≈) 1.44(0.03)( ≈)( ≈)1.27(0.06)( ↓)( ↓)( ↓)1.20(0.00)( ↓)( ↓)( ↓)( ↓)1.2 41.87(0.12) 1.80(0.10)( ≈) 1.82(0.05)( ≈)( ≈)1.61(0.08)( ↓)( ↓)( ↓)1.52(0.00)( ↓)( ↓)( ↓)( ↓)1.52 51.65(0.13) 1.52(0.08)( ↓)1.49(0.07)( ↓)( ≈)1.42(0.08)( ↓)( ↓)( ↓)1.34(0.00)( ↓)( ↓)( ↓)( ↓)1.34 0.5 11.98(0.12) 1.95(0.09)( ≈) 1.88(0.11)( ↓)( ↓)1.73(0.08)( ↓)( ↓)( ↓)1.78(0.07)( ↓)( ↓)( ↓)( ↑)1.75 21.88(0.11) 1.61(0.10)( ↓)1.58(0.12)( ↓)( ≈)1.70(0.17)( ↓)( ≈)( ≈) 1.59(0.05)( ↓)( ≈)( ≈)( ≈) 1.59 32.42(0.16) 2.10(0.08)( ↓)2.16(0.13)( ↓)( ≈)2.12(0.11)( ↓)( ≈)( ≈) 2.03(0.10)( ↓)( ≈)( ≈)( ≈) 1.91 41.76(0.20) 1.61(0.15)( ≈) 1.64(0.10)( ≈)( ≈)1.52(0.13)( ↓)( ≈)( ↓)1.56(0.16)( ↓)( ≈)( ≈)( ≈) 1.37 52.09(0.14) 1.85(0.15)( ↓)1.93(0.14)( ↓)( ≈)1.84(0.12)( ↓)( ≈)( ≈) 1.68(0.23)( ↓)( ↓)( ↓)( ≈)1.59 0.25 11.93(0.17) 2.16(0.27)( ↑)1.57(0.14)( ↓)( ↓)1.88(0.19)( ≈)( ↓)( ↑)2.00(0.15)( ≈)( ↓)( ↑)( ≈)2.0 22.04(0.08) 2.19(0.14)( ↑)1.76(0.08)( ↓)( ↓)1.77(0.11)( ↓)( ↓)( ≈)1.70(0.07)( ↓)( ↓)( ≈)( ≈)1.74 32.44(0.25) 2.47(0.23)( ≈) 2.00(0.14)( ↓)( ↓)1.86(0.10)( ↓)( ↓)( ↓)2.01(0.05)( ↓)( ↓)( ≈)( ↑)1.97 41.86(0.14) 1.95(0.16)( ≈) 1.54(0.09)( ↓)( ↓)1.75(0.15)( ≈)( ↓)( ↑)1.85(0.07)( ≈)( ≈)( ↑)( ↑)1.91 52.64(0.20) 2.99(0.28)( ↑)2.40(0.18)( ↓)( ↓)2.34(0.13)( ↓)( ↓)( ≈)2.26(0.12)( ↓)( ↓)( ≈)( ≈)2.2
+
+Table 4. Counts of significant wins, ties, and losses of LLM variants compared with the LLM basic baseline. 
+
+Variant vs LLM Basic Sig. Win Sig. Tie Sig. Loss Feature Selection 11 3 1Feature Hint 4 7 4Rule Reference 12 3 0Rule Follow 13 2 0
+
+tions. Each instance was solved ten times using the same actual activity du-rations, allowing the variability of LLM-based decision-making to be observed under an identical scheduling environment. 
+
+4.2 Experiment Analysis Scheduling Performance. Table 3 reports the mean and standard deviation of the normalised makespan over ten repeated runs. The GP rule is included as a heuristic baseline. The significance markers are obtained using pairwise Wilcoxon signed-rank tests against the preceding columns in the same row. An upward arrow ( ↑) indicates a significantly larger normalised makespan, a down-ward arrow ( ↓) indicates a significantly smaller normalised makespan, and a tilde (≈) indicates no significant difference. Overall, most forms of heuristic guidance improve the Basic LLM. As summarised in Table 4, Feature Selection, Rule Reference, and Rule Follow obtain more significant wins than losses against the Basic variant, whereas Feature Hint shows less consistent improvement. Rule Fol-low performs best in the high-order-strength scenario, but in the medium- and low-order-strength scenarios its advantage becomes less clear, with Rule Ref-erence and Feature Selection often achieving comparable results. This suggests that explicit rule-level guidance is useful but does not uniformly dominate. In some instances, Feature Selection even outperforms both the GP rule and Rule Follow, indicating that scenario-specific feature filtering can sometimes provide a more robust form of guidance than enforcing a single selected priority rule. Although the GP rule is generally a strong baseline, it is not uniformly superior across all test instances. This also suggests that the selected rule may have some instance-dependent behaviour under unseen activity-duration realisations, which partly explains why Rule Follow does not always achieve the best performance. 
+
+Token Consumption and Composition. Figure 4 reports the token con-sumption of each LLM variant, aggregated by order-strength scenario and sep-arated into input prompt tokens, thinking tokens, and output tokens. Overall, Guiding LLM with GP-Evolved Heuristic Knowledge for DMRCPSP 9Basic   
+
+> Feature Selection
+> Feature Hint
+> Rule Reference
+> Rule Follow
+> 0K
+> 25K
+> 50K
+> 75K
+> 100K
+> 125K
+> 150K
+> Token Count (K)
+> J30M3/0.75
+> Basic
+> Feature Selection
+> Feature Hint
+> Rule Reference
+> Rule Follow
+> J30M3/0.5
+> Basic
+> Feature Selection
+> Feature Hint
+> Rule Reference
+> Rule Follow
+> J30M3/0.25
+> Prompt Tokens Thinking Tokens Output Tokens
+
+Fig. 4. Token consumption across LLM variants and scenarios. 60K 80K 100K 120K 140K 160K 180K 200K Mean Total Tokens 1.70 1.75 1.80 1.85 1.90 1.95 Mean Normalised Makespan Feature Hint Feature Selection Basic Rule Follow Rule Reference 
+
+Fig. 5. Token–makespan trade-off across different LLM-based scheduling strategies. 
+
+token consumption increases as the order strength decreases. This is because lower order strength imposes fewer precedence constraints, allowing more activi-ties to become eligible at the same decision point. As a result, the candidate table becomes larger and the LLM needs to compare more activity-mode alternatives, leading to both longer prompts and more thinking tokens. Across all scenarios, most tokens are spent on thinking rather than on the final response. This is especially evident for Rule Reference and Rule Follow, where the LLM needs to interpret the supplied priority rule and compare candidates according to rule-related calculations. Rule Reference consumes even more thinking tokens than Rule Follow in some scenarios, possibly because the rule is used as soft guidance, requiring the model to consider both the rule and other candidate information. The input prompt tokens mainly correspond to the prompt content, including project status, feature definitions, and the candidate information table. Feature Selection requires the fewest prompt tokens because only the selected scenario-specific features are included, whereas the other variants receive the full feature set and therefore have similar input-token costs. Output tokens are small across all variants, since the model only returns the selected activity-mode pair and a brief reason. Figure 5 shows the performance–token trade-off. Feature Selection provides the best efficiency, achieving improved makespan with the lowest token con-sumption. Rule Follow achieves strong performance but requires substantially more tokens due to explicit rule evaluation. The remaining variants are less at-tractive: Feature Hint increases token usage without clear performance gains, while Rule Reference consumes the most tokens but performs similarly to Rule Follow. Therefore, Feature Selection is preferable when token efficiency is impor-10 Y. Tian, et al. 
+
+tant, whereas Rule Follow is a better choice when scheduling performance is the main priority. Basic 
+
+> Feature Hint
+> Feature Selection
+> Rule Reference
+> Rule Follow
+> Variant
+> TSC
+> LST
+> SC
+> RR
+> max_RReq
+> Slack
+> avg_ResCap
+> min_ResCap
+> LFT
+> Pes. Duration
+> avg_RReq
+> EST
+> PC
+> TPC
+> min_RReq
+> avg_RRem
+> Duration
+> GRPW
+> min_RRem
+> EFT
+> GRPW_all
+> max_RRem
+> max_ResCap
+> Opt. Duration
+> Feature
+> J30M3/0.75
+> Basic
+> Feature Hint
+> Feature Selection
+> Rule Reference
+> Rule Follow
+> Variant
+> RR
+> max_RReq
+> avg_RRem
+> TSC
+> LST
+> min_ResCap
+> max_ResCap
+> PC
+> EST
+> Slack
+> Pes. Duration
+> SC
+> Duration
+> avg_RReq
+> avg_ResCap
+> min_RReq
+> min_RRem
+> GRPW
+> max_RRem
+> EFT
+> LFT
+> GRPW_all
+> TPC
+> Opt. Duration
+> Feature
+> J30M3/0.5
+> Basic
+> Feature Hint
+> Feature Selection
+> Rule Reference
+> Rule Follow
+> Variant
+> EST
+> TSC
+> SC
+> LST
+> max_ResCap
+> PC
+> Slack
+> GRPW
+> RR
+> avg_RReq
+> max_RReq
+> min_RReq
+> min_ResCap
+> min_RRem
+> max_RRem
+> TPC
+> LFT
+> EFT
+> avg_ResCap
+> avg_RRem
+> GRPW_all
+> Duration
+> Pes. Duration
+> Opt. Duration
+> Feature
+> J30M3/0.25
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> mention rate
+
+bold = Selected feature set; blue = Features mentioned in the GP rule 
+
+Fig. 6. Feature mention rates in LLM-generated rationales across three order-strength scenarios. 
+
+Feature Mentions in LLM Rationales. We examine whether heuristic guid-ance changes the scheduling features explicitly referred to in the LLM-generated decision reasons. For each variant and order-strength scenario, the reasoning content and returned reason were semantically matched against the scheduling feature definitions; therefore, a detected mention does not necessarily mean that the exact feature name appeared verbatim. Figure 6 shows the proportion of decisions in which each feature was identified. The results show that guidance changes the feature focus expressed by the LLM. Feature Selection concentrates mentions on the retained features. Interestingly, Slack remains frequently iden-tified even though it is not included in the selected feature set, suggesting that the model can reconstruct the notion of scheduling flexibility from related tem-poral information (e.g., LFT-EFT ) rather than relying only on explicitly named inputs. Feature Hint increases references to highlighted features without con-sistently improving performance, while the rule-guided variants shift mentions towards GP-rule features. Overall, GP-derived guidance affects both scheduling decisions and the rationales used to articulate them. Basic 
+
+> Feature Selection
+> Feature Hint
+> Rule Reference
+> Rule Follow
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+
+J30M3/0.75 
+
+> Basic
+> Feature Selection
+> Feature Hint
+> Rule Reference
+> Rule Follow
+
+J30M3/0.5 
+
+> Basic
+> Feature Selection
+> Feature Hint
+> Rule Reference
+> Rule Follow
+
+J30M3/0.25 
+
+> Stability
+
+Fig. 7. Decision stability of LLM variants across sampled decision situations. 
+
+Stability of LLM Decisions. Figure 7 analyses the stability of LLM decisions on sampled decision situations. This analysis is separate from the full scheduling Guiding LLM with GP-Evolved Heuristic Knowledge for DMRCPSP 11 
+
+Table 5. Representative decisions and natural-language reasons produced by different LLM variants for the same decision situation in J30M3/0.5.                    
+
+> Variant Choice Generated explanation
+> Basic (19 ,1) Critical activity (slack=0) with shortest duration (6) to expedite project completion. Feature Hint (7 ,2) Highest TSC (15) and critical (LS=0) with moderate duration (18) and low max_RReq (5). Feature Selection (7 ,2) Selected due to criticality (LS=0), highest number of successors (TSC=15), and moderate duration and resource consumption. Rule Reference (7 ,2) Lowest priority rule value (4.45) due to small LS and favourable resource trade-off. Rule Follow (7 ,2) Selected candidate (7,2) with lowest priority rule value of 4.4509.
+
+test runs. For each order-strength scenario, 25 decision situations were sampled from the solved instances. Each LLM variant was queried ten times on each situation, and the selected activity-mode pairs were recorded. We computed the normalised entropy H of the selection distribution and used 1−H as the decision stability score. A larger value therefore indicates that the LLM more consistently selects the same candidate under repeated queries. The Basic variant shows relatively low stability, suggesting that unguided LLM decisions can vary even when the prompt and decision situation are un-changed. Feature Selection slightly improves stability, likely because the reduced candidate table removes some distracting information. Feature Hint and Rule Reference achieve higher stability because the provided guidance constrains the model’s decision focus. Rule Follow is the most stable in the high-order-strength scenario, but its stability decreases in the medium- and low-order-strength sce-narios. This indicates that instructing the LLM to follow a rule does not fully eliminate decision variability, possibly due to rule-interpretation or calculation errors when the candidate set becomes larger. 
+
+Generated Decision Explanations. Table 5 presents representative choices and one-sentence reasons generated for the same decision situation. Basic se-lects candidate (19 , 1) based mainly on zero slack and the shortest duration. In contrast, the feature- and rule-guided variants select (7 , 2) and express a broader decision focus, jointly considering activity criticality, duration, and re-source consumption. This example qualitatively illustrates how heuristic guid-ance can shape both candidate selection and the rationale expressed by the LLM. 
+
+5 Conclusions and Future Work 
+
+This paper introduced a GP-to-LLM knowledge-transfer framework for online dynamic multi-mode project scheduling. Its main contributions are feature- and rule-level mechanisms that guide LLM decisions with knowledge extracted from evolved priority rules, an empirical comparison of four guidance variants with an unguided LLM, and analyses of scheduling performance, token usage, deci-sion stability, and generated rationales. Regarding RQ1, Feature Selection, Rule Reference, and Rule Follow generally outperform the unguided Basic variant, whereas Feature Hint is less reliable. Regarding RQ2, Feature Selection offers the best token efficiency, while Rule Follow achieves strong performance at greater token cost. Guidance can also reduce decision variability and shift the feature focus expressed in generated rationales. Overall, the results demonstrate that 12 Y. Tian, et al. 
+
+evolved heuristic knowledge can guide an LLM at multiple levels of abstraction, with distinct performance–efficiency trade-offs. Future work will select rules dy-namically from a rule repository according to the current decision situation, apply multi-stage candidate filtering to support larger project instances, and extract additional forms of GP knowledge. 
+
+References 
+
+1. Abgaryan, H., Cazenave, T., Harutyunyan, A.: Starjob: Dataset for LLM-Driven Job Shop Scheduling (Mar 2025), arXiv:2503.01877 [cs.LG] 2. Abgaryan, H., Harutyunyan, A., Cazenave, T.: LLMs can Schedule (Aug 2024), arXiv:2408.06993 [cs.AI] 3. Cao, S., Yuan, Y.: ReflecSched: Solving Dynamic Flexible Job-Shop Scheduling via LLM-Powered Hierarchical Reflection (Jan 2026), arXiv:2508.01724 [cs.AI] 4. Demeulemeester, E., Vanhoucke, M., Herroelen, W.: RanGen: A Random Network Generator for Activity-on-the-Node Networks. Journal of Scheduling 6(1), 17–38 (2003) 5. Fang, Z., Ma, H., Chen, G., Hartmann, S., Wang, C.: Leveraging LLM in Genetic Programming Hyper-heuristics for Dynamic Microservice Deployment. In: AI 2024: Advances in Artificial Intelligence. pp. 86–97. Springer Nature, Singapore (2025) 6. Hartmann, S., Briskorn, D.: An updated survey of variants and extensions of the resource-constrained project scheduling problem. European Journal of Operational Research 297 (1), 1–14 (Feb 2022) 7. Huang, J., Liu, Q., Li, X., Gao, L., Teng, Y.: Automatic Programming via Large Language Models With Population Self-Evolution for Dynamic Fuzzy Job Shop Scheduling Problem. IEEE Transactions on Fuzzy Systems 34 (3), 896–908 (Mar 2026) 8. Huang, J., Zhang, H., Liu, Q., Li, X., Gao, L.: Automated design of scheduling heuristics for dynamic flexible job shop scheduling with evolutionary textual gra-dients. International Journal of Production Research pp. 1–22 (Jul 2026) 9. Liu, F., Tong, X., Yuan, M., Lin, X., Luo, F., Wang, Z., Lu, Z., Zhang, Q.: Evolution of heuristics: towards efficient automatic algorithm design using large language model. In: Proceedings of the 41st International Conference on Machine Learning. ICML’24, vol. 235, pp. 32201–32223. JMLR.org, Vienna, Austria (2024) 10. Mei, Y., Chen, Q., Lensen, A., Xue, B., Zhang, M.: Explainable artificial intel-ligence by genetic programming: A survey. IEEE Transactions on Evolutionary Computation 27 (3), 621–641 (2023) 11. Qiu, J., Zhuang, H., Liu, F., Liu, J., Zhang, Q.: EvoDR: Evolving Dispatching Rules via Large Language Model for Dynamic Flexible Assembly Flow Shop Scheduling (Mar 2026), arXiv:2601.15738 [cs.NE] 12. Tian, Y., Mei, Y., Zhang, M.: Learning Heuristics via Genetic Programming for Multi-mode Resource-constrained Project Scheduling. In: 2024 IEEE Congress on Evolutionary Computation (CEC). pp. 1–8. Yokohama, Japan (Jun 2024) 13. Xiang, W., Zhang, J., Zhang, P., Wang, M., Li, J., Li, C., Feng, L., Pan, Z.: A survey on large language models for scheduling: From problem modeling to optimization algorithm generation. Advanced Engineering Informatics 76 , 104946 (2026) 14. Xu, M., Liu, J., Ong, Y.S.: Evospeak: Large language models for interpretable ge-netic programming-evolved heuristics. IEEE Transactions on Evolutionary Com-putation (2026), Early Access 15. Zhang, F., Mei, Y., Nguyen, S., Zhang, M.: Survey on genetic programming and machine learning techniques for heuristic design in job shop scheduling. IEEE Guiding LLM with GP-Evolved Heuristic Knowledge for DMRCPSP 13 Transactions on Evolutionary Computation 28 (1), 147–167 (2024)
