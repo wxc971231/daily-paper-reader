@@ -1,0 +1,39 @@
+{
+  "label": "2026-08-01",
+  "date": "2026-08-01",
+  "generated_at": "2026-08-01T20:56:46",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202608/01/2607.27918v1-optgraph-large-language-models-enhanced-evolutionary-optimization-via-graph-retrieval-augmented-generation",
+      "section": "deep",
+      "title_en": "OptGraph: Large Language Models Enhanced Evolutionary Optimization Via Graph Retrieval-Augmented Generation",
+      "authors": "Xianchao Xiu, Jianhao Li, Huangyue Chen, Wanquan Liu",
+      "date": "2026-07-30",
+      "pdf": "https://arxiv.org/pdf/2607.27918v1",
+      "score": "8.0",
+      "evidence": "利用图检索增强生成进行LLM进化优化，覆盖建模模式与实现细节",
+      "tldr": "现有基于大语言模型的进化优化在模式重用、错误感知细化和跨任务鲁棒性方面存在局限。OptGraph提出了首个结合图检索增强生成（GraphRAG）的优化智能体工作流：它将建模模式、问题形式化、实现细节和错误修正等经验构建为类型化图，在推理时利用图邻域信息提供结构化上下文，并支持无参数微调的自适应知识更新。在多个基准数据集上，OptGraph的平均精确准确率比最先进的提示式优化框架高出8.9%。这一方法有效提升了自动化优化的模式复用能力与鲁棒性，为LLM驱动的进化优化提供了新思路。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language models (LLMs) have emerged as a powerful tool for automated evolutionary optimization, but existing methods remain limited in pattern reuse, error-aware refinement, and retrieval robustness across diverse tasks. To address these limitations, we propose OptGraph, the first optimization agentic workflow that introduces graph retrieval-augmented generation (GraphRAG). Specifically, OptGraph first constructs reusable experience as a typed graph, capturing the relationships among modeling patterns, problem formalization, implementation details, and error corrections. In the inference stage, OptGraph leverages graph neighborhood information to enrich retrieved knowledge, providing structured context to improve modeling, verification, and iterative refinement. Moreover, OptGraph supports adaptive knowledge updates, enabling the distillation of execution traces and verification feedback into reusable graph knowledge without ndertaking LLM parameter tuning. Extensive experiments on benchmark datasets show that our proposed OptGraph achieves an average exact accuracy 8.9% higher than the state-of-the-art prompt-based automated optimization frameworks. Our code has been made available at https://github.com/xianchaoxiu/OptGraph.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/01/2607.26244v1-do-code-language-models-use-tests-a-behavioral-and-representational-study-of-test-driven-code-generation",
+      "section": "quick",
+      "title_en": "Do Code Language Models Use Tests? A Behavioral and Representational Study of Test-Driven Code Generation",
+      "authors": "Yunhao Liang, Chengguang Gan, Ruixuan Ying, Hanjun Wei, Zhe Cui, Shiwen Ni",
+      "date": "2026-07-28",
+      "pdf": "https://arxiv.org/pdf/2607.26244v1",
+      "score": "6.0",
+      "evidence": "关于LLM测试驱动代码生成的行为与表征研究，对优化代码生成的正确性保障有借鉴意义",
+      "tldr": "代码语言模型是否将测试用作可执行规范？本文在多个代码生成基准上，对比自然语言提示与相关、无关、断言及合成测试变体，结合行为翻转、线性探针和表示分析。结果显示：可见测试仅对部分任务有明显提升，且增益易饱和；表示偏移与正确性并不一致。研究表明测试影响既含语义引导又有上下文扰动，仅凭内部状态变化不足以证实有效利用。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Public tests are widely used to guide large language model code generation, but whether models treat them as executable specifications or merely as extra prompt context remains unclear. We study test-driven code generation on HumanEval+, MBPP+, and recent LiveCodeBench tasks using Qwen2.5-Coder-7B and Qwen3.6-27B. We compare natural-language-only prompts with relevant visible tests, shuffled outputs, irrelevant tests, assertion-only tests, and stronger-model-generated synthetic tests. Evaluation combines hidden or private test pass rates with task-level behavior flips, linear probes, and layer-wise hidden-state shifts. Visible tests substantially improve Qwen2.5 performance on MBPP+ but have little or unstable effect on HumanEval+ and LiveCodeBench. For Qwen3.6 on LiveCodeBench, the natural-language-only pass rate rises from 13.1% to 39.4%, yet relevant original tests add only 2.9 percentage points (p = .458), and synthetic high5 tests add 1.7 points over their matched baseline (p = .701). More tests produce larger representation shifts, but accuracy gains quickly saturate or disappear; assertion-only and irrelevant-test prompts can strongly alter hidden states without improving correctness. After controlling for prompt length, task-level shifts are associated with both beneficial and harmful flips, with a substantially stronger association for harms. These results show that tests influence code models through both semantic guidance and prompt-context perturbation, and that representational change alone does not demonstrate effective test utilization.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

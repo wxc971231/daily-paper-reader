@@ -1,0 +1,95 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-01T20:54:52.394531+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.27918v1",
+      "source": "arxiv",
+      "title": "OptGraph: Large Language Models Enhanced Evolutionary Optimization Via Graph Retrieval-Augmented Generation",
+      "abstract": "Large language models (LLMs) have emerged as a powerful tool for automated evolutionary optimization, but existing methods remain limited in pattern reuse, error-aware refinement, and retrieval robustness across diverse tasks. To address these limitations, we propose OptGraph, the first optimization agentic workflow that introduces graph retrieval-augmented generation (GraphRAG). Specifically, OptGraph first constructs reusable experience as a typed graph, capturing the relationships among modeling patterns, problem formalization, implementation details, and error corrections. In the inference stage, OptGraph leverages graph neighborhood information to enrich retrieved knowledge, providing structured context to improve modeling, verification, and iterative refinement. Moreover, OptGraph supports adaptive knowledge updates, enabling the distillation of execution traces and verification feedback into reusable graph knowledge without ndertaking LLM parameter tuning. Extensive experiments on benchmark datasets show that our proposed OptGraph achieves an average exact accuracy 8.9% higher than the state-of-the-art prompt-based automated optimization frameworks. Our code has been made available at https://github.com/xianchaoxiu/OptGraph.",
+      "authors": [
+        "Xianchao Xiu",
+        "Jianhao Li",
+        "Huangyue Chen",
+        "Wanquan Liu"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-07-30T09:30:03+00:00",
+      "link": "https://arxiv.org/pdf/2607.27918v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based evolutionary optimization with graph RAG for modeling patterns and implementation details",
+      "llm_evidence_cn": "利用图检索增强生成进行LLM进化优化，覆盖建模模式与实现细节",
+      "llm_evidence": "利用图检索增强生成进行LLM进化优化，覆盖建模模式与实现细节",
+      "canonical_evidence": "利用图检索增强生成进行LLM进化优化，覆盖建模模式与实现细节",
+      "llm_tldr_en": "OptGraph introduces graph retrieval-augmented generation to LLM-based evolutionary optimization, storing reusable modeling patterns, formalizations, implementation details, and error fixes in a typed graph, and using graph neighborhoods to enrich inference context, improving pattern reuse and robustness across tasks.",
+      "llm_tldr_cn": "OptGraph针对现有基于LLM的进化优化在模式复用、错误感知修正和检索鲁棒性上的不足，提出首个引入图检索增强生成（GraphRAG）的优化代理工作流。它构建可复用的经验图，捕捉建模模式、问题形式化、实现细节与错误修正之间的关系，并在推理阶段利用图邻域信息丰富检索上下文。在多种优化任务上的实验表明，该方法显著提升了模式复用和检索鲁棒性，为LLM驱动的自动优化提供了结构化经验复用新范式。",
+      "llm_tldr": "OptGraph针对现有基于LLM的进化优化在模式复用、错误感知修正和检索鲁棒性上的不足，提出首个引入图检索增强生成（GraphRAG）的优化代理工作流。它构建可复用的经验图，捕捉建模模式、问题形式化、实现细节与错误修正之间的关系，并在推理阶段利用图邻域信息丰富检索上下文。在多种优化任务上的实验表明，该方法显著提升了模式复用和检索鲁棒性，为LLM驱动的自动优化提供了结构化经验复用新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.26244v1",
+      "source": "arxiv",
+      "title": "Do Code Language Models Use Tests? A Behavioral and Representational Study of Test-Driven Code Generation",
+      "abstract": "Public tests are widely used to guide large language model code generation, but whether models treat them as executable specifications or merely as extra prompt context remains unclear. We study test-driven code generation on HumanEval+, MBPP+, and recent LiveCodeBench tasks using Qwen2.5-Coder-7B and Qwen3.6-27B. We compare natural-language-only prompts with relevant visible tests, shuffled outputs, irrelevant tests, assertion-only tests, and stronger-model-generated synthetic tests. Evaluation combines hidden or private test pass rates with task-level behavior flips, linear probes, and layer-wise hidden-state shifts. Visible tests substantially improve Qwen2.5 performance on MBPP+ but have little or unstable effect on HumanEval+ and LiveCodeBench. For Qwen3.6 on LiveCodeBench, the natural-language-only pass rate rises from 13.1% to 39.4%, yet relevant original tests add only 2.9 percentage points (p = .458), and synthetic high5 tests add 1.7 points over their matched baseline (p = .701). More tests produce larger representation shifts, but accuracy gains quickly saturate or disappear; assertion-only and irrelevant-test prompts can strongly alter hidden states without improving correctness. After controlling for prompt length, task-level shifts are associated with both beneficial and harmful flips, with a substantially stronger association for harms. These results show that tests influence code models through both semantic guidance and prompt-context perturbation, and that representational change alone does not demonstrate effective test utilization.",
+      "authors": [
+        "Yunhao Liang",
+        "Chengguang Gan",
+        "Ruixuan Ying",
+        "Hanjun Wei",
+        "Zhe Cui",
+        "Shiwen Ni"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-07-28T20:25:42+00:00",
+      "link": "https://arxiv.org/pdf/2607.26244v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "test-driven LLM code generation study; enabling method for reliable optimization code generation",
+      "llm_evidence_cn": "关于LLM测试驱动代码生成的行为与表征研究，对优化代码生成的正确性保障有借鉴意义",
+      "llm_evidence": "关于LLM测试驱动代码生成的行为与表征研究，对优化代码生成的正确性保障有借鉴意义",
+      "canonical_evidence": "关于LLM测试驱动代码生成的行为与表征研究，对优化代码生成的正确性保障有借鉴意义",
+      "llm_tldr_en": "This study investigates whether code language models treat public tests as executable specifications in test-driven generation, using behavioral probes and hidden-state analysis across HumanEval+, MBPP+, and LiveCodeBench.",
+      "llm_tldr_cn": "该论文研究代码语言模型在测试驱动代码生成中是否真正将测试视为可执行规范，而不仅是提示上下文。作者在HumanEval+、MBPP+和LiveCodeBench上对比多种测试条件，并结合行为翻转、线性探针与隐含层状态分析，发现可见测试对部分模型效果提升显著但不稳定。该工作为理解LLM代码生成机制、改进优化问题求解代码的自动生成质量提供了重要的评测与分析工具。",
+      "llm_tldr": "该论文研究代码语言模型在测试驱动代码生成中是否真正将测试视为可执行规范，而不仅是提示上下文。作者在HumanEval+、MBPP+和LiveCodeBench上对比多种测试条件，并结合行为翻转、线性探针与隐含层状态分析，发现可见测试对部分模型效果提升显著但不稳定。该工作为理解LLM代码生成机制、改进优化问题求解代码的自动生成质量提供了重要的评测与分析工具。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
