@@ -6,28 +6,22 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-01
-- 运行时间：2026-08-01 20:56:41 UTC
+- 最新运行日期：2026-08-02
+- 运行时间：2026-08-02 21:08:21 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：1
-- 速读区：1
+- 本次总论文数：0
+- 精读区：0
+- 速读区：0
 
 ### 今日简报（AI）
-今日精读与速读共2篇，聚焦大模型与代码生成优化。  
-最值得看的是精读《OptGraph》：用图检索增强生成提升进化优化，评分8.0，值得关注。  
-建议优先精读该论文，速读的测试驱动代码生成可作为延伸了解。
-- 详情：[/202608/01/README](/202608/01/README)
+> 今日无新推荐，系统未产出可展示论文。
+- 详情：[/202608/02/README](/202608/02/README)
 
 ### 精读区论文标签
-1. [OptGraph: Large Language Models Enhanced Evolutionary Optimization Via Graph Retrieval-Augmented Generation](/202608/01/2607.27918v1-optgraph-large-language-models-enhanced-evolutionary-optimization-via-graph-retrieval-augmented-generation)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：利用图检索增强生成进行LLM进化优化，覆盖建模模式与实现细节
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Do Code Language Models Use Tests? A Behavioral and Representational Study of Test-Driven Code Generation](/202608/01/2607.26244v1-do-code-language-models-use-tests-a-behavioral-and-representational-study-of-test-driven-code-generation)  
-   标签：评分：6.0/10、query:llm-opt-code
-   evidence：关于LLM测试驱动代码生成的行为与表征研究，对优化代码生成的正确性保障有借鉴意义
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
