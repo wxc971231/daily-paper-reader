@@ -1,0 +1,167 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-03T20:34:54.849210+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2607.29431v1",
+      "source": "arxiv",
+      "title": "ModelEquivBench: Certifying Multi-Relational Evaluation of LLM-Generated Optimization Models",
+      "abstract": "Large language models increasingly generate optimization models from natural language, but existing evaluation often reduces a generated model and its ground truth to a single equivalent/not-equivalent verdict or an execution-success rate--labels that are neither independently checkable nor faithful to the multiple distinct senses in which two formulations can agree. We present ModelEquivBench, a certifying, multi-relational evaluation system that reports a per-pair semantic profile E0--E6: model construction and exact ingestion (E0), verified representation alignment (E1), same-space and projected feasible-set relations (E2, E3), objective-order equivalence (E4), optimal-value equality (E5), and optimizer-set equivalence (E6). Each decided entry carries relation-appropriate, independently re-checkable evidence: replayable traces or explicit maps for E0--E1, exact-rational certificates for positive E2--E6 conclusions, and explicit witnesses for supported negatives. Incomplete mapping search, unsupported structure, and resource limits produce typed UNKNOWN or N/A outcomes rather than guesses, while unmet prerequisites are reported as ABSENT. Using ModelEquivBench to evaluate three model snapshots--GPT-5.4, Claude Sonnet 4.6, and Qwen3.5-397B-A17B--on the same frozen cohort of 173 base problems (346 cells per model) under a no-repair protocol, the resulting profiles expose distinctions that coarse baselines do not represent: 49, 35, and 25 cells contain executable candidates that are nevertheless certified negative on at least one supported relation, and 25, 8, and 18 structural rejections occur on pairs for which E2 certifies mapped feasible-set equality under a verified map. The three model snapshots fail at different stages of the profile and therefore cannot be meaningfully reduced to a single accuracy score.",
+      "authors": [
+        "Penglin Zhu",
+        "Jungang Xu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-31T13:55:09+00:00",
+      "link": "https://arxiv.org/pdf/2607.29431v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Multi-relational evaluation of LLM-generated optimization models",
+      "llm_evidence_cn": "对LLM生成的优化模型进行多关系认证评估",
+      "llm_evidence": "对LLM生成的优化模型进行多关系认证评估",
+      "canonical_evidence": "对LLM生成的优化模型进行多关系认证评估",
+      "llm_tldr_en": "ModelEquivBench presents a certifying multi-relational evaluation system to assess LLM-generated optimization models across semantic equivalence levels E0-E6.",
+      "llm_tldr_cn": "针对LLM从自然语言生成优化模型后缺乏细致评估的问题，论文提出ModelEquivBench，以多关系语义画像（E0-E6）逐一核查模型构建、表示对齐、可行域关系、目标序等价、最优值相等及解集等价。该系统能给出可独立验证的等价性证书，改变以往仅给单一等价判定或执行成功率的做法，为基于LLM的优化建模评测提供了更可靠的基础。",
+      "llm_tldr": "针对LLM从自然语言生成优化模型后缺乏细致评估的问题，论文提出ModelEquivBench，以多关系语义画像（E0-E6）逐一核查模型构建、表示对齐、可行域关系、目标序等价、最优值相等及解集等价。该系统能给出可独立验证的等价性证书，改变以往仅给单一等价判定或执行成功率的做法，为基于LLM的优化建模评测提供了更可靠的基础。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.24459v2",
+      "source": "arxiv",
+      "title": "From Execution to Capability: Scientific Experience Consolidation via Procedural Knowledge Synthesis",
+      "abstract": "Large language models increasingly solve scientific-computing tasks, but executable feedback from one problem rarely becomes durable capability on subsequent problems. We study scientific-computing experience consolidation: converting verified runtime experience into transferable procedural knowledge and persistent model improvement. This setting presents two challenges: trajectory-derived artifacts may encode source-specific repairs rather than cross-task computational mechanisms; and a weaker target model may be unable to operationalize an otherwise valid abstract procedure - an abstraction-execution gap. We introduce SciConsolidate, which contrasts verified successes and failures to induce cross-task procedures, selects them through a development-validation gate, and uses failure-informed, answer-free query synthesis to expand the consolidation data without requiring pre-existing reference answers. Because the target model may not directly execute these abstractions, a stronger model concretizes them into executable code supervision for standard, procedure-free SFT; a matched no-procedure teacher branch isolates the value of procedural guidance. On SciCode, runtime procedure injection improves Qwen3.6-27B by +3.85/+6.26 sub-step/main-problem points, but yields almost no aggregate main-problem gain for Qwen3.5-9B, providing operational evidence of the abstraction-execution gap. After procedure-guided concretization, the 9B student improves under procedure-free deployment by +3.89/+6.25 points over the no-procedure SFT control and by +5.62/+11.25 over the original 9B model. These results establish an experience-to-capability pathway for scientific computing and provide a practical starting point for scaling self-improving scientific assistance.",
+      "authors": [
+        "Liwei Dong",
+        "Jiahao Zhao",
+        "Nan Xu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-27T14:01:32+00:00",
+      "link": "https://arxiv.org/pdf/2607.24459v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Converts verified execution feedback into transferable procedural knowledge for scientific-computing tasks, reusable for optimization code generation",
+      "llm_evidence_cn": "将验证过的执行反馈转化为跨任务的程序性知识，可用于优化代码生成",
+      "llm_evidence": "将验证过的执行反馈转化为跨任务的程序性知识，可用于优化代码生成",
+      "canonical_evidence": "将验证过的执行反馈转化为跨任务的程序性知识，可用于优化代码生成",
+      "llm_tldr_en": "SciConsolidate converts verified execution feedback into transferable procedural knowledge, closing the abstraction-execution gap and enabling persistent improvement of LLMs on scientific computing. This mechanism can also improve LLM-generated optimization code.",
+      "llm_tldr_cn": "大语言模型难以从单次执行经验获得持久能力。SciConsolidate通过对比成功与失败轨迹合成跨任务程序性知识，弥合抽象与执行鸿沟。该方法使模型能把运行时经验转化为可迁移的解题流程，生成更可靠的代码。这对基于LLM的优化问题建模与求解代码生成有借鉴意义。",
+      "llm_tldr": "大语言模型难以从单次执行经验获得持久能力。SciConsolidate通过对比成功与失败轨迹合成跨任务程序性知识，弥合抽象与执行鸿沟。该方法使模型能把运行时经验转化为可迁移的解题流程，生成更可靠的代码。这对基于LLM的优化问题建模与求解代码生成有借鉴意义。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.28082v1",
+      "source": "arxiv",
+      "title": "GGC: Selective Query Correction for Reliable Text-to-SPARQL Generation",
+      "abstract": "Large language models (LLMs) have demonstrated strong capabilities in structured query generation, making them a natural choice for Text-to-SPARQL, which translates natural language questions into executable SPARQL queries over knowledge graphs. However, their initial outputs remain unreliable: generated queries may be executable yet semantically misaligned with input questions, leading to incorrect retrieval. To address this issue, we propose Generator-Gate-Corrector (GGC), a framework for reliable LLM-based Text-to-SPARQL generation. GGC first uses a Generator to produce an initial query, then applies a Gate to predict whether correction is needed, and finally invokes a Corrector only for selected high-risk queries. This selective correction mechanism avoids unnecessary modifications and reduces the risk of degrading originally correct queries. Experiments on MCQA show that GGC improves query-level accuracy from 90.23\\% to 98.33\\% while reducing inference overhead by 45\\% compared with correcting all generated queries. Ablation studies show that the Gate is robust across thresholds and that Corrector training data composition affects correction effectiveness and stability. Overall, the results demonstrate that selective correction enhances the accuracy, reliability, and efficiency of LLM-based text-to-SPARQL generation.",
+      "authors": [
+        "Ziyi Yang",
+        "Thanh-Son Nguyen",
+        "Tuan Anh Nguyen",
+        "Lihui Chen"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-07-30T11:52:09+00:00",
+      "link": "https://arxiv.org/pdf/2607.28082v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Selective generator-gate-corrector framework enhances reliability of LLM-generated executable queries; transferable to optimization code generation",
+      "llm_evidence_cn": "选择性生成-门控-纠正框架提升LLM生成可执行查询的可靠性，可迁移至优化代码生成",
+      "llm_evidence": "选择性生成-门控-纠正框架提升LLM生成可执行查询的可靠性，可迁移至优化代码生成",
+      "canonical_evidence": "选择性生成-门控-纠正框架提升LLM生成可执行查询的可靠性，可迁移至优化代码生成",
+      "llm_tldr_en": "LLM-generated SPARQL queries can be executable yet semantically wrong. GGC uses a generator, a gate that predicts correction need, and a corrector for selected high-risk queries. This selective correction scheme improves reliability and is adaptable to LLM-generated optimization code.",
+      "llm_tldr_cn": "面向文本到SPARQL生成，初始查询可能可执行但与语义不符。本文提出GGC框架，由生成器产生初始查询，门控预测是否需要纠正，仅对高风险查询调用纠正器。实验表明选择性纠正机制在提升查询可靠性方面有效。该框架可推广到利用LLM生成优化问题求解代码的场景，减少不可靠输出。",
+      "llm_tldr": "面向文本到SPARQL生成，初始查询可能可执行但与语义不符。本文提出GGC框架，由生成器产生初始查询，门控预测是否需要纠正，仅对高风险查询调用纠正器。实验表明选择性纠正机制在提升查询可靠性方面有效。该框架可推广到利用LLM生成优化问题求解代码的场景，减少不可靠输出。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.28947v1",
+      "source": "arxiv",
+      "title": "Overcoming the Weakest-Link Effect in LLM-Driven Program Optimization via Heterogeneous Edit Recombination",
+      "abstract": "Large language models (LLMs) are increasingly used to solve complex problems by searching over program space, offering a general paradigm for scientific problems that can be naturally represented and solved as programs. Despite recent progress, identifying effective optimization directions for a candidate program remains challenging. By analogy with automatic differentiation, existing methods typically guide the search using a textual ``gradient'': a first-order update direction expressed as textual edits. Such gradients are inferred either from previously evaluated programs or from LLM-generated feedback on the implicit program-score mapping. However, these estimates become increasingly unreliable as the program--score mapping grows more complex, limiting their practical utility. We argue that explicit gradients are not essential for effective program optimization. Leveraging their prior knowledge, LLMs can propose plausible atomic edits directly from the current program, thereby enabling a zeroth-order optimization strategy. However, zeroth-order search suffers from a \\textit{weakest-link effect}: when a bundle of edits is accepted or rejected as a whole, a single harmful edit can negate the benefits of all remaining edits. To address this issue, we introduce HERO, a program optimizer that prompts an LLM to generate diverse, non-overlapping atomic edits and then systematically selects and composes them into coherent program improvements using evaluator scores. We evaluate HERO across algorithmic problems, strategy games, the design of LLM-based agentic systems, and robotic path planning. Across these domains, HERO consistently discovers higher-scoring programs and converges substantially faster than prior LLM-based optimizers, while consuming fewer tokens.",
+      "authors": [
+        "Jingwen Fu",
+        "Zhen Liu",
+        "Yuhan Liu",
+        "He Zhang",
+        "Nanning Zheng"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-07-31T02:05:45+00:00",
+      "link": "https://arxiv.org/pdf/2607.28947v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-driven program optimization via heterogeneous edit recombination",
+      "llm_evidence_cn": "通过异构编辑重组实现LLM驱动的程序优化",
+      "llm_evidence": "通过异构编辑重组实现LLM驱动的程序优化",
+      "canonical_evidence": "通过异构编辑重组实现LLM驱动的程序优化",
+      "llm_tldr_en": "This paper mitigates the weakest-link effect in LLM-driven program optimization by recombining heterogeneous edits to improve search directions.",
+      "llm_tldr_cn": "论文针对LLM在程序空间搜索中文本梯度不可靠的问题，提出异构编辑重组方法，将多个编辑方向进行重组以寻找更有效的优化方向。该方法借鉴自动微分思想，但通过聚合异质文本来降低单点估计误差。实验表明可提升程序优化效果，为LLM求解可程序化表示的科学问题提供了改进的搜索策略。",
+      "llm_tldr": "论文针对LLM在程序空间搜索中文本梯度不可靠的问题，提出异构编辑重组方法，将多个编辑方向进行重组以寻找更有效的优化方向。该方法借鉴自动微分思想，但通过聚合异质文本来降低单点估计误差。实验表明可提升程序优化效果，为LLM求解可程序化表示的科学问题提供了改进的搜索策略。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
