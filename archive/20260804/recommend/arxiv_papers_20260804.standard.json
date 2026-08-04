@@ -1,0 +1,172 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-04T21:38:18.791296+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2608.00700v1",
+      "source": "arxiv",
+      "title": "DGA$_2$D: Directed Graph-Guided Automated Algorithm Design with Large Language Models",
+      "abstract": "The rapid development of Large Language Models (LLMs) has opened new avenues for Automated Heuristic Design (AHD) for solving NP-hard combinatorial optimization problems (COPs). However, existing LLM-driven AHD methods are largely confined to rigid solver templates, relegating the search process to isolated module tuning. Transitioning to fully autonomous, system-level algorithm design is essential but fraught with low reliability of generated operators, extremely large search spaces, and ineffective credit assignment. To overcome these drawbacks, this paper proposes a Directed Graph-Guided Automated Algorithm Design framework, termed DGA$_2$D. It structures the open-ended program space as a directed graph, where each node represents a functional operator that can be instantiated using one of multiple candidate code implementations, while directed walks constitute complete algorithmic pipelines. A first-order path-dependent credit assignment mechanism is introduced to evaluate code variations strictly based on their topological context. Extensive experiments across 12 distinct COPs, ranging from complex scheduling to routing, demonstrate the consistent empirical advantages of DGA$_2$D. It reduces the average normalized gap by up to 10.96 percentage points compared to state-of-the-art LLM baselines.",
+      "authors": [
+        "Jiale Zhao",
+        "Zimu Chen",
+        "Sirui Mao",
+        "Wentao Yang",
+        "Yuxiang Bai",
+        "Liyuanjun Lai"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.NE"
+      ],
+      "published": "2026-08-01T14:59:38+00:00",
+      "link": "https://arxiv.org/pdf/2608.00700v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-driven automated algorithm design for combinatorial optimization problems",
+      "llm_evidence_cn": "用大语言模型自动设计组合优化求解算法",
+      "llm_evidence": "用大语言模型自动设计组合优化求解算法",
+      "canonical_evidence": "用大语言模型自动设计组合优化求解算法",
+      "llm_tldr_en": "Proposes DGA2D, a directed graph-guided automated heuristic design framework using LLMs, structuring program space into a directed graph for system-level algorithm design for NP-hard combinatorial optimization, improving reliability and search efficiency.",
+      "llm_tldr_cn": "现有LLM驱动自动启发式设计受限于固定求解器模板，难以实现系统级算法设计。本文提出DGA2D框架，将开放程序空间组织为有向图，以节点和边分别表示程序组件与编辑操作。该方法提升了生成算子的可靠性，缓解了搜索空间大和信用分配难的问题。实验表明DGA2D在多个NP难组合优化问题上优于模板化基线，展示了LLM自动设计优化算法的潜力。",
+      "llm_tldr": "现有LLM驱动自动启发式设计受限于固定求解器模板，难以实现系统级算法设计。本文提出DGA2D框架，将开放程序空间组织为有向图，以节点和边分别表示程序组件与编辑操作。该方法提升了生成算子的可靠性，缓解了搜索空间大和信用分配难的问题。实验表明DGA2D在多个NP难组合优化问题上优于模板化基线，展示了LLM自动设计优化算法的潜力。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.00991v1",
+      "source": "arxiv",
+      "title": "SCHEDBench: A Benchmark for Evaluating LLM Constraint Faithfulness in Natural-Language Combinatorial Scheduling",
+      "abstract": "This paper introduces SCHEDBench, a natural-language benchmark for evaluating combinatorial scheduling constraint faithfulness under surface-form variation. Grounded in canonical scheduling instances and solver-derived feasibility and optimality, SCHEDBench assesses whether large language models (LLMs) generate schedules with the same constraint-feasible behavior across varied natural-language (NL) surface forms. SCHEDBench spans 1,132 instances across job-shop scheduling problems (JSP), single and multi-mode resource-constrained project scheduling problems (RCPSP), nurse rostering/scheduling, and curriculum timetabling problems of varying difficulty. Instances are templated into natural language problems using domain-specific templates, themed entities, lexical-syntactic template rephrasing, and constraint-level surface-form variation, with reference solutions verified for feasibility and objective optimality. Across thirteen frontier and open-weight LLMs, we find that models are not reliably invariant to semantically equivalent renderings of the same scheduling problem. Surface-form variation reduces feasibility and induces above-noise shifts in per-instance hard-constraint violations on matched instances. Among the tested isolated axes, constraint reordering yields the clearest above-noise sensitivity.",
+      "authors": [
+        "Shrenil Shaun Sharma",
+        "Avi Sharma"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-08-02T04:41:20+00:00",
+      "link": "https://arxiv.org/pdf/2608.00991v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Benchmark for LLM constraint faithfulness in natural-language combinatorial scheduling",
+      "llm_evidence_cn": "面向自然语言组合调度任务评估LLM约束忠实度",
+      "llm_evidence": "面向自然语言组合调度任务评估LLM约束忠实度",
+      "canonical_evidence": "面向自然语言组合调度任务评估LLM约束忠实度",
+      "llm_tldr_en": "Introduces SCHEDBench, a benchmark with 1,132 instances across job-shop scheduling, RCPSP, nurse rostering, and curriculum timetabling, evaluating whether LLMs generate constraint-feasible schedules under varied natural-language surface forms.",
+      "llm_tldr_cn": "自然语言组合调度中，LLM是否真正遵循约束缺乏系统评测。该文提出SCHEDBench，覆盖作业车间调度、资源受限项目调度、护士排班和课程表等1,132个实例，并用求解器结果检验可行性与最优性。基准评估不同自然语言表述下LLM生成调度的约束一致性。实验显示LLM在表面形式变化下约束遵循不稳定，为提升LLM建模运筹优化问题提供了评测平台。",
+      "llm_tldr": "自然语言组合调度中，LLM是否真正遵循约束缺乏系统评测。该文提出SCHEDBench，覆盖作业车间调度、资源受限项目调度、护士排班和课程表等1,132个实例，并用求解器结果检验可行性与最优性。基准评估不同自然语言表述下LLM生成调度的约束一致性。实验显示LLM在表面形式变化下约束遵循不稳定，为提升LLM建模运筹优化问题提供了评测平台。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.00326v1",
+      "source": "arxiv",
+      "title": "Learning to Coordinate Symbolic Tools: LLM Agents for Verified Sum-of-Squares Certificates",
+      "abstract": "Tool calling allows large language models (LLMs) to invoke external computation during problem solving, a useful capability in various fields including AI for mathematics. We study this setting through weighted sum-of-squares (SOS) decomposition, a machine-checkable route to proving polynomial nonnegativity and hence polynomial inequalities. A candidate decomposition can be checked exactly, but finding one requires choosing among non-unique regroupings and coordinating multiple symbolic transformations. We develop an agent that combines algebraic task training, symbolic tools, and verifier-grounded optimization for this task. Rather than training only on the composite SOS task, we construct 1.35 million synthetic examples covering eight supporting polynomial tasks together with weighted-SOS decomposition. We first apply supervised fine-tuning (SFT) to direct algebra problems and simulated symbolic traces, and then use Group Relative Policy Optimization (GRPO) with task-specific symbolic rewards. The SFT corpus contains no native tool-calling messages; at evaluation, the agent uses native SymPy calls for expansion, collection, reordering, and factorization. Every final SOS answer is checked by exact expansion and coefficient comparison. On held-out, same-generator synthetic problems, the full SFT+GRPO+tools system is the strongest of four evaluated configurations, reaching 78.96% verified success on weighted SOS, compared with 44.73% for the base model with the same tools, and 91.75% macro accuracy across nine polynomial tasks. Within this controlled setting, our work provides a case study of combining domain-specific skill training, executable tools, and verifier feedback, and may inform the design of tool-calling agents in other domains with exactly checkable outputs.",
+      "authors": [
+        "Bohan Chen",
+        "Shivam N. Patel",
+        "Richard Hoffmann",
+        "Sam Looi",
+        "Tony Yue Yu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-31T22:26:45+00:00",
+      "link": "https://arxiv.org/pdf/2608.00326v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM agents generate verified SOS certificates for polynomial optimization",
+      "llm_evidence_cn": "LLM智能体为多项式优化生成可验证的平方和证书",
+      "llm_evidence": "LLM智能体为多项式优化生成可验证的平方和证书",
+      "canonical_evidence": "LLM智能体为多项式优化生成可验证的平方和证书",
+      "llm_tldr_en": "Develops an LLM agent combining algebraic task training, symbolic tools, and verifier-grounded optimization to produce machine-checkable weighted sum-of-squares certificates, proving polynomial inequalities via tool coordination.",
+      "llm_tldr_cn": "求解加权平方和分解需要协调多种符号变换，而单个LLM难以独立完成。该文开发了一种LLM智能体，结合代数任务训练、符号工具和验证器反馈，自动搜索可验证的SOS证书。通过构造135万条合成示例训练，智能体在多项式不等式验证任务上获得高可靠结果。该方法展示了LLM与外部工具协作求解数学优化验证问题的潜力。",
+      "llm_tldr": "求解加权平方和分解需要协调多种符号变换，而单个LLM难以独立完成。该文开发了一种LLM智能体，结合代数任务训练、符号工具和验证器反馈，自动搜索可验证的SOS证书。通过构造135万条合成示例训练，智能体在多项式不等式验证任务上获得高可靠结果。该方法展示了LLM与外部工具协作求解数学优化验证问题的潜力。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.00641v1",
+      "source": "arxiv",
+      "title": "DASH: Decoupled Adaptive Surrogate - Acquisition Harness for Automated Bayesian Optimization",
+      "abstract": "Bayesian optimization (BO) relies on a surrogate model and an acquisition function, yet the most suitable choices vary across tasks and optimization stages. Automated Bayesian optimization (AutoBO) addresses this variability by adapting BO components online. However, existing AutoBO methods either adapt one component, leaving the other mismatched and creating a bottleneck, or jointly select surrogate--acquisition pairs under a shared criterion, overlooking their distinct roles: surrogate selection depends on predictive reliability, whereas acquisition adaptation should respond to campaign context.In this paper, we propose DASH, a Decoupled Adaptive Surrogate--Acquisition Harness for large-language- model (LLM)-enhanced AutoBO. DASH selects surrogates by predictive reliability, uncertainty calibration, and ranking consistency; its two-stage acquisition controller periodically reallocates quotas across acquisition functions, builds a BO shortlist accordingly, and delegates final selection to an LLM. DASH also incorporates an integrated harness, consisting of knowledge-guided warm start and structured memory, to ground optimization in domain knowledge and accumulated feedback. Across four chemical optimization tasks, DASH outperforms the best AutoBO baseline by 12.51% in trajectory-level Acceleration Factor and 5.00% in endpoint Enhancement Factor. Results remain strong across LLM backbones, and ablations verify the complementary contributions of all components. Full-table and behavioral contamination checks find no detectable evidence that direct benchmark memorization or source-cell leakage explains these gains.",
+      "authors": [
+        "Changquan Zhao",
+        "Yuxiang Sun",
+        "Ruihao Zhu",
+        "Cheng Hua",
+        "Yulian He"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-01T12:53:34+00:00",
+      "link": "https://arxiv.org/pdf/2608.00641v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-enhanced automated Bayesian optimization for surrogate and acquisition adaptation",
+      "llm_evidence_cn": "LLM增强的自动贝叶斯优化，自适应选择代理模型和采集函数",
+      "llm_evidence": "LLM增强的自动贝叶斯优化，自适应选择代理模型和采集函数",
+      "canonical_evidence": "LLM增强的自动贝叶斯优化，自适应选择代理模型和采集函数",
+      "llm_tldr_en": "Proposes DASH, a decoupled adaptive surrogate-acquisition harness for LLM-enhanced automated Bayesian optimization, adapting surrogate and acquisition choices separately based on their distinct roles, improving AutoBO performance.",
+      "llm_tldr_cn": "自动贝叶斯优化需要在不同任务和阶段适配代理模型与采集函数，但现有方法常忽略二者不同角色。该文提出DASH，将替代模型选择与采集函数适配解耦，利用LLM增强决策，分别根据预测可靠性和优化状态调整。实验表明DASH在多个BO基准上优于联合选择方法。该方法为LLM在优化流程自动化中的应用提供了新思路。",
+      "llm_tldr": "自动贝叶斯优化需要在不同任务和阶段适配代理模型与采集函数，但现有方法常忽略二者不同角色。该文提出DASH，将替代模型选择与采集函数适配解耦，利用LLM增强决策，分别根据预测可靠性和优化状态调整。实验表明DASH在多个BO基准上优于联合选择方法。该方法为LLM在优化流程自动化中的应用提供了新思路。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

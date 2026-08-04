@@ -6,32 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-03
-- 运行时间：2026-08-03 20:39:05 UTC
+- 最新运行日期：2026-08-04
+- 运行时间：2026-08-04 21:42:18 UTC
 - 运行状态：成功
 - 本次总论文数：4
-- 精读区：1
-- 速读区：3
+- 精读区：2
+- 速读区：2
 
 ### 今日简报（AI）
-今日精读聚焦大模型优化模型评估新基准，另有3篇速读涉知识合成、SPARQL修正与程序优化。最值得关注ModelEquivBench（9.0分），其多关系评估框架可更可靠地认证生成优化模型质量；速读中文本转SPARQL查询纠错亦具实用价值。建议优先复现精读基准以验证自身模型，速读方向可留作扩展参考。
-- 详情：[/202608/03/README](/202608/03/README)
+今日共读4篇论文，精读2篇聚焦大语言模型（LLM）的自动化算法设计与自然语言调度约束评估。最值得关注的是9.0分的DGA2D（用有向图引导LLM自动设计算法）及8.0分的SCHEDBench（测试LLM对组合调度约束的忠实度）。下一步建议可沿着“LLM+结构化约束/算法生成”方向深入探索。
+- 详情：[/202608/04/README](/202608/04/README)
 
 ### 精读区论文标签
-1. [ModelEquivBench: Certifying Multi-Relational Evaluation of LLM-Generated Optimization Models](/202608/03/2607.29431v1-modelequivbench-certifying-multi-relational-evaluation-of-llm-generated-optimization-models)  
+1. [DGA$_2$D: Directed Graph-Guided Automated Algorithm Design with Large Language Models](/202608/04/2608.00700v1-dga2d-directed-graph-guided-automated-algorithm-design-with-large-language-models)  
    标签：评分：9.0/10、query:llm-opt-code
-   evidence：对LLM生成的优化模型进行多关系认证评估
+   evidence：用大语言模型自动设计组合优化求解算法
+2. [SCHEDBench: A Benchmark for Evaluating LLM Constraint Faithfulness in Natural-Language Combinatorial Scheduling](/202608/04/2608.00991v1-schedbench-a-benchmark-for-evaluating-llm-constraint-faithfulness-in-natural-language-combinatorial-scheduling)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：面向自然语言组合调度任务评估LLM约束忠实度
 
 ### 速读区论文标签
-1. [From Execution to Capability: Scientific Experience Consolidation via Procedural Knowledge Synthesis](/202608/03/2607.24459v2-from-execution-to-capability-scientific-experience-consolidation-via-procedural-knowledge-synthesis)  
+1. [Learning to Coordinate Symbolic Tools: LLM Agents for Verified Sum-of-Squares Certificates](/202608/04/2608.00326v1-learning-to-coordinate-symbolic-tools-llm-agents-for-verified-sum-of-squares-certificates)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：将验证过的执行反馈转化为跨任务的程序性知识，可用于优化代码生成
-2. [GGC: Selective Query Correction for Reliable Text-to-SPARQL Generation](/202608/03/2607.28082v1-ggc-selective-query-correction-for-reliable-text-to-sparql-generation)  
+   evidence：LLM智能体为多项式优化生成可验证的平方和证书
+2. [DASH: Decoupled Adaptive Surrogate - Acquisition Harness for Automated Bayesian Optimization](/202608/04/2608.00641v1-dash-decoupled-adaptive-surrogate---acquisition-harness-for-automated-bayesian-optimization)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：选择性生成-门控-纠正框架提升LLM生成可执行查询的可靠性，可迁移至优化代码生成
-3. [Overcoming the Weakest-Link Effect in LLM-Driven Program Optimization via Heterogeneous Edit Recombination](/202608/03/2607.28947v1-overcoming-the-weakest-link-effect-in-llm-driven-program-optimization-via-heterogeneous-edit-recombination)  
-   标签：评分：6.0/10、query:llm-opt-code
-   evidence：通过异构编辑重组实现LLM驱动的程序优化
+   evidence：LLM增强的自动贝叶斯优化，自适应选择代理模型和采集函数
 
 
 <div class="dpr-home-promo-card">

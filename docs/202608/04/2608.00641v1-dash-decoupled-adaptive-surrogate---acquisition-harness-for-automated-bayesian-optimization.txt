@@ -1,0 +1,359 @@
+Title: DASH: Decoupled Adaptive Surrogate - Acquisition Harness for Automated Bayesian Optimization
+
+URL Source: https://arxiv.org/pdf/2608.00641v1
+
+Published Time: Tue, 04 Aug 2026 00:40:17 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# DASH: Decoupled Adaptive Surrogate - Acquisition Harness for Automated Bayesian Optimization 
+
+## Changquan Zhao 1∗, Yuxiang Sun 2∗, Ruihao Zhu 3†, Cheng Hua 2†, Yulian He 1† 
+
+> 1
+
+Global College, Shanghai Jiao Tong University, Shanghai, China  
+
+> 2
+
+Antai College of Economics and Management, Shanghai Jiao Tong University, Shanghai, China  
+
+> 3
+
+SC Johnson College of Business, Cornell University, Ithaca, NY, USA chomaster@sjtu.edu.cn, scscsc04@sjtu.edu.cn, ruihao.zhu@cornell.edu cheng.hua@sjtu.edu.cn, yulian.he@sjtu.edu.cn 
+
+Abstract 
+
+Bayesian optimization (BO) relies on a surrogate model and an acquisition function, yet the most suitable choices vary across tasks and optimization stages. Automated Bayesian optimization (AutoBO) addresses this variability by adapt-ing BO components online. However, existing AutoBO meth-ods either adapt one component, leaving the other mis-matched and creating a bottleneck, or jointly select surrogate– acquisition pairs under a shared criterion, overlooking their distinct roles: surrogate selection depends on predictive relia-bility, whereas acquisition adaptation should respond to cam-paign context. In this paper, we propose DASH , a Decoupled 
+
+Adaptive Surrogate–Acquisition Harness for large-language-model (LLM)-enhanced AutoBO. DASH selects surrogates by predictive reliability, uncertainty calibration, and rank-ing consistency; its two-stage acquisition controller period-ically reallocates quotas across acquisition functions, builds a BO shortlist accordingly, and delegates final selection to an LLM. DASH also incorporates an integrated harness, con-sisting of knowledge-guided warm start and structured mem-ory, to ground optimization in domain knowledge and accu-mulated feedback. Across four chemical optimization tasks, DASH outperforms the best AutoBO baseline by 12.51% in trajectory-level Acceleration Factor and 5.00% in endpoint Enhancement Factor. Results remain strong across LLM back-bones, and ablations verify the complementary contributions of all components. Full-table and behavioral contamination checks find no detectable evidence that direct benchmark memorization or source-cell leakage explains these gains. 
+
+## Introduction 
+
+Bayesian optimization (BO) is a sample-efficient method for optimizing costly black-box objectives, achieving strong per-formance in applications such as chemical reaction optimiza-tion (Shields et al. 2021) and hyperparameter tuning (Snoek, Larochelle, and Adams 2012). Traditional BO typically relies on a fixed surrogate model to fit the unknown response sur-face and a fixed acquisition strategy to select subsequent eval-uations. However, it has been widely demonstrated that the optimal surrogate and acquisition strategy differ across prob-
+
+> ∗
+
+These authors contributed equally. 
+
+> †
+
+Corresponding author. 
+
+lem instances and evolve across optimization stages, making a static configuration suboptimal (Wang et al. 2023). To address this, automated Bayesian optimization (Au-toBO) has been proposed to adapt BO configurations during the optimization process. Early developments mainly focus on dynamically adjusting the acquisition strategy based on historical observations (Hoffman, Brochu, and de Freitas 2011; Vasconcelos et al. 2019). Although effective, they of-ten overlook broader optimization context such as search progress, remaining budget, and domain knowledge. In ad-dition, they leave the surrogate model fixed, which can still lead to model misspecification and degrade performance. Recently, with the help of large language models (LLMs), pilot studies have used LLMs to enhance AutoBO through kernel evolution (Suwandi et al. 2025), acquisition function switching (Ngo et al. 2026), and candidate or sampling guid-ance (Liu et al. 2024; Yang et al. 2025), achieving promising results. However, these methods still adapt only one compo-nent at a time. Unfortunately, a misaligned combination can still hurt the performance of the entire AutoBO loop. As such, recent work studies their joint selection by ret-rospectively evaluating surrogate–acquisition pairs on the available data (Park et al. 2025). However, the two compo-nents play different roles in BO. The surrogate model es-timates the response surface and uncertainty, whereas the acquisition strategy determines how to act under the current belief, budget, and search trajectory. Thus, surrogate adap-tation is naturally data-driven, while acquisition adaptation is better treated as a context-driven decision. Jointly select-ing surrogate–acquisition pairs under a single retrospective criterion tends to overlook their distinct roles and overfit the limited observations. Motivated by this observation, we propose DASH ,a Decoupled Adaptive Surrogate-acquisition Harnessing framework for LLM-enhanced AutoBO. DASH selects the surrogate model by evaluating how well candidate mod-els fit historical observations in both predictive mean and uncertainty. Meanwhile, it also leverages an LLM to adap-tively allocate candidate quotas across acquisition functions and select the next evaluation from the resulting candi-date pool. To support reliable LLM-guided acquisition and arXiv:2608.00641v1 [cs.AI] 1 Aug 2026 the broader AutoBO process, DASH incorporates essential harnessing mechanisms, including knowledge-guided warm start and structured memory system. The warm start incorpo-rates domain knowledge into initialization, while the memory records the optimization trajectory and reusable knowledge to ground subsequent decisions in accumulated evidence. Together, they provide informed initialization and persistent feedback, improving both LLM decision-making and the re-liability of the overall AutoBO loop. Our main contributions can be summarized as follows. 
+
+• We propose a novel decoupled AutoBO framework that adapts surrogate model and acquisition strategy through data-driven and LLM-driven paradigms, respectively. 
+
+• We develop DASH, which complements its decoupled controllers with essential harnessing mechanisms to sup-port reliable LLM-enhanced AutoBO. 
+
+• We demonstrate consistent improvements over AutoBO and LLM-enhanced BO baselines across chemical reac-tion optimization and hyperparameter tuning. 
+
+## Problem Setup and Preliminaries 
+
+We consider sequential black-box optimization over a mixed search space X . Each candidate x ∈ X may contain con-tinuous and categorical variables. At iteration t, the op-timizer selects a candidate xt, observes a scalar response 
+
+yt = f (xt) + ϵt, and updates the observation set Dt. The goal is to identify a high-performing candidate under a lim-ited evaluation budget. BO addresses this problem by maintaining a probabilistic surrogate model over the unknown objective and using an acquisition function to decide where to evaluate next. Many classical BO methods use Gaussian processes (GPs) as sur-rogate models, since GPs provide both predictive means and uncertainty estimates. The surrogate model estimates the response surface and its uncertainty, while the acquisition function translates these estimates into a sampling decision that balances exploitation and exploration. Common acqui-sition functions include Expected Improvement (EI) (Jones, Schonlau, and Welch 1998), Probability of Improvement (PI) (Kushner 1964), Upper Confidence Bound (UCB) (Srini-vas et al. 2010), and Thompson Sampling (TS) (Thompson 1933). When multiple evaluations can be performed in paral-lel, EI and UCB can be extended to q Expected Improvement (qEI) (Wang et al. 2020) and q Upper Confidence Bound (qUCB) (Wilson, Hutter, and Deisenroth 2018), respectively. In standard BO, both the surrogate model and the acquisition function are often fixed before optimization begins. In practical experimental spaces, however, the most suit-able modeling and sampling strategies may change across tasks and optimization stages. Early iterations may re-quire broader exploration and robust uncertainty estimates, whereas later iterations may benefit from more exploitative or locally refined search. This motivates an AutoBO set-ting in which BO components are adapted during the cam-paign. In this work, we distinguish two adaptation problems: surrogate-side adaptation, which determines which model is currently reliable for representing the observed data, and acquisition-side strategy adaptation, which determines how the optimizer should act under the current search context. 
+
+## Related Work 
+
+Traditional AutoBO. Traditional AutoBO methods typi-cally adapt BO configurations using numerical feedback from the optimization trajectory. Early research primarily fo-cused on adapting the acquisition function. GP-Hedge (Hoff-man, Brochu, and de Freitas 2011) constructs an acquisi-tion function portfolio and updates the selection probabil-ities through a Hedge-based online mechanism, while No-PASt-BO (Vasconcelos et al. 2019) improves this strategy by discounting earlier evaluations and normalizing portfolio rewards. HEBO (Cowen-Rivers et al. 2022) jointly optimizes an ensemble of acquisition functions and selects the result-ing Pareto-efficient candidate. Other works explore dynamic schedules for switching between EI and PI (Benjamins et al. 2022), as well as heuristic acquisition function adaptation to-ward AutoBO (Jariego P’erez and Garrido-Merch’an 2021). More recently, BOOST (Park et al. 2025) extends automatic configuration beyond the acquisition function by retrospec-tively evaluating candidate kernel–acquisition pairs on the available observations and selecting the pair expected to per-form best in subsequent optimization. 
+
+LLM-Enhanced BO. In recent years, LLMs have been in-tegrated into BO to leverage their world knowledge and reasoning capabilities for optimization. One line of work uses LLMs to enhance individual BO components. GOL-LuM (Rankovi’c, Griffiths, and Schwaller 2025) combines LLM representations with GP-based optimization through LLM-based deep kernels, CAKE (Suwandi et al. 2025) uses LLMs to generate and evolve GP kernels during optimization, and LMABO (Ngo et al. 2026) formulates acquisition func-tion selection as an in-context decision-making problem. An-other line of work uses LLMs as broader assistants through-out the BO process. LLAMBO (Liu et al. 2024) formulates BO as a natural language context for warm start, surrogate modeling, and candidate sampling. Reasoning BO (Yang et al. 2025) and BORA (Ciss’e et al. 2025) further use LLMs for hypothesis generation, sampling guidance, and real-time interpretation of the optimization process. 
+
+## Proposed DASH Framework 
+
+The overall framework of DASH is illustrated in Figure 1. Given a specific optimization problem, DASH first draws on the LLM’s world knowledge to formulate relevant hy-potheses and stores them in structured memory. Guided by these hypotheses, it designs a warm start that balances the exploration and exploitation, yielding the initial observation set. After initialization, each BO iteration follows two de-coupled adaptation paths. The data-driven path periodically evaluates candidate surrogate models using the accumulated observations and updates the active model when warranted. The context-driven path first uses the LLM to adapt the ac-quisition function configuration to the current optimization state and construct a candidate pool, and then asks the LLM to select the next evaluation point based on memory and candidate-specific information. Once the result is observed, Periodically · Evaluate and select  Stage 1 · Candidate -pool construction 
+
+> Stage 2 · Bounded candidate selection
+
+Warm start  Data -driven surrogate adaptation  Context -driven acquisition adaptation                                      
+
+> Task information
+> LLM reasoning
+> x
+> y
+> Eligible Models
+> Gaussian Process
+> CatBoost
+> LOOCV Evaluation
+> •Predictive
+> reliability
+> •Uncertainty
+> calibration
+> •Ranking
+> consistency
+> Every iteration · Fit 𝐒 𝐭
+> Current
+> Status LLM allocate qLogEI
+> ×2
+> qUCB
+> ×2
+> TS
+> ×1
+> Candidate pool 𝐂 𝐭
+> Source · Rank Candidate Information
+> qLogEI #1 (𝐗 𝟏 ,𝝁 𝟏 ,𝝈 𝟏 ,…)
+> qLogEI #2 (𝐗 𝟐 ,𝝁 𝟐 ,𝝈 𝟐 ,…)
+> qUCB #1 (𝐗 𝟑 ,𝝁 𝟑 ,𝝈 𝟑 ,…)
+> qUCB #2 (𝐗 𝟒 ,𝝁 𝟒 ,𝝈 𝟒 ,…)
+> TS #1 (𝐗 𝟓 ,𝝁 𝟓 ,𝝈 𝟓 ,…)
+> Candidate
+> Pool
+> Working Memory
+
+# Harness  Decoupled surrogate –acquisition  Harness 
+
+> Hypotheses
+
+H1 
+
+H2 
+
+> …
+> Initial observations
+
+Memory system      
+
+> Episodic Memory
+> Semantic Memory
+> State
+> Budget
+> Shortlist
+> Rules
+> Knowledge
+> Trajectory
+> Hypotheses
+> x
+> y
+> Deep Ensemble
+> Active Surrogate Model 𝐒 𝐭
+> Memory
+> Context
+> LLM choose next
+> experiment 𝐗 𝐭 +𝟏 Experiment
+> Outcome 𝐲 𝐭 +𝟏 LLM updates memories
+
+Figure 1: Overview of the proposed DASH framework. DASH reflects on the outcome and updates its memory by revising the hypotheses and distilling reusable knowledge for subsequent decisions. 
+
+Data-Driven Surrogate Model Adaptation 
+
+The suitability of a surrogate model depends on both the optimization problem and the observations accumulated at the current stage. A reliable surrogate model should rep-resent the response surface through an mean estimate and credible uncertainty quantification. The former determines which regions appear promising, whereas the latter indicates how strongly those predictions are supported and guides ex-ploration of insufficiently observed regions. These proper-ties can be assessed directly from how well a model pre-dicts existing observations when they are held out. DASH therefore uses the collected data as empirical evidence for surrogate adaptation, periodically comparing the predictive performance of available models and updating the active sur-rogate when the evidence supports a change. To accommodate response surfaces with different struc-tures, DASH maintains a diverse surrogate candidate pool, in-cluding mixed-variable Gaussian process (GP) models with different continuous and categorical kernels (Williams and Rasmussen 2006), CatBoost (Prokhorenkova et al. 2018), and deep ensembles (Lakshminarayanan, Pritzel, and Blun-dell 2017). To balance timely improvements in predictive fit against unstable model switching, DASH evaluates the surrogate pool every k iterations rather than at every iteration. At evalu-ation iteration t, let Dt = {(xj , y j )}nt 
+
+> j=1
+
+denote the accumu-lated observations and St the set of eligible surrogates. For each si ∈ S t, DASH performs leave-one-out cross-validation (LOOCV). Specifically, it successively removes each obser-vation (xj , y j ), fits si on the remaining observations, and pre-dicts the held-out input xj to obtain the predictive mean μij 
+
+and standard deviation σij . These held-out predictions are then aggregated into three complementary surrogate-level evaluation signals. 
+
+Predictive reliability. fseq averages the predictive log like-lihood across all held-out observations: 
+
+fseq (si) = 1
+
+ntntX
+
+> j=1
+
+ℓij ,ℓij = − 12 log(2 πσ 2 
+
+> ij
+
+) − 12
+
+ yj − μij 
+
+σij 
+
+2
+
+.
+
+(1) The standardized residual term penalizes inaccurate predic-tive means, while the log variance term prevents the model from masking prediction errors with excessively diffuse un-certainty. A higher fseq therefore indicates better out-of-sample probabilistic predictive performance under LOOCV. 
+
+Uncertainty calibration. fcal compares the empirical cover-age of the held-out predictive intervals with a target coverage level ρ:
+
+fcal (si) = − | cov( si) − ρ| ,
+
+cov( si) = 1
+
+ntntX
+
+> j=1
+
+1[yj ∈ [μij − zρσij , μ ij + zρσij ]] , (2) where zρ denotes the corresponding quantile of the standard normal distribution. A value closer to zero indicates bet-ter calibration, whereas a larger deviation suggests that the surrogate is either overconfident or overly conservative. 
+
+Ranking consistency. frank evaluates whether the held-out predictive means preserve the ordering of the high-performing observations. Let It denote the indices of up to the top K observations according to the optimization di-rection at iteration t. The score is defined as 
+
+frank (si) = Spearman ( {μij }j∈I t , {yj }j∈I t ) . (3) A higher frank indicates that the surrogate more reliably distinguishes among the promising regions. After computing the three surrogate-level metrics, DASH standardizes each metric across the eligible surrogate pool and combines them into the overall score 
+
+f (si) = wseq zseq (si) + wcal zcal (si) + wrank zrank (si),
+
+(4) where zq (si) denotes the standardized value of fq (si)
+
+among the eligible surrogates, and wq determine the rela-tive contributions of the three evaluation dimensions, q ∈{seq , cal , rank }. Let s⋆t = arg max si∈S t f (si) denote the highest scoring eligible surrogate and sact  
+
+> t
+
+the active surro-gate. DASH switches to s⋆t only if the active surrogate fails the evaluation or f (s⋆t ) − f (sact  
+
+> t
+
+) > δ ; otherwise, it retains the active surrogate to avoid unstable switching. 
+
+Context-Driven Acquisition Strategy Adaptation 
+
+Conventional BO typically uses a fixed acquisition function and selects its top-ranked candidate at each iteration. This design has two limitations. First, a fixed acquisition func-tion maintains the same exploration–exploitation preference as the search evolves, although the appropriate preference may change with the optimization progress. Second, the top-1 decision follows a single numerical ranking and cannot account for broader context, including recent outcomes, ac-tive hypotheses, domain knowledge, and accumulated experi-ence. DASH therefore adopts a two-stage acquisition strategy. Stage 1 is triggered periodically to reconfigure the acquisi-tion weights from the current optimization progress, after which the latest configuration is used to construct a can-didate pool. Stage 2 then uses the LLM to select the next experiment from this pool by combining campaign context with candidate-specific evidence. 
+
+Stage 1: Candidate-pool construction. DASH considers three standard acquisition functions. qLogEI favours refine-ment around regions that have already shown promise, qUCB supports controlled exploration when uncertainty remains informative, and TS encourages broader exploration when greater search diversity is needed. At every BO iteration, DASH constructs a pool Ct contain-ing N unique candidates. Once a reconfiguration is triggered, the LLM receives a summary of the current optimization progress and determines how the N candidate quotas are dis-tributed across the three acquisition functions. The resulting allocation is used until the next reconfiguration. Each acqui-sition function contributes its highest-ranked candidates up to the assigned quota. Duplicate proposals are merged, and additional candidates are drawn from the subsequent acqui-sition rankings until the pool contains N unique candidates. For each retained candidate, DASH records its predictive mean and uncertainty together with a compact acquisition profile comprising its proposing functions, within-function ranks, and cross-function consensus. This information is passed to Stage 2 to support the bounded LLM selection. 
+
+Stage 2: Bounded LLM candidate selection. Given Ct,the LLM considers two complementary sources of evidence before selecting the next experiment. Campaign-level evi-dence is retrieved from memory and summarizes the opti-mization progress, active hypotheses, and knowledge accu-mulated during the search. Candidate-level evidence links each candidate to the surrogate belief through its predic-tive mean and uncertainty, and to the acquisition information through its sources, ranks and consensus. The LLM com-bines these signals with its pretrained scientific knowledge to assess each candidate’s practical plausibility, predicted potential, and value to the current search trajectory. It then selects the most valuable candidate for the current stage as the next experiment. 
+
+Harnessing Mechanisms 
+
+To support reliable and effective LLM-guided AutoBO, DASH incorporates essential harnessing mechanisms includ-ing knowledge-guided warm start and structured memory system, strengthening both LLM decision quality and over-all AutoBO performance. 
+
+Knowledge-guided warm start. Given a task specifica-tion, DASH uses the LLM’s world knowledge and reason-ing capabilities to generate relevant hypotheses that identify promising search directions. Guided by these hypotheses, the LLM selects M initial points from the legal candidate space, balancing well-supported regions with plausible but uncertain alternatives while avoiding duplicate or concen-trated choices. Their evaluations form the initial observation set for subsequent BO iteration. 
+
+Structured memory. Structured memory maintains opti-mization information at three levels: working memory repre-sents the current optimization state, episodic memory records the optimization trajectory and the evolving status of active hypotheses, and semantic memory stores reusable knowledge derived during optimization. After each observation, DASH interprets the outcome, updates the current state and rele-vant hypothesis statuses, and consolidates the new reusable knowledge. This evolving context informs acquisition config-uration and guides bounded selection from later BO short-lists. Together, warm start and structured memory ground LLM decisions in task knowledge and accumulated evidence while maintaining continuity across AutoBO. 
+
+## Experiments 
+
+Experimental Setup 
+
+Datasets. Following prior work, we evaluate the effective-ness and generalizability of DASH on eight benchmark tasks spanning two application domains: chemical optimization and hyperparameter optimization (HPO). The chemical suite comprises four representative datasets: 1) oxidative coupling of methane (OCM) (Nguyen et al. 2020), a mixed-space task that jointly optimizes categorical catalyst compositions and continuous process conditions; 2) direct arylation reac-tion optimization (DAR) (Shields et al. 2021), which com-bines categorical chemical choices with continuous operat-ing conditions; 3) oxygen evolution reaction electrocatalyst optimization (OER) (Rohr et al. 2020), which searches a discretized continuous simplex of electrocatalyst composi-tions; and 4) Suzuki–Miyaura cross-coupling optimization (Suzuki) (Perera et al. 2018), which involves a categorical search space of high dimension and validity constraints de-fined by the dataset. The HPO suite comprises four tasks from HPOBench (Eggensperger et al. 2021): SVM, random forest, XGBoost, and neural network. These tasks cover continuous and integer hyperparameters. 
+
+Baseline methods. We compare DASH with seven represen-tative baselines covering the two major families: traditional AutoBO and LLM-enhanced BO methods. Specifically, the traditional AutoBO baselines include: 1) GP-Hedge (Hoff-man, Brochu, and de Freitas 2011), which maintains an ac-quisition function portfolio; 2) HEBO (Cowen-Rivers et al. 2022), which aggregates multiple acquisition functions to select the next candidate; and 3) BOOST (Park et al. 2025), which retrospectively evaluates and jointly selects surrogate-acquisition pairs. The LLM-enhanced BO baselines include: 1) CAKE (Suwandi et al. 2025), which uses an LLM to gen-erate and evolve GP kernels; 2) LMABO (Ngo et al. 2026), which formulates acquisition function selection as an in-context LLM decision; 3) Reasoning BO (Yang et al. 2025), which uses iterative LLM reasoning to guide candidate sam-pling; and 4) BORA (Ciss’e et al. 2025), which employs LLM to identify promising regions. 
+
+Evaluation metrics. To characterize the optimization pro-cess, we report best-so-far trajectories, which track the best objective value identified as the evaluation budget increases. Following prior work on benchmarking sequential experi-mental optimization (Liang et al. 2021), we further use the Enhancement Factor (EF) and Acceleration Factor (AF) to summarize attained solution quality and overall optimization efficiency, respectively: 
+
+EF = ybest − ymin 
+
+yglobal − ymin 
+
+, AF = AUC AUC RS 
+
+.
+
+Here, ybest is the best objective value found within the eval-uation budget, yglobal and ymin denote the global optimum and minimum objective value in the corresponding bench-mark dataset, respectively. AUC is the area under the best-so-far trajectory, and AUC RS is the mean AUC obtained by Random Search under the same budget. Higher EF indicates better final solution quality, while higher AF indicates faster optimization progress relative to random exploration. 
+
+Implementation Details. All methods were evaluated over five independent seeds with a budget of 40 evaluations, com-prising 10 initial observations and 30 BO iterations. Dataset evaluations were performed by table lookup, and all LLM-based methods used DeepSeek-V4-Pro with a temperature of 0.3 and reasoning enabled. Complete DASH configurations are reported in Supplementary Material. 
+
+Main Results 
+
+Overall performance. Table 1 summarizes the cross-task AF and EF results, while Figure 2 presents the task-level optimization trajectories and the joint AF–EF com-parison on the four chemical benchmarks. On the chem-ical optimization tasks, DASH achieves the highest aver-age AF of 1.3182 ± 0.3816 and the highest average EF of 
+
+0.9538 ± 0.0695 . Compared with BOOST, which selects the surrogate kernel and acquisition function as a coupled pair, these results correspond to relative improvements of 12 .51% 
+
+in AF and 5.00% in EF. The larger improvement in AF sug-gests that DASH provides its main advantage by improving the overall optimization trajectory, while also identifying fi-nal solutions of higher quality within the evaluation budget. On the HPO benchmarks, DASH also obtains the high-est average AF and EF, although the improvements over the strongest baselines are limited to 0.54% and 0.09% , respec-tively.This smaller separation may reflect the limited discrim-inability of these HPO benchmarks, where the presence of many configurations with strong performance allows most methods to reach regions close to the optimum within the evaluation budget. We therefore focus the following analy-ses on the chemical optimization tasks, where the methods exhibit clearer performance differences. Detailed task-level results for the four HPO benchmarks are provided in Supple-mentary Material. 
+
+Task-level behavior. The advantage of DASH is most pro-nounced on OCM, where it substantially outperforms all baselines in both AF and EF. On DAR, several methods progress rapidly during initialization, whereas DASH main-tains stronger subsequent refinement and reaches the best fi-nal result. On OER, DASH achieves a substantially higher AF while retaining an EF close to those of the best-performing methods. On Suzuki, the differences among leading methods are smaller because most methods reach high-performing re-gions early and subsequently saturate, while DASH remains competitive in both AF and EF. 
+
+Ablation Study 
+
+Overall effects. Table 2 presents the ablation results of DASH on the chemical optimization tasks. Overall, full DASH achieves the highest average EF of 0.9538 . Removing any of the three components decreases both the average AF and EF, supporting the effectiveness of the overall design. The different changes in AF and EF further reveal that the modules contribute to distinct aspects of the optimization process. 
+
+Component-wise effects. The integrated harness has the largest aggregate effect. Replacing knowledge-guided initial-ization with seeded random sampling and disabling memory feedback reduces AF by 22 .31% and EF by 7.39% , with degradation observed on all four tasks and the largest change on OCM. Replacing the LLM-guided acquisition controller with fixed qLogEI decreases AF by 1.91% and EF by 2.99% ,again producing consistent degradation across all tasks. Dis-abling surrogate switching results in smaller average reduc-tions of 2.78% in AF and 0.97% in EF, although its effects vary across individual tasks. These results suggest that the harness primarily improves efficiency, the LLM-guided ac-quisition controller provides consistent task-level gains, and surrogate adaptation offers smaller but complementary ben-efits. 
+
+LLM Sensitivity and Contamination Assessment 
+
+LLM sensitivity. To assess the sensitivity of DASH across different LLM backbones and ensure reproducibility, we se-Table 1: AF and EF results. Values are mean ±std across dataset-level values. Best and second-best values in each row are bolded and underlined, respectively. Improvement is computed relative to the best non-DASH baseline in each row.                                                 
+
+> Metric Dataset GP-Hedge HEBO BOOST CAKE LMABO BORA ReasoningBO Ours Improv. AF Chem Avg. 1.1418 ±0.2112 1.1077 ±0.0929 1.1716 ±0.1263 1.0894 ±0.0824 1.0970 ±0.0724 1.0757 ±0.0922 1.1155 ±0.1184 1.3182 ±0.3816 +12.51% HPO Avg. 0.9979 ±0.0121 1.0088 ±0.0098 1.0085 ±0.0126 1.0096 ±0.0045 1.0105 ±0.0033 1.0099 ±0.0124 1.0052 ±0.0126 1.0160 ±0.0053 +0.54% EF Chem Avg. 0.8883 ±0.1067 0.8434 ±0.2331 0.9083 ±0.1507 0.8614 ±0.1707 0.8289 ±0.2000 0.8514 ±0.2221 0.8746 ±0.1741 0.9538 ±0.0695 +5.00% HPO Avg. 0.9939 ±0.0047 0.9917 ±0.0102 0.9923 ±0.0104 0.9955 ±0.0050 0.9930 ±0.0071 0.9966 ±0.0029 0.9901 ±0.0130 0.9975 ±0.0018 +0.09%
+
+a b c d
+
+e f g h
+
+Figure 2: Results on the four chemical optimization benchmarks: OCM, DAR, OER, and Suzuki. (a–d) Mean best-so-far objective trajectories over 40 evaluations for DASH and the baseline methods, with shaded regions indicating one standard deviation across runs. (e–h) Joint comparison of AF and EF, Higher values on both axes indicate better optimization performance. lect three leading open-source LLMs—DeepSeek-V4-Pro, Kimi-K2.5, and GLM-5.2, evaluating them under identical settings on the four chemical optimization tasks. As shown in Figure 3, the three variants achieve broadly comparable AF and EF across tasks. DAR exhibits slightly greater varia-tion, where GLM-5.2 obtains a lower EF while maintaining an AF comparable to the other models. Despite this isolated difference, no backbone consistently underperforms, demon-strating that DASH is robust to the choice of LLM backbone. 
+
+Contamination assessment. We audited all 22,317 source records in the four chemical datasets using two complemen-tary protocols. The chemistry adapted Data Contamination Quiz (DCQ) asks the model to identify the original target value among chemically matched decoys (Golchin and Sur-deanu 2025), whereas the Source Guided Target Slot Guess-ing Quiz evaluates whether the model can exactly recover a masked entry from a source table using the publication information and experimental conditions (Deng et al. 2024; Golchin and Surdeanu 2024). We considered memorization detectable only when the DCQ Wilson lower bound exceeded the predefined 25% threshold and at least three rare target strings were recovered exactly. LLM did not satisfy this cri-terion on any dataset. DAR, OCM, and OER remained be-low the 20% DCQ chance level; although Suzuki reached 22.54%, its 95% Wilson lower bound was only 21.47% (Ta-ble 3). Moreover, none of the 8,804 rare target strings was recovered exactly. We therefore found no detectable evidence of full-table memorization or direct source-cell leakage un-der the evaluated protocol. 
+
+Behavioral memorization check. Figure 4 further examines whether the LLM can recover high-performing benchmark entries through direct reasoning alone. In Zero Observation, the LLM generates and ranks 40 candidate points in a sin-gle query without receiving any objective observations. In Pure Reasoning, each observed result is returned to the LLM before it proposes the next candidate. If benchmark targets or their rankings had been directly memorized, these proto-cols would be expected to recover near-optimal candidates rapidly, particularly under Zero Observation. Instead, Zero Observation remains far below the dataset optimum, while Pure Reasoning improves with sequential feedback but still underperforms DASH. Together with the full-table audit in Table 3, these results provide no detectable evidence that DASH’s gains arise from direct benchmark memorization. However, they do not rule out all possible exposure of the datasets during pretraining. Table 2: Ablation results on chemistry datasets. Values are mean ±std over runs for individual datasets; Average reports mean ±std 
+
+over dataset-level means. ∆ vs. Ours reports relative change in the Average column.                                                           
+
+> Metric Method OCM DAR OER Suzuki Average ∆vs. Ours AF Ours 1.8791 ±0.1154 1.2306 ±0.1017 1.1166 ±0.0123 1.0463 ±0.0215 1.3182 ±0.3816 –w.o. Surr. Switch 1.7447 ±0.2494 1.2563 ±0.0556 1.1097 ±0.0182 1.0154 ±0.0288 1.2815 ±0.3243 -2.78% w.o. LLM Acq. 1.8498 ±0.2207 1.2201 ±0.0717 1.0867 ±0.0295 1.0151 ±0.0535 1.2929 ±0.3808 -1.91% w.o. Harness 1.0280 ±0.2284 1.0522 ±0.2273 1.0649 ±0.0238 0.9514 ±0.0674 1.0241 ±0.0509 -22.31% EF Ours 0.8505 ±0.0186 0.9932 ±0.0150 0.9969 ±0.0037 0.9744 ±0.0112 0.9538 ±0.0695 –w.o. Surr. Switch 0.8178 ±0.0316 0.9776 ±0.0194 0.9989 ±0.0000 0.9837 ±0.0028 0.9445 ±0.0849 -0.97% w.o. LLM Acq. 0.8250 ±0.0160 0.9101 ±0.0801 0.9955 ±0.0058 0.9705 ±0.0182 0.9253 ±0.0759 -2.99% w.o. Harness 0.6511 ±0.1613 0.9278 ±0.0625 0.9922 ±0.0058 0.9623 ±0.0055 0.8833 ±0.1571 -7.39%
+
+OCM DAR Suzuki OER 
+
+0.0 
+
+0.5 
+
+1.0 
+
+1.5 
+
+2.0 
+
+> Acceleration Factor
+
+a
+
+OCM DAR Suzuki OER 
+
+Dataset 
+
+0.0 
+
+0.2 
+
+0.4 
+
+0.6 
+
+0.8 
+
+1.0 
+
+> Enhancement Factor
+
+b  
+
+> DeepSeek-V4-Pro Kimi-K2.5 GLM-5.2
+
+Figure 3: Effect of the LLM backbone on DASH across four chemical optimization tasks. (a) AF, where the dashed line denotes the random-search baseline; (b) EF, where the dashed line denotes the maximum attainable value. Bars and error bars report the mean and standard deviation over five independent runs. 
+
+## Conclusion 
+
+In this paper, we study how to adapt surrogate models and acquisition strategies simultaneously during Bayesian opti-mization and propose DASH, a decoupled framework that integrates LLM reasoning into this process. It comprises two complementary components: a decoupled adaptation archi-tecture with separate controllers for surrogate and acquisi-tion selection, together with a set of essential harnessing mechanisms. In the adaptation architecture, the data-driven surrogate controller evaluates candidate models according to predictive reliability, uncertainty calibration, and ranking consistency, while the context-driven acquisition controller uses an LLM to allocate candidate quotas across acquisition functions and select the next evaluation from the bounded shortlist. The harnessing mechanisms combine knowledge-guided initialization with structured memory to ground the optimization process in domain knowledge and accumu-lated feedback. Experiments show that DASH achieves the Table 3: Full-table memorization audit of DeepSeek-V4-Pro. DCQ values are accuracies with 95% Wilson confidence intervals. 
+
+Dataset DCQ Acc. (%, 95% CI) Rare exact recovery DAR 12.905 [11.406, 14.568] 0/1000 (0.000%) OCM 13.865 [13.275, 14.477] 0/243 (0.000%) Suzuki 22.535 [21.474, 23.632] 0/5476 (0.000%) OER 13.767 [12.366, 15.299] 0/2085 (0.000%) 1 10 20 30 40 
+
+Evaluation 
+
+0.0 
+
+0.2 
+
+0.4 
+
+0.6 
+
+0.8 
+
+1.0 
+
+> Normalized best-so-far objective
+
+Dataset optimum 
+
+> DASH
+> Zero Observation
+> Pure Reasoning
+
+Figure 4: Behavioral check for benchmark memorization on the four chemical optimization tasks. Curves show the mean normalized best-so-far objective, with shaded regions indi-cating one standard deviation. Results are aggregated over four chemical optimization tasks, with five independent runs conducted for each task. strongest average performance across four chemical opti-mization benchmarks and remains highly competitive on four HPO benchmarks. Ablation studies further confirm the ef-fectiveness of all components. Moreover, DASH maintains robust performance across different LLM backbones, with no detectable evidence that the observed gains result from memorization of the benchmark data by the LLMs. References 
+
+Benjamins, C.; Raponi, E.; Jankovic, A.; van der Blom, K.; Santoni, M. L.; Lindauer, M.; and Doerr, C. 2022. PI is Back! Switching Acquisition Functions in Bayesian Optimization. arXiv:2211.01455. Ciss’e, A.; Evangelopoulos, X.; Gusev, V. V.; and Cooper, A. I. 2025. Language-Based Bayesian Optimization Re-search Assistant (BORA). In Proceedings of the Thirty-Fourth International Joint Conference on Artificial Intelli-gence , 4967–4975. Cowen-Rivers, A. I.; Lyu, W.; Tutunov, R.; Wang, Z.; Grosnit, A.; Griffiths, R. R.; Maraval, A. M.; Jianye, H.; Wang, J.; Peters, J.; et al. 2022. Hebo: Pushing the limits of sample-efficient hyper-parameter optimisation. Journal of Artificial Intelligence Research , 74: 1269–1349. Deng, C.; Zhao, Y.; Tang, X.; Gerstein, M.; and Cohan, A. 2024. Investigating Data Contamination in Modern Bench-marks for Large Language Models. In Proceedings of the 2024 Conference of the North American Chapter of the As-sociation for Computational Linguistics: Human Language Technologies , 8706–8719. Association for Computational Linguistics. Eggensperger, K.; Müller, P.; Mallik, N.; Feurer, M.; Sass, R.; Klein, A.; Awad, N.; Lindauer, M.; and Hutter, F. 2021. HPOBench: A Collection of Reproducible Multi-Fidelity Benchmark Problems for HPO. In Thirty-fifth Conference on Neural Information Processing Systems Datasets and Bench-marks Track (Round 2) .Golchin, S.; and Surdeanu, M. 2024. Time Travel in LLMs: Tracing Data Contamination in Large Language Models. In 
+
+The Twelfth International Conference on Learning Repre-sentations .Golchin, S.; and Surdeanu, M. 2025. Data contamination quiz: A tool to detect and estimate contamination in large language models. Transactions of the Association for Com-putational Linguistics , 13: 809–830. Hoffman, M.; Brochu, E.; and de Freitas, N. 2011. Portfolio Allocation for Bayesian Optimization. In Proceedings of the Twenty-Seventh Conference on Uncertainty in Artificial Intelligence , 327–336. Corvallis, Oregon. Jariego P’erez, L. C.; and Garrido-Merch’an, E. C. 2021. Towards Automatic Bayesian Optimization: A First Step In-volving Acquisition Functions. In Advances in Artificial Intelligence , volume 12882 of Lecture Notes in Computer Science , 160–169. Springer. Jones, D. R.; Schonlau, M.; and Welch, W. J. 1998. Effi-cient global optimization of expensive black-box functions. 
+
+Journal of Global optimization , 13(4): 455–492. Kushner, H. J. 1964. A new method of locating the maximum point of an arbitrary multipeak curve in the presence of noise. Lakshminarayanan, B.; Pritzel, A.; and Blundell, C. 2017. Simple and scalable predictive uncertainty estimation using deep ensembles. Advances in neural information processing systems , 30. Liang, Q.; Gongora, A. E.; Ren, Z.; Tiihonen, A.; Liu, Z.; Sun, S.; Deneault, J. R.; Bash, D.; Mekki-Berrada, F.; Khan, S. A.; et al. 2021. Benchmarking the performance of Bayesian optimization across multiple experimental ma-terials science domains. npj Computational Materials , 7(1): 188. Liu, T.; Astorga, N.; Seedat, N.; and van der Schaar, M. 2024. Large Language Models to Enhance Bayesian Optimization. In The Twelfth International Conference on Learning Repre-sentations .Ngo, G.; Phan-Trong, D.; Nguyen, D.; Gupta, S.; and Venkatesh, S. 2026. Adaptive Acquisition Selection for Bayesian Optimization with Large Language Models. In 
+
+The Fourteenth International Conference on Learning Rep-resentations .Nguyen, T. N.; Nhat, T. T. P.; Takimoto, K.; Thakur, A.; Nishimura, S.; Ohyama, J.; Miyazato, I.; Takahashi, L.; Fujima, J.; Takahashi, K.; and Taniike, T. 2020. High-Throughput Experimentation and Catalyst Informatics for Oxidative Coupling of Methane. ACS Catalysis , 10: 921– 932. Park, J.-H.; Cheon, M.; Wi, J.; and Koh, D.-Y. 2025. BOOST: Bayesian Optimization with Optimal Kernel and Acquisition Function Selection Technique. arXiv:2508.02332. Perera, D.; Tucker, J. W.; Brahmbhatt, S.; Helal, C. J.; Chong, A.; Farrell, W.; Richardson, P.; and Sach, N. W. 2018. APlatform for Automated Nanomole-Scale Reaction Screening and Micromole-Scale Synthesis in Flow. Science , 359(6374): 429–434. Prokhorenkova, L.; Gusev, G.; Vorobev, A.; Dorogush, A. V.; and Gulin, A. 2018. CatBoost: unbiased boosting with cate-gorical features. Advances in neural information processing systems , 31. Rankovi’c, B.; Griffiths, R.-R.; and Schwaller, P. 2025. Large Language Models as Uncertainty-Calibrated Optimizers for Experimental Discovery. arXiv:2504.06265. Rohr, B.; Stein, H. S.; Guevarra, D.; Wang, Y.; Haber, J. A.; Aykol, M.; Suram, S. K.; and Gregoire, J. M. 2020. Bench-marking the Acceleration of Materials Discovery by Sequen-tial Learning. Chemical Science , 11(10): 2696–2706. Shields, B. J.; Stevens, J.; Li, J.; Parasram, M.; Damani, F.; Alvarado, J. I. M.; Janey, J. M.; Adams, R. P.; and Doyle, A. G. 2021. Bayesian Reaction Optimization as a Tool for Chemical Synthesis. Nature , 590: 89–96. Snoek, J.; Larochelle, H.; and Adams, R. P. 2012. Practical Bayesian Optimization of Machine Learning Algorithms. In 
+
+Advances in Neural Information Processing Systems , vol-ume 25, 2951–2959. Srinivas, N.; Krause, A.; Kakade, S.; and Seeger, M. 2010. Gaussian process optimization in the bandit setting: No re-gret and experimental design. In Proceedings of the 27th international conference on machine learning , 1015–1022. Omnipress. Suwandi, R. C.; Yin, F.; Wang, J.; Li, R.; Chang, T.-H.; and Theodoridis, S. 2025. Adaptive Kernel Design for Bayesian Optimization Is a Piece of CAKE with LLMs. In Advances in Neural Information Processing Systems .Thompson, W. R. 1933. On the likelihood that one unknown probability exceeds another in view of the evidence of two samples. Biometrika , 25(3/4): 285–294. Vasconcelos, T. d. P.; de Souza, D. A. R. M. A.; Mattos, C. L. C.; and Gomes, J. P. P. 2019. No-PASt-BO: Normalized Portfolio Allocation Strategy for Bayesian Optimization. In 
+
+2019 IEEE 31st International Conference on Tools with Ar-tificial Intelligence , 561–568. IEEE. Wang, J.; Clark, S. C.; Liu, E.; and Frazier, P. I. 2020. Par-allel Bayesian global optimization of expensive functions. 
+
+Operations Research , 68(6): 1850–1865. Wang, X.; Jin, Y.; Schmitt, S.; and Olhofer, M. 2023. Recent advances in Bayesian optimization. ACM computing surveys ,55(13s): 1–36. Williams, C. K.; and Rasmussen, C. E. 2006. Gaussian processes for machine learning , volume 2. MIT press Cam-bridge, MA. Wilson, J.; Hutter, F.; and Deisenroth, M. 2018. Maximizing acquisition functions for Bayesian optimization. Advances in neural information processing systems , 31. Yang, Z.; Wang, D.; Ge, L.; Wang, B.; Fu, T.; and Li, Y. 2025. Reasoning BO: Enhancing Bayesian Opti-mization with Long-Context Reasoning Power of LLMs. arXiv:2505.12833.
