@@ -6,32 +6,35 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-04
-- 运行时间：2026-08-04 21:42:18 UTC
+- 最新运行日期：2026-08-05
+- 运行时间：2026-08-05 21:16:04 UTC
 - 运行状态：成功
-- 本次总论文数：4
+- 本次总论文数：5
 - 精读区：2
-- 速读区：2
+- 速读区：3
 
 ### 今日简报（AI）
-今日共读4篇论文，精读2篇聚焦大语言模型（LLM）的自动化算法设计与自然语言调度约束评估。最值得关注的是9.0分的DGA2D（用有向图引导LLM自动设计算法）及8.0分的SCHEDBench（测试LLM对组合调度约束的忠实度）。下一步建议可沿着“LLM+结构化约束/算法生成”方向深入探索。
-- 详情：[/202608/04/README](/202608/04/README)
+今日精读2篇、速读3篇，聚焦LLM驱动的优化与代码生成。最值得关注的是10分《IR2Solve》的结构化中间表示优化，以及9分《MuEvo》的多启发式进化策略。建议普通读者优先研读这两篇，后续可关注动态实例聚类与分层奖励方法。
+- 详情：[/202608/05/README](/202608/05/README)
 
 ### 精读区论文标签
-1. [DGA$_2$D: Directed Graph-Guided Automated Algorithm Design with Large Language Models](/202608/04/2608.00700v1-dga2d-directed-graph-guided-automated-algorithm-design-with-large-language-models)  
+1. [IR2Solve: Structured Intermediate Representations for Cost-Efficient Optimization Autoformulation](/202608/05/2608.02641v1-ir2solve-structured-intermediate-representations-for-cost-efficient-optimization-autoformulation)  
+   标签：评分：10.0/10、query:llm-opt-code
+   evidence：利用LLM将自然语言优化问题转化为带模式约束的中间表示并编译成求解代码
+2. [MuEvo: LLM-Driven Evolution of Multi-Heuristic Ensemble](/202608/05/2608.03636v1-muevo-llm-driven-evolution-of-multi-heuristic-ensemble)  
    标签：评分：9.0/10、query:llm-opt-code
-   evidence：用大语言模型自动设计组合优化求解算法
-2. [SCHEDBench: A Benchmark for Evaluating LLM Constraint Faithfulness in Natural-Language Combinatorial Scheduling](/202608/04/2608.00991v1-schedbench-a-benchmark-for-evaluating-llm-constraint-faithfulness-in-natural-language-combinatorial-scheduling)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：面向自然语言组合调度任务评估LLM约束忠实度
+   evidence：基于LLM的多启发式集成演化，面向组合优化问题
 
 ### 速读区论文标签
-1. [Learning to Coordinate Symbolic Tools: LLM Agents for Verified Sum-of-Squares Certificates](/202608/04/2608.00326v1-learning-to-coordinate-symbolic-tools-llm-agents-for-verified-sum-of-squares-certificates)  
+1. [Beyond Average Performance: Dynamic Instance Clustering and Specialized Algorithm Design in LLM-Assisted Evolutionary Search](/202608/05/2608.03129v1-beyond-average-performance-dynamic-instance-clustering-and-specialized-algorithm-design-in-llm-assisted-evolutionary-search)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：LLM辅助进化搜索实现自动算法设计，直接面向优化问题的自动解决方案生成
+2. [DHRCL:Training Code LLMs with Dense Hierarchical Rewards and Curriculum Learning](/202608/05/2607.26457v2-dhrcltraining-code-llms-with-dense-hierarchical-rewards-and-curriculum-learning)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：LLM智能体为多项式优化生成可验证的平方和证书
-2. [DASH: Decoupled Adaptive Surrogate - Acquisition Harness for Automated Bayesian Optimization](/202608/04/2608.00641v1-dash-decoupled-adaptive-surrogate---acquisition-harness-for-automated-bayesian-optimization)  
+   evidence：代码LLM的分层奖励训练方法，可迁移至优化问题代码生成
+3. [Route-Align-Verify for Functional Correctness in Code Generation](/202608/05/2608.03341v1-route-align-verify-for-functional-correctness-in-code-generation)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：LLM增强的自动贝叶斯优化，自适应选择代理模型和采集函数
+   evidence：通用LLM代码生成框架提升功能正确性，可迁移至优化代码生成任务
 
 
 <div class="dpr-home-promo-card">
