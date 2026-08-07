@@ -6,35 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-05
-- 运行时间：2026-08-05 21:16:04 UTC
+- 最新运行日期：2026-08-07
+- 运行时间：2026-08-07 00:42:31 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：2
+- 本次总论文数：3
+- 精读区：0
 - 速读区：3
 
 ### 今日简报（AI）
-今日精读2篇、速读3篇，聚焦LLM驱动的优化与代码生成。最值得关注的是10分《IR2Solve》的结构化中间表示优化，以及9分《MuEvo》的多启发式进化策略。建议普通读者优先研读这两篇，后续可关注动态实例聚类与分层奖励方法。
-- 详情：[/202608/05/README](/202608/05/README)
+今日速读3篇论文，聚焦代码生成与语法受限解码，最高分7.0。
+最值得关注高效语法受限解码方法（7.0），以及LLM生成代码的错误研究（6.0）。
+建议优先从解码效率与代码可靠性入手，深入阅读这两篇。
+- 详情：[/202608/07/README](/202608/07/README)
 
 ### 精读区论文标签
-1. [IR2Solve: Structured Intermediate Representations for Cost-Efficient Optimization Autoformulation](/202608/05/2608.02641v1-ir2solve-structured-intermediate-representations-for-cost-efficient-optimization-autoformulation)  
-   标签：评分：10.0/10、query:llm-opt-code
-   evidence：利用LLM将自然语言优化问题转化为带模式约束的中间表示并编译成求解代码
-2. [MuEvo: LLM-Driven Evolution of Multi-Heuristic Ensemble](/202608/05/2608.03636v1-muevo-llm-driven-evolution-of-multi-heuristic-ensemble)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：基于LLM的多启发式集成演化，面向组合优化问题
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Beyond Average Performance: Dynamic Instance Clustering and Specialized Algorithm Design in LLM-Assisted Evolutionary Search](/202608/05/2608.03129v1-beyond-average-performance-dynamic-instance-clustering-and-specialized-algorithm-design-in-llm-assisted-evolutionary-search)  
+1. [Efficient Grammar-Constrained Decoding via Parser Stack Classification](/202608/07/2608.03065v1-efficient-grammar-constrained-decoding-via-parser-stack-classification)  
    标签：评分：7.0/10、query:llm-opt-code
-   evidence：LLM辅助进化搜索实现自动算法设计，直接面向优化问题的自动解决方案生成
-2. [DHRCL:Training Code LLMs with Dense Hierarchical Rewards and Curriculum Learning](/202608/05/2607.26457v2-dhrcltraining-code-llms-with-dense-hierarchical-rewards-and-curriculum-learning)  
+   evidence：高效文法约束解码提升LLM结构化代码生成
+2. [Unreliable in Practice? A Comprehensive Study of Errors in LLM-Generated Code](/202608/07/2608.00661v1-unreliable-in-practice-a-comprehensive-study-of-errors-in-llm-generated-code)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：代码LLM的分层奖励训练方法，可迁移至优化问题代码生成
-3. [Route-Align-Verify for Functional Correctness in Code Generation](/202608/05/2608.03341v1-route-align-verify-for-functional-correctness-in-code-generation)  
+   evidence：研究LLM生成代码的错误，适用于优化代码生成的可靠性
+3. [COMPAS: Difficulty-Aware Joint Search for Optimizing Code Generation](/202608/07/2608.04336v1-compas-difficulty-aware-joint-search-for-optimizing-code-generation)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：通用LLM代码生成框架提升功能正确性，可迁移至优化代码生成任务
+   evidence：面向LLM代码生成的模型-提示-解码联合可迁移搜索，可用于改进优化建模代码生成
 
 
 <div class="dpr-home-promo-card">

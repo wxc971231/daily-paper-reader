@@ -1,0 +1,466 @@
+Title: COMPAS: Difficulty-Aware Joint Search for Optimizing Code Generation
+
+URL Source: https://arxiv.org/pdf/2608.04336v1
+
+Published Time: Thu, 06 Aug 2026 00:20:35 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+# COMPAS : Difficulty-Aware Joint Search for Optimizing Code Generation 
+
+## Jingzhi Gong 1, Jie M. Zhang 1, Gunel Jahangirova 1, Dong Huang 2, Mohammad Reza Mousavi 1,Mark Harman 3
+
+> 1
+
+King’s College London, University of London 
+
+> 2
+
+National University of Singapore 
+
+> 3
+
+University College London, University of London 
+
+Abstract 
+
+Code generation systems make each LLM call with a model, a prompt, and decoding settings. However, existing optimiza-tion methods usually tune only part of these choices or use one fixed configuration for all tasks: global optimizers search one configuration for all tasks, routers choose only a model, and prompt optimizers keep the model and decoding settings fixed. This leaves their joint, group-specific interactions un-clear. We therefore examine how these choices interact and observe that prompts and decoding settings interact, tun-ing effects vary by model, and the best configuration varies by task difficulty. Guided by these observations, we intro-duce COMPAS (Code-generation Optimization over Models, 
+
+Prompts, And Decoding Settings), a difficulty-aware method that learns group-specific quality-cost fronts through low-cost model selection and joint prompt-decoding search, then routes each test task to its matching front online without further search. Under a matched search budget on LiveCodeBench, 
+
+COMPAS improves pass@1 from 45.9% for the best base-line to 52.8% while reducing cost from $36.57 to $4.92. This also transfers to repository-level code generation on SWE-bench, resolving 76.0% of tasks versus 70.0% for the best baseline. Code and the reproducibility artifact are available at https://github.com/gjz78910/COMPAS. 
+
+## Introduction 
+
+Large language models (LLMs) are widely used for code gen-eration, from function-level synthesis (Chen et al. 2021) to repository-scale software engineering (Jimenez et al. 2024). For each LLM call, a code generation system chooses a model, a prompt, and decoding settings, including tempera-ture, top-p, and frequency penalty (Arora et al. 2024). However, code generation workflows usually fix the same choices across their evaluations (Xu, Chen, and Wen 2025; Huang et al. 2025). Because tasks can differ in difficulty (Jain et al. 2025), one fixed configuration may underperform on hard tasks and use more tokens than necessary on easy tasks (Gong et al. 2025; Cheung et al. 2025). Although separate configurations for each task group could address this trade-off, the search is prohibitively large: 10 prompt candidates, two models, and 10 values for three decoding settings already produce 60,000 candidates across three groups, requiring over 20 serial days at 30 seconds per evaluation (Xu, Chen, and Wen 2025). Therefore, a practical method must search this space efficiently rather than evaluate every candidate. Existing methods reduce this search in different ways, but each leaves part of the problem open. RouteLLM (Ong et al. 2025) selects a model while keeping the prompt and decod-ing settings fixed. GEPA (Agrawal et al. 2025) optimizes prompts but fixes the model and decoding settings, whereas 
+
+EcoTune (Xu, Chen, and Wen 2025) and EcoOptiGen 
+
+(Wang, Liu, and Awadallah 2023) search one global configu-ration. Similarly, agent systems such as SWE-agent (Yang et al. 2024) improve a fixed agent harness, while harness-engineering studies modify that harness (Lin et al. 2026). Consequently, it remains unclear how model, prompt, and decoding settings interact and whether their joint effects differ by task group. To examine this gap, we conduct a large-scale empirical study across task difficulties, models, prompts, and decoding settings. The study identifies three patterns: prompts and decoding settings interact, the same tuning update can affect models differently, and the best ob-served configuration can differ by task group. These patterns show that the problem is not merely choos-ing a stronger model or prompt, but selecting suitable settings for each group under a limited budget. We therefore intro-duce COMPAS (Code-generation Optimization over Models, 
+
+Prompts, And Decoding Settings), a two-phase, difficulty-aware method for LLM and agent-based code generation. It efficiently selects a model, then jointly searches prompts and decoding settings offline for each group; at deploy-ment, it routes each task to a configuration on that group’s quality-cost front. Across LiveCodeBench and SWE-bench, 
+
+COMPAS improves quality by 6.9 and 6.0 percentage points over the strongest baselines, while costing 7.4 × less on Live-CodeBench. In summary, our contributions are: 1. An empirical characterization of three observations about model, prompt, and decoding choices for code generation. 2. A difficulty-aware search that partitions problems into groups and builds a separate quality-cost front per group, rather than a single global front. 3. A two-stage efficient search that selects the model with a cheap probe, then uses an LLM-based reflection loop to jointly optimize prompt and decoding settings. arXiv:2608.04336v1 [cs.SE] 5 Aug 2026 ONLINE ROUTING          
+
+> Search Stage 2: Joint Tuning of Prompt and Decoding Settings
+> Mini -batch
+> re -evaluation Improves? YES Held -out
+> evaluation Improves? YES Accept
+> Reject
+> NO NO
+> Compact & Update Budget
+> left?
+> YES: next loop
+> NO: output Per -group Pareto fronts
+> Match task group
+> Select config from front
+> Testing Evaluation
+> Quality & cost metrics
+
+OFFLINE SEARCH        
+
+> Training Tasks
+> Search Budget
+> Data Splitting
+> Search pool
+> Held -out pool
+> Search Stage 1: Fast Model Selection
+> Selected model
+> Easy: 80% cost ,Med: 50/50 ,Hard: 80% quality
+> Model pool
+> Stronger Weaker
+> Quality & cost
+> metrics
+> Difficulty -specific selection rule
+> Mini -batch
+> evaluation
+> Compact Reflection context
+> Failure patterns
+> Success patterns
+> Search history & Pareto front
+> Quality & cost metrics
+> Add if not
+> dominated
+> Testing tasks
+> Difficulty -Aware Grouping
+> Easy Medium Hard
+> Optionally combined with other
+> grouping axis (e.g., task type)
+> For
+> each
+> group
+> 10% Budget 90% Budget
+> From the same family
+> New
+> candidate
+> Current
+> candidate
+> Compact & Update
+> Easy Medium Hard
+> Difficulty
+> assigner
+> Reflection
+> LLM
+> Compact & Update
+
+Figure 1: COMPAS offline search and online routing workflow. 
+
+## Empirical Motivations for COMPAS 
+
+To examine these interactions without using the primary test tasks, we evaluate DeepSeek-V3 and DeepSeek-V3.2 on the 880-task release-v5 set with varied prompts and decoding settings. We report mean Pass@1 and bootstrap 95% confi-dence intervals; Figure 2 summarizes the three observations. 
+
+Observation 1: Prompts and Decoding Interact 
+
+Across all 880 non-test problems and 118,965 records, the best recorded prompt-only and decoding-only choices reach 64.3% and 64.9%, whereas the best joint choice reaches 72.2% (Figure 2(a)). This pattern motivates one reflection loop that jointly edits prompts and decoding settings, avoid-ing separate reflection calls and candidate evaluations for the two dimensions. 
+
+Observation 2: Joint Tuning is Model-Specific 
+
+Prior evidence shows that a prompt optimized for one LLM may fail on another (Gong et al. 2025); we therefore test whether the same joint prompt-decoding update affects mod-els similarly. Figure 2(b) summarizes 876 release-v5 records: the update increases DeepSeek-V3 from 76.3% to 77.2% but lowers DeepSeek-V3.2 from 74.0% to 72.1%. This differ-ence motivates selecting a model with a small probe budget before tuning other settings, reducing the subsequent joint search space to one model. 
+
+Observation 3: The Best Config Differs by Group 
+
+We next split the same 880-problem release into three difficulty groups and evaluate at least 39 configurations per group. Figure 2(c) compares the default configuration (54.1%), the best single configuration across all groups (53.4%), and the best configuration per group (62.4%). Thus, the best global choice does not improve on the default, whereas per-group specialization does; this motivates main-taining a separate quality-cost front per group and routes each test task to its matching front. Together, we build the 
+
+COMPAS framework around these key design choices. 
+
+## The COMPAS Framework 
+
+COMPAS follows the offline-optimization and online-deployment pattern used by LLM optimizers such as 
+
+EcoTune (Xu, Chen, and Wen 2025) and model routers such as RouteLLM (Ong et al. 2025): it search offline for a per-group quality-cost front, then, during online testing, routes each task to a configuration on that front, with no further search, as shown in Figure 1. 
+
+Offline Search Phase 
+
+Given a set of training tasks and a fixed offline token budget 
+
+B, COMPAS first partitions the tasks into difficulty groups, then spends B optimizing each group’s model, prompt, and decoding settings in two stages: a fast model-selection stage followed by joint prompt-decoding tuning. 
+
+Difficulty-Aware Search As Observation 3 illustrates, task groups prefer different configurations; hence, a single global configuration c = ( m, t, d ) ∈ M×T ×D , specifying model 
+
+m, prompt t, and decoding settings d, cannot be optimal for every difficulty level. 
+
+COMPAS partitions problems into three difficulty groups 
+
+g ∈ G = {Easy , Medium , Hard } using each benchmark’s own released label: 
+
+• LiveCodeBench grades every problem by Codeforces-style Elo rating (Easy ≤2000, Medium 2000–3000, Hard 
+
+>3000) (Jain et al. 2025); 
+
+• SWE-bench grades every task by an experienced engi-neer’s estimated fix time (Easy <15 min, Medium 15 min–1 hr, Hard >1 hr) (Jimenez et al. 2024). Because both benchmarks provide ordinal difficulty labels, 
+
+COMPAS reuses them directly, assigns search-budget weights of 1:2:3 to Easy, Medium, and Hard such that harder groups receive more search budget, and builds a separate quality-cost front Fg for each group using its allocated budget. On LiveCodeBench, COMPAS further separates each dif-ficulty by task interface because functional and stdin tasks require different prompting and output contracts (Jain et al. 2025; Chen et al. 2025). In our later experiments, this refined Default Prompt  
+
+> search
+> Decoding
+> search
+> Joint
+> search
+> 50
+> 60
+> 70
+> 80
+> Pass@1 (\%)
+> 52.7
+> 64.3 64.9
+> 72.2
+
+(a) O1: prompts and decoding interact. Before   
+
+> tuning
+> After
+> tuning
+> 65
+> 70
+> 75
+> 80
+> 85
+> Pass@1 (\%)
+> 76.3 77.2
+> 74.0
+> 72.1
+> DeepSeek-V3
+> DeepSeek-V3.2
+
+(b) O2: joint tuning is model-specific. Default Best config   
+
+> for all
+> Best config
+> per group
+> 40
+> 50
+> 60
+> 70
+> Mean group
+> Pass@1 (\%)
+> 54.1 53.4
+> 62.4
+
+(c) O3: the best config differs by group. 
+
+Figure 2: Three observations from the non-test empirical study that motivate the key designs of COMPAS .grouping exceeds Difficulty-Only grouping (52.8% versus 46.9%). Thus, on LiveCodeBench, G ranges over difficulty-type pairs, with g denoting one pair. Except for this task-interface refinement, COMPAS follows the same search procedure and tunes the same configuration space on both benchmarks. 
+
+Search Stage 1: Fast Model Selection In line with Obser-vation 2 , COMPAS chooses a model for each group before the expensive joint-tuning stage because the same tuning strategy can affect models differently. This stage is skipped when M has one model. Otherwise, 
+
+COMPAS probes every candidate on a random set Sg , capped at 8 problems per group so the shared Stage 1 probe budget cannot eat into Stage 2’s search budget, at a fixed seed con-figuration (t0, d 0); On LiveCodeBench, Sg is also split by problem type, functional or stdin; the probe therefore reports one choice per difficulty-type pair. The winning model is then fixed by the following cost-aware rule, which trades off quality against cost using a per-group weight αg ∈ [0 , 1] (the Online Testing Phase later reuses this same αg for its own routing rule): 
+
+m∗ 
+
+> g
+
+= arg max 
+
+> m∈M
+
+αg · dquality m + (1 − αg ) · dcost −1 
+
+> m
+
+, (1) where dquality m and dcost −1 
+
+> m
+
+are the mean pass rate and inverse cost over Sg at (t0, d 0), each min-max normalized across M.Consistent with existing cost-aware routers between cheaper and costlier models (Chen, Zaharia, and Zou 2023; Ding et al. 2024; Ong et al. 2025), we set αg to 0.2, 0.5, and 0.8 for Easy, Medium, and Hard. Thus Easy favors cost, Medium balances both objectives, and Hard favors quality; we validate this setup against other alternatives in Sensitivity Analysis. 
+
+Search Stage 2: Joint Tuning Motivated by Ob-servation 1, whose strongest measured interaction is template ×decoding, COMPAS jointly mutates the prompt and decoding settings d on the selected model m∗ 
+
+> g
+
+in one reflec-tive loop, via LLM-based reflection, and fits one front per group. Table 1 lists the full per-group search space. Particularly, COMPAS tunes three decoding settings, tem-perature, top-p, and frequency penalty, following the useful ranges the code generation study of Arora et al. (2024) re-ports, and leaves presence penalty out of the search space be-cause it penalizes the token reuse code correctness requires (Donato et al. 2025). To search this space without overfitting, COMPAS splits each group’s tasks 80/20 into a search pool and a held-out pool, then spends the group’s search budget evaluating the search pool round-robin rather than resampling each round, so a tight budget still covers the whole pool. Each round, COMPAS draws a random mini-batch Mg from the search pool, mini-batch-evaluates the current candidate c
+
+on it, and asks an LLM to read a compact reflection context (with summarized failure patterns, success patterns, search history, the current front, and quality-cost metrics). The con-text retains at most ten failure and ten success examples, preserving diverse evidence while bounding the reflection input, before proposing one new candidate c′.
+
+c′ is re-evaluated on this same mini-batch Mg using a pass/fail rule Ag : c′ passes only if it does not lower score, and either repairs a previously-failing task or reduces cost within the configured cost cap, or, for a tied score, repairs a failure, improves a secondary quality signal, or reduces cost. 
+
+COMPAS also draws a random held-out batch Hg from the held-out pool, and when Hg is nonempty, c′ must also pass 
+
+Ag on Hg , preventing it from passing only by overfitting Mg .Both Mg and Hg are freshly resampled each round rather than reused, which avoids the validity loss that repeatedly querying the same fixed holdout set across many adaptive rounds would otherwise risk (Dwork et al. 2015). Formally, accept( c′) iff 
+
+Ag (Mg , c, c ′) ∧ Ag (Hg , c, c ′). (2) Subsequently, an accepted c′ replaces c and, if not dominated by the group’s front, joins it; otherwise c stays unchanged, and COMPAS repeats the next loop until the group’s budget is spent. The output of this stage is the group’s quality-cost front 
+
+Fg : the subset of accepted candidates c = ( m∗ 
+
+> g
+
+, t, d ) that are Pareto-optimal on quality and cost, meaning no other accepted candidate scores at least as well on both. 
+
+Online Testing Phase 
+
+The group-specific pattern in Observation 3 motivates 
+
+COMPAS to route each test task to its own group’s front, rather than using one fixed configuration for every task. A difficulty Search field Search range                      
+
+> Model One weaker and one stronger model Prompt Default and reflection-generated prompts Temperature {0,0.1,0.2,0.3,0.4,0.6,0.8,1.0}
+> Top-p{0.05 ,0.15 ,0.35 ,0.55 ,0.75 ,0.95 }
+> Frequency penalty {− 0.5,−0.1,0,0.1,0.5}
+
+Table 1: Full COMPAS search space within each task group.         
+
+> Benchmark Train set Test set
+> LiveCodeBench Release v5 (880) v6-only (175) LiveCodeBench Random (90) Random (90) SWE-bench Verified Random (44) Verified-mini (50)
+
+Table 2: Benchmark task sets; 44 SWE-bench tasks are dedu-plicated from a 50-task random split. assigner first matches each task x to its difficulty(-type) group 
+
+g(x) using the existing label every problem carries (Jain et al. 2025; Jimenez et al. 2024); a learned predictor would instead confound our evaluation of COMPAS ’s search-and-routing mechanism with the predictor’s own errors; therefore, the main results use official labels to isolate that mechanism (Ong et al. 2025). The Sensitivity Analysis tests this assump-tion directly with a learned XGBoost-Router : routing by predicted rather than official labels reaches 49.7% Pass@1, only 3.1 points below the label-based 52.8% (not significant, paired Wilcoxon p = 0 .4732 ), suggesting that deployment need not depend on released labels. 
+
+COMPAS then selects, from g(x)’s front Fg(x), the con-figuration maximizing a normalized quality-cost trade-off, reusing the same αg weights fixed in Stage 1 (Eq. 1): 
+
+ρ(x) = c∗(x) = arg max 
+
+> c∈Fg(x)
+
+αg(x)· dquality (c)+(1 −αg(x))·dcost (c)−1,
+
+(3) where quality and inverse cost are min-max normalized over 
+
+Fg(x); if Fg(x) is empty, COMPAS falls back to a coarser difficulty front, then the fixed default. This is a lookup over an already-built front, so no search happens online. 
+
+## Experimental Setup 
+
+Model Setup 
+
+We evaluate three model families: DeepSeek-V4-Flash and DeepSeek-V4-Pro (Xu et al. 2026a), Devstral Small 2 and De-vstral 2 (Mistral AI 2025), and Qwen3.5-Flash and Qwen3.5-Plus (Qwen Team 2026). Each pool holds one weaker and one stronger model from the same family, since within-family capability scales predictably (Kaplan et al. 2020), letting the Stage 1 search reliably rank them without the added confound of cross-provider differences. We use LLM-based reflection (Agrawal et al. 2025) to propose new joint prompt-decoding candidates, and fix DeepSeek-V4-Pro as the reflection model due to its strong reasoning capability at moderate API cost (Xu et al. 2026a). 
+
+LiveCodeBench Setup 
+
+As summarized in Table 2, we evaluate on LiveCodeBench (Jain et al. 2025), whose numbered releases add problems collected after each prior release’s cutoff specifically to guard against training-data contamination, over both task types (functional and standard-input): we train on release v5 and test on the 175 problems added in release v6 (v6-only), which by construction postdate every v5 training problem, consis-tent with recent studies (Sharifloo et al. 2025; Jia et al. 2025; Xu et al. 2026b; Chai et al. 2026). The second split is an inde-pendent random split with 90 training and 90 test tasks (Hu et al. 2026; White et al. 2025). During search, we generate one code output per problem, whereas the final evaluation generates ten code outputs per problem; at temperature zero, one deterministic output is generated and counted ten times. We report the mean single-output pass rate 
+
+Pass@1 = 1
+
+|P| 
+
+X
+
+> i∈P
+
+1
+
+niniX
+
+> j=1
+
+zij , (4) where ni is the number of outputs evaluated for problem 
+
+i and zij = 1 when output j passes its benchmark tests, following LiveCodeBench (Jain et al. 2025). Notably, our setup supports a controlled method comparison, but not a leaderboard claim under our study-specific protocol. 
+
+SWE-bench Setup 
+
+We evaluate on SWE-bench Verified-mini, the curated 50-task subset of SWE-bench Verified, because it supports a controlled repository-level evaluation at practical cost (Jiang et al. 2025; Tripathy, Harshit, and Vaidhyanathan 2026; Zhang et al. 2026; Kapoor et al. 2026; Li et al. 2025a), as shown in Table 2. To keep search disjoint from testing, we randomly sample 50 Verified tasks and remove the over-lap tasks, leaving a 44-task search pool with 20 Easy, 16 Medium, and 8 Hard tasks. We run all agents in official SWE-bench Docker im-ages using the fixed mini-SWE-agent harness, whose lightweight Bash loop is used in controlled SWE-bench stud-ies to separate model behavior from scaffold choices (Chen et al. 2026; Tripathy, Harshit, and Vaidhyanathan 2026). Ad-ditionally, we generate one patch per task, following the pass@1 protocol used by Yang et al. (2024) and Zhang et al. (2026). DeepSeek V4 series models use no-thinking mode because their thinking mode ignores decoding settings (Xu et al. 2026a). 
+
+Baselines 
+
+We choose recent leading methods from complementary op-timization categories: (1) Default fixes the stronger LLM as the no-search reference, following the default model, prompt, and decoding settings for both benchmarks (Jain et al. 2025; Yang et al. 2024); (2) RouteLLM learns a cost-quality router from preference data to select a strong or weak model for each query (Ong et al. 2025); (3) EcoTune tunes decoding hyperparameters using a dynamic fidelity schedule that adapts evaluation depth to the remaining token bud-get (Xu, Chen, and Wen 2025); and (4) PromiseTune combines causal analysis with explainable rules to identify causally promising configuration settings (Chen and Chen 2026). The three search baselines are state-of-the-art in related domains, reporting gains or advantages over widely used methods such as FrugalGPT (Chen, Zaharia, and Zou 2023) and Hybrid-LLM (Ding et al. 2024) for routing, 
+
+BOHB (Falkner, Klein, and Hutter 2018) for HPO, and SMAC3 
+
+(Lindauer et al. 2023) for configuration tuning. To keep this comparison fair, all methods use the same evaluation protocol and the same search token-budget cap: 1M tokens on LiveCodeBench and 4M tokens on SWE-bench, calibrated from preliminary experiment traces. This cap bounds only the offline search phase; reported dollar totals also include uncapped online deployment, and differ across methods mainly because each routes to models with different per-token prices, not because of unequal search bud-gets. For fairness, EcoTune and PromiseTune search the same model, prompt, and decoding dimensions as COMPAS ,whereas RouteLLM keeps prompts and decoding fixed by design. For each single-seed experiment, we use two-sided paired Wilcoxon signed-rank tests, Vargha–Delaney A12 effect sizes, and paired-bootstrap 95% confidence intervals on matched per-problem outcomes to assess paired differences and report their effect size and uncertainty (Dror et al. 2018). Scott–Knott Effect Size Difference (ESD) ranks are used only for the five independent v6-only seed aggregates be-cause they require independent runs (Tantithamthavorn et al. 2019; Tantithamthavorn 2026). 
+
+## Experiments 
+
+Effectiveness on LiveCodeBench 
+
+Main Effectiveness We first ask the central question: un-der a matched search budget, every method capped at the same number of search tokens, does COMPAS improve the quality-cost tradeoff on LiveCodeBench? Table 3 (left) re-ports Pass@1, cost, and time on the main v6-only split (Jia et al. 2025; Xu et al. 2026b; Chai et al. 2026); because the cap is in tokens, not hours, wall-clock time still varies widely across methods depending on how quickly each spends that shared budget. Overall, COMPAS attains the highest Pass@1 (52.8%) and the lowest cost ($4.92) of all five methods; while the strongest Pass@1 baseline, EcoTune , reaches 45.9% with $36.57 (paired Wilcoxon, p=0 .0167 ; A12 =0 .544 ). 
+
+Takeaway. COMPAS attains the strongest observed quality-cost trade-off on the primary split. 
+
+Robustness to Dataset Randomness The main run leaves open whether the gain is specific to the v6-only split of problems. To check robustness, we repeat the same five-method comparison on an independent random split of the same benchmark (Hu et al. 2026; White et al. 2025). As shown in Table 3 (middle), COMPAS again leads on Pass@1 (62.2%), ahead of the second-best method 
+
+PromiseTune (59.6%), and does so at 91.5% lower cost ($1.09 versus $12.94). It also costs less than RouteLLM 
+
+($2.19) while achieving 11.9% relatively higher Pass@1 (62.2% versus 55.6%). 
+
+Takeaway. On the independent random split, COMPAS 
+
+again attains the highest Pass@1 at the lowest cost. 
+
+Robustness to Internal Randomness The random-split check controls for which tasks are tested, but not for ran-domness in COMPAS ’s own offline search: a different search seed could still reshape the offline-built fronts. We therefore repeat the full v6-only comparison on four additional seeds; Table 3 (right) reports the five-seed aggregate, ranked with Scott–Knott ESD test. In particular, COMPAS is the only rank 1 for both Pass@1 and cost across all five seeds, with a pass@1 win over the best baseline ( RouteLLM , 44.8%) of 15.2% and a cost saving of 69.7% ($11.84 versus $39.09). Looking into the six difficulty-type groups in Table 4, 
+
+COMPAS leads most clearly on functional tasks: it reaches 97.6% on Easy/functional and 16.5% on Medium/functional, versus at most 30.6% and 8.5% for any baseline, respectively. On Hard/functional, its raw Pass@1 is also higher (9.0% versus 7.5%) and it receives the sole best Scott–Knott ESD rank across the five independent search seeds. By contrast, on Medium/stdin and Hard/stdin, RouteLLM ’s per-difficulty model routing performs better; however, COMPAS remains much cheaper overall ($11.84 versus $39.09; Table 3, right). 
+
+Takeaway. The main-run advantage holds across the ran-domness in its own search. 
+
+Generalization 
+
+We next evaluate whether the gain holds outside its pri-mary setting, across repository-level tasks (agent-based code generation on SWE-bench) and model family (DeepSeek to Devstral and Qwen3.5). Table 5 reports both axes. 
+
+Generalization to Repository-Level Tasks On SWE-bench Verified-mini (Li et al. 2025a; Jiang et al. 2025; Kapoor et al. 2026) (Table 5, left), COMPAS resolves 38/50 tasks (76.0%), ahead of the 70.0% achieved by RouteLLM 
+
+and PromiseTune , but at a higher cost ($37.37). Because Verified-mini is a curated subset, these numbers are not com-parable to the full leaderboard results. The per-group columns show where this advantage comes from: COMPAS resolves 19/23 Medium tasks, versus 17/23 for Default , RouteLLM , and PromiseTune and 14/23 for EcoTune ; it also resolves 17/19 Easy tasks, matching 
+
+EcoTune and exceeding the other baselines, while Hard remains low for all methods (at most 2/8). Moreover, by tracing the logs, the higher price is because COMPAS routes more tasks to the higher-capability, pricier models. 
+
+Takeaway. COMPAS resolves the most SWE-bench tasks, driven by stronger Easy and Medium results. 
+
+Generalization Across Model Family On Qwen3.5 (Ta-ble 5, right), COMPAS attains the highest Pass@1 (40.6%) and lowest cost ($1.01). On Devstral (Table 5, middle), it improves on Default (27.1% versus 20.6%) but remains below EcoTune (29.3%), the only setting where COMPAS 
+
+does not lead. The Devstral gap traces to COMPAS ’s cheap model probe: Devstral’s two pool models score too close together for the v6-only (main run) Random split v6-only (five seeds) Method Pass@1 (%) Cost Time Pass@1 (%) Cost Time Pass@1 (%) rp Cost rc Time rt                                                                      
+
+> Default 40.6 [33.1, 48.0] $14.67 6.9h 55.6 [45.6, 65.6] $5.04 2.7h 41.4 ±1.2 4$71.82 337.6h 1
+> RouteLLM 42.9 [35.4, 50.3] $7.78 38.2h 55.6 [44.4, 65.6] $2.19 5.4h 44.8 ±1.7 2$39.09 2192.0h 3
+> EcoTune 45.9 [39.2, 52.6] $36.57 149.1h 51.1 [41.1, 61.1] $11.86 8.2h 40.8 ±4.6 5$161.82 5586.8h 5
+> PromiseTune 41.7 [34.3, 49.1] $15.40 11.4h 59.6 [50.0, 68.7] $12.94 57.4h 41.8 ±2.4 3$108.13 4442.9h 4
+> COMPAS 52.8 [45.6, 60.2] $4.92 9.9h 62.2 [52.2, 72.2] $1.09 5.5h 51.6 ±1.6 1$11.84 148.9h 2
+
+Table 3: Main effectiveness and robustness on LiveCodeBench. Main-run Pass@1 values are means [bootstrap 95% CI], while five-seed Pass@1 values are mean ± Standard Deviation. Cost and Time are total API cost and actual LLM wall-clock time, summed over all runs. r is Scott–Knott ESD rank over independent seeds. Darker color and bold indicate better performance.                                                                                
+
+> Easy Medium Hard Functional ( n=17 )Stdin ( n=26 )Functional ( n=26 )Stdin ( n=26 )Functional ( n=20 )Stdin ( n=60 )Method Pass@1 (%) rPass@1 (%) rPass@1 (%) rPass@1 (%) rPass@1 (%) rPass@1 (%) r
+> Default 28.2 ±4.9 498.5 ±2.1 48.5 ±1.7 275.4 ±4.4 27.0 ±4.5 331.3 ±1.4 4
+> RouteLLM 30.6 ±2.6 298.5 ±2.1 47.7 ±3.8 376.9 ±5.4 17.0 ±2.7 340.3 ±2.5 1
+> EcoTune 26.2 ±2.1 599.4 ±0.6 27.2 ±1.1 470.1 ±8.9 54.4 ±2.9 433.7 ±8.2 3
+> PromiseTune 29.3 ±0.9 398.9 ±1.6 36.8 ±1.7 572.4 ±5.9 47.5 ±1.8 233.9 ±5.1 3
+> COMPAS 97.6 ±3.2 1100.0 ±0.0 116.5 ±8.7 173.6 ±4.0 39.0 ±4.2 137.3 ±2.5 2
+
+Table 4: Per-group Pass@1 (%, mean ± SD over the same five seeds as Table 3) on LiveCodeBench v6-only. r column is Scott–Knott ESD rank; formatting follows Table 3.                                                                           
+
+> SWE-bench Verified-mini Devstral Qwen3.5 Method Resolve (%) Easy Med Hard Cost Time Pass@1 (%) Cost Time Pass@1 (%) Cost Time
+> Default 68.0 (34/50) 16/19 17/23 1/8 $31.09 10.3h 20.6 [14.9, 26.9] $0.11 0.1h 33.1 [26.3, 40.0] $6.29 3.3h
+> RouteLLM 70.0 (35/50) 16/19 17/23 2/8 $8.82 10.6h 20.6 [14.9, 26.3] $2.21 1.5h 25.7 [19.4, 32.0] $3.52 4.2h
+> EcoTune 64.0 (32/50) 17/19 14/23 1/8 $29.80 7.0h 29.3 [23.0, 35.7] $3.82 11.1h 35.0 [28.5, 41.7] $20.25 59.8h
+> PromiseTune 70.0 (35/50) 16/19 17/23 2/8 $25.90 6.2h 25.9 [19.9, 31.9] $3.54 7.7h 26.9 [20.6, 33.7] $7.08 6.7h
+> COMPAS 76.0 (38/50) 17/19 19/23 2/8 $37.37 6.8h 27.1 [20.7, 33.5] $1.38 7.3h 40.6 [33.9, 47.4] $1.01 15.3h
+
+Table 5: Generalization across repo-level benchmark and model family. SWE-bench reports resolve rate and solved counts; Devstral and Qwen3.5 report mean Pass@1 [bootstrap 95% CI]. Formatting follows Table 3. probe to tell apart, so the cost-aware rule breaks the tie toward the cheaper one without confirming it truly matches the larger model; on Qwen3.5 and DeepSeek-V4, the pool models are easier to distinguish on the same cheap probe, so this failure mode does not arise. 
+
+Takeaway. Across model families, COMPAS leads on Qwen3.5 and improves on the default on Devstral. 
+
+Component Ablation 
+
+Table 6 compares full COMPAS against six variants, each removing one component, to measure each component’s contribution under the shared budget and evaluation proto-col. No-Prompt-Search and No-Decoding-Search 
+
+each disable one half of the joint search, isolating whether prompts and decoding settings must be searched together. 
+
+No-History-Pack disables the persistent record of prior rounds’ failures, so reflection uses feedback only from the current round. No-History-Compacting 
+
+retains this history without its compaction operation. 
+
+No-Model-Selection disables the cheap model probe and fixes DeepSeek-V4-Flash; No-Task-Grouping uses                          
+
+> Variant Pass@1 (%) Cost Time
+> No-Decoding-Search 46.3 [38.9, 53.7] $15.33 11.4h
+> No-Prompt-Search 41.7 [34.3, 49.1] $15.36 12.4h
+> No-History-Pack 41.1 [33.7, 48.6] $15.01 12.2h
+> No-History-Compacting 50.3 [42.9, 57.7] $4.81 7.3h
+> No-Task-Grouping 39.4 [32.6, 46.9] $15.81 12.3h
+> No-Model-Selection 44.0 [36.6, 51.4] $4.71 6.3h Full COMPAS 52.8 [45.6, 60.2] $4.92 9.9h
+
+Table 6: Ablation study on LCB v6-only; each row disables the named COMPAS operation; formatting follows Table 3. one configuration for all difficulty levels. Overall, every variant scores below full COMPAS (52.8%). Removing decoding or prompt search lowers Pass@1 to 46.3% and 41.7%, so neither dimension alone is sufficient. Without the history pack, Pass@1 falls to 41.1%; likewise, fixing one model before search yields 44.0%, supporting model probing. Finally, No-Task-Grouping hurts the most at 39.4%, below Default : one configuration loses Axis Variant Pass@1 (%) Cost Time                                         
+
+> Grouping Difficulty-Only 46.9 [39.4, 54.3] $1.69 9.8h Predictor XGBoost-Router 49.7 [42.3, 57.1] $4.73 8.2h Predictor KNN-Router 45.1 [37.7, 52.6] $1.72 9.2h Budget Half-Budget 41.7 [34.8, 49.1] $14.64 10.5h Budget Double-Budget 46.6 [39.3, 54.0] $14.95 18.8h Reflection Short-Context 44.0 [36.6, 51.4] $1.73 9.3h Reflection Flash-Reflect 50.3 [42.9, 57.7] $4.64 6.7h
+> Pareto Max-Pass 50.9 [43.4, 58.3] $4.61 10.9h Pareto Min-Cost 50.3 [42.9, 57.7] $4.68 10.9h Default COMPAS 52.8 [45.6, 60.2] $4.92 9.9h
+
+Table 7: Sensitivity analysis on LCB v6-only around key 
+
+COMPAS design choices; formatting follows Table 3. the specialization provided by per-group fronts. In contrast, several ablations cost $15.01–$15.81 rather than the $4.71–$4.92 of the other variants, reflecting differ-ences in model selection across variants; so we do not draw any cost conclusions here. 
+
+Takeaway. Each component contributes to the reported full COMPAS results; task grouping has the largest reduction. 
+
+Sensitivity Analysis 
+
+Table 7 varies five design axes around COMPAS ’s de-fault implementation; unlike the components tested in the ablation study above, these are decisions that a de-ployer sets before running COMPAS on a new setting. Grouping tests Difficulty-Only , collapsing the de-fault difficulty ×type split into difficulty alone. Predictor tests two difficulty assigners for the ground-truth diffi-culty labels: XGBoost-Router , a gradient-boosted clas-sifier trained on problem embeddings, and KNN-Router ,a majority vote of difficulty labels among the k nearest training problems. Budget tests Half-Budget (0.5M to-kens) and Double-Budget (2M tokens). Reflection tests 
+
+Short-Context (2/2 failure/success examples instead of 10/10) and Flash-Reflect (a cheaper reflection model in place of the default). Pareto selection tests Max-Pass 
+
+and Min-Cost , choosing a front’s best-quality or cheapest point instead of the default quality-cost rule. Confirming that the extra granularity is worth it, 
+
+Difficulty-Only grouping scores lower (46.9% ver-sus 52.8%) because it collapses the functional/stdin split that the largest per-group gains above are traced to into one group with a single, less specialized configuration. Among the budget settings, 1M tokens scores highest (52.8%), while 0.5M scores lower (41.7%) and doubling the budget to 2M does not significantly improve on 1M (46.6%; confidence intervals overlap). Given this and the scale of our experiments, we fix 1M tokens as COMPAS ’s default offline budget. The 2M run’s Pareto fronts explain what happened here: two groups score only 31.7% and 18.0% Pass@1, over-fitting their search samples, so in this run, more search only gave the accept/reject gate more chances to commit to an overfit candidate rather than a better one. On the remaining axes, the 3.1-point XGBoost-Router 
+
+gap against the main result is not significant ( p = 0 .4732 ), suggesting a learned difficulty predictor could approximate the difficulty labels in real deployment, unlike the 7.7-point 
+
+KNN-Router gap ( p = 0 .0151 ). 
+
+Short-Context lowers Pass@1 to 44.0%, supporting a longer reflection context; Flash-Reflect saves $0.28 cost ($4.64 versus $4.92) but has lower observed Pass@1 (50.3% versus 52.8%), so we retain Pro reflection as the default. Additionally, Max-Pass and Min-Cost achieve similar Pass@1 and cost to the default, and neither differs significantly in Pass@1. 
+
+Takeaway. None of the tested alternatives improves on 
+
+COMPAS ’s default settings, validating the hyperparameter choices used throughout. 
+
+## Related Work 
+
+Search-Based Software Engineering × AI. COMPAS treats model, prompt, and decoding optimization as a search-based software engineering (SBSE) problem (Harman and Jones 2001): it uses execution feedback to search for a configura-tion rather than hand-design one. Within this line, SMAC3 
+
+(Lindauer et al. 2023) and PromiseTune (Chen and Chen 2026) fit one global configuration, whereas AlphaEvolve 
+
+(Novikov et al. 2025), ShinkaEvolve (Lange, Imajuku, and Cetin 2026), and ARTEMIS (Brookes et al. 2025) evolve target programs. GEPA (Agrawal et al. 2025) and Madaan et al. (2023) evolve prompts, while RoutingGen (Li et al. 2026) routes between fixed prompts by difficulty. In con-trast, COMPAS keeps the program and harness fixed, jointly searches prompt and decoding settings, and retains a quality-cost front for each difficulty group. 
+
+LLM Configuration Optimization. LLM inference opti-mization also usually focuses on one dimension. RouteLLM 
+
+(Ong et al. 2025), FrugalGPT (Chen, Zaharia, and Zou 2023), Hybrid-LLM (Ding et al. 2024), CSCR (Shirka-vand et al. 2025), and Router-R1 (Zhang, Feng, and You 2025) select models, whereas Arora et al. (2024); Du, Yang, and Welleck (2025); Arias et al. (2025); Li et al. (2025b) and EcoTune (Xu, Chen, and Wen 2025) tune de-coding. EcoOptiGen (Wang, Liu, and Awadallah 2023) searches model, prompt, and decoding from a fixed prompt list, but returns one configuration for every task. In con-trast, COMPAS combines model probing with reflection-based prompt-decoding search and selects from a separate quality-cost front for each difficulty group. 
+
+Agent Configuration and Harness Optimization. 
+
+GA4GC (Gong et al. 2026) jointly searches agent hyper-parameters and prompt templates for one global configura-tion, whereas AgentConductor (Wang et al. 2026) builds a difficulty-aware agent topology per task. OpenHands 
+
+(Wang et al. 2025), SWE-agent (Yang et al. 2024), and harness evolution (Lin et al. 2026) improve the tools, control logic, or workflow. These approaches are complementary: 
+
+COMPAS fixes the harness and optimizes model, prompt, and decoding settings inside it, so the two can be used together rather than treated as competing alternatives. Conclusion 
+
+COMPAS shows that under a fixed harness, jointly selecting the model, prompt, and decoding settings by task group im-proves the observed quality-cost trade-off over routers, global tuners, and prompt-only optimizers across splits, seeds, benchmarks, and model families. Its main limitation is that each experiment only tested COMPAS on two same-family LLMs; future work could extend to cross-family search. 
+
+## References 
+
+Agrawal, L. A.; Tan, S.; Soylu, D.; Ziems, N.; Khare, R.; Opsahl-Ong, K.; Singhvi, A.; Shandilya, H.; Ryan, M. J.; Jiang, M.; Potts, C.; Sen, K.; Dimakis, A.; Stoica, I.; Klein, D.; Zaharia, M.; and Khattab, O. 2025. GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning. Arias, E. G.; Li, M.; Heumann, C.; and Aßenmacher, M. 2025. Decoding decoded: Understanding hyperparameter effects in open-ended text generation. In Proceedings of the 31st International Conference on Computational Linguistics ,9992–10020. Arora, C.; Sayeed, A. I.; Licorish, S.; Wang, F.; and Treude, C. 2024. Optimizing LLMs for Code Generation: Which Hyperparameter Settings Yield the Best Results? Brookes, P.; Voskanyan, V.; Giavrimis, R.; Truscott, M.; Ilieva, M.; Pavlou, C.; Staicu, A.; Adham, M.; Hood, W. E.; Gong, J.; et al. 2025. Evolving Excellence: Automated Op-timization of LLM-based Agents. Chai, L.; Yang, J.; Wu, J.; Shi, E.; and Liu, X. 2026. GXPO: Group Cross-Lingual Relative Policy Optimization for Code Generation. In Forty-third International Conference on Ma-chine Learning .Chen, L.; Zaharia, M.; and Zou, J. 2023. Frugalgpt: How to use large language models while reducing cost and improving performance. Chen, M.; Tworek, J.; Jun, H.; Yuan, Q.; et al. 2021. Evalu-ating large language models trained on code. Chen, P.; and Chen, T. 2026. PromiseTune: Unveiling Causally Promising and Explainable Configuration Tuning. In 48th International Conference on Software Engineering .IEEE. Chen, X.; Tao, Z.; Zhang, K.; Zhou, C.; et al. 2025. Revisit Self-Debugging with Self-Generated Tests for Code Gen-eration. In Che, W.; Nabende, J.; Shutova, E.; and Pile-hvar, M. T., eds., Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) , 18003–18023. Vienna, Austria: Association for Computational Linguistics. ISBN 979-8-89176-251-0. Chen, Z.; Sun, Z.; Shi, Y.; Peng, C.; Gu, X.; Lo, D.; and Jiang, L. 2026. Rethinking the Value of Agent-Generated Tests for LLM-Based Software Engineering Agents. Cheung, K. S.; Kaul, M.; Jahangirova, G.; Mousavi, M. R.; and Zie, E. 2025. Comparative Analysis of Carbon Foot-print in Manual vs. LLM-Assisted Code Development. In 
+
+Proceedings of the 1st International Workshop on Responsi-ble Software Engineering , ResponsibleSE ’25, 13–20. New York, NY, USA: Association for Computing Machinery. ISBN 9798400714610. Ding, D.; Mallick, A.; Wang, C.; Sim, R.; Mukherjee, S.; Rühle, V.; Lakshmanan, L.; and Awadallah, A. H. 2024. Hybrid llm: Cost-efficient and quality-aware query routing. In International Conference on Learning Representations ,volume 2024, 41348–41366. Donato, B.; Mariani, L.; Micucci, D.; and Riganelli, O. 2025. Studying How Configurations Impact Code Generation in LLMs: The Case of ChatGPT. In 2025 IEEE/ACM 33rd In-ternational Conference on Program Comprehension (ICPC) .Dror, R.; Baumer, G.; Shlomov, S.; and Reichart, R. 2018. The Hitchhiker’s Guide to Testing Statistical Significance in Natural Language Processing. In Gurevych, I.; and Miyao, Y., eds., Proceedings of the 56th Annual Meeting of the As-sociation for Computational Linguistics (Volume 1: Long Papers) , 1383–1392. Melbourne, Australia: Association for Computational Linguistics. Du, W.; Yang, Y.; and Welleck, S. 2025. Optimizing Temper-ature for Language Models with Multi-Sample Inference. In 
+
+Forty-second International Conference on Machine Learn-ing .Dwork, C.; Feldman, V.; Hardt, M.; Pitassi, T.; Reingold, O.; and Roth, A. 2015. The reusable holdout: Preserving validity in adaptive data analysis. Science , 349(6248): 636–638. Falkner, S.; Klein, A.; and Hutter, F. 2018. BOHB: Robust and Efficient Hyperparameter Optimization at Scale. In Dy, J.; and Krause, A., eds., Proceedings of the 35th International Conference on Machine Learning , volume 80 of Proceedings of Machine Learning Research , 1437–1446. PMLR. Gong, J.; Bian, Y.; {de la Cal}, L.; Pinna, G.; Uteem, A.; Williams, D.; Zamorano, M.; Even-Mendoza, K.; Langdon, W.; Menendez, H.; and Sarro, F. 2026. GA4GC: Greener Agent for Greener Code via Multi-objective Configuration Optimization. Gong, J.; Giavrimis, R.; Brookes, P.; Voskanyan, V.; Wu, F.; Ashiga, M.; Truscott, M.; Basios, M.; Kanthan, L.; Xu, J.; and Wang, Z. 2025. Tuning LLM-based Code Optimization via Meta-Prompting: An Industrial Perspective. In 2025 40th IEEE/ACM International Conference on Automated Software Engineering (ASE) , 3569–3580. IEEE Press. Harman, M.; and Jones, B. F. 2001. Search-based software engineering. Information and software Technology , 43(14): 833–839. Hu, Z.; Liu, C.; Huang, T.; Li, J.; Yang, Y.; Wu, J.; Zhong, Z.; Yang, M.; and Yue, Y. 2026. CoSPlay: Cooperative Self-Play at Test-Time with Self-Generated Code and Unit Test. Huang, D.; M. Zhang, J.; Bu, Q.; Xie, X.; Chen, J.; and Cui, H. 2025. Bias Testing and Mitigation in LLM-based Code Generation. ACM Trans. Softw. Eng. Methodol. , 35(1). Jain, N.; Han, K.; Gu, A.; Li, W.-D.; Yan, F.; Zhang, T.; Wang, S.; Solar-Lezama, A.; Sen, K.; and Stoica, I. 2025. LiveCodeBench: Holistic and Contamination Free Evalua-tion of Large Language Models for Code. Jia, H.; Morris, R.; Ye, H.; Sarro, F.; and Mechtaev, S. 2025. Automated Repair of Ambiguous Problem Descriptions for LLM-Based Code Generation. In 2025 40th IEEE/ACM In-ternational Conference on Automated Software Engineering (ASE) , 367–379. IEEE. Jiang, Z.; Ren, X.; Yan, M.; Jiang, W.; Li, Y.; and Liu, Z. 2025. Issue Localization via LLM-Driven Iterative Code Graph Searching. In 2025 40th IEEE/ACM Inter-national Conference on Automated Software Engineering (ASE) , 3034–3045. Jimenez, C. E.; Yang, J.; Wettig, A.; Yao, S.; Pei, K.; Press, O.; and Narasimhan, K. R. 2024. SWE-bench: Can Language Models Resolve Real-world Github Issues? In The Twelfth International Conference on Learning Representations .Kaplan, J.; McCandlish, S.; Henighan, T.; Brown, T. B.; Chess, B.; Child, R.; Gray, S.; Radford, A.; Wu, J.; and Amodei, D. 2020. Scaling Laws for Neural Language Mod-els. arXiv preprint arXiv:2001.08361 .Kapoor, S.; Stroebl, B.; Kirgis, P.; Nadgir, N.; Siegel, Z. S.; Wei, B.; Xue, T.; Chen, Z.; Chen, F.; et al. 2026. Holistic Agent Leaderboard: The Missing Infrastructure for AI Agent Evaluation. In The Fourteenth International Conference on Learning Representations .Lange, R. T.; Imajuku, Y.; and Cetin, E. 2026. ShinkaE-volve: Towards Open-Ended and Sample-Efficient Program Evolution. In The Fourteenth International Conference on Learning Representations .Li, H.; Shi, Y.; Lin, S.; Gu, X.; Lian, H.; Wang, X.; Jia, Y.; Huang, T.; and Wang, Q. 2025a. SWE-Debate: Competitive Multi-Agent Debate for Software Issue Resolution. Li, L.; Sleem, L.; Gentile, N.; Nichil, G.; and State, R. 2025b. Exploring the Impact of Temperature on Large Language Models: Hot or Cold? International Neural Network Society Workshop on Deep Learning Innovations and Applications 2025. Li, S.; Huang, L.; Zhan, S.; Sun, W.; Yin, T.; Liu, Z.; and Yan, M. 2026. Intention chain-of-thought prompting with dynamic routing for code generation. In Proceed-ings of the Fortieth AAAI Conference on Artificial Intel-ligence and Thirty-Eighth Conference on Innovative Ap-plications of Artificial Intelligence and Sixteenth Sympo-sium on Educational Advances in Artificial Intelligence ,AAAI’26/IAAI’26/EAAI’26. AAAI Press. ISBN 978-1-57735-906-7. Lin, J.; Liu, S.; Pan, C.; Lin, L.; Dou, S.; Xi, Z.; Huang, X.; Yan, H.; Han, Z.; Gui, T.; et al. 2026. Agentic har-ness engineering: Observability-driven automatic evolution of coding-agent harnesses. Lindauer, M.; Eggensperger, K.; Feurer, M.; Biedenkapp, A.; Deng, D.; Benjamins, C.; Ruhkopf, T.; Sass, R.; and Hutter, F. 2023. SMAC3: A Versatile Bayesian Optimization Package for Hyperparameter Optimization. Madaan, A.; Tandon, N.; Gupta, P.; Hallinan, S.; Gao, L.; Wiegreffe, S.; Alon, U.; Dziri, N.; Prabhumoye, S.; Yang, Y.; Gupta, S.; Majumder, B. P.; Hermann, K.; Welleck, S.; Yazdanbakhsh, A.; and Clark, P. 2023. Self-Refine: Iterative Refinement with Self-Feedback. Mistral AI. 2025. Introducing: Devstral 2 and Mistral Vibe CLI. https://mistral.ai/news/devstral-2-vibe-cli. Blog post. Novikov, A.; V˜ u, N.; Eisenberger, M.; Dupont, E.; Huang, P.-S.; Wagner, A. Z.; Shirobokov, S.; Kozlovskii, B.; Ruiz, F. J.; Mehrabian, A.; et al. 2025. Alphaevolve: A coding agent for scientific and algorithmic discovery. Ong, I.; Almahairi, A.; Wu, V.; Chiang, W.-L.; Wu, T.; Gon-zalez, J. E.; Kadous, M. W.; and Stoica, I. 2025. RouteLLM: Learning to Route LLMs with Preference Data. In Interna-tional Conference on Learning Representations (ICLR) .Qwen Team. 2026. Qwen3.5: Towards Native Multimodal Agents. https://qwen.ai/blog?id=qwen3.5. Technical blog. Sharifloo, A. M.; Heydari, M.; Kazerooni, P.; Maninger, D.; and Mezini, M. 2025. Where Do LLMs Still Struggle? An In-Depth Analysis of Code Generation Benchmarks. In 2025 2nd IEEE/ACM International Conference on AI-powered Software (AIware) , 249–253. Shirkavand, R.; Gao, S.; Yu, P.; and Huang, H. 2025. Cost-Aware Contrastive Routing for LLMs. In The Thirty-ninth Annual Conference on Neural Information Processing Sys-tems .Tantithamthavorn, C. 2026. ScottKnottESD: The Non-Parametric Scott-Knott Effect Size Difference Test. R pack-age version 3.0.0. Tantithamthavorn, C.; McIntosh, S.; Hassan, A. E.; and Mat-sumoto, K. 2019. The Impact of Automated Parameter Op-timization on Defect Prediction Models. IEEE Transactions on Software Engineering , 45(7): 683–711. Tripathy, A.; Harshit, C. P.; and Vaidhyanathan, K. 2026. SWEnergy: An Empirical Study on Energy Efficiency in Agentic Issue Resolution Frameworks with SLMs. In Pro-ceedings of the 2026 International Workshop on Agentic En-gineering , AGENT ’26, 104–111. New York, NY, USA: As-sociation for Computing Machinery. ISBN 9798400723995. Wang, C.; Liu, X.; and Awadallah, A. H. 2023. Cost-Effective Hyperparameter Optimization for Large Language Model Generation Inference. In AutoML Conference 2023 .Wang, S.; Lu, R.; Yang, Z.; Wang, Y.; Zhang, Y.; Xu, L.; Xu, Q.; Yin, G.; Chen, C.; and Guan, X. 2026. AgentConduc-tor: Topology Evolution for Multi-Agent Competition-Level Code Generation. In Forty-third International Conference on Machine Learning .Wang, X.; Li, B.; Song, Y.; Xu, F. F.; Tang, X.; Zhuge, M.; et al. 2025. OpenHands: An Open Platform for AI Soft-ware Developers as Generalist Agents. In The Thirteenth International Conference on Learning Representations .White, C.; Dooley, S.; Roberts, M.; Pal, A.; Feuer, B.; Jain, S.; et al. 2025. LiveBench: A Challenging, Contamination-Limited LLM Benchmark. In The Thirteenth International Conference on Learning Representations .Xu, A.; Lin, B.; Xue, B.; Wang, B.; Xu, B.; Wu, B.; Zhang, B.; Lin, C.; Dong, C.; Ling, C.; et al. 2026a. Deepseek-v4: Towards highly efficient million-token context intelligence. Xu, J.; Sun, Q.; Schwendeman, P.; Nielsen, S.; Cetin, E.; and Tang, Y. 2026b. Trinity: An Evolved LLM Coordina-tor. In The Fourteenth International Conference on Learning Representations .Xu, Y.; Chen, Z.; and Wen, Z. 2025. EcoTune: Token-Efficient Multi-Fidelity Hyperparameter Optimization for Large Language Model Inference. In Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing , 7746–7756. Yang, J.; Jimenez, C. E.; Wettig, A.; Lieret, K.; Yao, S.; Narasimhan, K. R.; and Press, O. 2024. SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineer-ing. In The Thirty-eighth Annual Conference on Neural In-formation Processing Systems .Zhang, H.; Feng, T.; and You, J. 2025. Router-R1: Teaching LLMs Multi-Round Routing and Aggregation via Reinforce-ment Learning. Zhang, J.; Hu, S.; Lu, C.; Lange, R. T.; and Clune, J. 2026. Darwin Gödel Machine: Open-Ended Evolution of Self-Improving Agents. In The Fourteenth International Con-ference on Learning Representations .
