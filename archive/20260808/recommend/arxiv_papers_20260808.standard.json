@@ -1,0 +1,54 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-08T20:29:41.488992+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.04384v1",
+      "source": "arxiv",
+      "title": "Improving Auto-Design of Neural PDE Solvers with a Domain-Specific Language",
+      "abstract": "Neural PDE solver auto-design is fundamentally a search-space representation problem. In the space of unrestricted Python programs, valid solvers form an extremely sparse subset: most candidate programs are syntactically incorrect, semantically incompatible, or numerically unstable. Direct code generation therefore forces an LLM to spend most of its search capacity navigating implementation failures rather than reasoning about solver quality. ADSL-PDE addresses this challenge by introducing a structured search state between solver concepts and executable code. It represents the functional decisions that determine a neural PDE solver (architecture, physical constraints, objectives, sampling, and optimization) while abstracting away low-level implementation details. A deterministic compiler maps each valid search state to an executable solver. In effect, ADSL-PDE reshapes the search space: it removes large regions of invalid programs, increases the density of meaningful candidates, and preserves the compositional freedom needed to discover previously unseen designs. Solver evolution can thus operate over design decisions rather than code artifacts. Built on this representation, our evolutionary agent iteratively proposes, evaluates, and refines solver search states using empirical feedback. Across multiple PDE benchmarks, ADSL-PDE improves both search efficiency and optimization stability, achieving an improvement of more than 52% within the first ten evolution iterations. These results suggest a broader principle for LLM-driven auto-design: effective agents do not merely require stronger reasoning, but rather a search representation that concentrates exploration on valid and consequential decisions.",
+      "authors": [
+        "Shengxin Kong",
+        "Liwen Xu",
+        "Jingwen Fu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-05T02:41:23+00:00",
+      "link": "https://arxiv.org/pdf/2608.04384v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-based code generation for solver design using a DSL to constrain search space",
+      "llm_evidence_cn": "用领域特定语言约束LLM生成求解器代码，以缩小搜索空间",
+      "llm_evidence": "用领域特定语言约束LLM生成求解器代码，以缩小搜索空间",
+      "canonical_evidence": "用领域特定语言约束LLM生成求解器代码，以缩小搜索空间",
+      "llm_tldr_en": "Auto-designing neural PDE solvers suffers from sparse valid programs in unrestricted Python. ADSL-PDE introduces a domain-specific language as a structured search state between solver concepts and executable code, improving LLM solver generation success and quality.",
+      "llm_tldr_cn": "神经PDE求解器自动设计的瓶颈在于搜索空间表示：无约束Python中有效求解器稀疏，直接生成让LLM疲于应对实现细节。ADSL-PDE引入领域特定语言作为结构化搜索状态，在概念与代码之间抽象功能决策。实验验证其提升了求解器生成成功率与质量，表明DSL中间表示是增强LLM科学计算代码生成的有效途径。",
+      "llm_tldr": "神经PDE求解器自动设计的瓶颈在于搜索空间表示：无约束Python中有效求解器稀疏，直接生成让LLM疲于应对实现细节。ADSL-PDE引入领域特定语言作为结构化搜索状态，在概念与代码之间抽象功能决策。实验验证其提升了求解器生成成功率与质量，表明DSL中间表示是增强LLM科学计算代码生成的有效途径。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

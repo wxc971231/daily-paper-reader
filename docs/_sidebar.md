@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-08-08 <!--dpr-date:20260808-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/08/2608.04384v1-improving-auto-design-of-neural-pde-solvers-with-a-domain-specific-language" data-sidebar-item="{&quot;title&quot;: &quot;Improving Auto-Design of Neural PDE Solvers with a Domain-Specific Language&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.04384v1-improving-auto-design-of-neural-pde-solvers-with-a-domain-specific-language&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;用领域特定语言约束LLM生成求解器代码，以缩小搜索空间&quot;}">Improving Auto-Design of Neural PDE Solvers with a Domain-Specific Language</a>
   * 2026-08-07 <!--dpr-date:20260807-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/07/2608.04336v1-compas-difficulty-aware-joint-search-for-optimizing-code-generation" data-sidebar-item="{&quot;title&quot;: &quot;COMPAS: Difficulty-Aware Joint Search for Optimizing Code Generation&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.04336v1-compas-difficulty-aware-joint-search-for-optimizing-code-generation&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;对模型、提示和解码进行难度感知的联合搜索以优化代码生成&quot;}">COMPAS: Difficulty-Aware Joint Search for Optimizing Code Generation</a>

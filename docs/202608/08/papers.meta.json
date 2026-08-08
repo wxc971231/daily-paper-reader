@@ -1,0 +1,24 @@
+{
+  "label": "2026-08-08",
+  "date": "2026-08-08",
+  "generated_at": "2026-08-08T20:30:38",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202608/08/2608.04384v1-improving-auto-design-of-neural-pde-solvers-with-a-domain-specific-language",
+      "section": "quick",
+      "title_en": "Improving Auto-Design of Neural PDE Solvers with a Domain-Specific Language",
+      "authors": "Shengxin Kong, Liwen Xu, Jingwen Fu",
+      "date": "2026-08-05",
+      "pdf": "https://arxiv.org/pdf/2608.04384v1",
+      "score": "6.0",
+      "evidence": "用领域特定语言约束LLM生成求解器代码，以缩小搜索空间",
+      "tldr": "神经PDE求解器自动设计本质上是搜索空间表示问题。在无限制的Python程序中，有效求解器是极其稀疏的子集，直接代码生成迫使大模型将大部分搜索能力浪费在规避实现错误上。ADSL-PDE引入结构化搜索状态，用确定性编译器将设计决策映射为可执行代码，重塑搜索空间，提高有效候选密度。实验表明，其进化智能体在多个基准上显著提升搜索效率和稳定性，前10轮改进超52%。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Neural PDE solver auto-design is fundamentally a search-space representation problem. In the space of unrestricted Python programs, valid solvers form an extremely sparse subset: most candidate programs are syntactically incorrect, semantically incompatible, or numerically unstable. Direct code generation therefore forces an LLM to spend most of its search capacity navigating implementation failures rather than reasoning about solver quality. ADSL-PDE addresses this challenge by introducing a structured search state between solver concepts and executable code. It represents the functional decisions that determine a neural PDE solver (architecture, physical constraints, objectives, sampling, and optimization) while abstracting away low-level implementation details. A deterministic compiler maps each valid search state to an executable solver. In effect, ADSL-PDE reshapes the search space: it removes large regions of invalid programs, increases the density of meaningful candidates, and preserves the compositional freedom needed to discover previously unseen designs. Solver evolution can thus operate over design decisions rather than code artifacts. Built on this representation, our evolutionary agent iteratively proposes, evaluates, and refines solver search states using empirical feedback. Across multiple PDE benchmarks, ADSL-PDE improves both search efficiency and optimization stability, achieving an improvement of more than 52% within the first ten evolution iterations. These results suggest a broader principle for LLM-driven auto-design: effective agents do not merely require stronger reasoning, but rather a search representation that concentrates exploration on valid and consequential decisions.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
