@@ -1,0 +1,2865 @@
+Title: Coordinate Optimality Reformulation for Mixed-Integer Convex Programs with Indicators
+
+URL Source: https://arxiv.org/pdf/2608.01385v1
+
+Published Time: Tue, 04 Aug 2026 01:29:45 GMT
+
+Number of Pages: 42
+
+Markdown Content:
+# Coordinate Optimality Reformulation for Mixed-Integer Convex Programs with Indicators ∗Tong Xu † Salar Fattahi ‡ Andrés Gómez § Simge Küçükyavuz ¶
+
+Abstract 
+
+We consider mixed-integer convex optimization problems in which binary indicators control con-tinuous variables. We introduce the Coordinate Optimality Reformulation (CORe) framework, which augments standard indicator formulations by incorporating coordinate-wise optimality information. The resulting reformulations preserve global optimality while substantially improving branch-and-bound per-formance, particularly in sparse and structured settings where the coordinate-wise optimality condi-tions expose exploitable problem structure. We first develop the main components of CORe, including coordinate-wise optimality conditions, closed-form characterizations, and disjunctive reformulations. We then demonstrate the framework across multiple problem families, including quadratic problems and ro-bust single-index models. Computational experiments show that CORe can substantially improve solver performance compared with standard big-M formulations. 
+
+Keywords: mixed-integer convex optimization ; indicator constraints ; reformulation ; sparse optimiza-tion ; disjunctive optimization 
+
+Mathematics Subject Classification: 90C11 , 90C20 
+
+# 1 Introduction 
+
+We consider a class of mixed-integer convex optimization problems in which binary indicators control the activation of a subset of continuous variables. A canonical formulation takes the form 
+
+min  
+
+> x∈Rn, y ∈Rm, z ∈{ 0,1}n
+
+f (x, y ) + 
+
+> n
+
+X
+
+> i=1
+
+λizi s.t. xi(1 − zi) = 0 , i = 1 , . . . , n, (1) where f is convex. The binary variables zi, i = 1 , . . . , n indicate whether the corresponding continuous variables xi, i = 1 , . . . , n are active. When present (i.e., m ≥ 1), y denotes a collection of continuous variables that are not directly controlled by the indicators, and λ ∈ Rn 
+
+> +
+
+is the given penalty vector. Throughout, we refer to the constraints xi(1 − zi) = 0 as indicator constraints. The indicator constraints can be linearly represented by −Mizi ≤ xi ≤ Mizi, where Mi is a sufficiently large constant (commonly referred to as a big-M constant) [32]. Quadratic indicator models provide a particularly important special case of (1) and will serve as one of the main settings in this paper. In this case, m = 0 , and the model reduces to a convex quadratic program with indicators of the form 
+
+min 
+
+> x∈Rn, z ∈{ 0,1}n
+
+12 x⊤Qx + c⊤x + λ⊤z
+
+s.t. − Mizi ≤ xi ≤ Mizi, i = 1 , . . . , n, 
+
+(2) 
+
+> ∗
+
+Simge Küçükyavuz and Tong Xu are supported, in part, by ONR N00014-22-1-2602. Salar Fattahi is supported, in part, by NSF grants 2152776 and 2337776, and ONR grant N00014-26-1-2074. Andrés Gómez is supported in part by ONR grant N000142612117 and AFOSR grant FA9550-24-1-0086. 
+
+> †
+
+Department of Industrial Engineering and Management Sciences, Northwestern University, Evanston, IL, USA. tongxu2027@ u.northwestern.edu 
+
+> ‡
+
+Department of Industrial and Operations Engineering, University of Michigan, Ann Arbor, MI, USA. fattahi@umich.edu 
+
+> §
+
+Daniel J. Epstein Department of Industrial and Systems Engineering, University of Southern California, Los Angeles, CA, USA. gomezand@usc.edu 
+
+> ¶
+
+Department of Industrial Engineering and Management Sciences, Northwestern University, Evanston, IL, USA. simge@ northwestern.edu 
+
+1arXiv:2608.01385v1 [math.OC] 2 Aug 2026 where Q ⪰ 0 is the quadratic cost matrix and c ∈ Rn. Despite the convexity of the quadratic objective, the presence of indicator constraints renders the problem NP-hard [17]. The optimization model (1) encompasses many problems, including learning probabilistic graphical mod-els [52, 47, 65, 66, 24, 23], gene regulatory networks [58], portfolio optimization [9], unit commitment [27, 55], manufacturing [1], outlier detection [69, 33, 35], sparse regression [5, 53, 19], and robust regression [5, 40, 35]. Big-M-constrained formulations are a common starting point for these applications. While broadly appli-cable, such formulations often provide limited information to the branch-and-bound algorithm: continuous relaxations may be weak, presolve may fail to identify the relevant activation regimes, and the solver may need to explore many suboptimal activation patterns. Existing approaches often resort to either strengthening continuous relaxation or developing specialized algorithms that exploit the structural properties of the problem. A major line of work strengthens indicator models through perspective reformulations and related convexification techniques [16, 27, 37, 2, 62]. Other approaches exploit additional structure in sparse learning and quadratic optimization with indicators, includ-ing cutting-plane and first-order methods, low-rank structure, and graph-induced structure in the quadratic matrix [5, 39, 53, 49, 7, 10]. While these methods can be highly effective within their target settings, they are tailored to specific problem structures. In this paper, we introduce the Coordinate Optimality Reformulation (CORe) framework, which provides a general reformulation principle based on coordinate-wise optimality that can be specialized to a broad range of indicator models, while still delivering partial benefits even in the absence of favorable structures. The key observation is that, under the canonical formulation (1), each pair (xi, z i) defines a one-dimensional coordinate subproblem when the remaining variables are fixed. When this coordinate subproblem admits a tractable optimality characterization, the active and inactive regimes can be compared explicitly, resulting in additional constraints that can only strengthen the formulation. CORe systematically incorporates these comparisons into the mixed-integer formulation, yielding reformulations that preserve global optimality while eliminating activation patterns that cannot occur at any optimum. In doing so, CORe exposes structure that is invisible in the original formulation and can be exploited by presolve, branching, and cutting-plane routines. 
+
+## 1.1 Contributions 
+
+The main contributions of the paper are summarized below. • We introduce the Coordinate Optimality Reformulation (CORe) framework for a class of mixed-integer convex optimization problems with indicator constraints. The framework has three components: an 
+
+optimality-condition (OC) reformulation , a closed-form (CF) reformulation , and a disjunctive refor-mulation . Together, these components incorporate coordinate-wise optimality conditions directly into the mixed-integer formulation in the form of constraints and make explicit a structure that standard formulations typically leave implicit in the continuous subproblem. • We show that our framework applies across several structured model classes. In particular, for quadratic programs with indicators, the coordinate-wise comparison yields explicit threshold rules and disjunctive formulations. We further show that the same principle extends beyond quadratic objectives by applying it to robust single-index models—a class of problems in robust statistics. While the CORe conditions remain valid beyond these structured settings, the strongest computational benefits are expected when favorable underlying problem structures are present. • We characterize special cases in which CORe sharply reduces the number of activation patterns that need to be considered. In convex quadratic problems whose sparsity graph is a star, the regimes of all leaf coordinates are controlled by the single continuous variable at the center, which leads to a linear-size bound on the number of patterns and an O(n) bound on the size of the branch-and-bound tree. More generally, in quadratic problems with an unbalanced bipartite structure, in which the n
+
+indicator-controlled variables interact only through m additional continuous variables, the activation decisions are governed by a hyperplane arrangement in dimension m, yielding a polynomial O(nm+1 )
+
+bound on the number of branch-and-bound nodes for fixed m. An analogous O(nd+1 ) bound holds for robust single-index models with d covariates, a class that includes penalized least trimmed squares and 2robust logistic regression. In all these cases, the standard big-M formulation can require exponentially many nodes. We further show that such guarantees do not follow from sparsity alone; even with CORe, path-structured instances can induce exponentially many branch-and-bound nodes. • We show computationally that CORe can substantially outperform standard big-M formulations and, in some settings, even specialized dynamic programming algorithms that exploit problem structure. 
+
+## 1.2 Related Work 
+
+General mixed-integer convex optimization. Indicator-constrained convex optimization is part of the broader literature on mixed-integer convex and nonlinear optimization. Classical algorithmic approaches include outer approximation and branch-and-bound for convex mixed-integer nonlinear programs (MINLPs) [22, 57], as well as hybrid branch-and-bound, branch-and-cut, and outer-approximation frameworks imple-mented in modern convex MINLP solvers [12, 13]. Related mixed-integer conic and convex approaches strengthen relaxations through lift-and-project cuts, conic certificates, and extended polyhedral approxima-tions [44, 50, 18, 45, 46]. These approaches typically reformulate or relax the original feasible set with-out excluding feasible integer solutions. CORe takes a different route: it adds constraints derived from coordinate-wise comparisons between active and inactive regimes. These constraints may remove feasible but suboptimal activation patterns, while preserving all globally optimal solutions. 
+
+Formulation strengthening for indicator variables. Perspective reformulations provide a powerful approach for mixed-integer convex problems with indicator variables. In diagonal quadratic indicator mod-els, perspective reformulation yields the ideal convex-hull description of the corresponding separable on-off quadratic epigraphs [16, 37]. The perspective strengthening approach has been extended to settings with nonseparable quadratic objectives, coupling constraints, and structured decompositions [27, 1, 37, 61, 64, 62]. For nonseparable objectives, perspective-based approaches typically decompose or lift the quadratic terms so that separable on-off components can be convexified; the resulting relaxation depends on the chosen de-composition or extended formulation [28, 68, 2, 30]. Conic optimization perspectives have also been used to relate regularization and relaxation approaches in statistical variable selection [21]. Other related devel-opments include projected and approximated perspective reformulations, project-and-lift approaches, and dual-information strengthening for semi-continuous and nonseparable models [29, 25, 26]. 
+
+Algorithms for sparse statistical learning. A separate line of work develops scalable algorithms for sparse statistical learning with indicator variables, including mixed-integer formulations for best subset selec-tion and binary convex reformulations with cutting-plane algorithms for high-dimensional sparse regression [5, 6]. Complementary first-order and local-search approaches have been developed for ℓ0-regularized re-gression and classification, including coordinate descent, local combinatorial optimization, and specialized branch-and-bound methods whose node relaxations are solved by first-order algorithms [39, 40, 19]. These methods exploit the structure of sparse statistical learning problems through specialized search, coordinate updates, or tailored relaxations. CORe uses a different mechanism: it extracts coordinate-wise information from the continuous subproblem and encodes it as constraints in a mixed-integer formulation. 
+
+Structure-exploiting methods for quadratic indicator problems. Another line of work studies con-vex quadratic indicator-constrained problems with special structure in the matrix Q. The simplest case is diagonal Q, where the continuous variables decouple and perspective reformulation yields the ideal convex-hull description of the feasible set [16, 37]. Beyond this fully separable setting, several papers identify classes of matrices for which strong structural results are available. When Q is Stieltjes or closely related to an 
+
+M -matrix, the sign structure of the quadratic couplings can be exploited to derive strong convex formu-lations and, under additional assumptions, polynomial-time solvability results [2, 48]. Rank-one quadratic structure has also been exploited to derive strong lifted relaxations for sparse regression [3]. Related pairwise convexification approaches study 2 × 2 quadratic substructures with indicators [38]. Likewise, if Q admits a sparse factorization Q = Q⊤ 
+
+> 0
+
+Q0, polynomial-time solvability can be obtained under appropriate assumptions on the factor structure [20]. 3A particularly active line of research exploits the sparsity graph of Q, i.e., the graph whose adjacency matrix is given by Q. When the sparsity graph of Q is a star, i.e., there exists a center node r ∈ [n] := 
+
+{1, . . . , n } such that Qij = 0 for all i, j ∈ [n] \ { r} with i̸ = j, then the resulting problem is known to be polynomial-time solvable following a parametric method [7]. When Q is tridiagonal, the associated sparsity graph is a path, and dynamic-programming methods can solve the problem to optimality in O(n2) time and memory [49]. For banded matrices, decision-diagram and approximation approaches exploit temporal or local dependence to obtain tractable algorithms under fixed structural parameters [34]. When the sparsity graph of Q has a tree structure, exact parametric dynamic programming algorithms solve the problem in 
+
+O(n2) time and memory [7]. More recent work extends this parametric viewpoint to structured graphs whose complexity depends on treewidth, volume growth, and related graph parameters [8]. Related work on structured sparsity under indicator conditions develops approximation algorithms and complexity results for broader block-structured quadratic settings [10]. More broadly, sparsity and decomposition ideas based on graph structure have played an important role in polynomial and semidefinite optimization [60, 51, 11]. Taken together, this literature shows that strong computational guarantees are achievable when the problem has a highly exploitable structure. These methods are inherently ad hoc, each tailored to a specific problem class (e.g., quadratic programs from a sparsity graph family). CORe takes a different approach: rather than exploiting global structure, it derives optimality implications from one-dimensional coordinate subproblems, yielding a unified reformulation principle that specializes naturally across model classes. 
+
+Disjunctive and geometric formulations. CORe also has a geometric and disjunctive interpretation: coordinate optimality conditions partition the continuous space into regions associated with activation regimes. This relates to classical disjunctive programming and convex-hull formulations [4, 36], as well as to strong formulations for disjunctive constraints and unions of polyhedra [59, 42] and geometric con-structions for strong MIP formulations [43]. While these works are not directly concerned with coordinate optimality, they offer a useful perspective on the regime partitions induced by CORe. In summary, the related literature provides algorithmic and modeling tools for specific classes of indicator problems, while CORe contributes a unifying reformulation principle grounded in coordinate-wise optimality. 
+
+## 1.3 Outline 
+
+The remainder of the paper is organized as follows. Section 2 introduces the general CORe framework and formalizes the coordinate-optimality logic underlying our approach. Section 3 develops CORe for quadratic programs with indicators, including general sparse quadratic models and models with unbalanced bipartite structure. Section 4 extends the same perspective to a class of robust single-index models, which includes penalized least trimmed squares and robust logistic regression as special cases, and establishes a polynomial bound on the size of the branch-and-bound tree when the number of covariates is fixed. Section 5 presents computational experiments. We conclude in Section 6. 
+
+# 2 The Coordinate Optimality Reformulation (CORe) Framework 
+
+Recall the mixed-integer convex optimization problem 
+
+min  
+
+> x∈Rn, y ∈Rm, z ∈{ 0,1}n
+
+f (x, y ) + 
+
+> n
+
+X
+
+> i=1
+
+λizi
+
+s.t. xi(1 − zi) = 0 , i = 1 , . . . , n. 
+
+For a vector x ∈ Rn and an index i, let x−i denote all coordinates of x except xi. For fixed (x−i, y ), define 
+
+fi(ξ; x−i, y ) := f (x1, . . . , x i−1, ξ, x i+1 , . . . , x n, y ).
+
+The coordinate-restricted subproblem in (xi, z i) is thus defined as 
+
+min  
+
+> xi∈R, z i∈{ 0,1}
+
+fi(xi; x−i, y ) + λizi s.t. xi(1 − zi) = 0 . (3) 4The optimal solution to this problem can be determined by comparing two regimes: 
+
+Off-regime (zi = 0) . Feasibility forces ξ = 0 , giving the value 
+
+V off  
+
+> i
+
+(x−i, y ) := fi(0; x−i, y ).
+
+On-regime (zi = 1) . The coordinate is free, giving the value 
+
+V on  
+
+> i
+
+(x−i, y ) := min  
+
+> xi∈R
+
+fi(xi; x−i, y ) + λi.
+
+When the infimum is attained, we denote the set of coordinate minimizers by 
+
+X⋆i (x−i, y ) := arg min  
+
+> xi∈R
+
+fi(xi; x−i, y ).
+
+Proposition 1 (Coordinate optimality principle) . Let (x⋆, y ⋆, z ⋆) be a globally optimal solution to (1) . Then, for every coordinate i,
+
+(
+
+z⋆i = 0 =⇒ x⋆i = 0 and V off  
+
+> i
+
+(x⋆
+
+> −i
+
+, y ⋆) ≤ V on  
+
+> i
+
+(x⋆
+
+> −i
+
+, y ⋆),z⋆i = 1 =⇒ x⋆i ∈ X⋆i (x⋆
+
+> −i
+
+, y ⋆) and V on  
+
+> i
+
+(x⋆
+
+> −i
+
+, y ⋆) ≤ V off  
+
+> i
+
+(x⋆
+
+> −i
+
+, y ⋆).
+
+Proof. Fix a coordinate i and keep (x⋆
+
+> −i
+
+, y ⋆) fixed. If z⋆i = 0 , then feasibility implies x⋆i = 0 . If 
+
+V on  
+
+> i
+
+(x⋆
+
+> −i
+
+, y ⋆) < V off  
+
+> i
+
+(x⋆
+
+> −i
+
+, y ⋆),
+
+then switching only the ith coordinate to an optimal on-regime solution would strictly decrease the objective while preserving feasibility, contradicting global optimality. Therefore 
+
+V off  
+
+> i
+
+(x⋆
+
+> −i
+
+, y ⋆) ≤ V on  
+
+> i
+
+(x⋆
+
+> −i
+
+, y ⋆).
+
+If z⋆i = 1 , then x⋆i must minimize fi(·; x⋆
+
+> −i
+
+, y ⋆). Otherwise, replacing x⋆i by a coordinate minimizer would strictly decrease the objective while keeping the same value of z⋆i , again contradicting global optimality. Hence x⋆i ∈ X⋆i (x⋆
+
+> −i
+
+, y ⋆). Finally, if 
+
+V off  
+
+> i
+
+(x⋆
+
+> −i
+
+, y ⋆) < V on  
+
+> i
+
+(x⋆
+
+> −i
+
+, y ⋆),
+
+then switching to the off-regime xi = 0 , z i = 0 would strictly improve the objective, which is impossible at a global optimum. This proves the result. Proposition 1 shows that every globally optimal solution satisfies a coordinate-wise consistency condition. CORe incorporates these necessary optimality conditions into the mixed-integer formulation. The resulting constraints may be implicit at this level of generality, but in the structured models considered later, they reduce to explicit linear constraints, closed-form coordinate updates, or finite disjunctions. 
+
+## 2.1 The Optimality Condition (OC) Component 
+
+The OC component of CORe uses the optimality condition of the coordinate subproblem (3). For each coordinate i, define the off-regime set 
+
+D0 
+
+> i, OC
+
+:= 
+
+n
+
+(x, y, z ) : zi = 0 , x i = 0 ,fi(0; x−i, y ) ≤ fi(ξ; x−i, y ) + λi ∀ξ ∈ R
+
+o
+
+,
+
+and the on-regime set 
+
+D1 
+
+> i, OC
+
+:= 
+
+n
+
+(x, y, z ) : zi = 1 , 0 ∈ ∂xi fi(xi; x−i, y ),fi(xi; x−i, y ) + λi ≤ fi(0; x−i, y )
+
+o
+
+.
+
+5The off-regime set enforces that xi = 0 and that switching coordinate i on cannot improve the objective. The on-regime set enforces coordinate-wise stationarity and that the on-regime is no worse than the off-regime. The OC component of CORe is therefore the disjunctive constraint 
+
+(x, y, z ) ∈ D 0 
+
+> i, OC
+
+∪ D 1
+
+> i, OC
+
+, i = 1 , . . . , n. 
+
+This yields the following CORe formulation: 
+
+min  
+
+> x,y,z
+
+f (x, y ) + 
+
+> n
+
+X
+
+> i=1
+
+λizi
+
+s.t. (x, y, z ) ∈ D 0 
+
+> i, OC
+
+∪ D 1
+
+> i, OC
+
+, i = 1 , . . . , n, z ∈ { 0, 1}n.
+
+(4) By Proposition 1, formulation (4) preserves all globally optimal solutions of (1). It may remove feasible but suboptimal points from the original formulation, but only those that violate the coordinate-wise optimality condition. 
+
+## 2.2 The Closed-Form (CF) Component 
+
+In many structured models, the optimality condition 0 ∈ ∂xi fi(xi; x−i, y ) yields an explicit minimizer for xi
+
+in terms of the remaining variables (x−i, y ), that is, a closed-form function x⋆i : Rn−1 × Rm → R satisfying 
+
+x⋆i (x−i, y ) ∈ arg min  
+
+> ξ∈R
+
+fi(ξ; x−i, y ).
+
+When such an expression is available, the on-regime value reduces to 
+
+V on  
+
+> i
+
+(x−i, y ) = fi(x⋆i (x−i, y ); x−i, y ) + λi.
+
+The OC condition can then be combined with the closed-form coordinate minimizer, leading to the following off- and on-regime sets: 
+
+D0 
+
+> i, CF
+
+:= 
+
+n
+
+(x, y, z ) : zi = 0 , x i = 0 ,fi(0; x−i, y ) ≤ fi(x⋆i (x−i, y ); x−i, y ) + λi
+
+o
+
+,
+
+and 
+
+D1 
+
+> i, CF
+
+:= 
+
+n
+
+(x, y, z ) : zi = 1 , x i = x⋆i (x−i, y ),fi(x⋆i (x−i, y ); x−i, y ) + λi ≤ fi(0; x−i, y )
+
+o
+
+.
+
+The resulting CF disjunction is 
+
+(x, y, z ) ∈ D 0 
+
+> i, CF
+
+∪ D 1
+
+> i, CF
+
+, i = 1 , . . . , n, 
+
+and the corresponding CORe formulation is 
+
+min  
+
+> x,y,z
+
+f (x, y ) + 
+
+> n
+
+X
+
+> i=1
+
+λizi
+
+s.t. (x, y, z ) ∈ D 0 
+
+> i, CF
+
+∪ D 1
+
+> i, CF
+
+, i = 1 , . . . , n, z ∈ { 0, 1}n.
+
+(5) Compared with the OC formulation, the CF component replaces the implicit first-order condition by an explicit equality xi = x⋆i (x−i, y ).62.3 The Disjunctive Reformulation Component 
+
+In this section, we review how the disjunctive constraint in (4) or (5) can be formulated in practice under certain conditions. To simplify notation, we write D0 
+
+> i
+
+and D1 
+
+> i
+
+to denote the two regime sets for coordinate i,whether they arise from the OC formulation (D0
+
+> i, OC
+
+, D1
+
+> i, OC
+
+) or from the CF formulation (D0
+
+> i, CF
+
+, D1
+
+> i, CF
+
+). The disjunctive construction applies to either case. Suppose Dji for j = 0 , 1 admits a polyhedral representation Dji = {(x, y, z ) : Aji (x, y ) ≤ bji }, for constraint matrix Aji and right-hand side vector bi of appropriate dimension for i = 1 , . . . , n, j = 0 , 1. Then, from disjunctive programming and the union of polyhedra [4], the disjunctive constraint can be equivalently represented by introducing two copies of vector (x, y, z ) as (xj , y j , z j ), j = 0 , 1 and linear constraints [4] 
+
+x = x0 + x1,y = y0 + y1,z0 + z1 = 1 ,z = z1,A0 
+
+> i
+
+x0 ≤ b0 
+
+> i
+
+z0,A1 
+
+> i
+
+x1 ≤ b1 
+
+> i
+
+z1.
+
+In many applications, the on-regime with z = 1 can be further partitioned into several subregimes. In this case, the disjunctive formulation can be extended similarly. Furthermore, if the sets defining the disjunctions are convex rather than polyhedral, then the union of convex sets may be represented similarly under certain conditions [16]. Overall, CORe provides a modeling framework for incorporating coordinate-wise optimality into indicator formulations. It starts with the coordinate subproblem, identifies regimes consistent with global optimal-ity, and encodes these regimes via optimality-condition, closed-form, or disjunctive reformulations. The construction preserves all globally optimal solutions of the original model, while possibly removing feasible points that violate these necessary conditions. In the next section, we specify CORe reformulations of several classes of problems that have attracted attention in recent literature. 
+
+Remark 1 (Role of variables y). The CORe framework does not impose structural restrictions on the variables 
+
+y beyond those required for convexity. Additional convex constraints on y can be incorporated without affecting the validity of the coordinate-wise optimality conditions, since these conditions are derived by fixing (x−i, y ) and comparing the active and inactive states of xi. Thus, the framework applies equally to models in which y is constrained by general convex sets. In settings where the minimization over y admits a closed-form minimizer for fixed x, one may further eliminate or explicitly characterize y and substitute this expression into the formulation. Such elimination is complementary to CORe and can yield additional enhancements, but it is not required for the validity of the framework. We next turn from the general CORe framework to concrete problem classes, demonstrating its effective-ness across a range of settings. 
+
+# 3 CORe for Quadratic Programs with Indicators 
+
+In this section, we focus on quadratic programs with indicator variables, where the coordinate-wise structure is especially transparent. After fixing the remaining variables, each indicator-controlled coordinate reduces to a one-dimensional convex quadratic subproblem. Therefore, the active and inactive regimes can be compared in closed form, yielding tractable OC, CF, and disjunctive components of CORe. We first derive the CORe reformulation from a coordinate-wise threshold rule. We then analyze structured sparse cases, such as when the sparsity pattern of the Hessian matrix corresponds to path and star graphs, to illustrate how the sparsity of the induced graph affects the worst-case behavior of branch-and-bound. Finally, we turn to quadratic programs with unbalanced bipartite structure, in which many indicator-controlled variables are coupled only through a few continuous variables, and show that CORe yields a polynomial bound on the size of the branch-and-bound tree. 73.1 General Quadratic Programs with Indicators 
+
+Recall the mixed-integer convex quadratic program (2): 
+
+min  
+
+> x∈Rn, z ∈{ 0,1}n
+> 12
+
+x⊤Qx + c⊤x + λ⊤z
+
+s.t. − Mizi ≤ xi ≤ Mizi, i = 1 , . . . , n, 
+
+where Q ⪰ 0, Qii > 0 for all i, λi ≥ 0, and Mi is the big-M constant. To apply CORe, fix a coordinate i and treat all other variables x−i as given. Define 
+
+gi := ci + X 
+
+> j̸=i
+
+Qij xj . (6) Eliminating the terms not involving xi, the problem reduces to the one-dimensional problem 
+
+min 
+
+> xi∈R, z i∈{ 0,1}
+
+12 Qii x2 
+
+> i
+
++ gixi + λizi s.t. xi(1 − zi) = 0 .
+
+Optimality condition reformulation. The off-regime zi = 0 forces xi = 0 , and therefore has value 
+
+V off  
+
+> i
+
+(x−i) = 0 . In the on-regime zi = 1 , the coordinate xi is free. Since Qii > 0, the one-dimensional quadratic function is minimized at x⋆i = − gi 
+
+> Qii
+
+, with value V on  
+
+> i
+
+(x−i) = − g2 
+
+> i
+> 2Qii
+
++ λi. Hence, the coordinate regime comparison gives 
+
+V off  
+
+> i
+
+(x−i) ≤ V on  
+
+> i
+
+(x−i) ⇐⇒ |gi| ≤ τi, τi := p2λiQii .
+
+Therefore, every globally optimal solution must satisfy the OC regime-selection logic 
+
+zi = 0 = ⇒ | gi| ≤ τi, zi = 1 = ⇒ | gi| ≥ τi.
+
+Here, the on-regime can be further divided into two subregimes: gi ≥ τi and gi ≤ − τi. Consequently, the OC component induces the threshold regimes 
+
+D0 
+
+> i, OC
+
+= {(x, y, z ) : zi = 0 , x i = 0 , |gi| ≤ τi},
+
+D1 
+
+> i, OC
+
+= D+ 
+
+> i, OC
+
+∪ D −
+
+> i, OC
+
+, where 
+
+D+ 
+
+> i, OC
+
+:= {(x, y, z ) : zi = 1 , g i ≥ τi},
+
+D− 
+
+> i, OC
+
+:= {(x, y, z ) : zi = 1 , g i ≤ − τi}.
+
+The OC component rules out activation patterns that are inconsistent with the coordinate-wise regime comparison, but it does not yet enforce the coordinate minimizer in the on-regime. 
+
+Closed-form reformulation. Because the active coordinate minimizer is available in closed form, we can further refine the on-regimes. In the on-regime, coordinate-wise optimality requires xi = − gi 
+
+> Qii
+
+, or equivalently, Qii xi + gi = 0 . Adding this closed-form equality to the two active OC regimes yields the CF disjunction 
+
+D0 
+
+> i, CF
+
+:= {(x, y, z ) : zi = 0 , x i = 0 , |gi| ≤ τi},
+
+D+ 
+
+> i, CF
+
+:= {(x, y, z ) : zi = 1 , Q ii xi + gi = 0 , g i ≥ τi},
+
+D− 
+
+> i, CF
+
+:= {(x, y, z ) : zi = 1 , Q ii xi + gi = 0 , g i ≤ − τi}.
+
+Hence every global minimizer of (2) lies in 
+
+> n
+
+\
+
+> i=1
+
+
+
+D0 
+
+> i, CF
+
+∪ D + 
+
+> i, CF
+
+∪ D −
+
+> i, CF
+
+
+
+.
+
+8Disjunctive reformulation. We next encode the three-term disjunction D0 
+
+> i, CF
+
+∪ D + 
+
+> i, CF
+
+∪ D −
+
+> i, CF
+
+. Introduce binary variables z+ 
+
+> i
+
+, z − 
+
+> i
+
+∈ { 0, 1}, where z+ 
+
+> i
+
+and z− 
+
+> i
+
+indicate the positive- and negative-threshold regimes, 
+
+D+ 
+
+> i, CF
+
+and D−
+
+> i, CF
+
+, respectively, and set zi = z+ 
+
+> i
+
++ z− 
+
+> i
+
+. The off-regime is therefore represented by zi = 0 . We also introduce disaggregated variables (0 , g 0 
+
+> i
+
+), (x+ 
+
+> i
+
+, g + 
+
+> i
+
+), (x− 
+
+> i
+
+, g − 
+
+> i
+
+), with aggregate relations 
+
+xi = x+ 
+
+> i
+
++ x− 
+
+> i
+
+, gi = g0 
+
+> i
+
++ g+ 
+
+> i
+
++ g− 
+
+> i
+
+.
+
+After intersecting each branch with the original bounds −Mizi ≤ xi ≤ Mizi, the resulting bounded disjunc-tion can be encoded by the following constraints: 
+
+− Miz+ 
+
+> i
+
+≤ x+ 
+
+> i
+
+≤ 0, 0 ≤ x− 
+
+> i
+
+≤ Miz− 
+
+> i
+
+(7) 
+
+− τi(1 − zi) ≤ g0 
+
+> i
+
+≤ τi(1 − zi), (8) 
+
+Qii x+ 
+
+> i
+
++ g+ 
+
+> i
+
+= 0 , τiz+ 
+
+> i
+
+≤ g+ 
+
+> i
+
+, (9) 
+
+Qii x− 
+
+> i
+
++ g− 
+
+> i
+
+= 0 , g− 
+
+> i
+
+≤ − τiz− 
+
+> i
+
+. (10) Combining the above constraints with the coupling definition (6) yields the CORe-enhanced formulation: 
+
+min 12 x⊤Qx + c⊤x + λ⊤z
+
+s.t. − Mizi ≤ xi ≤ Mizi, i = 1 , . . . , n, gi = ci + X 
+
+> j̸=i
+
+Qij xj , i = 1 , . . . , n, xi = x+ 
+
+> i
+
++ x− 
+
+> i
+
+, i = 1 , . . . , n, gi = g0 
+
+> i
+
++ g+ 
+
+> i
+
++ g− 
+
+> i
+
+, i = 1 , . . . , n, zi = z+ 
+
+> i
+
++ z− 
+
+> i
+
+, i = 1 , . . . , n, 
+
+(7) − (10) , i = 1 , . . . , n, z+ 
+
+> i
+
+, z − 
+
+> i
+
+∈ { 0, 1}, i = 1 , . . . , n, . 
+
+(11) Formulation (11) is an instantiation of the general CORe framework of Section 2, where the CF compo-nent together with the disjunctive reformulation leads to tractable linear constraints. For each coordinate, constraints (7)–(10) give the standard extended convex-hull formulation of the bounded three-term disjunc-tion D0 
+
+> i, CF
+
+∪ D + 
+
+> i, CF
+
+∪ D −
+
+> i, CF
+
+, where boundedness is provided by the imposed bounds on xi and the branch equalities Qii x± 
+
+> i
+
++ g± 
+
+> i
+
+= 0 . Thus, the formulation incorporates the local convex-hull descriptions of the CORe-induced disjunctions into the original indicator model. 
+
+3.1.1 Role of Graph Sparsity 
+
+The coordinate-wise conditions used by CORe are local with respect to the sparsity graph of Q, defined as an undirected graph GQ = ( V, E ), where V := {1, . . . , n } and (i, j ) ∈ E if and only if Qij ̸ = 0 for i̸ = j. For the quadratic model, the coordinate subproblem for variable i depends on the other variables only through 
+
+gi(x) := ci + X 
+
+> j∈N(i)
+
+Qij xj ,
+
+where N (i) is the set of neighbors of i in GQ. Thus the activation regime of coordinate i is determined only by variables adjacent to i in GQ.This locality can reduce the number of possible regime patterns when many coordinates are controlled by a small set of variables. Suppose I and J are sets of coordinates such that N (i) ⊆ J for every i ∈ I .Then the regimes of all coordinates in I are determined by the hyperplanes 
+
+ci + X
+
+> j∈J
+
+Qij xj = ±τi, i ∈ I ,
+
+9in the lower-dimensional space of the variables xJ := ( xj )j∈J , where τi is the activation threshold for coordinate i. Hence, a classical hyperplane-arrangement bound says that 2|I| affine hyperplanes in R|J | 
+
+divide the space into at most |J | 
+
+X
+
+> ℓ=0
+
+2|I| 
+
+ℓ
+
+
+
+distinct regime patterns [67]. In particular, if |J | is fixed, this number is polynomial in |I| , and if |J | = 1 ,it is linear. This intuitively explains why sparse structures, such as star or bipartite sparsity graphs, can be favorable for CORe. In a star graph, all leaf regimes are controlled by the center node r, yielding J = {r} and 
+
+I = [ n]\{ r}. Therefore, the leaf thresholds form a one-dimensional arrangement on this centered variable with only O(n) intervals. Note that a star graph may be viewed as a bipartite graph with one node (center) in one partition and the remaining nodes in the other partition. More generally, in an unbalanced bipartite graph, the regimes on the larger partition are controlled by a low-dimensional hyperplane arrangement defined over the smaller partition. Sparsity alone, however, is not sufficient: in a path graph, coordinate conditions are governed by overlapping local neighborhoods rather than by a single small set of variables. Thus, the computational benefit of sparsity stems from low-dimensional control over many local regimes, not merely from having few nonzero entries in Q. These structures are studied in detail in Sections 3.2 and 3.3, which explain the substantial computational improvements observed in sparse instances while admitting difficult sparse cases in the worst case. 
+
+3.1.2 Role of Regularization 
+
+There are two notions of sparsity at play for mixed-integer convex quadratic programs with indicators: one is that of the sparsity of the Hessian matrix Q, and the other is that of the solution sparsity modeled with the regularizer involving the indicator variables. In the quadratic case, the CORe activation threshold is τi = √2λiQii . Thus, increasing λi enlarges the off-regime region |gi| ≤ τi, making it easier to certify coordinates as inactive. This does not change the objective relative to the original formulation or alter the set of global optima; rather, it makes the coordinate-wise optimality conditions more informative precisely when the optimal solution is sparser. Consequently, CORe tends to benefit more from stronger regularization than the original big-M formulation, which only captures the larger penalty through the objective and does not explicitly encode the threshold rule. This distinction will become evident in the experiments presented in Section 5. 
+
+## 3.2 Structured Sparse Quadratic Programs with Indicators 
+
+The CORe formulation derived in Section 3.1 is independent of the particular sparsity graph of Q. However, the effect of sparsity on the strength of the CORe formulation has not yet been quantified. In this section, we address this question by analyzing two special classes of sparsity patterns: star- and path-structured problems. Both belong to the broader class of tree-structured problems and both are known to be solvable in polynomial time [49]. Despite this shared tractability, we show that their behavior within a branch-and-bound framework can differ dramatically when the CORe formulation is used. In particular, for star-structured problems, the size of the branch-and-bound tree grows only linearly with the problem dimension, whereas for path-structured problems, it can grow exponentially in the worst case. 
+
+3.2.1 Star Graph 
+
+We show that when the sparsity graph of Q is a star, the CORe formulation admits an O(n) bound on the size of the branch-and-bound tree. This is a substantial improvement over the big-M formulation, whose tree can have O(2 n) nodes. 
+
+Proposition 2. Suppose the sparsity graph of Q is a star with a center node r. Then the number of feasible CORe regime patterns over the leaf coordinates is O(n). Consequently, a branching algorithm that branches on unresolved disjunctions D0 
+
+> i, CF
+
+∪ D + 
+
+> i, CF
+
+∪ D − 
+
+> i, CF
+
+for each i̸ = r in the fixed order i = 1 , . . . , n terminates after O(n) nodes. 
+
+10 Proof. 
+
+Suppose the sparsity graph of Q is a star on the vertex set [n] with center node r, and let [n] \ { r} denote the set of graph leaves. For each leaf i̸ = r, the only neighbor of i is the center node r. Hence we have 
+
+gi = ci + Qir xr ,
+
+so the disjunction D0 
+
+> i, CF
+
+∪D + 
+
+> i, CF
+
+∪D − 
+
+> i, CF
+
+depends only on the scalar variable xr . The three regimes correspond to the intervals S− 
+
+> i
+
+:= {xr : ci + Qir xr ≤ − τi},S0 
+
+> i
+
+:= {xr : |ci + Qir xr | ≤ τi},S+ 
+
+> i
+
+:= {xr : ci + Qir xr ≥ τi}.
+
+Suppose, without loss of generality, that we branch on the disjunctions D0 
+
+> i, CF
+
+∪ D + 
+
+> i, CF
+
+∪ D − 
+
+> i, CF
+
+in the order 
+
+i = 1 , . . . , n for i̸ = r. Each disjunction induces at most two breakpoints in xr , given by ci + Qir xr = ±τi.Hence all disjunctions taken together at the leaf nodes of the branch-and-bound tree partition R into at most 2( n − 1) + 1 = O(n) intervals. On each such interval, the regime of every leaf is fixed, and therefore all variables xi, i̸ = r, are uniquely determined (either zero or affine in xr ). Thus, each interval corresponds to a feasible terminal node, and the number of feasible branch-and-bound leaves is at most L = O(n).Next, consider the structure of the branch-and-bound tree. Each node representing a disjunction for an index i corresponds to a feasible interval I := [ L, U ] ⊆ R for xr determined by the intersection of the resolved disjunctions at this stage of the branch-and-bound search that lead to a feasible subproblem, i.e., 
+
+I = ∩i−1
+
+> j=1
+
+Skj where k ∈ { +, −, 0} depending on the branching sequence until that node. Branching on a coordinate i replaces I by the three sets 
+
+I− := I ∩ S− 
+
+> i
+
+= {xr ∈ [L, U ] : ci + Qir xr ≤ − τi},I0 := I ∩ S0 
+
+> i
+
+= {xr ∈ [L, U ] : |ci + Qir xr | ≤ τi},I+ := I ∩ S+ 
+
+> i
+
+= {xr ∈ [L, U ] : ci + Qir xr ≥ τi}.
+
+Since S− 
+
+> i
+
+, S 0 
+
+> i
+
+, S + 
+
+> i
+
+are three consecutive intervals covering R, their intersections with I form at most three consecutive subintervals of I given by I− 
+
+> i
+
+, I 0 
+
+> i
+
+, I + 
+
+> i
+
+, at least one of which is a feasible interval. Let N feas leaf denote the number of feasible leaves of the final branch-and-bound tree. Then N feas leaf ≤ O(n).
+
+Since every intermediate node has at least one feasible child, the number of non-leaf nodes is at most 
+
+N feas leaf = O(n). Moreover, since each non-leaf node generates at most two children with infeasible intervals, the number of infeasible leaves is also at most O(n).Combining these bounds, the total number of nodes in the branch-and-bound tree satisfies Ntotal =
+
+O(n).
+
+The linear bound in Proposition 2 applies to the tailored regime-branching scheme analyzed above, rather than to the standard branch-and-bound procedure used by commercial solvers. Nevertheless, in the computational experiments of Section 5, we solve the CORe formulation using Gurobi with its default binary-variable branching strategy. The tested star-graph instances are essentially solved at the root node, with negligible root gaps and only a small number of nodes explored, even for problems of size n = 10 4. Moreover, in these instances, CORe is faster than the specialized dynamic-programming benchmark, suggesting that the coordinate-wise reformulation allows a general-purpose solver to exploit the same low-dimensional structure with very little branching overhead. 
+
+Remark 2. The three-way disjunction in the proposition statement can also be implemented using standard binary-variable branching with a specialized branching rule. Once a coordinate i is selected, one may first branch on z+ 
+
+> i
+
+. The branch z+ 
+
+> i
+
+= 1 fixes z− 
+
+> i
+
+= 0 and zi = 1 , and therefore corresponds to D+ 
+
+> i
+
+. On the other branch z+ 
+
+> i
+
+= 0 , one then branches on z− 
+
+> i
+
+. The child node z− 
+
+> i
+
+= 0 corresponds to D0 
+
+> i
+
+, while the child node 
+
+z− 
+
+> i
+
+= 1 corresponds to D− 
+
+> i
+
+. Thus, this two-step binary branching rule partitions the feasible region in the same way as the three-way disjunction, up to a constant factor in the number of branch-and-bound nodes. The key requirement for the counting argument is that, once coordinate i is selected, it is fully resolved into one of the three regimes D+ 
+
+> i
+
+, D0 
+
+> i
+
+, or D− 
+
+> i
+
+.11 3.2.2 Path Graph 
+
+Our next proposition shows that, when the sparsity graph of Q is a connected path, the size of the branch-and-bound tree may grow exponentially in n. This in turn implies that Proposition 2 cannot be extended to general trees. 
+
+Proposition 3. There exists a family of instances of (2) on path graphs for which the number of feasible integer leaves of the branch-and-bound tree applied to the CORe formulation is exponential in n.
+
+The proof of Proposition 3 is provided in Appendix A. Despite this negative worst-case result, we note that it does not reflect the typical behavior observed in our experiments. On the random path-graph instances in Section 5, CORe solves all tested instances essentially at the root node, with zero root gap and roughly one explored node on average up to n = 10 4, and is faster than the specialized dynamic-programming benchmark on the reported instances. Thus, although Proposition 3 rules out a uniform polynomial bound for branch-and-bound on all path graphs, the CORe formulation remains highly effective on the structured random instances considered in our computational study. 
+
+## 3.3 Quadratic Programs with Unbalanced Bipartite Structure 
+
+In this section, we study mixed-integer convex quadratic programs in which a large number of indicator-controlled variables interact only through a small number of additional continuous variables. Consider 
+
+min 
+
+> x∈Rn,y ∈Rm,z ∈{ 0,1}n
+
+12 x⊤Dx + 12 y⊤Gy + x⊤F y + a⊤x + b⊤y + λ⊤z (12a) s.t. − Mizi ≤ xi ≤ Mizi, i = 1 , . . . , n, (12b) where D ∈ Rn×n is diagonal with positive diagonal entries, G ∈ Rm×m, F ∈ Rn×m with m ≪ n, and 
+
+ D FF ⊤ G
+
+
+
+⪰ 0.
+
+We refer to (12) as an unbalanced bipartite formulation: the sparsity graph of the quadratic form in (x, y ) is bipartite with partitions of size n and m, so the n indicator-controlled coordinates xi interact only through the m continuous variables y. Note that (12) generalizes the star case, as it reduces precisely to this case when m = 1 . In Appendix B, we show that the bipartite structure can be exploited by a geometric pruning algorithm with O(nm+1 ) time and memory complexity for fixed m.We apply CORe to problem (12). Fix an index i and treat (x−i, y ) as given. Since D is diagonal, the objective terms involving xi reduce to a one-dimensional convex quadratic. Define the scalar 
+
+gi(y) := Fiy + ai, di := Dii > 0,
+
+where Fi denotes the ith row of F . Up to terms independent of (xi, z i), the coordinate-restricted subproblem is 
+
+min 
+
+> xi∈R, z i∈{ 0,1}
+
+12 dix2 
+
+> i
+
++ gi(y) xi + λizi s.t. xi(1 − zi) = 0 .
+
+Optimality condition reformulation. The off-regime zi = 0 forces xi = 0 , hence V off  
+
+> i
+
+(y) = 0 . In the on-regime zi = 1 , the unconstrained minimizer is x⋆i (y) = − gi(y) 
+
+> di
+
+, and the optimal on-regime value equals 
+
+V on  
+
+> i
+
+(y) = min 
+
+> xi∈R
+
+ 12 dix2 
+
+> i
+
++ gi(y) xi
+
+
+
++ λi = − gi(y)2
+
+2di
+
++ λi.
+
+Therefore, the regime comparison V off  
+
+> i
+
+(y) ≤ V on  
+
+> i
+
+(y) is equivalent to the threshold condition 
+
+|gi(y)| ≤ τi, τi := p2diλi.
+
+In other words, every globally optimal solution satisfies the implications 
+
+zi = 0 ⇒ |gi(y)| ≤ τi, zi = 1 ⇒ |gi(y)| ≥ τi,
+
+which eliminates regime assignments inconsistent with coordinate-wise optimality. 12 Closed-form reformulation. Since x⋆i (y) is available in closed form, CORe additionally yields 
+
+zi = 1 ⇒ xi = − gi(y)
+
+di
+
+, zi = 0 ⇒ xi = 0 . (13) Imposing (13) tightens the on-regime by enforcing the coordinate-wise minimizer whenever zi = 1 . For fixed 
+
+x, the minimization over y also admits the closed-form solution y(x) = −G−1(F ⊤x + b); consistent with the remark on the role of the y variables in Section 2, we do not substitute this expression into the formulation, since retaining y is precisely what keeps the coordinate couplings low-dimensional. 
+
+Disjunctive reformulation. For each coordinate i, the OC threshold |gi(y)| ≤ τi and the CF mapping 
+
+xi = −gi(y)/d i induce the following three-term disjunction: 
+
+|gi(y)| ≤ τi, x i = 0 ∨ gi(y) ≥ τi, x i = − gi(y)
+
+di
+
+∨ gi(y) ≤ − τi, x i = − gi(y)
+
+di
+
+.
+
+To obtain a bounded disjunctive formulation, suppose that valid bounds on the affine quantities gi(y) = 
+
+Fiy + ai are available: 
+
+Li ≤ gi(y) ≤ Ui, i = 1 , . . . , n. 
+
+If no finite bound is available for a given coordinate, the corresponding bound may be omitted, equivalently taking Li = −∞ or Ui = ∞.Introduce binary variables z+ 
+
+> i
+
+, z − 
+
+> i
+
+∈ { 0, 1} indicating the two on-regimes, and set zi = z+ 
+
+> i
+
++ z− 
+
+> i
+
+together with zi ≤ 1, so that the off-regime corresponds to zi = 0 . We disaggregate gi as ti = g0 
+
+> i
+
++ g+ 
+
+> i
+
++ g− 
+
+> i
+
+, with one copy per regime; since xi = 0 in the off-regime, it suffices to disaggregate xi = x+ 
+
+> i
+
++ x− 
+
+> i
+
+. Intersecting each regime with the bounds Li ≤ gi(y) ≤ Ui and −Mizi ≤ xi ≤ Mizi yields the regime-local constraints 
+
+−Miz+ 
+
+> i
+
+≤ x+ 
+
+> i
+
+≤ 0, 0 ≤ x− 
+
+> i
+
+≤ Miz− 
+
+> i
+
+,
+
+−τi(1 − zi) ≤ g0 
+
+> i
+
+≤ τi(1 − zi),τiz+ 
+
+> i
+
+≤ g+ 
+
+> i
+
+≤ Uiz+ 
+
+> i
+
+, x+ 
+
+> i
+
+= − 1
+
+di
+
+g+ 
+
+> i
+
+,Liz− 
+
+> i
+
+≤ g− 
+
+> i
+
+≤ − τiz− 
+
+> i
+
+, x− 
+
+> i
+
+= − 1
+
+di
+
+g− 
+
+> i
+
+.
+
+Applying this construction for all i yields a CORe-enhanced formulation that tightly encodes the coordinate-wise optimality structure of problem (12): 
+
+min 
+
+> y∈Rm
+> z∈[0 ,1] n, z +,z −∈{ 0,1}n
+> g0,g +,g −∈Rn
+> x+,x −,x ∈Rn
+
+12 x⊤Dx + 12 y⊤Gy + x⊤F y + a⊤x + b⊤y + λ⊤z (14a) s.t. − Mizi ≤ xi ≤ Mizi, i = 1 , . . . , n, (14b) 
+
+zi = z+ 
+
+> i
+
++ z− 
+
+> i
+
+, i = 1 , . . . , n, (14c) 
+
+Fiy + ai = g0 
+
+> i
+
++ g+ 
+
+> i
+
++ g− 
+
+> i
+
+, i = 1 , . . . , n, (14d) 
+
+xi = x+ 
+
+> i
+
++ x− 
+
+> i
+
+, i = 1 , . . . , n, (14e) 
+
+− Miz+ 
+
+> i
+
+≤ x+ 
+
+> i
+
+≤ 0, 0 ≤ x− 
+
+> i
+
+≤ Miz− 
+
+> i
+
+, i = 1 , . . . , n, (14f) 
+
+− τi(1 − zi) ≤ g0 
+
+> i
+
+≤ τi(1 − zi), i = 1 , . . . , n, (14g) 
+
+τiz+ 
+
+> i
+
+≤ g+ 
+
+> i
+
+≤ Uiz+ 
+
+> i
+
+, x + 
+
+> i
+
+= − 1
+
+Dii 
+
+g+ 
+
+> i
+
+, i = 1 , . . . , n, (14h) 
+
+Liz− 
+
+> i
+
+≤ g− 
+
+> i
+
+≤ − τiz− 
+
+> i
+
+, x − 
+
+> i
+
+= − 1
+
+Dii 
+
+g− 
+
+> i
+
+, i = 1 , . . . , n. (14i) Note that the constraint zi ≤ 1, implicit in the declaration z ∈ [0 , 1] n, excludes z+ 
+
+> i
+
+= z− 
+
+> i
+
+= 1 ; hence 
+
+zi ∈ { 0, 1} holds automatically and z need not be declared binary. In formulation (14), the constants Mi
+
+13 are the same as in formulation (12), and the bounds Li, U i, when available, strengthen the disaggregated representation of the coordinate-wise optimality regimes. The next result bounds the size of the branch-and-bound tree for the CORe formulation (14) by counting the cells of the hyperplane arrangement that the coordinate thresholds induce in the space of the y variables. 
+
+Proposition 4 (Polynomial tree bound for fixed m). Suppose formulation (14) is solved by a branch-and-bound scheme that branches on the regime variables z+ 
+
+> i
+
+and z− 
+
+> i
+
+and prunes infeasible nodes. If m is fixed, then the branch-and-bound tree contains O(min {4n, n m+1 }) nodes. Proof. There are 2n binary variables, so the branch-and-bound tree has depth at most 2n and hence O(4 n)
+
+nodes. For the second bound, each coordinate i induces two hyperplanes in the y-space, 
+
+Fiy + ai = ±τi, i = 1 , . . . , n. 
+
+These 2n hyperplanes partition Rm into at most Pmℓ=0 
+
+ 2nℓ
+
+ cells [67], which is O(nm) for fixed m. Inside any cell, the signs of Fiy + ai − τi and Fiy + ai + τi are fixed, and therefore the regime of every coordinate is uniquely determined; distinct feasible integer assignments of the regime variables thus correspond to distinct cells, and their number is bounded by O(nm).Next, we count the nodes of the branch-and-bound tree. The nodes whose relaxations are feasible form a subtree containing the root. A leaf of this subtree either has all regime variables resolved, or is an internal node of the branch-and-bound tree all of whose children are infeasible; the latter cannot occur, because a feasible node contains a point ¯y in some cell of the arrangement, and the child obtained by fixing the next regime variable consistently with the regime pattern of that cell is again feasible. Hence every leaf of the feasible subtree corresponds to a fully resolved regime assignment, and the subtree has at most O(nm) leaves. Since its depth is at most 2n, the feasible subtree contains at most O(n · nm) nodes. Finally, every node of the branch-and-bound tree is either in the feasible subtree or is a child of a node in it (an infeasible node is pruned immediately and has no children), and each node has at most two children. Therefore, the total number of nodes is O(nm+1 ).
+
+# 4 CORe for Robust Single-Index Models 
+
+Moving beyond quadratic models, we next apply CORe to a general class of robust single-index models. Consider the optimization problem 
+
+min 
+
+> θ∈Rd, z ∈{ 0,1}n
+> n
+
+X
+
+> i=1
+
+ℓ(ri, f (⟨ϕi, θ ⟩)) (1 − zi) + 1
+
+d ∥θ∥22 +
+
+> n
+
+X
+
+> i=1
+
+λizi, (15) where ϕi ∈ Rd are covariates, ri ∈ R are responses, f : R → R is a known link function, ℓ(·, ·) is a loss function, and zi indicates whether observation i is treated as an outlier. In this form, the indicators switch objective terms on and off rather than controlling continuous variables, so (15) does not immediately fit template (1); we first rewrite it in indicator-constraint form. Two special cases of (15) will play a central role in this section: penalized least trimmed squares, obtained with the identity link and quadratic loss (Section 4.1), and robust logistic regression, obtained with the sigmoid link and cross-entropy loss (Section 4.2). In Section 4.3, we show that when the number of covariates d is fixed, the coordinate-optimality structure yields a polynomial bound on the size of the branch-and-bound tree for the entire class, together with a polynomial-time solution scheme under a mild convexity condition. 
+
+Assumption 1. For each i, the function ℓi := ℓ(ri, ·) is convex, nonnegative, and satisfies ℓi(ri) = 0 .Moreover, the link function f is monotone. 
+
+Assumption 1 is mild and is satisfied by most common choices of loss and link functions. On the loss side, it is satisfied by quadratic, Huber, and cross-entropy losses, covering standard regression, robust regression, and classification settings, respectively. On the link function side, it is satisfied by the identity, ReLU, and sigmoid, corresponding to linear, rectified, and logistic models, respectively. 14 To expose coordinate-wise structure, we first provide a reformulation of (15). Under Assumption 1, and for constants Mi ≥ sup θ |ri − f (⟨ϕi, θ ⟩)|, where the supremum is taken over the relevant range of θ (see the bounds derived in Section 4.2), we can rewrite (15) as 
+
+min 
+
+> θ,w,z n
+
+X
+
+> i=1
+
+ℓi(f (⟨ϕi, θ ⟩) + wi) + 1
+
+d ∥θ∥22 +
+
+> n
+
+X
+
+> i=1
+
+λizi s.t. − Mizi ≤ wi ≤ Mizi. (16) To see this equivalence, note that zi = 0 enforces wi = 0 in (16), so the corresponding objective term reduces to ℓi(f (⟨ϕi, θ ⟩)) , matching (15). When zi = 1 and Mi is sufficiently large, the variable wi takes the value 
+
+wi = ri − f (⟨ϕi, θ ⟩) at optimality, which gives ℓi(f (⟨ϕi, θ ⟩) + wi) = 0 by Assumption 1, effectively removing 
+
+ri from the objective. Under Assumption 1, the set 
+
+Si(λi) := {t ∈ R : ℓi(f (t)) ≤ λi}
+
+is a (possibly unbounded) interval. This follows from the convexity of ℓi, which ensures that all sublevel sets of ℓi are intervals, and the fact that the preimage of an interval under a monotone function is again an interval. As we show next, this interval structure is exactly what makes the CORe regime comparison representable by linear constraints. 
+
+Optimality condition reformulation. Fix θ and consider the coordinate subproblem in (wi, z i):
+
+min  
+
+> wi, z i∈{ 0,1}
+
+ℓi(f (⟨ϕi, θ ⟩) + wi) + λizi s.t. − Mizi ≤ wi ≤ Mizi.
+
+If zi = 0 , then wi = 0 , and the off-regime value is V off  
+
+> i
+
+(θ) = ℓi(f (⟨ϕi, θ ⟩)) . If zi = 1 , then wi is free within the big-M bounds, and a minimizer is w⋆i (θ) = ri − f (⟨ϕi, θ ⟩), which is feasible by the choice of Mi. Hence, since ℓi ≥ 0 and ℓi(ri) = 0 by Assumption 1, the on-regime has value V on  
+
+> i
+
+(θ) = λi. Thus, the coordinate-wise comparison is 
+
+V off  
+
+> i
+
+(θ) ≤ V on  
+
+> i
+
+(θ) ⇐⇒ ℓi(f (⟨ϕi, θ ⟩)) ≤ λi ⇐⇒ ⟨ϕi, θ ⟩ ∈ Si(λi).
+
+Recall that Si(λi) is an interval; write its endpoints as ai ∈ R ∪ {−∞} and bi ∈ R ∪ { +∞} , with the interval open at any infinite endpoint. The coordinate-wise comparison induces three regimes: 
+
+D0 
+
+> i, OC
+
+= {(θ, w, z ) : zi = 0 , w i = 0 , a i ≤ ⟨ ϕi, θ ⟩ ≤ bi},
+
+D− 
+
+> i, OC
+
+= {(θ, w, z ) : zi = 1 , ⟨ϕi, θ ⟩ ≤ ai},
+
+D+ 
+
+> i, OC
+
+= {(θ, w, z ) : zi = 1 , ⟨ϕi, θ ⟩ ≥ bi}.
+
+If ai = −∞ or bi = + ∞, the corresponding sets D− 
+
+> i, OC
+
+or D+ 
+
+> i, OC
+
+are empty. We next encode the disjunction D0 
+
+> i, OC
+
+∪ D − 
+
+> i, OC
+
+∪ D +
+
+> i, OC
+
+. Let ti = ⟨ϕi, θ ⟩, and assume known bounds 
+
+Li ≤ ti ≤ Ui. Let the binary variables z− 
+
+> i
+
+, z + 
+
+> i
+
+∈ { 0, 1} represent the left and right on-regimes, respectively, and set zi = z− 
+
+> i
+
++ z+ 
+
+> i
+
+. The off-regime is represented by zi = 0 . Finally, we introduce the disaggregated variables t0 
+
+> i
+
+, t − 
+
+> i
+
+, t + 
+
+> i
+
+, with ti = t0 
+
+> i
+
++ t− 
+
+> i
+
++ t+ 
+
+> i
+
+. After intersecting the three regimes with the bounds Li ≤ ti ≤ Ui,the bounded disjunction can be encoded as 
+
+ai(1 − zi) ≤ t0 
+
+> i
+
+≤ bi(1 − zi), (17) 
+
+Liz− 
+
+> i
+
+≤ t− 
+
+> i
+
+≤ aiz− 
+
+> i
+
+, (18) 
+
+biz+ 
+
+> i
+
+≤ t+ 
+
+> i
+
+≤ Uiz+ 
+
+> i
+
+. (19) 15 Combining these constraints with the original formulation yields the CORe-enhanced formulation 
+
+min 
+
+> θ,w,z,z −,z +,t,t 0,t −,t +
+> n
+
+X
+
+> i=1
+
+ℓi(f (ti) + wi) + 1
+
+d ∥θ∥22 +
+
+> n
+
+X
+
+> i=1
+
+λizi
+
+s.t. ti = ⟨ϕi, θ ⟩, i = 1 , . . . , n, 
+
+− Mizi ≤ wi ≤ Mizi, i = 1 , . . . , n, zi = z− 
+
+> i
+
++ z+ 
+
+> i
+
+, i = 1 , . . . , n, ti = t0 
+
+> i
+
++ t− 
+
+> i
+
++ t+ 
+
+> i
+
+, i = 1 , . . . , n, 
+
+(17) − (19) , i = 1 , . . . , n, z− 
+
+> i
+
+, z + 
+
+> i
+
+∈ { 0, 1}, i = 1 , . . . , n. 
+
+(20) In the above CORe-enhanced formulation, all constraints are linear except for the integrality constraints on (z−, z +); the formulation is therefore directly amenable to branch-and-bound whenever the composite terms ℓi(f (ti) + wi) are convex, as is the case for affine links. For nonlinear links the composition is nonconvex in general; however, convexity can sometimes be recovered by eliminating the correction variables 
+
+w and expressing the loss directly in terms of ti, as we illustrate for robust logistic regression in Section 4.2. 
+
+Remark 3. Although wi admits a closed-form minimizer w⋆i (θ) = ri − f (⟨ϕi, θ ⟩) on the on-regime, we do not encode this equality directly in the formulation: unless f is affine, the constraint wi = ri − f (⟨ϕi, θ ⟩) is nonlinear and does not yield a convex set. This highlights a key limitation of CORe for general robust single-index models relative to quadratic programs with indicators. For the latter, CORe can be strengthened by both the optimality-condition and closed-form reformulations; for the former, only the optimality-condition reformulation is tractable. As a result, CORe is expected to be less effective on general robust single-index models. 
+
+## 4.1 Penalized Least Trimmed Squares 
+
+An important special case of (15) arises with the identity link f (t) = t and the quadratic loss ℓ(r, u ) =  
+
+> 12
+
+(r − u)2, for which the model reads 
+
+min 
+
+> θ∈Rd, z ∈{ 0,1}n
+> n
+
+X
+
+> i=1 12
+
+ ri − ⟨ ϕi, θ ⟩2(1 − zi) + 1
+
+d ∥θ∥22 +
+
+> n
+
+X
+
+> i=1
+
+λizi. (21) Problem (21) is a penalized form of least trimmed squares (LTS) regression: each observation is either fit by least squares or discarded at cost λi, so the estimator automatically trims observations whose residuals are too large to be worth fitting [69, 33, 54]. Assumption 1 holds, ℓi(f (t)) = 12 (ri − t)2, and the interval in the regime comparison is 
+
+Si(λi) =  ri − p2λi, r i + p2λi
+
+,
+
+i.e., observation i is fit at an optimal solution if its index ⟨ϕi, θ ⟩ lies within √2λi of the response ri, and trimmed otherwise. Moreover, in its lifted form (16), problem (21) becomes 
+
+min  
+
+> θ, w, z
+> 12
+
+∥r − Φθ − w∥22 + 1
+
+d ∥θ∥22 + λ⊤z s.t. − Mizi ≤ wi ≤ Mizi, i = 1 , . . . , n, (22) where Φ ∈ Rn×d collects the covariates ϕ1, . . . , ϕ n as rows. Formulation (22) is precisely an instance of the unbalanced bipartite quadratic model (12) of Section 3.3, with the correction variables w in the role of x
+
+and the regression coefficients θ in the role of y. The developments of this section can therefore be seen as an extension of Section 3.3 beyond quadratic objectives. 
+
+Relation to [54]. The closest work to this section is [54], which develops a branch-and-bound framework for least trimmed squares enhanced by hyperplane arrangements. The two approaches share a central insight: at an optimal solution, whether observation i is trimmed is determined by the position of the index 
+
+⟨ϕi, θ ⟩ relative to explicit thresholds, and the arrangement of the resulting 2n threshold hyperplanes in the 16 d-dimensional coefficient space bounds the number of trimming patterns that can occur at optimality by 
+
+O(nd) for fixed d. Unlike the methods in [54], which are tailored to the quadratic loss in the special case of the penalized trimmed least squares problem, the CORe conditions are derived from the general coordinate-optimality principle of Section 2 and apply to any loss and link satisfying Assumption 1, including the logistic model of Section 4.2. Proposition 5 below extends the resulting polynomiality guarantees from least trimmed squares to the general robust single-index class. 
+
+## 4.2 Robust Logistic Regression 
+
+As a special case, we consider robust binary classification via logistic regression. Here the response r ∈ { 0, 1}n
+
+collects binary labels, the link function is the sigmoid 
+
+f (t) := 11 + e−t ,
+
+and the loss is binary cross-entropy 
+
+ℓ(r, p ) := −r log p − (1 − r) log(1 − p), p ∈ (0 , 1) .
+
+To apply the CORe formulation (20), we first characterize 
+
+Si(λi) := {t ∈ R : ℓi(f (t)) ≤ λi}.
+
+If ri = 1 , then ℓi(f (t)) = − log( f (t)) . This leads to 
+
+ℓi(f (t)) ≤ λi ⇐⇒ t ≥ − log( eλi − 1) ,
+
+giving Si(λi) = [ − log( eλi − 1) , +∞). Similarly, if ri = 0 , then ℓi(f (t)) = − log(1 − f (t)) . This yields 
+
+ℓi(f (t)) ≤ λi ⇐⇒ t ≤ log( eλi − 1) ,
+
+giving Si(λi) = ( −∞ , log( eλi − 1)] . Both cases unify compactly as 
+
+(2 ri − 1) t ≥ τi, τi := − log( eλi − 1) .
+
+Note that, in this subsection, τi denotes this logistic threshold, which may take either sign, in contrast with the nonnegative thresholds of Section 3. Hence each coordinate induces a two-way split, 
+
+D0 
+
+> i, OC
+
+:= {(θ, w, z ) : zi = 0 , w i = 0 , (2 ri − 1) ⟨ϕi, θ ⟩ ≥ τi} ,
+
+D1 
+
+> i, OC
+
+:= {(θ, w, z ) : zi = 1 , (2 ri − 1) ⟨ϕi, θ ⟩ ≤ τi} .
+
+For the logistic model, the loss admits the compact representation ℓi(f (t)) = log  1+ e−(2 ri−1) t. Introduce disaggregated variables t0 
+
+> i
+
+, t 1 
+
+> i
+
+with (2 ri − 1) ⟨ϕi, θ ⟩ = t0 
+
+> i
+
++ t1 
+
+> i
+
+, where t1 
+
+> i
+
+is the on-regime copy. Eliminating the correction variable wi—whose only role at optimality is to nullify the loss of an outlying observation—we charge observation i the loss log(1 + e−t0 
+
+> i
+
+) evaluated at the off-regime copy. When zi = 1 , the disjunctive bounds force t0 
+
+> i
+
+= 0 , so this term contributes the constant log 2 ; correcting the outlier penalty to λi − log 2 
+
+makes the total contribution exactly λi. (In particular, the resulting formulation remains valid for any 
+
+λi > 0, even when the coefficient λi − log 2 is negative.) This yields the following two-regime model. 
+
+min 
+
+> θ∈Rd, t 0,t 1∈Rn, z ∈{ 0,1}n
+> n
+
+X
+
+> i=1
+
+log  1 + exp( −t0 
+
+> i
+
+) + 1
+
+d ∥θ∥22 +
+
+> n
+
+X
+
+> i=1
+
+(λi − log 2) zi
+
+s.t. (2 ri − 1) ⟨ϕi, θ ⟩ = t0 
+
+> i
+
++ t1 
+
+> i
+
+, i = 1 , . . . , n, τi(1 − zi) ≤ t0 
+
+> i
+
+≤ Ui(1 − zi), i = 1 , . . . , n, Lizi ≤ t1 
+
+> i
+
+≤ τizi, i = 1 , . . . , n. 
+
+(23) Indeed, when zi = 0 , we have t1 
+
+> i
+
+= 0 , so t0 
+
+> i
+
+= (2 ri − 1) ⟨ϕi, θ ⟩ and the objective includes the logistic loss. When zi = 1 , it gives t0 
+
+> i
+
+= 0 , so the objective contribution is log 2 + ( λi − log 2) = λi, which is exactly the cost of treating observation i as an outlier. 17 Formulation (23) therefore encodes the coordinate-wise CORe logic for robust binary classification. In contrast to the earlier example based on bounded intervals, the present example yields a one-sided half-space condition, and hence a two-term disjunction for each observation. Since (θ, z ) = (0 , 0) is feasible for (15) with objective value n log 2 , and the CORe reformulation preserves the optimal value, any optimal solution θ⋆ satisfies 
+
+1
+
+d ∥θ⋆∥22 ≤ n log 2 ,
+
+and hence 
+
+∥θ⋆∥2 ≤ pnd log 2 .
+
+It follows that 
+
+(2 ri − 1) ϕ⊤ 
+
+> i
+
+θ⋆ ≤ ∥ ϕi∥2 ∥θ⋆∥2 ≤ ∥ ϕi∥2
+
+pnd log 2 .
+
+Thus, a valid choice for the bounds on (2 ri − 1) ⟨ϕi, θ ⟩ is 
+
+Li := −∥ ϕi∥2
+
+pnd log 2 , Ui := ∥ϕi∥2
+
+pnd log 2 , i = 1 , . . . , n. 
+
+As we show next in Section 4.3, the convexity of the logistic loss further implies that robust logistic regression can be solved in polynomial time when the number of covariates d is fixed. 
+
+## 4.3 Polynomial Complexity for Fixed Dimension 
+
+We now show that the polynomial bounds established for the unbalanced bipartite quadratic model in Proposition 4 are not an artifact of the quadratic objective: they extend to the entire robust single-index class, covering in particular the two special cases discussed above. The driving structure is the same. The coordinate-wise optimality conditions constrain θ only through the n scalars ⟨ϕi, θ ⟩, and the finite endpoints of the intervals Si(λi) define at most 2n hyperplanes 
+
+⟨ϕi, θ ⟩ = ai, ⟨ϕi, θ ⟩ = bi, i = 1 , . . . , n, 
+
+in Rd. Within any cell of the arrangement of these hyperplanes, the position of every index ⟨ϕi, θ ⟩ relative to Si(λi) is fixed, and hence so is the regime of every observation. 
+
+Proposition 5 (Polynomial bounds for robust single-index models) . Suppose Assumption 1 holds and the number of covariates d is fixed. (i) At most O(nd) regime patterns are consistent with the coordinate-wise optimality conditions. Conse-quently, a branch-and-bound scheme applied to formulation (20) that branches on the regime variables 
+
+z− 
+
+> i
+
+, z + 
+
+> i
+
+and prunes infeasible nodes explores O(nd+1 ) nodes. (ii) If, in addition, the functions t 7 → ℓi(f (t)) are convex for all i, then problem (15) can be solved by solving O(nd) convex optimization problems, and hence in polynomial time. Proof. (i) The at most 2n hyperplanes ⟨ϕi, θ ⟩ = ai and ⟨ϕi, θ ⟩ = bi (only finite endpoints contribute) partition 
+
+Rd into at most Pdℓ=0 
+
+ 2nℓ
+
+ = O(nd) cells [67]. Fix a cell C. For every θ ∈ C, the signs of ⟨ϕi, θ ⟩ − ai and 
+
+⟨ϕi, θ ⟩ − bi are constant, so the regime of every observation dictated by the coordinate-wise optimality conditions is the same for all θ ∈ C. Each cell is therefore consistent with exactly one regime pattern, and every pattern consistent with the coordinate-wise optimality conditions arises from at least one cell. This proves the O(nd) bound on the number of patterns. For the node bound, observe that all regime constraints in (20) are linear in (θ, w, t, t 0, t −, t +, z, z −, z +).As in the proof of Proposition 4, the nodes with feasible relaxations form a subtree containing the root; its leaves correspond to distinct consistent regime patterns, so the subtree has at most O(nd) leaves and, having depth at most 2n, at most O(n · nd) nodes. Every pruned node is a child of a node of this subtree, and each node has at most two children, so the total number of nodes is O(nd+1 ).18 (ii) Eliminating w and z coordinate-wise, as in the derivation of the on- and off-regime values, problem (15) is equivalent to 
+
+min 
+
+> θ∈Rd
+> n
+
+X
+
+> i=1
+
+min 
+
+n
+
+ℓi
+
+ f (⟨ϕi, θ ⟩), λ i
+
+o
+
++ 1
+
+d ∥θ∥22.
+
+On the closure ¯C of any cell C, each term min {ℓi(f (⟨ϕi, θ ⟩)) , λ i} coincides with a single branch: with 
+
+ℓi(f (⟨ϕi, θ ⟩)) if ⟨ϕi, θ ⟩ ∈ Si(λi) on C, and with the constant λi otherwise. (On the boundary of ¯C, the two branches agree, since, there, ℓi(f (⟨ϕi, θ ⟩)) = λi.) Under the convexity hypothesis, the restricted objective is therefore convex on the polyhedron ¯C. Since the closure of some cell contains a global minimizer, it suffices to minimize the restricted objective over ¯C for each of the O(nd) cells and return the best solution found. For fixed d, the cells and their associated regime patterns can be enumerated in polynomial time, e.g., by the facet-parametrization procedure of Appendix B. The convexity hypothesis in part (ii) is satisfied, in particular, by any convex loss combined with an affine link—covering penalized least trimmed squares—and by the logistic model of Section 4.2, for which 
+
+ℓi(f (t)) = log  1 + e−(2 ri−1) t is convex. For least trimmed squares, Proposition 5 recovers guarantees of the type established in [54]; the proposition shows that they persist far beyond the quadratic loss. In contrast, without the convexity hypothesis, part (i) still bounds the combinatorial search, but the node relaxations of (20) need not be tractable, in line with the limitations discussed in Remark 3. 
+
+Computational tradeoffs. Before turning to the experiments, we emphasize that CORe introduces a tradeoff. On the one hand, the added threshold, stationarity, and disjunctive constraints make the regime logic explicit, which can help general-purpose solvers through presolve, bound tightening, variable fixing, and cut generation, as well as through more informative branching. On the other hand, they also enlarge the model, and the resulting relaxations can be more expensive to solve. Thus, CORe is most beneficial when the coordinate-wise conditions are informative, as in sparse or low-dimensional-control settings, but its overhead may dominate when the coordinate-wise conditions are uninformative or when each coordinate is coupled with many others. 
+
+# 5 Experiments 
+
+## 5.1 Experimental Setup 
+
+All experiments are implemented in Python 3.9 and solved using Gurobi 12.0.3 through its Python API. The computations are conducted on a single compute node equipped with an Intel Xeon Platinum 8592+ processor, using 8 CPU cores and 12 GB of RAM. Unless otherwise specified, Gurobi parameters are kept at their default values. Time limits are set to 3600 seconds for most instances and 600 seconds for struc-tured instances such as path, star, and tree graphs. All reported run times correspond to solver time and exclude model construction overhead. The results reported in the tables and figures are averaged over five independent trials. 
+
+## 5.2 Quadratic Programs with Indicators 
+
+We evaluate the computational performance of the proposed formulation on a family of synthetic quadratic programs with indicator variables of the form 
+
+min 
+
+> x∈Rn, z ∈{ 0,1}n
+
+12 (d − x)⊤Q(d − x) + λ⊤z s.t. xi(1 − zi) = 0 , i = 1 , . . . , n. 
+
+To systematically study the effect of sparsity, we generate Q from a weighted Erdős–Rényi random graph. For each pair (i, j ) with i < j , an edge is included independently with probability δ; whenever an edge is present, its weight Wij is drawn independently from a uniform distribution on [0 .1, 1] , and we set Wji = Wij 
+
+to ensure symmetry, while Wij = 0 if no edge is present. The weighted graph Laplacian L is constructed as 
+
+L = D − W, 
+
+19 Table 1: Average computational results for QP with indicators with fixed graph sparsity δ = 0 .01 .
+
+# n Formulation Root gap End gap Active (%) Nodes Time (s) 100 CORe 0.1% 0 13.6% 8 0.08 100 Original 19.5% 0 13.6% 25595 0.70 200 CORe 1.8% 0 13.6% 152 0.16 200 Original 58.3% 29.2% 13.4% 48282010 TL 300 CORe 1.2% 0 14.1% 127 0.18 300 Original 60.6% 42.2% 13.8% 24356213 TL 500 CORe 0.5% 0 11.7% 84.8 0.43 500 Original 63.6% 52.2% 11.7% 10426955 TL 800 CORe 0.1% 0 10.1% 17.6 3.10 800 Original 62.1% 56.9% 10.1% 2639442 TL 1000 CORe 40.0% 0 9.9% 1905 429.63 1000 Original 64.2% 60.7% 10.0% 1207135 TL where W is the weighted adjacency matrix and 
+
+D = diag( 
+
+> n
+
+X
+
+> j=1
+
+W1j , . . . , 
+
+> n
+
+X
+
+> j=1
+
+Wnj )
+
+is the diagonal degree matrix. The Laplacian is positive semidefinite by construction. To control conditioning, we define 
+
+Q = L + αI, 
+
+where α is chosen such that the condition number satisfies κ(Q) = 100 . Finally, Q is scaled so that 
+
+tr( Q)/n = 1 , ensuring comparable magnitude across different sparsity levels. The vector d ∈ Rn is gen-erated independently from a standard Gaussian distribution and then normalized to satisfy ∥d∥2 = 1 .
+
+All instances are solved using identical solver settings. We report the following metrics. “Root gap” is the relative optimality gap at the root node. “End UB” and “End LB” are the final upper and lower bounds returned by the solver, and “End gap” is the final relative optimality gap. In tables where the compared formulations attain the same final upper bound up to numerical tolerance, we omit the “End UB” and “End LB” columns and report only the “End gap,” since the absolute bound values provide little additional information for the computational comparison. The column “Active (%)” reports 100 ∥z∥0/n , the percentage of selected coordinates. “Nodes” is the number of branch-and-bound nodes explored, and “Time (s)” is the solution time in seconds. The notation “TL” indicates that the solver reached the time limit. For all experiments involving big-M formulations, a common heuristic to choose Mi is to initialize the parameter Mi with a conservative value and then tighten it using the solution of a continuous relaxation [56, 52, 47, 66]. Specifically, if xrelax denotes the relaxation solution, we update 
+
+M ← min 
+
+n
+
+M, 2 max  
+
+> i
+
+|xrelax  
+
+> i
+
+|
+
+o
+
+.
+
+This tightening is applied uniformly across all experiments as a practical way to reduce the weakness of the big-M constraints. 
+
+Problem size n. Table 1 reports the performance of the CORe and original formulations for QP with indicators under a sparse graph structure ( δ = 0 .01 ) as the problem size n increases. The results demonstrate 20 Table 2: Average computational results for QP with indicators with fixed problem size and varying graph sparsity δ.
+
+# δ Formulation Root gap End gap Active (%) Nodes Time (s) 0.01 CORe 0 0 5.04% 1 1.79 0.01 Original 53.0% 40.1% 5.04% 8556024 TL 0.02 CORe 0 0 4.48% 1 1.08 0.02 Original 50.5% 38.6% 4.44% 7952371 TL 0.05 CORe 17.9% 0 4.04% 6203 166.04 0.05 Original 51.9% 40.4% 4.04% 5327534 TL 0.10 CORe 21.7% 0 3.48% 8897 111.82 0.10 Original 52.1% 41.8% 3.48% 3004007 TL 0.20 CORe 41.4% 0 4.24% 15604 459.59 0.20 Original 53.7% 42.7% 4.24% 2144167 TL 0.50 CORe 51.6% 0 3.36% 20942 691.38 0.50 Original 54.1% 43.9% 3.36% 1383747 TL a clear and consistent advantage of the CORe formulation across all instance sizes. For small instances (n = 100 ), both formulations solve the problem to optimality, although CORe already requires several orders of magnitude fewer branch-and-bound nodes. As n increases, the gap between the two formulations becomes dramatic. The CORe formulation maintains near-zero root gaps and consistently solves all instances to optimality, with solution times remaining below one second up to n = 500 and only modestly increasing for larger instances. In contrast, the original formulation exhibits large root gaps (above 58% ) and fails to close the optimality gap for all instances with n ≥ 200 , hitting the time limit in every such case and leaving substantial final gaps. The difference in computational effort is further reflected in the sizes of the branch-and-bound trees. CORe requires only tens to a few thousand nodes for the largest instance, whereas the original formulation explores millions to tens of millions of nodes without reaching optimality. Notably, the number of nodes required by CORe remains extremely small up to n = 800 , suggesting that the enhanced formulation effec-tively prunes most suboptimal choices of the indicator variables, leaving only a few candidates that require branching and ultimately leading to far fewer nodes in the branch-and-bound tree. Overall, these results indicate that for sparse interaction structures, the CORe formulation is more scalable than the standard big-M formulation. These gains appear to stem not only from a stronger lower bound but also from the CORe formulation be-ing much more informative to the solver during presolve. In particular, the added threshold and stationarity relations explicitly expose the regime logic linking the continuous variables and the binary indicators, allow-ing presolve to tighten bounds, fix variables, eliminate redundant constraints, and simplify large portions of the model before branching. The same structural information can also support stronger implied inequalities and cut generation during the search. This effect is especially pronounced in sparse instances, where the local coordinate-wise conditions are highly informative, and helps explain why CORe often solves near the root even when the standard big-M formulation still requires exploring a very large branch-and-bound tree. 
+
+Graph sparsity level δ. Table 2 reports the performance of the CORe and original formulations as the graph sparsity parameter δ varies while the problem size is fixed at n = 500 . The results reveal a clear dependence of the CORe formulation on the sparsity structure of the underlying graph. When the graph 21 Table 3: Average computational results for QP with indicators under varying penalty parameter c1.
+
+# c1 Formulation Root gap End gap Active (%) Nodes Time (s) 0.01 CORe 100.0% 5.3% 43.48% 1646377 TL 0.01 Original 79.8% 66.4% 43.72% 7507499 TL 0.02 CORe 27.6% 1.6% 29.00% 6185927 TL 0.02 Original 75.8% 63.6% 29.04% 10060650 TL 0.05 CORe 0.5% 0 13.04% 149 2.49 0.05 Original 64.6% 54.1% 12.96% 8012889 TL 0.08 CORe 0 0 7.08% 1 0.20 0.08 Original 57.6% 45.3% 7.00% 10523945 TL 0.12 CORe 0 0 4.00% 1 1.20 0.12 Original 49.2% 35.2% 4.00% 9643881 TL is highly sparse ( δ = 0 .01 , 0.02 ), CORe exhibits extremely strong performance, solving all instances to optimality almost immediately with a single branch-and-bound node and negligible computation time. In contrast, the original formulation exhibits large root gaps (around 50% ) and fails to close the optimality gap within the time limit, even after exploring millions of nodes. As the graph becomes denser, the performance of CORe gradually deteriorates. While it continues to solve all instances to optimality, the root gap increases significantly (from near zero to above 50% ), and both the number of nodes and solution time grow substantially. For example, at δ = 0 .50 , CORe requires over 
+
+20 ,000 nodes and several hundred seconds to solve the problem. Nevertheless, it consistently outperforms the original formulation, which remains unable to close the gap at all sparsity levels and continues to reach the time limit, resulting in large final gaps (around 40% ). These results highlight an important structural property of the CORe formulation: its effectiveness is strongly tied to sparsity. In highly sparse settings, the coordinate-wise optimality conditions nearly determine the global structure, leading to extremely small branch-and-bound trees. As the graph becomes denser, interactions between coordinates weaken the effectiveness of local conditions, leading to larger branch-and-bound trees and increased computational effort. However, even in these more challenging regimes, CORe maintains a significant advantage over the standard big-M formulation. 
+
+Sparsity penalty level λ. Table 3 reports the performance of the CORe and original formulations as the parameter c1, which controls the sparsity parameter λ, varies where λ = c1 log( n)/n , following a standard high-dimensional model-selection scaling that balances the O(1 /n ) per-coordinate signal size with a log( n)
+
+correction for selecting among n variables. Here, the problem size is fixed at n = 500 . As c1 increases, the effective penalty becomes stronger, which encourages sparser solutions; this is reflected in the decrease of the number of nonzeros from about 218 at c1 = 0 .01 to 20 at c1 = 0 .12 . The results show that the performance of CORe improves markedly as the penalty increases. For very small values of c1, where the penalty is weak and the resulting solution is relatively dense, the problem remains challenging even for CORe: at c1 = 0 .01 ,CORe reaches the time limit, but still substantially outperforms the original formulation by attaining a much smaller final gap ( 5.3% versus 66 .4% ) and exploring far fewer nodes. At c1 = 0 .02 , CORe nearly solves the problem to optimality, reducing the final gap to 1.6% , while the original formulation again times out with a large gap. As c1 increases, the penalty parameter λ = c1 log( n)/n becomes larger, which encourages sparser optimal solutions. This tends to make the problem easier for both formulations, but the effect is much more pro-nounced for CORe because the penalty also appears in the coordinate-wise threshold τi = √2λiQii . Larger values of λi enlarge the off-regime region |gi| ≤ τi, allowing more coordinates to be certified as inactive 22 through the CORe conditions. This effect is reflected in Table 3. Once c1 becomes moderate, the advantage of CORe becomes dominant. For c1 ≥ 0.05 , CORe solves all instances to optimality, and its computational effort drops sharply: the node count decreases from millions to only 149 nodes at c1 = 0 .05 , and to a single node at c1 = 0 .08 and c1 = 0 .12 . In contrast, the original formulation continues to exhibit weak root relax-ations, explores millions of nodes in every setting, and fails to close the gap within the time limit. Overall, these results suggest that CORe is particularly effective when many coordinates can be ruled out early in the branch-and-bound process. 
+
+Two-dimensional Markov random fields. To further evaluate the proposed reformulation on a struc-tured sparse quadratic model beyond random graphs considered earlier, we consider a two-dimensional Gaussian Markov random field (2D-GMRF) image denoising problem following the experimental setup of [41]. Here, the term “image” refers to a p × p array of signal values: each entry Xij can be interpreted as the intensity of a pixel, and the goal is to recover the latent signal X from noisy observations. The grid structure of the resulting sparsity graph induces spatial dependence, since neighboring pixels are expected to have similar values. Specifically, we generate the latent signal X ∈ Rp×p as follows. Let s denote the spike size and h denote the number of Gaussian shocks. We initialize X = 0 and then add h local Gaussian shocks. For each shock, we choose the upper-left corner (i0, j 0) of an s × s block uniformly at random from 
+
+{1, . . . , p − s + 1 } × { 1, . . . , p − s + 1 }.
+
+We then generate W ∈ Rs×s with vec( W ) ∼ N (0 , Ω−1 
+
+> s
+
+), where Ωs ∈ Rs2×s2
+
+is defined on the s × s grid by 
+
+(Ω s)uv,uv = 4 for every u, v ∈ [s], and (Ω s)uv,u ′v′ = −1 if (u, v ) and (u′, v ′) are horizontally or vertically adjacent. All other entries of Ω are set to zero. The shock is added to the selected block: 
+
+Xi0:i0+s−1, j 0:j0+s−1 ← Xi0:i0+s−1, j 0:j0+s−1 + W. 
+
+The resulting signal is sparse at the pixel level, with nonzero values concentrated in a small number of contiguous s × s blocks. Finally, we observe 
+
+eXij = Xij + ϵij , ϵij 
+
+> i.i.d.
+
+∼ N (0 , σ 2).
+
+Given the noisy observations eX, we estimate the latent signal by solving the exact ℓ0-regularized GMRF recovery problem 
+
+min 
+
+> X∈Rp×p
+> p
+
+X
+
+> i=1
+> p
+
+X
+
+> j=1
+
+1
+
+σ2 ( eXij − Xij )2 +
+
+> p−1
+
+X
+
+> i=1
+> p
+
+X
+
+> j=1
+
+(Xij − Xi+1 ,j )2+
+
+> p
+
+X
+
+> i=1
+> p−1
+
+X
+
+> j=1
+
+(Xij − Xi,j +1 )2 + λ∥X∥0.
+
+The first term measures fidelity to the observed noisy data. The second and third terms are the GMRF smoothness penalties: they penalize differences between vertically and horizontally adjacent pixels, respec-tively, thereby encouraging neighboring pixels to have similar values. The last term penalizes the number of nonzero pixels and reflects the prior that the true signal is spatially localized and sparse. Let n = p2, and vectorize the matrices X and eX as 
+
+x = vec( X) ∈ Rn, ˜x = vec( eX) ∈ Rn.
+
+Introducing binary variables z ∈ { 0, 1}n to encode the support of x, and dropping the additive constant term, the estimator can be written in the standard quadratic form 
+
+min 
+
+> x,z
+
+12 x⊤Qx + c⊤x + λ1⊤z s.t. xi(1 − zi) = 0 , i = 1 , . . . , n. 
+
+Here, Q and c are obtained by collecting the quadratic and linear terms in 
+
+1
+
+σ2 ∥˜x − x∥22 +
+
+> p−1
+
+X
+
+> i=1
+> p
+
+X
+
+> j=1
+
+(Xij − Xi+1 ,j )2 +
+
+> p
+
+X
+
+> i=1
+> p−1
+
+X
+
+> j=1
+
+(Xij − Xi,j +1 )2.
+
+23 Table 4: Average computational results for the 2D-MRF instances under different noise levels. 
+
+n σ2 Formulation End gap TPR FPR F1 Active (%) Nodes Time (s) 100 0.01 CORe 0 0.776 0.134 0.629 24.0% 0.8 0.02 100 0.01 Original 0 0.776 0.134 0.629 24.0% 5.4 0.28 100 0.02 CORe 0 0.701 0.130 0.599 22.6% 1.0 0.02 100 0.02 Original 0 0.701 0.130 0.599 22.6% 2.8 0.24 100 0.05 CORe 0 0.633 0.088 0.623 18.6% 0.6 0.02 100 0.05 Original 0 0.633 0.088 0.623 18.6% 2.6 0.40 400 0.01 CORe 0 0.755 0.085 0.630 16.3% 1.0 0.04 400 0.01 Original 0 0.755 0.085 0.630 16.3% 34.4 1.09 400 0.02 CORe 0 0.689 0.073 0.616 14.5% 1.0 0.04 400 0.02 Original 0 0.689 0.073 0.616 14.5% 64.0 1.08 400 0.05 CORe 0 0.569 0.055 0.555 10.8% 1.0 0.04 400 0.05 Original 0 0.569 0.055 0.555 10.8% 40.8 1.57 1600 0.01 CORe 0 0.770 0.053 0.641 10.8% 1.0 0.14 1600 0.01 Original 0 0.770 0.053 0.641 10.8% 157.4 5.79 1600 0.02 CORe 0 0.639 0.046 0.583 9.1% 1.0 0.14 1600 0.02 Original 0 0.639 0.046 0.583 9.1% 917.2 8.89 1600 0.05 CORe 0 0.487 0.040 0.491 7.3% 1.0 0.17 1600 0.05 Original 0 0.487 0.040 0.491 7.3% 2012860.6 1982 In particular, c = − 2 
+
+> σ2
+
+˜x. The matrix Q is sparse because each pixel is coupled only with its horizontal and vertical neighbors. It is also positive definite, since the squared-error term contributes a positive diagonal quadratic term and the neighboring-difference penalties are positive semidefinite. This instance class is useful for evaluating CORe beyond random sparse problems. Although the quadratic matrix is sparse due to local pixel interactions, its sparsity pattern is not random but follows a two-dimensional grid. In the experiments in Table 4, we compare the original indicator formulation with the CORe reformulation on this instance class. We evaluate statistical recovery using the true positive rate (TPR), false positive rate (FPR), and F1-score, computed with respect to the true support of the signal. We set the ℓ0 regularization parameter (equivalent to the sparsity penalty level) to λ = 0 .5 log( n). The constant 0.5 was chosen from the grid {0.1, 0.2, . . . , 1.0} based on the overall F1 score on the generated 2D-MRF instances. Since statistical recovery is not the primary focus of this experiment, this simple tuning rule is sufficient for producing representative sparse recovery instances for comparing the formulations. Table 4 shows that the two formulations return the same statistical recovery performance and essentially the same optimal objective values, as expected, since they model the same ℓ0-regularized estimator. In all tested instances, both formulations solve to zero optimality gap, and the TPR, FPR, F1-score, and active fraction are identical across the two formulations. The main difference is computational. CORe solves all instances essentially at the root node, with an average node count close to one and runtimes below 0.2 seconds even when n = 1600 . In contrast, the original formulation requires substantially more branching, and its performance deteriorates as the problem size increases. For example, when n = 1600 and σ2 = 0 .05 , the original formulation explores over two million nodes and takes 1982 seconds, whereas CORe solves the same instances in 0.17 seconds on average. As σ2 increases, the data-fidelity term contributes a smaller diagonal component to Q, making the quadratic objective less diagonally dominant relative to the coupling terms. This weakens the information available to the standard big-M relaxation. In contrast, CORe explicitly encodes the coordinate-wise threshold rule, so the solver can still infer many support decisions directly from the local optimality conditions. These results indicate that the coordinate-wise optimality structure exploited by CORe remains highly effective on two-dimensional grid instances, showcasing its applicability beyond random instances. 24 5.3 Structural Sensitivity 
+
+In this section, we study how the sparsity structure of Q affects the performance of the CORe framework. 
+
+5.3.1 Star graphs 
+
+We generate synthetic instances using a star-graph structure. For a given problem size n, we construct a sparse matrix Q ∈ Rn×n whose sparsity pattern corresponds to the star graph Sn, with node 1 as the center and nodes 2, . . . , n as leaves. The data generation process is the same as in Section 5.2 except for the weight matrix: for each edge connecting the center node to a leaf, we draw an independent weight 
+
+W1j ∼ Unif(0 .1, 1) , Wj1 = W1j , j = 2 , . . . , n, 
+
+and set all other off-diagonal entries to zero. Using these weights, we construct the corresponding weighted star-graph Laplacian and then normalize the resulting matrix Q as described in Section 5.2. Table 5 reports the computational performance on star-graph instances. Across all problem sizes, the CORe formulation solves the instances with zero optimality gap and only a negligible number of branch-and-bound nodes. Its running time remains very small, increasing from 0.02 seconds for n = 100 to 7.31 seconds for n = 10 ,000 . The specialized parametric algorithm of [7] also solves all instances to optimality and produces the same objective values and active-set sizes as CORe. However, its running time grows more quickly with n, reaching 179.03 seconds at n = 10 ,000 , and is consistently slower than CORe for larger instances. The original big-M formulation also benefits from the simple star structure: although its root gap remains nonzero, it is relatively small for most larger instances, mostly below 5% , and it closes the final gap to zero or near zero for all but the largest instance. Nevertheless, it still requires substantially more branching than CORe, with node counts reaching over 3 × 10 5 at n = 2000 , and it hits the time limit at n = 10 ,000 . Overall, these results show that star graphs are favorable to both the original formulation and the parametric algorithm, but CORe remains the most scalable approach by combining exactness with near-root solution behavior and very low running times. 
+
+5.3.2 Path graphs 
+
+We generate synthetic instances of quadratic programs with indicator variables using a path-graph structure. For a given problem size n, we construct a tridiagonal matrix Q ∈ Rn×n whose sparsity pattern corresponds to the path graph Pn.The data generation process is the same as in Section 5.2 except for the weight matrix: for each edge, we draw an independent weight 
+
+Wi,i +1 ∼ Unif(0 .1, 1) , Wi+1 ,i = Wi,i +1 ,
+
+and set all other off-diagonal entries to zero. Table 6 reports the average computational performance of the original big-M formulation, CORe, and the specialized parametric algorithm of [7] on path-graph instances as the problem size n increases from 100 
+
+to 10 ,000 . We use the penalty parameter λ = 0 .2 log( n)/n. As in the previous experiments, this parameter is fixed to produce a nondegenerate sparse-solution regime rather than tuned for statistical performance. Across the tested sizes, the average active fraction decreases from 16 .70% at n = 100 to 3.86% at n = 10 ,000 . It can be observed that CORe solves every instance to proven optimality essentially at the root node: the root gap is zero for all tested values of n, the average number of explored nodes is about one, and the runtime increases only mildly from 0.08 seconds at n = 100 to 2.44 seconds at n = 10 ,000 . Moreover, our experiments are consistent with the observation of [7] that the parametric algorithm runs in almost linear time. Nevertheless, CORe consistently outperforms it, with the gap widening as n increases: at n = 10 ,000 , CORe requires 
+
+2.44 seconds versus 8.19 seconds for the parametric algorithm. The original big-M formulation, by contrast, performs poorly across all settings: it hits the time limit in every instance, exhibits root gaps of 41 .2% –
+
+62 .2% , and terminates with substantial optimality gaps despite exploring many nodes. Overall, these results show that CORe is empirically competitive with—and on this benchmark faster than—a specialized exact algorithm designed for tree-structured problems. 25 10 2 10 3 10 4 
+
+> Problem size n (log scale) 10 1
+> 10 0
+> 10 1
+> Solution time (seconds, log scale)
+
+Log-Log Plot: CORe vs parametric (Path Graph) 
+
+> Fit slope for CORe=0.78 Fit slope for parametric=1.02 CORe parametric
+
+Figure 1: Log-log plot of solution time versus problem size for the CORe formulation and parametric algorithm on path-graph instances. Figure 1 gives a complementary view of the path-graph experiments by plotting solution time against problem size on log-log scales. The approximately linear trends indicate stable polynomial-type empirical scaling for both methods over the tested range. In particular, the fitted slope is about 0.78 for CORe and about 1.02 for the parametric algorithm, suggesting that CORe exhibits a milder growth in runtime as n
+
+increases, while the parametric algorithm scales close to linearly on these instances. Moreover, the CORe curve remains below the parametric curve throughout the entire range of problem sizes, and the gap becomes more visible for larger instances. We note that the remarkable performance of CORe on the random path instances does not conflict with Proposition 3. Rather, the proposition identifies a particular adversarial structure, in which the coefficients and thresholds are aligned so that many regime assignments on the path remain feasible. The random instances in Table 6 do not exhibit this alignment; instead, they lead to sparse solutions in which many inactive coordinates can be certified early by the CORe conditions. To examine this worst-case mechanism computationally, we next consider a family of path instances derived from the construction in Proposition 3. 
+
+Adversarial path graph instances. To better understand the worst-case behavior on path graphs, we generate a family of adversarial path instances motivated by Proposition 3. For each problem size n, we set 
+
+Q to be the tridiagonal path matrix with Qii = 1 and Qi,i +1 = Qi+1 ,i = ρ. The worst-case construction corresponds to the limiting choice ρ = 1 /2. However, for a path matrix with Qii = 1 and constant off-diagonal value ρ, the smallest eigenvalue is approximately 1 − 2ρ for large n. Thus, choosing ρ = 1 /2 makes the matrix increasingly ill-conditioned as n grows. To avoid confounding the combinatorial difficulty with numerical ill-conditioning, we use ρ = 0 .45 , which preserves the same local path interaction structure while keeping Q uniformly positive definite. This modification changes the threshold range needed for the worst-case mechanism. In the corresponding independent-set construction (see Appendix A for more details), an inactive coordinate with exactly one active neighbor has |gi| = 1 − ρ. Therefore, the inactive CORe certificate |gi| ≤ τ requires τ > 1 − ρ. With 
+
+ρ = 0 .45 , this lower boundary becomes 1 − ρ = 0 .55 . We therefore vary τ ∈ { 0.6, 0.7, 0.8, 0.9}, and set 
+
+λi = τ 2/2 for all i, since Qii = 1 and hence the CORe threshold is τi = √2λi = τ . Under this choice, 
+
+τ = 0 .6 is close to the boundary of the inactive certificate, while larger values of τ provide increasingly wider certificate margins. Table 7 shows that the adversarial construction can make these instances substantially harder for CORe when the threshold is close to the boundary 1 − ρ. For τ = 0 .6, CORe reaches the time limit for both 26 10 2 10 3 10 4 
+
+> Problem size n (log scale) 10 1
+> 10 0
+> Solution time (seconds, log scale)
+
+Log-Log Plot: CORe vs parametric (Tree Graph) 
+
+> Fit slope for CORe=0.82 Fit slope for parametric=0.97 CORe parametric
+
+Figure 2: Log-log plot of solution time versus problem size for the CORe formulation and parametric algorithm on tree-graph instances. 
+
+n = 100 and n = 1000 , exploring about 1.64 × 10 7 and 1.90 × 10 6 nodes, respectively. In contrast, once τ is increased to 0.7 or larger, CORe again solves the instances at the root node with zero root gap. Interestingly, the active fraction remains essentially unchanged across these values of τ , staying near 50% . This indicates that the computational difficulty is not explained solely by the sparsity level of the final solution. Rather, the more direct mechanism is the margin in the CORe regime conditions: when τ is close to 1 − ρ = 0 .55 ,many inactive coordinates are nearly on the boundary |gi| = τ , making the coordinate-wise certificates much less decisive. The specialized parametric algorithm solves all instances quickly, as expected for path graphs, while the original big-M formulation remains weak and fails to close the gap within the time limit in every setting. 
+
+5.3.3 Tree graphs 
+
+The data generation process for the tree graphs is the same as in Section 5.2 except that the sparsity pattern of Q is chosen to be a random tree. For each problem size n, we first sample a uniformly random labeled tree on n nodes using a Prüfer sequence. Each tree edge (i, j ) is assigned an independent weight 
+
+wij ∼ Unif(0 .1, 1) .As shown in Table 8, the three approaches exhibit sharply different behavior on tree graphs. The original big-M formulation fails to solve any of the tested instances within the time limit, and its relaxation remains weak throughout, with root gaps around 60% and large end gaps at termination. In contrast, both CORe and the parametric algorithm solve all instances to proven optimality. Moreover, CORe is consistently the fastest method across all problem sizes, solving essentially at the root node and requiring only a fraction of a second for small and medium instances and only a few seconds even when n = 10 ,000 . The parametric algorithm also scales well and remains exact, but is uniformly slower than CORe by a moderate constant factor. Overall, Table 8 shows that on tree-structured instances, CORe substantially outperforms the standard formulation and is also competitive with, and in these experiments faster than, the specialized parametric algorithm. Figure 2 further illustrates the scalability of CORe and the parametric algorithm on tree graphs. Both curves are close to linear on the log-log scale, indicating subquadratic empirical runtime growth as the problem size increases. At the same time, the CORe curve lies consistently below the parametric curve over the entire tested range, confirming its lower runtime across all tested instance sizes. The fitted slopes are approximately 0.82 for CORe and 0.97 for the parametric algorithm, suggesting that CORe not only has a smaller runtime constant but also exhibits slightly better empirical scaling in the tested range. 27 5.4 Robust Single-Index Models 
+
+We demonstrate that the benefits of CORe extend beyond the basic quadratic setting, focusing on the robust classification task via logistic regression introduced in Section 4.2. We construct the test instances from the Breast Cancer Wisconsin diagnostic dataset. For each sample size n ∈ { 50 , 100 , 200 , 500 }, we use the first 
+
+n observations and all available covariates. The covariates are standardized separately for each value of n
+
+by subtracting the sample mean and dividing by the sample standard deviation. The binary response labels are kept in their original form. We do not synthetically corrupt the labels; instead, the robust formulation determines which observations should be treated as contaminated through the binary variables. Since the purpose of this experiment is to compare formulations rather than tune predictive performance, we set the contamination penalty uniformly to λ = 20 log( n)/n . This choice yields instances with a modest but nonzero number of selected contaminated observations, avoiding degenerate cases in which nearly all or none of the observations are excluded. For the original formulation, we use Mi = 1 in the big-M constraints on the correction variables. Table 9 reports the computational results, where the CORe formulation yields the reformulation (23). Under a one-hour time limit, the CORe formulation consistently outperforms the original big-M formulation in terms of final solution quality. Although both formulations start with large root gaps, CORe makes substantially more progress during branch-and-bound. The final optimality gaps are much smaller for CORe across all problem sizes; in particular, for n = 100 and n = 200 , CORe closes the gap to below 0.5% , while the original formulation still terminates with gaps above 30% . Even for the largest instance, n = 500 , CORe reduces the final gap from 84 .8% to 48 .6% . Interestingly, the number of explored nodes is not uniformly smaller. For n ≤ 200 , CORe may even explore more nodes, yet it still produces substantially tighter final bounds. This suggests that, for this class of instances, the main benefit of CORe does not come simply from reducing the search tree size, but rather from more effectively encoding the correct regime logic for each observation, leading to stronger subproblems and improved branch-and-bound performance. Moreover, as expected and noted in Remark 3, CORe is less effective for single-index models than for quadratic programs with indicators. 
+
+## 5.5 Real-world Accelerometer Data 
+
+We next evaluate CORe on a real-world accelerometer dataset collected from a wearable sensor worn by a participant across a variety of daily activities [14, 15]. The dataset consists of a sequence of acceleration mea-surements recorded over time. Intuitively, the signal reflects the intensity of the participant’s body motion: periods of little movement tend to produce relatively stable acceleration values, whereas activities such as walking, climbing stairs, or other physical motions generate larger and more rapidly changing measurements. As a result, the time series exhibits alternating periods of low and high activity, along with substantial mea-surement noise and occasional abrupt fluctuations. Such data naturally arise in activity recognition and human motion monitoring applications, where the objective is to recover an underlying activity signal from noisy sensor observations. The temporal nature of the measurements induces a path structure, as neighbor-ing time points are expected to exhibit similar activity levels, making this dataset a natural real-world test case for sparse and smooth signal estimation models. This patient was “working at a computer” until timestamp 4,415; then engaged in “standing up, walking, and going upstairs” until timestamp 4,735; followed by “standing” from timestamp 4,735 to 5,854, from 8,072 to 9,044, and again from 9,045 to 9,720. Subsequently, they were “walking” from timestamp 5,854 to 8,072; involved in “going up or down stairs” from timestamp 9,044 to 9,435; “walking and talking with someone” from timestamp 9,720 to 10,430; and “talking while standing” from timestamp 10,457 to 13,800 (with the status between timestamps 10,430 and 10,457 being unknown). We partition the accelerometer signal into non-overlapping blocks of K consecutive observations and introduce one latent state xt for each block. Thus, t = 1 , . . . , T indexes a coarser time scale, where T is the number of blocks. This is natural because physical activities typically persist across multiple sensor readings, whereas individual measurements can be noisy. Following the preprocessing in [7], we set K = 10 ,so each latent state represents ten consecutive accelerometer measurements. We can model the problem as the following problem: 28 0 2000 4000 6000 8000 10000 12000 14000 Time 025 50 75 100 125 150 175 Signal Magnitude 
+
+## Signal Recovery 
+
+Original Signal Estimated Signal Figure 3: Signal recovery on the real-world accelerometer dataset. 
+
+min 
+
+> x,z T
+
+X
+
+> t=1
+> K
+
+X
+
+> k=1
+
+(yk,t − xt)2 + 12 x21 + 12
+
+> T
+
+X
+
+> t=2
+
+(xt − xt−1)2 + λ
+
+> T
+
+X
+
+> t=1
+
+zt
+
+s.t. xt(1 − zt) = 0 , t = 1 , . . . , T, zt ∈ { 0, 1}, t = 1 , . . . , T. 
+
+(24) Figure 3 shows the recovered signal for the accelerometer instance. The estimate produced by CORe captures the main temporal pattern while filtering out near-zero and high-frequency variation. This instance is solved to proven optimality in 0.1 seconds using CORe, compared with 0.7 seconds using the parametric algorithm of [7]. This demonstrates that CORe can efficiently recover a sparse and smooth latent signal from real sensor data. 
+
+# 6 Conclusion 
+
+We introduced the Coordinate Optimality Reformulation (CORe) framework for mixed-integer convex pro-grams with indicator variables. The main idea is to exploit the coordinate-wise analytic structure already present in the continuous subproblem. By comparing the inactive and active regimes of each coordinate, CORe derives optimality conditions, closed-form coordinate minimizers, and threshold rules that can be embedded directly into the mixed-integer formulation. These constraints remove regime assignments that cannot occur at global optimality, while preserving all globally optimal solutions. We showed the broad applicability of this framework on indicator-constrained models. For quadratic pro-grams with indicators, CORe yields explicit three-regime disjunctions based on coordinate-wise optimality. The same logic also extends to structured settings, such as quadratic programs with unbalanced bipartite structure, and to nonlinear models, such as robust single-index formulations. When suitable bounds are avail-able, these disjunctions can be encoded through strong extended formulations, thereby exposing structure that is absent from standard big-M formulations. 29 The computational results demonstrate that this additional structure can lead to substantial improve-ments in branch-and-bound performance. Across the tested quadratic instances, CORe consistently out-performs the original big-M formulation, often solving instances at or near the root node. On path- and tree-structured instances, CORe is also competitive with specialized parametric algorithms and is faster on the tested instances. The robust single-index experiments further show that the benefits of CORe are not limited to quadratic objectives: even when the root gaps remain large, the CORe formulation produces stronger subproblems and substantially better final bounds. Several directions remain open for future work. One direction is to characterize more general classes of mixed-integer convex problems that admit useful coordinate-wise optimality certificates. Another is to extend the framework to settings with additional constraints that couple the indicator-controlled coordinates, where coordinate-wise arguments must be combined with dual or sensitivity information. Finally, it would be interesting to study branching rules and presolve techniques that are designed specifically to exploit the regime structure induced by CORe. 
+
+# Declarations 
+
+Conflicts of interest The authors declare that they have no conflict of interest. 
+
+# Data Availability 
+
+The datasets generated and analyzed in this study are available at: 
+
+https://github.com/AtomXT/QP_indicator .
+
+# Code Availability 
+
+The source code and documentation used for the computational experiments are available at: 
+
+https://github.com/AtomXT/QP_indicator .
+
+# References 
+
+[1] M Selim Aktürk, Alper Atamtürk, and Sinan Gürel. A strong conic quadratic reformulation for machine-job assignment with controllable processing times. Operations Research Letters , 37(3):187–191, 2009. [2] Alper Atamtürk and Andrés Gómez. Strong formulations for quadratic optimization with m-matrices and indicator variables. Mathematical Programming , 170(1):141–176, 2018. [3] Alper Atamtürk and Andres Gómez. Rank-one convexification for sparse regression. Journal of Machine Learning Research , 26(35):1–50, 2025. [4] Egon Balas. Disjunctive programming: Properties of the convex hull of feasible points. Discrete Applied Mathematics , 89(1-3):3–44, 1998. [5] Dimitris Bertsimas, Angela King, and Rahul Mazumder. Best subset selection via a modern optimization lens. Annals of Statistics , pages 813–852, 2016. [6] Dimitris Bertsimas and Bart Van Parys. Sparse high-dimensional regression. The Annals of Statistics ,48(1):300–323, 2020. [7] Aaresh Bhathena, Salar Fattahi, Andrés Gómez, and Simge Küçükyavuz. A parametric approach for solving convex quadratic optimization with indicators over trees. Mathematical Programming , pages 1–46, 2025. Article in Advance. [8] Aaresh Bhathena, Salar Fattahi, Andrés Gómez, and Simge Küçükyavuz. Solving convex quadratic optimization with indicators over structured graphs. arXiv preprint arXiv:2603.02103 , 2026. 30 [9] Daniel Bienstock. Computational study of a family of mixed-integer quadratic programming problems. 
+
+Mathematical Programming , 74(2):121–140, 1996. [10] Daniel Bienstock and Tongtong Chen. Solving convex QPs with structured sparsity under indicator conditions. arXiv preprint arXiv:2411.11722 , 2024. [11] Daniel Bienstock and Gonzalo Muñoz. LP formulations for polynomial optimization problems. SIAM Journal on Optimization , 28(2):1121–1150, 2018. [12] Pierre Bonami, Lorenz T Biegler, Andrew R Conn, Gérard Cornuéjols, Ignacio E Grossmann, Carl D Laird, Jon Lee, Andrea Lodi, François Margot, Nicolas Sawaya, et al. An algorithmic framework for convex mixed integer nonlinear programs. Discrete optimization , 5(2):186–204, 2008. [13] Pierre Bonami, Mustafa Kılınç, and Jeff Linderoth. Algorithms and software for convex mixed integer nonlinear programs. In Mixed integer nonlinear programming , pages 1–39. Springer, 2011. [14] Pierluigi Casale, Oriol Pujol, and Petia Radeva. Human activity recognition from accelerometer data using a wearable device. In Iberian conference on pattern recognition and image analysis , pages 289–296. Springer, 2011. [15] Pierluigi Casale, Oriol Pujol, and Petia Radeva. Personalization and user verification in wearable systems using biometric walking patterns. Personal and Ubiquitous Computing , 16(5):563–580, 2012. [16] Sebastián Ceria and João Soares. Convex programming for disjunctive convex optimization. Mathemat-ical Programming , 86(3):595–614, 1999. [17] Xiaojun Chen, Dongdong Ge, Zizhuo Wang, and Yinyu Ye. Complexity of unconstrained minimization. 
+
+Mathematical Programming , 143(1):371–383, 2014. [18] Chris Coey, Miles Lubin, and Juan Pablo Vielma. Outer approximation with conic certificates for mixed-integer convex problems. Mathematical Programming Computation , 12:249–293, 2020. [19] Antoine Dedieu, Hussein Hazimeh, and Rahul Mazumder. Learning sparse classifiers: Continuous and mixed integer optimization perspectives. Journal of Machine Learning Research , 22(135):1–47, 2021. [20] Alberto Del Pia, Santanu S Dey, and Robert Weismantel. Subset selection in sparse matrices. SIAM Journal on Optimization , 30(2):1173–1190, 2020. [21] Hongbo Dong, Kun Chen, and Jeff Linderoth. Regularization vs. relaxation: A conic optimization perspective of statistical variable selection. arXiv preprint arXiv:1510.06083 , 2015. [22] Marco A Duran and Ignacio E Grossmann. An outer-approximation algorithm for a class of mixed-integer nonlinear programs. Mathematical programming , 36(3):307–339, 1986. [23] Salar Fattahi and Andres Gómez. Scalable inference of sparsely-changing Gaussian Markov random fields. Advances in Neural Information Processing Systems , 34:6529–6541, 2021. [24] Salar Fattahi and Andrés Gómez. Solution path of time-varying Markov random fields with discrete regularization. arXiv preprint arXiv:2307.13750 , 2023. [25] Antonio Frangioni, Fabio Furini, and Claudio Gentile. Approximated perspective relaxations: a project and lift approach. Computational Optimization and Applications , 63(3):705–735, 2016. [26] Antonio Frangioni, Fabio Furini, and Claudio Gentile. Improving the approximated projected perspec-tive reformulation by dual information. Operations Research Letters , 45(5):519–524, 2017. [27] Antonio Frangioni and Claudio Gentile. Perspective cuts for a class of convex 0–1 mixed integer pro-grams. Mathematical Programming , 106(2):225–236, 2006. [28] Antonio Frangioni and Claudio Gentile. SDP diagonalizations and perspective cuts for a class of non-separable MIQP. Operations Research Letters , 35(2):181–185, 2007. 31 [29] Antonio Frangioni, Claudio Gentile, Enrico Grande, and Andrea Pacifici. Projected perspective refor-mulations with applications in design problems. Operations research , 59(5):1225–1232, 2011. [30] Antonio Frangioni, Claudio Gentile, and James Hungerford. Decompositions of semidefinite matrices and the perspective reformulation of nonseparable quadratic programs. Mathematics of Operations Research , 45(1):15–33, 2020. [31] Zoltán Füredi. The number of maximal independent sets in connected graphs. Journal of Graph Theory ,11(4):463–470, 1987. [32] Fred Glover. Improved linear integer programming formulations of nonlinear integer problems. Man-agement Science , 22(4):455–460, 1975. [33] Andres Gomez. Outlier detection in time series via mixed-integer conic quadratic optimization. SIAM Journal on Optimization , 31(3):1897–1925, 2021. [34] Andres Gómez, Shaoning Han, and Leonardo Lozano. Real-time solution of quadratic optimization problems with banded matrices and indicator variables. arXiv preprint arXiv:2405.03051 , 2024. [35] Andrés Gómez and José Neto. Outlier detection in regression: conic quadratic formulations. INFORMS Journal on Computing , 2025. [36] Ignacio E Grossmann and Sangbum Lee. Generalized convex disjunctive programming: Nonlinear convex hull relaxation. Computational optimization and applications , 26(1):83–100, 2003. [37] Oktay Günlük and Jeff Linderoth. Perspective reformulations of mixed integer nonlinear programs with indicator variables. Mathematical Programming , 124(1):183–205, 2010. [38] Shaoning Han, Andrés Gómez, and Alper Atamtürk. 2 × 2-convexifications for convex quadratic opti-mization with indicator variables. Mathematical Programming , 202(1):95–134, 2023. [39] Hussein Hazimeh and Rahul Mazumder. Fast best subset selection: Coordinate descent and local combinatorial optimization algorithms. Operations Research , 68(5):1517–1537, 2020. [40] Hussein Hazimeh, Rahul Mazumder, and Ali Saab. Sparse regression at scale: Branch-and-bound rooted in first-order optimization. Mathematical Programming , 196(1):347–388, 2022. [41] Ziyu He, Shaoning Han, Andrés Gómez, Ying Cui, and Jong-Shi Pang. Comparing solution paths of sparse quadratic minimization with a Stieltjes matrix. Mathematical Programming , 204(1):517–566, 2024. [42] Joey Huchette and Juan Pablo Vielma. A combinatorial approach for small and strong formulations of disjunctive constraints. Mathematics of Operations Research , 44(3):793–820, 2019. [43] Joey Huchette and Juan Pablo Vielma. A geometric way to build strong mixed-integer programming formulations. Operations Research Letters , 47(6):601–606, 2019. [44] Mustafa R Kılınç, Jeff Linderoth, and James Luedtke. Lift-and-project cuts for convex mixed integer nonlinear programs: Linear programming based separation and extended formulations. Mathematical Programming Computation , 9(4):499–526, 2017. [45] Fatma Kılınç-Karzan. On minimal valid inequalities for mixed integer conic programs. Mathematics of Operations Research , 41(2):477–510, 2016. [46] Fatma Kılınç-Karzan and Sercan Yıldız. Two-term disjunctions on the second-order cone. Mathematical Programming , 154(1):463–491, 2015. [47] Simge Küçükyavuz, Ali Shojaie, Hasan Manzour, Linchuan Wei, and Hao-Hsiang Wu. Consistent second-order conic integer programming for learning Bayesian networks. Journal of Machine Learning Research , 24(322):1–38, 2023. 32 [48] Peijing Liu, Alper Atamtürk, Andrés Gómez, and Simge Küçükyavuz. Polyhedral analysis of quadratic optimization problems with Stieltjes matrices and indicators. Mathematical Programming , pages 1–27, 2025. Article in Advance. [49] Peijing Liu, Salar Fattahi, Andrés Gómez, and Simge Küçükyavuz. A graph-based decomposition method for convex quadratic optimization with indicators. Mathematical Programming , 200(2):669– 701, 2023. [50] Miles Lubin, Emre Yamangil, Russell Bent, and Juan Pablo Vielma. Polyhedral approximation in mixed-integer convex optimization. Mathematical Programming , 172(1):139–168, 2018. [51] Ramtin Madani, Somayeh Sojoudi, Ghazal Fazelnia, and Javad Lavaei. Finding low-rank solutions of sparse linear matrix inequalities using convex optimization. SIAM Journal on Optimization , 27(2):725– 758, 2017. [52] Hasan Manzour, Simge Küçükyavuz, Hao-Hsiang Wu, and Ali Shojaie. Integer programming for learning directed acyclic graphs from continuous data. INFORMS Journal on Optimization , 3(1):46–73, 2021. [53] Rahul Mazumder, Peter Radchenko, and Antoine Dedieu. Subset selection with shrinkage: Sparse linear modeling when the snr is low. Operations Research , 71(1):129–147, 2023. [54] Xiang Meng, Andrés Gómez, and Rahul Mazumder. Computation of least trimmed squares: A branch-and-bound framework with hyperplane arrangement enhancements. arXiv preprint arXiv:2604.11584 ,2026. [55] Tuyen Nguyen-Duc, Linh Hoang-Tuan, Hung Ta-Xuan, Long Do-Van, and Hirotaka Takano. A mixed-integer programming approach for unit commitment in micro-grid with incentive-based demand response and battery energy storage system. Energies , 15(19):7192, 2022. [56] Young Woong Park and Diego Klabjan. Bayesian network learning via topological order. Journal of Machine Learning Research , 18(99):1–32, 2017. [57] Ignacio Quesada and Ignacio E Grossmann. An LP/NLP based branch and bound algorithm for convex minlp optimization problems. Computers & chemical engineering , 16(10-11):937–947, 1992. [58] Visweswaran Ravikumar, Aaresh Bhathena, Wajd N Al-Holou, Salar Fattahi, and Arvind Rao. Efficient inference of dynamic gene regulatory networks using discrete penalty. arXiv preprint arXiv:2507.23106 ,2025. [59] Juan Pablo Vielma. Mixed integer linear programming formulation techniques. SIAM Review , 57(1):3– 57, 2015. [60] Hayato Waki, Sunyoung Kim, Masakazu Kojima, and Masakazu Muramatsu. Sums of squares and semidefinite program relaxations for polynomial optimization problems with structured sparsity. SIAM Journal on Optimization , 17(1):218–242, 2006. [61] Linchuan Wei, Andrés Gómez, and Simge Küçükyavuz. On the convexification of constrained quadratic optimization problems with indicator variables. In International Conference on Integer Programming and Combinatorial Optimization , pages 433–447. Springer, 2020. [62] Linchuan Wei, Andrés Gómez, and Simge Küçükyavuz. Ideal formulations for constrained convex optimization problems with indicator variables. Mathematical Programming , 192(1):57–88, 2022. [63] Herbert S Wilf. The number of maximal independent sets in a tree. SIAM Journal on Algebraic Discrete Methods , 7(1):125–130, 1986. [64] Weijun Xie and Xinwei Deng. Scalable algorithms for the sparse ridge regression. SIAM Journal on Optimization , 30(4):3359–3386, 2020. 33 [65] Tong Xu, Simge Küçükyavuz, Ali Shojaie, and Armeen Taeb. An asymptotically optimal coordinate descent algorithm for learning Bayesian networks from Gaussian models. Journal of Machine Learning Research , 26(250):1–30, 2025. [66] Tong Xu, Armeen Taeb, Simge Küçükyavuz, and Ali Shojaie. Integer programming for learning directed acyclic graphs from nonidentifiable Gaussian models. Biometrika , 112(3):asaf032, 04 2025. [67] Thomas Zaslavsky. Facing up to arrangements: Face-count formulas for partitions of space by hyper-planes. Memoirs of the American Mathematical Society , 1(154):1–102, 1975. [68] Xiaojin Zheng, Xiaoling Sun, and Duan Li. Improving the performance of MIQP solvers for quadratic programs with cardinality and minimum threshold constraints: A semidefinite program approach. IN-FORMS Journal on Computing , 26(4):690–703, 2014. [69] Georgios Zioutas and Antonios Avramidis. Deleting outliers in robust regression with mixed integer programming. Acta Mathematicae Applicatae Sinica , 21(2):323–334, 2005. 
+
+# A Proof of Proposition 3 
+
+Proof. 
+
+Let Q ∈ Rn×n be the tridiagonal matrix 
+
+Qii = 1 (i = 1 , . . . , n ), Qi,i +1 = Qi+1 ,i = 12 (i = 1 , . . . , n − 1) ,
+
+and all other entries equal to zero. Let 
+
+ci = −1, τi = τ ∈
+
+ 12 , 1
+
+
+
+,
+
+and choose λi = τ 2/2 for all i = 1 , . . . , n . Assume M ≥ 1. Then the number of feasible integer leaves of the CORe formulation is at least the number of maximal independent sets of the path graph Pn, and hence grows exponentially in n.We divide the proof into three steps. 
+
+Step 1: The instance is valid and has path sparsity. By construction, the sparsity graph of Q is the path graph Pn. Moreover, Q is positive definite: its eigenvalues are 
+
+λk(Q) = 1 + cos 
+
+ kπ n + 1 
+
+
+
+, k = 1 , . . . , n, 
+
+and therefore λk(Q) > 0 for all k. Hence Q ≻ 0 and Qii > 0 for every i.For this instance, 
+
+gi = ci + X 
+
+> j̸=i
+
+Qij xj = −1 + 12 xi−1 + 12 xi+1 .
+
+Since Qii = 1 , the three CORe regimes are 
+
+D0 
+
+> i, CF
+
+:= {xi = 0 , |gi| ≤ τ },
+
+D+ 
+
+> i, CF
+
+:= {xi = −gi, g i ≥ τ },
+
+D− 
+
+> i, CF
+
+:= {xi = −gi, g i ≤ − τ }.
+
+Step 2: Every maximal independent set gives a feasible integer leaf. Let S ⊆ { 1, . . . , n } be any maximal independent set of the path graph Pn. Define 
+
+xi =
+
+(
+
+1, i ∈ S, 
+
+0, i / ∈ S. 
+
+34 Since Mi ≥ 1, this choice satisfies the box constraints −Mizi ≤ xi ≤ Mizi once the corresponding binary variables are chosen consistently. We claim that x satisfies the CORe disjunction at every coordinate. 
+
+Case 1: i ∈ S. Because S is an independent set, neither neighbor of i belongs to S. Hence 
+
+xi−1 = xi+1 = 0 
+
+(with the obvious interpretation at the endpoints), and therefore 
+
+gi = −1.
+
+Thus 
+
+xi = 1 = −gi, gi = −1 ≤ − τ, 
+
+because τ < 1. Therefore i satisfies D−
+
+> i, CF
+
+.
+
+Case 2: i / ∈ S. Since S is maximal, vertex i must have at least one neighbor in S; otherwise i could be added to S, contradicting maximality. On a path, i has at most two neighbors, and because S is independent, both neighbors may belong to S only if they are i − 1 and i + 1 . Therefore the number of neighbors of i that belong to S is either 1 or 2. Consequently, 
+
+gi = −1 + 12 xi−1 + 12 xi+1 ∈
+
+
+
+− 12 , 0
+
+
+
+.
+
+Since τ > 12 , it follows that 
+
+|gi| ≤ τ. 
+
+Because xi = 0 , we conclude that i satisfies D0
+
+> i, CF
+
+.Thus, every coordinate satisfies one of the three CORe regimes, so the vector x is consistent with a complete regime assignment. Hence, every maximal independent set S yields a feasible integer leaf of the CORe formulation. 
+
+Step 3: The number of maximal independent sets of Pn is exponential. 
+
+Even for path graphs, the number of maximal independent sets grows exponentially: if an denotes the number of maximal independent sets of the path Pn, then an = an−2 + an−3, and hence an = Θ( ρn), where 
+
+ρ ≈ 1.3247 is the real root of ρ3 = ρ + 1 [63, 31]. Since every maximal independent set yields a feasible integer leaf, the number of feasible integer leaves of the CORe formulation is at least an, and is therefore exponential in n.
+
+# B Exact Polynomial-Time Algorithm for Quadratic Programs with Unbalanced Bipartite Structure via Geometric Pruning 
+
+In this section, we present a polynomial-time algorithm for solving Problem (12) when m is fixed and 
+
+G ≻ 0. Without loss of generality, we take D = In, G = Im, and b = 0 : substituting ˜x = D1/2x and 
+
+˜y = G1/2 y + G−1b preserves the indicator constraints (up to rescaling the constants Mi) and puts the objective in this normalized form, with coupling matrix V := D−1/2F G −1/2 and a suitably updated linear coefficient vector c. Positive semidefiniteness of the original quadratic form is then equivalent to I −V V ⊤ ⪰ 0.
+
+## B.1 Rank-2 case 
+
+To explicitly illustrate the geometric decomposition and candidate enumeration, we first consider the case 
+
+m = 2 . After the normalization above, and writing the coupling matrix columnwise as V = [ u v ] with 
+
+u, v ∈ Rn such that I − uu ⊤ − vv ⊤ ≻ 0, Problem (12) reads 
+
+min 
+
+> x∈Rn,z ∈{ 0,1}n,y 1,y 2∈R
+
+12 y21 + 12 y22 + y1(u⊤x) + y2(v⊤x) + 12 x⊤x + c⊤x + λ⊤z (25a) s.t. xi(1 − zi) = 0 , i = 1 , 2 . . . n, (25b) 35 where we write the indicator constraints in complementarity form (equivalent to the big-M form for suffi-ciently large Mi) and c denotes the normalized linear coefficient vector. 
+
+Theorem 1. The optimization problem (25) can be solved in O(n3) time and memory using Algorithm 1. Proof. Projecting out x and z, problem (25) can be rewritten as 
+
+min 
+
+> y1,y 2
+
+12 y21 + 12 y22 +
+
+> n
+
+X
+
+> i=1
+
+min  
+
+> xi(1 −zi)=0
+
+1/2x2 
+
+> i
+
++ ( uiy1 + viy2 + ci)xi + λizi
+
+| {z }
+
+> := gi(y1,y 2)
+
+= min 
+
+> y1,y 2
+
+12 y21 + 12 y22 +
+
+> n
+
+X
+
+> i=1
+
+gi(y1, y 2), (26) where 
+
+gi(y1, y 2) = 
+
+(0 −√2λi ≤ uiy1 + viy2 + ci ≤ √2λi
+
+− (uiy1+viy2+ci)2 
+
+> 2
+
++ λi otherwise .
+
+Solving (26) boils down to finding the pieces of {gi(y1, y 2)} that contain the optimal solution (y∗ 
+
+> 1
+
+, y ∗ 
+
+> 2
+
+). At first glance, this appears to have exponential complexity: each gi(y1, y 2) has two pieces, and to find the pieces that contain the optimal solution, one may need to exhaust all 2n possible combinations of these pieces. However, we show that the majority of these combinations are infeasible for (26) and hence can be “pruned". To see this, note that each function gi divides the R2-space in two regions with its two supporting lines: for all points in the set C1 
+
+> i
+
+= {(y1, y 2) : −√2λi ≤ uiy1 + viy2 + ci ≤ √2λi}, we have zi = 0 
+
+and gi(y1, y 2) = 0 . Similarly, for all points in the set C2 
+
+> i
+
+= R2\C 1 
+
+> i
+
+, we have zi = 1 and gi(y1, y 2) = 
+
+− (uiy1+viy2+ci)2 
+
+> 2
+
++ λi. Consider the set of supporting lines L = Sni=1 {ℓi, 1(y1, y 2) = 0 , ℓ i, 2(y1, y 2) = 0 }, where 
+
+ℓi, 1(y1, y 2) = uiy1 + viy2 + ci − √2λi and ℓi, 2(y1, y 2) = uiy1 + viy2 + ci + √2λi.This decomposes the R2-space into disjoint polytopes. Within each polytope, the sparsity pattern of 
+
+{zi} remains the same. Therefore, by counting the number of polytopes, we can characterize the number of feasible sparsity patterns for (26). 
+
+Algorithm 1 Efficient algorithm for the case m = 2 
+
+Input: Parameters of the optimization problem (25) 
+
+Output: Optimal solution to (25)  
+
+> 1:
+
+Set Z = {} . 
+
+> 2:
+
+Compute the set of supporting lines L from (26). ▷ It can be done in O(n) time  
+
+> 3:
+
+for ℓi = uiy1 + viy2 + ci ± √2λi ∈ L do  
+
+> 4:
+
+Find the lower and upper bounds using Equation (27).  
+
+> 5:
+
+Sort these bounds and obtain the corresponding partial sparsity patterns {¯z(k)}2n−1 
+
+> k=1
+
+⊂ Rn−1. 
+
+> 6:
+
+Obtain the full candidate sparsity patterns {z(2 k−1) , z (2 k)}2n−1 
+
+> k=1
+
+, as z(2 k−1)  
+
+> j
+
+= z(2 k) 
+
+> j
+
+= ¯ z(k) 
+
+> j
+
+for j̸ = i,and z(2 k−1)  
+
+> i
+
+= 0 , z(2 k) 
+
+> i
+
+= 1 . 
+
+> 7:
+
+Set Z ← Z ∪ { z(2 k−1) , z (2 k)}2n−1 
+
+> k=1
+> 8:
+
+end for  
+
+> 9:
+
+f ∗ = + ∞, x∗ = {}  
+
+> 10:
+
+for ¯z ∈ Z do  
+
+> 11:
+
+find the optimal solution and optimal cost (¯ x, ¯f ) of (25) subject to z = ¯ z 
+
+> 12:
+
+if ¯f < f ∗ then  
+
+> 13:
+
+Set f ∗ ← ¯f and x∗ ← ¯x. 
+
+> 14:
+
+end if  
+
+> 15:
+
+end for  
+
+> 16:
+
+Return (x∗, f ∗)
+
+36 Lemma 1. The set of lines in L decomposes R2-space into at most max {n(4 n − 2) , 3} polytopes. Proof. Each line in ℓi ∈ L can be the face of at most 4n − 2 polytopes. To see this, note that the set of lines 
+
+L\ ℓi intersects ℓi in at most 2n − 2 points. This creates at most 2n − 1 segments on ℓi, each of which can be a face of at most two polytopes. Since each polytope has at least one face in the set L and the size of L
+
+is 2n, the total number of polytopes is upper bounded by 2n(4 n − 2) .Next, we show that this bound can be improved by a factor of 2. We consider two cases. First, suppose that there exists a polytope that has only one face in L. This implies that the lines in L do not intersect, i.e., they are parallel. In such a scenario, since we have 2n parallel lines, the number of polytopes is upper bounded by 2n + 1 . Second, suppose that all polytopes have at least two faces in L. Based on our previous argument, the total number of polytopes in this case is upper bounded by 2n(4 n−2) 2 = n(4 n − 2) . Combining these two cases leads max {n(4 n − 2) , 2n + 1 } = max {n(4 n − 2) , 3} polytopes. Next, we explain our algorithm. To find an optimal solution, it is sufficient to first determine the sparsity pattern associated with each polytope defined by the lines in L. By Lemma 1, the number of such polytopes is bounded by O(n2), leading to at most O(n2) distinct sparsity patterns. Once these patterns are identified, an optimal solution can be determined by solving a convex quadratic program constrained by each identified sparsity pattern. Indeed, the facets of the polytope are included in the lines in L. Therefore, to identify candidate sparsity patterns within the polytopes, it suffices to determine them at these facets. For instance, to identify the sparsity pattern for all polytopes that are adjacent to line ℓi (equivalently, ℓi defines a facet), we consider all pairs Yi = {(y1, y 2) : ℓi(y1, y 2) = uiy1 + viy2 + ci ± √2λi = 0 }. Without loss of generality, let us assume that ui̸ = 0 . Then, this implies that y1 = −(vi/u i)y2 − (ci ± √2λi)/a i. For every (y1, y 2) ∈ Y i, zj = 0 , j ̸ = i
+
+if and only if 
+
+− p2λj ≤ uj y1 + vj y2 + cj ≤ p2λj
+
+⇐⇒ − p2λj ≤
+
+
+
+vj − uj vi
+
+ui
+
+
+
+y2 + cj − uj (ci ± p2λi) ≤ p2λj
+
+⇐⇒ −p2λj + uj (ci ± √2λi) − cj
+
+
+
+vj − uj vi
+
+> ui
+
+| {z }
+
+> αi
+
+≤ y2 ≤
+
+p2λj + uj (ci ± √2λi) − cj
+
+
+
+vj − uj vi
+
+> ui
+
+| {z }
+
+> βi
+
+. (27) Combining and sorting the above upper and lower bounds yields 2n−1 intervals for y2. Within each interval, the sparsity pattern of {zj }j̸ =i can be found and remains fixed. Therefore, on the line ℓi, we obtain 2n − 1
+
+sparsity patterns {¯z(k)}2n−1 
+
+> k=1
+
+⊂ Rn−1, which are the possible sparsity patterns for the variables {zj }j̸ =i on the polytopes adjacent to ℓi. To find the full sparsity pattern for these polytopes, it remains to determine zi,which can be either zi = 0 or zi = 1 , depending on which side of ℓi the polytope resides in. This implies that the set of candidate sparsity patterns for the polytopes adjacent to ℓi can be defined as {z(2 k−1) , z (2 k)}2n−1 
+
+> k=1
+
+,where both z(2 k−1) and z(2 k) share the same sparsity pattern at coordinates j̸ = i, and only differ at coordinate i. The runtime for finding these candidate sparsity patterns is O(n log n) (due to the sorting step). Performing the above steps for all ℓ ∈ L yields all O(n2) candidate sparsity patterns. These sparsity patterns can be found in O(n2 log n) time. Moreover, for each fixed sparsity pattern, the optimal solution can be found in O(n) by solving a convex quadratic problem, leading to O(n3) total complexity. 
+
+## B.2 Generalization to General m
+
+The geometric pruning framework described for m = 2 naturally extends to general fixed m. After the normalization above, with coupling matrix V ∈ Rn×m satisfying I − V V ⊤ ≻ 0, Problem (12) reads 
+
+min 
+
+> x∈Rn,z ∈{ 0,1}n,y ∈Rm
+
+12 ∥y∥2 + y⊤V ⊤x + 12 x⊤x + c⊤x + λ⊤z, xi(1 − zi) = 0 .
+
+For fixed y, the problem separates across coordinates, giving piecewise functions 
+
+gi(y) = 
+
+(0 if |V ⊤ 
+
+> i
+
+y + ci| ≤ √2λi,
+
+− (V ⊤  
+
+> iy+ci)2
+> 2
+
++ λi otherwise, 37 where V ⊤ 
+
+> i
+
+denotes the i-th row of V . Each gi induces two parallel hyperplanes in Rm,
+
+V ⊤ 
+
+> i
+
+y + ci = ±p2λi.
+
+The union of these 2n hyperplanes decomposes Rm into polytopes, inside each of which the sparsity pattern z is fixed. To enumerate candidate sparsity patterns efficiently, each hyperplane can be treated as a facet, and one coordinate of y can be parametrized in terms of the remaining m − 1 coordinates. For instance, assume without loss of generality that Vi, 1̸ = 0 , we can write 
+
+y1 = − 1
+
+Vi, 1
+
+
+
+V ⊤
+
+> i, 2: m
+
+y2: m + ci ± p2λi
+
+
+
+.
+
+For any j̸ = i, the condition zj = 0 is equivalent to 
+
+−p2λj ≤ V ⊤ 
+
+> j
+
+y + cj ≤ p2λj .
+
+Substituting the above expression for y1 yields 
+
+−p2λj ≤
+
+
+
+Vj, 2: m − Vj, 1
+
+Vi, 1
+
+Vi, 2: m
+
+⊤
+
+y2: m + cj − Vj, 1
+
+Vi, 1
+
+(ci ± p2λi) ≤ p2λj .
+
+Fixing all but one coordinate of y2: m (e.g., y3, . . . , y m), this inequality reduces to an interval constraint on the remaining coordinate, say y2,
+
+α± 
+
+> ij
+
+≤ y2 ≤ β± 
+
+> ij
+
+,
+
+where α± 
+
+> ij
+
+and β± 
+
+> ij
+
+are obtained by dividing the above bounds by the coefficient of y2.Sorting these interval boundaries partitions the remaining coordinates into regions with fixed partial sparsity patterns. Combining with the choice of zi on each side of the hyperplane yields all candidate sparsity patterns adjacent to this facet. Repeating this for all hyperplanes generates all O(nm) candidate sparsity patterns. 
+
+Lemma 2. The 2n hyperplanes in Rm decompose the space into at most O(nm) polytopes, each corresponding to a distinct candidate sparsity pattern for z.
+
+Once the candidate sparsity patterns are identified, the optimal solution can be found by solving a convex quadratic program for each pattern, leading to a total complexity of O(nm+1 ). This generalizes the rank-2 algorithm while preserving the same geometric pruning principle. 
+
+Corollary 1. For any fixed m, Problem (12) with G ≻ 0 can be solved in O(nm+1 ) time and memory using the geometric pruning algorithm described above. Proof. By Lemma 2, the number of candidate sparsity patterns is at most O(nm). For each fixed pattern, the convex quadratic problem in x can be solved in O(n) time. Therefore, enumerating all patterns and solving the corresponding convex optimization problems yields a total complexity of O(nm+1 ).38 Table 5: Average computational results for QP with indicators on star graphs as the problem size n varies. 
+
+# n Formulation Root gap End gap Active (%) Nodes Time (s) 100 CORe 0 0 10.80% 0.2 0.02 100 parametric - 0 10.80% - 0.07 100 Original 14.0% 0 10.80% 1282.8 0.34 200 CORe 0 0 8.30% 0.4 0.04 200 parametric - 0 8.30% - 0.13 200 Original 2.4% 0 8.30% 1065.6 0.54 300 CORe 0 0 9.00% 0.0 0.05 300 parametric - 0 9.00% - 0.24 300 Original 4.5% 0 9.00% 730.0 0.71 500 CORe 0 0 9.32% 0.0 0.08 500 parametric - 0 9.32% - 0.53 500 Original 1.6% 0 9.32% 7542.0 3.05 1000 CORe 0 0 8.62% 0.2 0.19 1000 parametric - 0 8.62% - 1.88 1000 Original 3.8% 0.01 8.60% 8063.8 6.57 2000 CORe 0 0 7.47% 0.0 0.40 2000 parametric - 0 7.47% - 7.95 2000 Original 1.4% 0.07 7.47% 307635.8 11.08 5000 CORe 0 0 6.22% 1.0 1.91 5000 parametric - 0 6.22% - 42.93 5000 Original 0.6% 0.01 6.22% 1178.8 41.93 10000 CORe 0 0 5.48% 1.8 7.31 10000 parametric - 0 5.48% - 179.03 10000 Original 0.5% 0.02 5.48% 16959.7 TL 39 Table 6: Average computational results for QP with indicators on path graphs as the problem size n varies. 
+
+# n Formulation Root gap End gap Active (%) Nodes Time (s) 100 CORe 0 0 16.70% 1 0.08 100 parametric - 0 16.70% - 0.08 100 Original 59.1% 13.2% 16.70% 19939440 TL 200 CORe 0 0 12.30% 1 0.11 200 parametric - 0 12.30% - 0.13 200 Original 62.2% 36.8% 12.30% 12222982 TL 300 CORe 0 0 10.77% 1 0.12 300 parametric - 0 10.77% - 0.19 300 Original 58.8% 42.7% 10.77% 8957234 TL 500 CORe 0 0 8.80% 1 0.15 500 parametric - 0 8.80% - 0.32 500 Original 56.9% 47.5% 8.78% 5828057 TL 1000 CORe 0 0 7.26% 1 0.28 1000 parametric - 0 7.26% - 0.68 1000 Original 59.1% 54.5% 7.25% 2598710 TL 2000 CORe 0 0 5.60% 0.8 0.48 2000 parametric - 0 5.60% - 1.27 2000 Original 50.7% 48.6% 5.58% 1191785 TL 5000 CORe 0 0 4.41% 1 1.34 5000 parametric - 0 4.41% - 3.60 5000 Original 47.8% 47.1% 4.41% 340304 TL 10000 CORe 0 0 3.86% 1 2.44 10000 parametric - 0 3.86% - 8.19 10000 Original 41.2% 40.9% 3.86% 139643 TL 40 Table 7: Average computational results for QP with indicators on adversarial path graphs as the threshold    
+
+> τand problem size nvary.
+
+## τ n Formulation Root gap End gap Active (%) Nodes Time (s) 0.6 100 CORe 10.8% 1.9% 51.00% 16400931 TL 0.6 100 parametric - 0 51.00% - 0.09 0.6 100 Original 41.8% 17.9% 51.00% 21757580 TL 0.6 1000 CORe 14.6% 10.2% 50.10% 1896469 TL 0.6 1000 parametric - 0 50.10% - 0.61 0.6 1000 Original 89.8% 30.9% 50.10% 2380792 TL 0.7 100 CORe 0 0 50.00% 1 1.41 0.7 100 parametric - 0 50.00% - 0.10 0.7 100 Original 71.2% 31.5% 50.00% 21269267 TL 0.7 1000 CORe 0 0 50.00% 1 0.51 0.7 1000 parametric - 0 50.00% - 0.53 0.7 1000 Original 124.0% 50.5% 50.00% 1991237 TL 0.8 100 CORe 0 0 50.00% 1 2.05 0.8 100 parametric - 0 50.00% - 0.09 0.8 100 Original 161.9% 62.0% 50.00% 19745207 TL 0.8 1000 CORe 0 0 50.00% 1 0.49 0.8 1000 parametric - 0 50.00% - 0.52 0.8 1000 Original 197.4% 91.6% 50.00% 1772636 TL 0.9 100 CORe 0 0 50.00% 1 0.87 0.9 100 parametric - 0 50.00% - 0.11 0.9 100 Original 465.1% 159.1% 50.00% 19616860 TL 0.9 1000 CORe 0 0 50.00% 1 0.47 0.9 1000 parametric - 0 50.00% - 0.52 0.9 1000 Original 627.1% 220.1% 49.90% 1793454 TL 41 Table 8: Average computational results for QP with indicators on tree graphs as the problem size n varies. 
+
+# n Formulation Root gap End gap Active (%) Nodes Time (s) 100 CORe 0 0 15.00% 1 0.06 100 parametric - 0 15.00% - 0.10 100 Original 59.9% 14.9% 15.00% 16235418 TL 200 CORe 0 0 12.80% 1 0.12 200 parametric - 0 12.80% - 0.15 200 Original 62.5% 37.3% 12.80% 7666071 TL 300 CORe 0 0 12.87% 1 0.13 300 parametric - 0 12.87% - 0.21 300 Original 61.4% 46.8% 12.87% 5665235 TL 500 CORe 0 0 11.76% 1 0.15 500 parametric - 0 11.76% - 0.35 500 Original 61.5% 52.5% 11.76% 3628496 TL 1000 CORe 0 0 9.60% 1 0.28 1000 parametric - 0 9.60% - 0.73 1000 Original 63.0% 58.5% 9.60% 1846712 TL 2000 CORe 0 0 9.55% 1 0.59 2000 parametric - 0 9.51% - 1.52 2000 Original 62.6% 60.5% 9.51% 881081 TL 5000 CORe 0 0 8.09% 1 1.41 5000 parametric - 0 8.07% - 3.84 5000 Original 64.8% 64.4% 8.07% 258943 TL 10000 CORe 0 0 7.31% 1 2.70 10000 parametric - 0 7.30% - 7.74 10000 Original 64.2% 64.0% 7.31% 117797 TL Table 9: Computational results for the robust single-index model comparing the original formulation and the CORe formulation.
