@@ -6,35 +6,38 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-09
-- 运行时间：2026-08-09 20:29:42 UTC
+- 最新运行日期：2026-08-10
+- 运行时间：2026-08-10 20:35:43 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：1
+- 本次总论文数：6
+- 精读区：2
 - 速读区：4
 
 ### 今日简报（AI）
-今日精读1篇、速读3篇，聚焦优化与AI方法论文。最值得关注的是混合整数凸规划的坐标最优性重构（8分）与可微投影的库存策略学习（7分）。建议优先精读高分文章，其余可结合自身方向快速浏览。
-- 详情：[/202608/09/README](/202608/09/README)
+今日精读6篇论文，其中2篇高分聚焦LLM与优化建模；最值得关注的是利用大模型生成实例优化算法组合，以及用DSL替代MILP提升建模灵活性；若想快速入门，可优先精读这两篇高分文献。
+- 详情：[/202608/10/README](/202608/10/README)
 
 ### 精读区论文标签
-1. [Coordinate Optimality Reformulation for Mixed-Integer Convex Programs with Indicators](/202608/09/2608.01385v1-coordinate-optimality-reformulation-for-mixed-integer-convex-programs-with-indicators)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：针对带指示变量的混合整数凸问题，提出坐标最优性重构以提升分支定界性能
+1. [Evolving Parallel Algorithm Portfolios via Potential-Aware Instance Generation with LLMs](/202608/10/2608.06808v1-evolving-parallel-algorithm-portfolios-via-potential-aware-instance-generation-with-llms)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：利用LLM自动化构建组合优化算法组合与困难实例生成
+2. [Not All Problems Are Best Modeled as MILP: A DSL-Centric Framework for Flexible and Accurate Optimization Modeling](/202608/10/2608.07040v1-not-all-problems-are-best-modeled-as-milp-a-dsl-centric-framework-for-flexible-and-accurate-optimization-modeling)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：基于大模型的DSL优先优化建模框架，直接针对运筹优化建模
 
 ### 速读区论文标签
-1. [Hard Constraints, Smooth Gradients: Learning Feasible Inventory Policies via Differentiable Projection](/202608/09/2608.02343v1-hard-constraints-smooth-gradients-learning-feasible-inventory-policies-via-differentiable-projection)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：通过可微投影学习可行库存策略，自动生成受约束决策问题的解
-2. [Beyond Solution-Centric Search: Adaptive Inquiry and Knowledge Revision for Autonomous ML Engineering](/202608/09/2608.02143v1-beyond-solution-centric-search-adaptive-inquiry-and-knowledge-revision-for-autonomous-ml-engineering)  
+1. [GraphIR: Architecture-Level Search States for LLM-Guided Neural Architecture Evolution](/202608/10/2608.01633v1-graphir-architecture-level-search-states-for-llm-guided-neural-architecture-evolution)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：LLM智能体通过查询-修正循环自主完成机器学习工程；属自动方案生成，但非运筹优化。
-3. [Improving Auto-Design of Neural PDE Solvers with a Domain-Specific Language](/202608/09/2608.04384v1-improving-auto-design-of-neural-pde-solvers-with-a-domain-specific-language)  
+   evidence：面向可执行程序的LLM引导演化，为自动生成候选解提供架构级搜索状态
+2. [Improving Auto-Design of Neural PDE Solvers with a Domain-Specific Language](/202608/10/2608.04384v1-improving-auto-design-of-neural-pde-solvers-with-a-domain-specific-language)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：用DSL结构化搜索空间提升LLM生成求解器代码的可靠性，可迁移至运筹优化建模
-4. [ExeCRE: Execution-Consistency Guided Reliability Estimation for Self-Correcting Code Generation](/202608/09/2608.04439v1-execre-execution-consistency-guided-reliability-estimation-for-self-correcting-code-generation)  
+   evidence：利用LLM在结构化搜索空间下生成可执行的求解器代码，与基于LLM的优化问题代码生成相关。
+3. [The Optimizer Is the Agent: Reasoning-Driven Search across Prompts, Programs, and ML Workflows](/202608/10/2608.06714v1-the-optimizer-is-the-agent-reasoning-driven-search-across-prompts-programs-and-ml-workflows)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：利用执行一致性估计LLM生成代码的可靠性并自我修正，可迁移至优化问题求解代码生成。
+   evidence：基于大语言模型的智能体将优化搜索内化到提示/程序/工作流中，对自动求解代码生成有方法借鉴。
+4. [PACE: Primitive-Aware Code Evolution for Automated Algorithm Design](/202608/10/2608.07395v1-pace-primitive-aware-code-evolution-for-automated-algorithm-design)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：基于大模型的代码进化用于自动算法设计，是自动生成优化求解代码的使能方法
 
 
 <div class="dpr-home-promo-card">

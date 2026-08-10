@@ -1,0 +1,1904 @@
+Title: PACE: Primitive-Aware Code Evolution for Automated Algorithm Design
+
+URL Source: https://arxiv.org/pdf/2608.07395v1
+
+Published Time: Mon, 10 Aug 2026 01:13:26 GMT
+
+Number of Pages: 23
+
+Markdown Content:
+# PACE: Primitive-Aware Code Evolution for Automated Algorithm Design 
+
+## Zhuoliang Xie 1, Ruihao Zheng 1, Xiang Xu 1, Genghui Li 2, Zhengkun Wang 1, ∗
+
+> 1
+
+Southern University of Science and Technology 
+
+> 2
+
+Shenzhen University {xiezl2025, zhengrh2024}@sustech.edu.cn, xiangxu5-c@my.cityu.edu.hk, ligh@szu.edu.cn, wangzhenkun90@gmail.com 
+
+Abstract 
+
+Large Language Model (LLM)-based automated algorithm design typically evolves algorithms as complete, indivisible programs. While this whole-program perspective simplifies the search space, it fundamentally couples the useful local logic to its host program. Consequently, valuable code snip-pets vanish when the overall program is discarded, making it highly difficult to assess the contribution of individual algo-rithmic components. To address this, we propose Primitive-Aware Code Evolution (PACE), which decouples local logic from complete programs by representing it as persistent units called Executable Algorithmic Primitives (EAPs). To enable code-level transfer, PACE maintains a dynamic set of EAPs. Algorithm evolution is driven by primitive-aware operators that structurally guarantee the retention and cross-program transfer of these components. To evaluate them effectively, PACE leverages Thompson sampling based on parent-relative performance improvements, guiding primitive selection from the set without requiring extra evaluation datasets. Experi-ments on four tasks demonstrate that PACE effectively dis-covers competitive algorithms while structurally preserving valuable algorithmic components. 
+
+## Introduction 
+
+Large Language Models (LLMs) have made executable pro-grams a practical search representation for automated algo-rithm design (AAD) (Liu et al. 2026b). FunSearch and EoH construct an automated closed loop that integrates LLM-based code generation with program evaluators, thereby ef-fectively improving algorithms without reliance on domain expertise (Romera-Paredes et al. 2024; Liu et al. 2024). Their promising results have driven the development of sophisti-cated mechanisms, such as algorithmic reflection, tree-based algorithmic exploration, and population management (Ye et al. 2024; Zheng et al. 2025; Dat, Doan, and Binh 2025). Existing AAD methods typically treat the designed algo-rithm as the minimal unit. Specifically, variation operators such as crossover and mutation (Liu et al. 2024) place entire parent programs within the LLM context, allowing arbitrary edits to the algorithm without explicit boundary constraints. Such a coarse-grained perspective limits the LLM’s ability to accurately distinguish between useful and harmful local 
+
+> ∗
+
+Corresponding author. Eliminated 
+
+> return [steering, gas, brake]
+
+</> 
+
+> choose_act(…) : …return [steering, throttle, brake]
+
+</> 
+
+> choose_act(…) : …
+
+0.08 0.88 
+
+(a) Existing LLM-based AAD methods. EAPs    
+
+> 𝑷 𝟏 (…) … Func 𝑷 𝟏 (…) # High Quality Func 𝑷 𝟐 (…) Func 𝑷 𝟑 (…) # Low Quality …
+
+</> 
+
+> choose_act(…) : …
+
+</>    
+
+> choose_act(…) : …Func 𝑷 𝟏 (…) # High Quality Func 𝑷 𝟒 (…) Func 𝑷 𝟓 (…) …
+
+</> </>   
+
+> 𝑷 &(…) 𝑷 '(…) …
+
+0.11 1.00 
+
+(b) Primitive-aware AAD method (Ours). 
+
+Figure 1: (a) Existing AAD methods evaluate whole algo-rithms. A low-scoring algorithm and its local logic are re-moved together. (b) PACE retains a useful local logic as a function, a later algorithm can call the same function, thus abstains a better score, even when the original algorithm was removed. logics within the algorithm. As shown in Figure 1a, elimi-nating a low-performing algorithm entails discarding all of its local logic, including components that could be valuable in a different algorithm. As a result, useful logic may be repeatedly discarded and rediscovered, wasting the search budget and limiting the performance of AAD methods. Re-cent progress has also recognized the limitations of directly editing a complete algorithm (Yuksel 2025). We argue that the AAD process should explicitly preserve useful logic or components for subsequently generated algo-rithms. To this end, we treat the component as an evolvable object within the AAD process and refer to it as an Ex-ecutable Algorithmic Primitive (EAP). Figure 1b illustrates EAP. At the code level, EAP is an implemented callable func-tion. During the AAD process, a promising EAP is extracted from an algorithm generated in an early iteration, stored in a arXiv:2608.07395v1 [cs.SE] 7 Aug 2026 persistent EAP set, and subsequently invoked by some can-didates generated in later iterations. EAP enters the set with an undetermined utility value. It updates the utility values by continuously competing with the existing EAPs. EAPs with higher utility values are more likely to be included in the newly generated algorithm. To achieve EAP-enhanced AAD, we propose Primitive-Aware Code Evolution (PACE), which comprises two key mechanisms. The first is a set of primitive-aware variation op-erators. On the one hand, the operators restrict LLMs to per-muting EAPs within an algorithm, combining EAPs across algorithms, inserting EAPs into an algorithm, and replacing one EAP with another. On the other hand, any algorithmic component not explicitly represented as an EAP can be freely edited by LLMs. The second is a selection rule that decides which EAP is exposed to the next variation step. PACE treats each EAP transfer as a single observation, recording whether the resulting offspring algorithm improves based on its par-ents. An EAP is then selected using Thompson sampling based on these observations. Consequently, the probability of selecting an EAP is dynamically adjusted as the AAD pro-ceeds; EAPs that frequently fail are exposed less often. Both mechanisms rely only on the algorithm evaluation, so no auxiliary validation set and no additional evaluation budget are required. Our contributions are highlighted as follows: 
+
+• We introduce EAPs to enable the explicit transfer of al-gorithmic local components. The EAP is an implemented function and has a stable identity across host algorithms. During the AAD process, an EAP is transferred across al-gorithms to accumulate evidence for updating its utility. 
+
+• We propose an EAP-characterized AAD method called PACE. Offspring generated by primitive-aware variation operators are associated with specific EAPs. PACE as-signs credit to each EAP by comparing the corresponding offspring algorithms with their parents. Using Thompson sampling, PACE selectively leverages effective EAPs to accelerate the discovery of high-performing algorithms. 
+
+• Experiments on four tasks spanning continuous control and combinatorial optimization show that PACE finds better algorithms than existing LLM-based AAD methods under the same evaluation budget. 
+
+## Related Work 
+
+LLM-Based Automated Algorithm Design 
+
+Since AEL and EoH introduced evaluator-guided program evolution using LLMs (Liu et al. 2023, 2024, 2026b), re-search in this field has expanded rapidly in two main direc-tions. On the methodological side, recent algorithms improve the context carried across search iterations, incorporating written reflections (Ye et al. 2024), search trees (Zheng et al. 2025), or diverse populations (Dat, Doan, and Binh 2025). On the application side, this evolutionary loop has spread from heuristic design to math discovery (Romera-Paredes et al. 2024), system optimization (Novikov et al. 2025), sym-bolic equation discovery (Shojaee et al. 2025), and robot control, either indirectly by evolving reward functions (Ma et al. 2024) or directly from execution feedback (Hu et al. 2025). Despite these advances in methods and applications, ex-isting frameworks stick to full-program evolution. Search memory stays inside external prompts, trajectories, or candi-date pools, treating each generated algorithm as a single unit. Overcoming this bottleneck requires storing and transferring smaller sub-program components across search runs. 
+
+Reusable Structure in Program Search 
+
+Reusing structural sub-components has a long history, in-cluding early genetic programming (Koza 1990, 1994), li-brary learning in DreamCoder (Ellis et al. 2021), and mod-ern LLM skill libraries (Wang et al. 2023a; Stengel-Eskin, Prasad, and Bansal 2024; Wang et al. 2023b; Grand et al. 2024; Wang, Fried, and Neubig 2024). However, skill li-braries usually accept components based on binary pass or fail tests. This makes them unsuitable for algorithm design, where code quality is continuously scored and depends heav-ily on the task context. Within algorithm design, recent studies explore structural reuse to move past single-candidate evolution. Methods such as G-LNS (Zhao, Wang, and Zeng 2026), EoH-S (Liu et al. 2026a), EvoLattice (Yuksel 2025), and BEAM (Xiang et al. 2026) save components using jointly evolving operators, fixed graph templates, or two-tier memory systems. However, these methods require predefined candidate roles or heavy nested search loops. In contrast, PACE establishes Extracted Algorithm Primitives (EAPs) as independent evolutionary units, enabling flexible reuse across unrelated program lin-eages without extra search overhead. While transferring EAPs across host programs enables component reuse, it introduces an evaluation challenge. Be-cause an EAP executes inside a specific host program, the quality of that host can easily mask the true performance of the primitive itself. 
+
+Bandit Credit Assignment 
+
+Separating the contribution of a local function from its host program is a classic credit-assignment problem. Evolution-ary optimization often solves credit assignment using ban-dit feedback, such as adaptive operator selection (Fialho et al. 2010) and Thompson sampling (Daniel et al. 2018). In LLM-based algorithm design, bandit strategies have been applied to whole programs, helping rank solution candidates in QUBE (Chen et al. 2024) or balance algorithm types in CDEoH (Wang et al. 2026). However, existing bandit setups define arms over full pro-grams, fixed variation operators, or set template slots. PACE redefines the arm set over an open pool of EAPs that grows during search. To isolate an EAP’s causal impact from host program noise, PACE evaluates arms using parent-relative rewards, measuring performance gains over the fixed parent baseline upon transfer. Task Description 
+
+𝐄𝐀𝐏𝐬 𝟏 
+
+Func 𝑷 𝟏 𝟏 (…) 
+
+𝑩𝒆𝒕𝒂(𝜶 𝟏 |𝜷 𝟏 )
+
+Template 
+
+𝐄𝐀𝐏𝐬 𝒕 
+
+…Func 𝑷 𝟏 𝒕 (…) 
+
+𝑩𝒆𝒕𝒂(𝜶 𝟏 𝒕 |𝜷 𝟏 𝒕 )
+
+Func 𝑷 𝒊 𝒕 (…) 
+
+𝑩𝒆𝒕𝒂(𝜶 𝒊 𝒕 |𝜷 𝒊 𝒕 )
+
+…Evolutionary Search Initialization Func 𝑷 𝒊 𝒕 (…) …
+
+## </> 
+
+choose_act(…) : …
+
+Evaluation 
+
+Parent Selection 
+
+Func 𝑷 𝒊 𝒕 (…) …
+
+## </> 
+
+choose_act(…) : …Func 𝑷 𝒊 𝒕 (…) …
+
+## </> 
+
+choose_act(…) : …
+
+𝜶 𝒊 𝒕 = 𝜶 𝒊 𝒕 + 𝟏 𝜷 𝒊 𝒕 = 𝜷 𝒊 𝒕 + 𝟏 
+
+Better Worse 
+
+Update 
+
+𝐏𝐨𝐩𝐮𝐥𝐚𝐭𝐢𝐨𝐧 𝐭 
+
+Func 𝑷 𝒊 𝒕 (…) …
+
+## </> 
+
+choose_act(…) : …Func 𝑷 𝒊 𝒕 (…) …
+
+## </> 
+
+choose_act(…) : …Func 𝑷 𝒊 𝒕 (…) …
+
+## </> 
+
+choose_act(…) : …
+
+𝐏𝐨𝐩𝐮𝐥𝐚𝐭𝐢𝐨𝐧 𝟏 
+
+## </> 
+
+choose_act(…) : …
+
+## </> 
+
+choose_act(…) : …
+
+## </> 
+
+choose_act(…) : …  
+
+> Insert Replace Refine Crossover
+
+𝐄𝐀𝐏𝐬 𝟐 𝐄𝐀𝐏𝐬 𝒕%𝟏 
+
+…
+
+𝐄𝐀𝐏𝐬 𝒕&𝟏 
+
+…Func 𝑷 𝟏 𝒕$𝟏 (…) 
+
+𝑩𝒆𝒕𝒂(𝜶 𝟏 𝒕$𝟏 |𝜷 𝟏 𝒕$𝟏 )
+
+Func 𝑷 𝒊 𝒕$𝟏 (…) 
+
+𝑩𝒆𝒕𝒂(𝜶 𝒊 𝒕$𝟏 |𝜷 𝒊 𝒕$𝟏 )
+
+…Func 𝑷 𝒊 𝒕$𝟏 (…) 
+
+Func 𝑷 𝒊 𝒕 (…) Top-1 Func 𝑷 %𝒕 (…) Func 𝑷 %𝒕 (…) Func 𝑷 %𝒕 (…) Top-k EAP 
+
+> New History Best
+
+# ?
+
+Update EAPs Figure 2: Overview of PACE. Complete algorithms follow an evolutionary loop of parent selection, generation, evaluation, and population update. Meanwhile, EAPs are discovered from the task or evaluated algorithms, retained independently, and selected for transfer. Operators Insert and Replace introduce one focus EAP and convert parent-relative performance into transfer evidence. Operators Refine and Crossover reuse existing EAP structure without assigning credit to a single EAP. 
+
+## Executable Algorithmic Primitive (EAP) 
+
+From Program Primitives to EAPs 
+
+The view that a program can be composed from reusable units has a long history in program synthesis and evolu-tionary computation. In the standard formulation of genetic programming, programs are constructed from a primitive set consisting of functions (Koza 1990). These primitives de-fine the elementary operations from which an evolutionary process builds a program. Automatically defined functions further allow an evolved program to reuse a discovered sub-program (Koza 1994). In both cases, the primitives are either specified before search or represented as part of the individ-ual program being evolved. PACE adopts this compositional view but assigns a differ-ent role to the component. An EAP is a callable function that is generated during search and retained independently of the complete algorithm in which it was created or first observed. Formally, an EAP e is 
+
+e = ( σe, ϕ e), (1) where σe specifies its textual description, and ϕe is its exe-cutable function. The implementation ϕe remains fixed when the EAP is transferred between algorithms; modifying it de-fines a different EAP. Let Et denote the EAPs available at search step t. For a complete algorithm A, its EAP call set is 
+
+C(A; Et) = {e ∈ E t | A invokes e}. (2) The definition separates availability from use. An EAP can remain in Et without being called by a algorithm from the current population, while an explicit function call establishes its participation in a particular complete algorithm. 
+
+Primitive-Aware Automated Algorithm Design 
+
+Consider an AAD task with a space of algorithms A and an evaluator J : A → R, where a larger value denotes a better algorithm. Under a finite evaluation budget B, standard AAD seeks 
+
+A⋆ = arg max  
+
+> A∈A
+
+J(A), NJ ≤ B, (3) where NJ denotes the number of evaluator calls. The evalua-tor assigns scores only to complete algorithms. This objective remains unchanged in primitive-aware AAD. PACE extends the state used to search for A⋆. At step t, its state is 
+
+St = ( Pt, Et, Ht), (4) where Pt is a population of complete algorithms, Et is the persistent EAP set, and Ht records evidence obtained when EAPs are transferred between algorithms. Complete algo-rithms remain the objects evaluated by J. EAPs have no separate task objective. Instead, Ht affects which EAPs are exposed to later variation. PACE therefore changes the search state and the variation process. The two search objects have distinct lifetimes. Population selection may remove A from Pt, but this removal does not delete an EAP previously obtained from A. For every admitted EAP, 
+
+e ∈ E t =⇒ e ∈ E t+1 . (5) This persistence makes the local function available to al-gorithms that are generated after its source algorithm has disappeared. 
+
+## Primitive-Aware Code Evolution (PACE) 
+
+Overview 
+
+Figure 2 presents the interaction between complete-algorithm evolution and EAP adaptation. PACE first ini-tializes an algorithm population and an EAP from task de-scription and algorithm template. During evolution, it re-peatedly selects parent algorithms, assigns EAPs to one of four primitive-aware operators, and asks the LLM to pro-duce a complete child algorithm. The task evaluator scores the child and updates the population in the same manner as population-based AAD. The EAP process supplies a second source of search mem-ory. New EAP is introduced either by extending from tok-k EAP or extracting from the new evaluated history best algo-rithm, adaptive selection chooses which EAP to transfer, and the primitive-aware operators control how that transfer oc-curs. When an operator introduces one focus EAP, the child is compared with its fixed parent and the result updates the EAP’s transfer history. This evidence subsequently changes its probability of selection. The two processes are coupled through evaluated complete algorithms, so PACE obtains EAP feedback without a separate evaluation objective or an additional validation set. 
+
+Adaptive EAP Selection 
+
+An EAP can exhibit varying utility depending on the parent algorithm it is injected into. Therefore, rather than assigning a static, context-independent score to an EAP, PACE evaluates its empirical transferability through focused transfer trials. Let a trial consist of a parent algorithm A, a generated child 
+
+A′, and the explicitly injected EAP e. The trial yields a binary reward: 
+
+re = I[J(A′) > J (A)] . (6) We model re as a realization of a Bernoulli random variable parameterized by an unknown success rate ρe. Formally, ρe
+
+is defined as the conditional probability of achieving a strict performance improvement given the explicit injection of e:
+
+ρe = P J(A′) > J (A) | e ∈ C (A′). (7) To continuously estimate ρe in an online manner, PACE maintains a Beta posterior for each EAP. Initialized with an uninformative prior Beta(1 , 1) , the posterior parameters 
+
+(αe, β e) are sequentially updated after each valid trial: 
+
+(αe, β e) ← (αe + re, β e + 1 − re). (8) Specifically, a strictly improving child increments αe. A degradation, score tie, or runtime execution error increments 
+
+βe. Notably, if the LLM fails to structurally integrate e into 
+
+A′, the trial is deemed invalid, and the posterior remains unchanged to prevent biased penalty. To seamlessly balance the exploitation of highly trans-ferable EAPs with the exploration of uncertain ones, PACE formulates this selection process as a Multi-Armed Ban-dit (MAB) (Slivkins 2019) problem and resolves it us-ing Thompson Sampling (TS) (Daniel et al. 2018). When an operator requires injecting an EAP into parent A, let 
+
+Gt(A) ⊆ E t \ C (A) denote the eligible candidates. For each 
+
+e ∈ G t(A), PACE independently draws a belief sample θe
+
+from its posterior: 
+
+θe ∼ Beta( αe, β e), (9) and dynamically selects the EAP with the maximum θe. To prevent the premature starvation of newly extracted EAPs caused by a lack of observations, they undergo a brief, forced warm-up exposure before being subjected to standard Thompson selection. 
+
+Primitive-Aware Operators 
+
+To effectively explore the algorithmic space, we introduces four primitive-aware variation operators, invoked with equal probability during the search. While each operator prompts the LLM to generate a complete child algorithm, they en-force distinct structural constraints on the inheritance and modification of EAP calls. Let V ⊆ E t denote the designated subset of candidate EAPs exposed to the LLM in the current operational prompt. We define CV (A) = C(A) ∩ V to represent the active primi-tives invoked by program A strictly within this exposed con-text. The four operator contracts below mandate the structural composition of the child program A′ over CV (·).
+
+P1: Primitive Insertion. Given a parent A with an avail-able EAP slot, Thompson sampling selects a focus EAP 
+
+e+ /∈ C V (A). The LLM must integrate e+ while preserv-ing all previously exposed parent EAPs: 
+
+CV (A′) = CV (A) ∪ { e+}, |C V (A)| < K. (10) The algorithm may be reorganized to integrate the new func-tion. Since e+ is the only newly introduced EAP, the parent-child comparison produces one focused transfer observation for e+.
+
+P2: Primitive Replacement. PACE selects one called EAP 
+
+e− as the removal target and selects an absent EAP e+ by Thompson sampling. All other parent EAPs are preserved: 
+
+CV (A′) =  CV (A) \ { e−} ∪ { e+}. (11) The removal target is the called EAP with the lowest posterior mean. The focused credit observation from this trial is strictly assigned to the injected EAP e+, evaluating its capability to substitute the incumbent local logic. 
+
+P3: Primitive-Preserving Refinement. This operator op-timizes how the current EAP composition is utilized without altering its membership: 
+
+CV (A′) = CV (A). (12) The LLM is prompted to refine order, parameters, or inter-actions around the fixed EAP calls. This cleanly separates the discovery of optimal primitive combinations from the structural adaptation of the macro-algorithm. Since no new EAP is introduced, this operation does not trigger a posterior update. P4: Primitive-Aware Crossover. PACE selects two parent algorithms A1 and A2. This operator exposes the complete union of active primitives from both parents to the LLM. To guarantee a genuine cross-program composition, the gener-ated child A′ must freely recombine a subset of this joint pool under the maximum capacity K, while strictly inheriting at least one primitive from each parent: 
+
+CV (A′) ⊆ C V (A1) ∪ C V (A2), |C V (A′)| ≤ K, 
+
+CV (A′) ∩ C V (A1)̸ = ∅, CV (A′) ∩ C V (A2)̸ = ∅. (13) The LLM is granted the autonomy to reorganize the overar-ching algorithmic structure to support these interacting prim-itives. However, P4 also does not trigger a posterior update for any EAP, as the simultaneous unconstrained recombina-tion of multiple primitives fundamentally confounds credit assignment. The call-set relations defined above operate as strict struc-tural constraints rather than optional prompt. PACE program-matically verifies the required, preserved, and removed prim-itive calls via the AST verifier before validating a candidate as a realized operator outcome. Candidates failing to satisfy their assigned structural contracts are immediately discarded from the Thompson sampling update, ensuring that unveri-fied LLM hallucinations do not corrupt the empirical transfer evidence. 
+
+EAP Discovery 
+
+PACE discovers and populates new EAPs through two mu-tually exclusive mechanisms executed at the end of each generation: 
+
+• EAP Generation. Rather than exploring the functional space blindly, this mechanism leverages proven historical discoveries to guide the creation of novel logic. Condi-tioned on the task specification and the implementations of the top-k performing EAPs, the LLM is explicitly prompted to synthesize a functionally distinct EAP. By referencing these high-quality primitives, the generation process is forced to extrapolate beyond existing capabili-ties and avoid functional redundancy. 
+
+• EAP Extraction. This mechanism refactors local logic from a newly evaluated historical best into a persistent EAP, strictly without altering or reevaluating the source program. Because an incumbent best will likely be su-perseded as the search progresses, this strategy acts as a preservation mechanism. As illustrated in Figure 1(b), it rescues valuable local logic by isolating it as an inde-pendent entity for future cross-program transfer, ensuring it survives even after its original algorithm is eventually discarded. While extraction leverages high-quality algo-rithms, it does not guarantee that the extracted component solely caused the performance gain. Subsequent focused trials empirically evaluate its true transferability. To maintain the compactness of the EAP library and pre-vent exceeding the evaluation budget, PACE enforces strict governance rules: at most one EAP is proposed per genera-tion, and EAP generation and extraction are strictly mutually exclusive, with extraction holding higher priority. Table 1: Training and testing performance on the control tasks. Bold indicates the best result among AAD methods.                                                        
+
+> Racing Car ↑Bipedal Walker ↑
+> Method Training Test Training Test PPO 94 .21 ±1.51 85 .69 314 .70 ±6.09 322 .38
+> EoH 88 .81 ±3.00 64 .64 48 .06 ±73 .53 −2.61
+> ReEvo 89 .77 ±1.60 66 .20 1.09 ±9.91 2.03
+> MCTS-AHD 83 .56 ±10 .24 73 .52 −7.45 ±9.58 2.47
+> HSEvo 84 .17 ±5.57 84 .17 −2.23 ±12 .72 8.97
+> MLES (cold) 91 .90 ±2.17 83 .59 30 .25 ±39 .05 15 .42
+> PACE 92.40 ±7.69 98.90 67.06 ±72.63 133.71
+
+## Experiments 
+
+Experimental Setup 
+
+Benchmarks. We evaluate PACE across two distinct types of tasks. 
+
+• Continuous Control. Following MLES (Hu et al. 2025), solving these OpenAI Gym environments (Brockman et al. 2016) entails evolving programmatic algorithms to replace neural policies. We evaluate Racing Car for visual inputs and extend this paradigm to Bipedal Walker for state inputs to test whether EAPs generalize across different control tasks. 
+
+• Combinatorial Optimization. We evaluate on the Trav-eling Salesperson Problem (TSP) and TSP guided by Ant Colony Optimization (TSP-ACO). These tasks re-quire evolving algorithms to improve final routing quality across complex search spaces. 
+
+Baselines We compare PACE against three types of base-lines. 
+
+• LLM-based AAD Methods. This type includes EoH (Liu et al. 2024) for standard evolution, ReEvo (Ye et al. 2024) for reflective evolution, MCTS-AHD (Zheng et al. 2025) for tree search, and HSEvo (Dat, Doan, and Binh 2025) for hybrid diversity. We also include MLES (Hu et al. 2025) for multimodal control evolution, strictly using its cold-start mode because the seeded mode introduces unfair prior knowledge through external programs. 
+
+• Neural Methods. This category includes PPO (Schulman et al. 2017) for control tasks, alongside DeepACO (Ye et al. 2023) for combinatorial optimization. We adopt PPO settings directly from MLES for fair comparisons. 
+
+• Classical Heuristics. We include traditional ACO (Dorigo, Birattari, and Stutzle 2006) as a non-learning baseline for TSP-ACO. For experiment in these section, we set the only param-eter k = 3 in PACE. All AAD methods use GPT-4o-mini for algorithm generation. Each method conducts three inde-pendent runs of 1000 evaluations. We report the mean and standard deviation of the best training scores. We evaluate the best overall training program on the test set. All experiments ran on Intel Xeon Gold 6348 CPUs.      ( '&#"%  $#$!"#  #$&!%      
+
+>  # (#   (# # %&$&
+> Number of Evaluations
+
+(a) Racing Car      ( '&#"% )  $#$!"#  #$&!%        
+
+>  # (#   (# # %&$&
+> Number of Evaluations
+
+(b) Bipedal Walker      '&%"!$ (  (  ( ( #"#  !""#%  $   
+
+>  " '"  '"
+> Number of Evaluations
+
+(c) TSP-ACO 
+
+Figure 3: Convergence curves on three diverse tasks. Table 2: Testing result on TSP-Construct. The underlined size is the in-domain scale. The remaining columns evaluate that same program on out-domain scale. Bold indicates the best result at each scale. 
+
+TSP-Construct ↓
+
+Method n = 50 n = 200 n = 500 n = 1000 
+
+Greedy Construct 6.938 13.362 20.794 28.917 EoH 6.279 12.255 19.035 26.862 ReEvo 6.328 12.198 19.161 27.070 MCTS-AHD 6.199 12.136 18.997 26.876 HSEvo 6.218 12.388 19.506 27.326 PACE 6.013 12.064 18.825 26.596 
+
+Comparison Results 
+
+Continuous Control Task. We evaluate PACE on continu-ous control tasks, including Racing Car and Bipedal Walker. Table 1 reports training and testing performance, while Fig-ure 3a and Figure 3b illustrate search convergence curves across 1,000 evaluations. To contextualize these results, we distinguish between black-box neural RL (PPO) and programmatic code gen-eration (AAD methods including PACE). On Racing Car, Table 1 shows that PACE achieves a train-ing score of 92.40 and a test score of 98.90. Remarkably, PACE outperforms not only all AAD baselines like HSEvo at 84.17, but also neural PPO at 85.688 in zero-shot test generalization. As shown in Figure 3a, PACE converges rapidly within the first 200 evaluations and maintains this lead throughout the search. On Bipedal Walker, neural PPO achieves a test score of 322.383, benefiting from the expressive capacity of dense neural networks to fit complex motor control. However, within the scope of programmatic algorithm design, exist-ing AAD methods struggle severely. Baselines like ReEvo, HSEvo, and MCTS-AHD flatline near zero or negative test scores due to premature convergence. EoH achieves 48.06 in training but overfits to -2.61 on testing. In contrast, PACE reaches a training score of 67.06 and an impressive test score of 133.71, outperforming the specialized control baseline MLES cold-start at 15.42 by a wide margin. The low variance of baselines merely reflects their con-sistent failure to find viable controllers. Exploring this multi-modal space inherently increases variance, yet PACE composes functional control primitives where full-program search fails, setting a new state-of-the-art for programmatic policy search. 
+
+Combinatorial Optimization Task. We first evaluate PACE on the TSP-ACO benchmark. Following the exper-imental setup in MCTS-AHD (Zheng et al. 2025), all al-gorithms evolve on the in-domain scale of n = 50 , and the best evolved programs are evaluated zero-shot on out-domain scales of n = 200 , n = 500 , and n = 1000 with 64 instances. Figure 3c shows the search convergence curves, where PACE consistently achieves superior optimization performance. Table 3 presents the comparative results. On the in-domain scale of n = 50 , all LLM-based methods outperform clas-sical ACO and DeepACO. ReEvo obtains a slightly lower cost of 5.774, while PACE achieves a competitive cost of 5.795. However, significant differences arise when applying the evolved programs to larger problem scales. PACE consis-tently achieves the best performance across all out-domain scales, reaching 11.645 at n = 200 , 19.485 at n = 500 , and 28.130 at n = 1000 . In contrast, baseline methods exhibit performance degradation during scale transfer. Most notably, MCTS-AHD performs competitively at n = 50 but suffers massive degradation as problem size increases, yielding a cost of 50.291 at n = 1000 , which is worse than classical non-learning ACO. We next evaluate PACE on the TSP-Construct bench-mark. Following the same zero-shot evaluation protocol, al-gorithms are evolved on the in-domain scale of n = 50 and evaluated on larger out-domain scales of n = 200 , n = 500 ,and n = 1000 with 64 instances. Table 2 presents the com-parative results across all scales. All AAD methods outper-form Greedy Construction. PACE achieves the lowest tour cost across all problem sizes on TSP-Construct. On the in-domain scale of n = 50 , PACE achieves a cost of 6.013, out-performing the second-best baseline MCTS-AHD at 6.199. This advantage persists during zero-shot scale transfer, where PACE consistently leads at n = 200 with 12.064, n = 500 
+
+with 18.825, and n = 1000 with 26.596. Table 3: Testing result on TSP-ACO. The underlined size is the in-domain scale. The remaining columns evaluate that same program on out-domain scale. Bold indicates the best result at each scale. TSP-ACO ↓
+
+Method n = 50 n = 200 n = 500 n = 1000 
+
+ACO 6.664 15.479 26.926 41.111 DeepACO 5.845 12.188 21.573 37.308 EoH 5.812 12 .382 21 .008 30 .733 
+
+ReEvo 5.774 11 .725 19 .644 28 .305 
+
+MCTS-AHD 5.811 14 .769 23 .936 50 .291 
+
+HSEvo 5.783 11 .888 20 .167 30 .081 
+
+PACE 5.795 11 .645 19 .485 28 .130 
+
+Ablation Studies 
+
+Ablation on Parameters and Components. We first re-move Thompson Sampling and select primitives randomly instead. Table 4 shows a severe performance drop across both tasks. Preserving primitives alone is clearly insufficient. The search mechanism must intelligently decide which primitive to transfer. The primitive operators are equally essential. Table 4 in-dicates that removing any operator from P1 to P4 degrades algorithmic performance. Operator P3 is particularly criti-cal. Removing P3 causes the score on Racing Car to crash to 79.413, and degrades the TSP routing score to 5.832. This proves these operators effectively manage primitive reuse. We also evaluate the extraction and generation modules in Table 4. Removing primitive extraction harms the final qual-ity across both tasks. Removing primitive generation causes a noticeable performance drop on Racing Car. The routing score on TSP shows a very small fluctuation (a difference of 0.009). This minor difference easily falls within the natural noise of automated algorithm design. The generation module remains highly effective on at least one complex task. This confirms the overall necessity of both modules. We finally measure the sensitivity of the only parameter 
+
+k in PACE. This parameter bounds the maximum number of primitives per algorithm. The last two rows of Table 4 show the results. The default setting ( k = 3 ) yields the best overall balance. A smaller value ( k = 1 ) restricts algorithmic expressiveness. Conversely, a larger value ( k = 5 ) introduces excessive context noise and degrades performance. 
+
+Ablation on LLMs. We evaluate the robustness of PACE across different LLM backbones. Because PACE decou-ples EAP discovery from host algorithm generation, distinct LLMs can be assigned to each search phase. As shown in Table 5, upgrading the EAP discovery model while keeping host algorithm generation on GPT-4o-mini produces substan-tial performance improvements. Crucially, EAP discovery accounts for on average only 1.6% of total token consump-tion during search. This result demonstrates that enhancing model capability solely within the primitive discovery phase yields disproportionate gains for the entire search, validat-Table 4: Ablation on Racing Car and TSP-ACO. Method Racing Car ↑ TSP-ACO ↓
+
+PACE 92.395 ± 7.690 5.805 ± 0.014 w/o TS 85.058 ± 9.180 5.815 ± 0.025 w/o P1 90.974 ± 1.689 5.818 ± 0.012 w/o P2 91.207 ± 2.305 5.824 ± 0.006 w/o P3 79.413 ± 9.622 5.832 ± 0.025 w/o P4 91.251 ± 5.657 5.824 ± 0.009 w/o EAP Generation 89.555 ± 2.401 5.796 ± 0.017 w/o EAP Extract 90.405 ± 2.199 5.807 ± 0.014 
+
+k = 1 91.801 ± 4.250 5.821 ± 0.001 
+
+k = 5 89.350 ± 6.105 5.834 ± 0.019 Table 5: Result of ensemble model on Racing Car.                       
+
+> Algorithm EAP Racing Car ↑
+> GPT-4o-mini DeepSeek-v4-flash 94 .597 ±3.865
+> GPT-4o-mini Gemini-3.1-flash-lite 93 .448 ±2.508
+> GPT-4o-mini GPT-4o-mini 92 .395 ±7.690
+> DeepSeek-v4-flash DeepSeek-v4-flash 94 .539 ±1.543
+> Gemini-3.1-flash-lite Gemini-3.1-flash-lite 99 .005 ±0.580
+
+ing the advantage of representing EAPs independently. We also evaluate unified setups where a single LLM handles both phases. PACE exhibits strong robustness across diverse backbones, reaching an average score of 99.005 on Racing Car, approaching the maximum score of 100 when powered by Gemini-3.1-flash-lite. 
+
+## Conclusion 
+
+In this paper, we introduce EAPs to decouple reusable local logic from complete algorithms. Building on this represen-tation, we present PACE. PACE maintains a dynamic set of EAPs and applies specialized operators to structurally guar-antee their cross-algorithm transfer. The framework leverages Thompson Sampling to guide EAP selection based on rel-ative performance improvements. Experiments across con-tinuous control and combinatorial optimization show that PACE achieves superior performance compared to existing baseline methods. The results confirm that preserving and transferring valuable local primitives can enhance final al-gorithmic performance. PACE also generalizes well across expanding problem scales and dynamic environments. Ul-timately, this work shifts automated algorithm design from full-program search toward modular composition. 
+
+Limitation and future work. PACE assumes that primi-tives can be evaluated and selected independently. In algo-rithms with extremely complex constraints, strong coupling may exist between different primitives. Evaluating primitives separately might not fully capture their joint interactions. Future work will investigate primitive coupling metrics to explicitly model dependencies between EAPs during search. References 
+
+Brockman, G.; Cheung, V.; Pettersson, L.; Schneider, J.; Schulman, J.; Tang, J.; and Zaremba, W. 2016. Openai gym. 
+
+arXiv preprint arXiv:1606.01540 .Chen, Z.; Zhou, Z.; Lu, Y.; Xu, R.; Pan, L.; and Lan, Z. 2024. QUBE: Enhancing Automatic Heuristic Design via Quality-Uncertainty Balanced Evolution. arXiv preprint arXiv:2412.20694 .Daniel, J. R.; Benjamin, V. R.; Abbas, K.; Ian, O.; and Zheng, W. 2018. A tutorial on thompson sampling. Foundations and Trends ® in Machine Learning , 11(1): 1–99. Dat, P. V. T.; Doan, L.; and Binh, H. T. T. 2025. Hsevo: Elevating automatic heuristic design with diversity-driven harmony search and genetic algorithm using llms. In Pro-ceedings of the AAAI Conference on Artificial Intelligence ,25, 26931–26938. Dorigo, M.; Birattari, M.; and Stutzle, T. 2006. Ant colony optimization. IEEE computational intelligence magazine ,1(4): 28–39. Ellis, K.; Wong, C.; Nye, M.; Sablé-Meyer, M.; Morales, L.; Hewitt, L.; Cary, L.; Solar-Lezama, A.; and Tenenbaum, J. B. 2021. Dreamcoder: Bootstrapping inductive program syn-thesis with wake-sleep library learning. In Proceedings of the 42nd acm sigplan international conference on programming language design and implementation , 835–850. Fialho, Á.; Da Costa, L.; Schoenauer, M.; and Sebag, M. 2010. Analyzing bandit-based adaptive operator selection mechanisms. Annals of Mathematics and Artificial Intelli-gence , 60(1): 25–64. Grand, G.; Wong, L.; Bowers, M.; Olausson, T. X.; Liu, M.; Tenenbaum, J. B.; and Andreas, J. 2024. Lilo: Learning in-terpretable libraries by compressing and documenting code. In International Conference on Learning Representations ,volume 2024, 30399–30446. Hu, Q.; Tong, X.; Yuan, M.; Liu, F.; Lu, Z.; and Zhang, Q. 2025. Multimodal LLM-assisted Evolutionary Search for Programmatic Control Policies. arXiv preprint arXiv:2508.05433 .Koza, J. R. 1990. Genetic programming: A paradigm for genetically breeding populations of computer programs to solve problems , volume 34. Stanford University, Department of Computer Science Stanford, CA. Koza, J. R. 1994. Genetic programming II: automatic dis-covery of reusable programs . MIT press. Liu, F.; Liu, Y.; Zhang, Q.; Xialiang, T.; and Yuan, M. 2026a. Eoh-s: Evolution of heuristic set using llms for automated heuristic design. In Proceedings of the AAAI Conference on Artificial Intelligence , 43, 37090–37098. Liu, F.; Tong, X.; Yuan, M.; Lin, X.; Luo, F.; Wang, Z.; Lu, Z.; and Zhang, Q. 2024. Evolution of heuristics: towards efficient automatic algorithm design using large language model. In Proceedings of the 41st International Conference on Machine Learning , 32201–32223. Liu, F.; Tong, X.; Yuan, M.; and Zhang, Q. 2023. Algo-rithm evolution using large language model. arXiv preprint arXiv:2311.15249 .Liu, F.; Yao, Y.; Guo, P.; Yang, Z.; Lin, X.; Zhao, Z.; Tong, X.; Mao, K.; Lu, Z.; Wang, Z.; et al. 2026b. A systematic survey on large language models for algorithm design. ACM Computing Surveys , 58(8): 1–32. Ma, Y. J.; Liang, W.; Wang, G.; Huang, D.-A.; Bastani, O.; Jayaraman, D.; Zhu, Y.; Fan, J.; et al. 2024. Eureka: Human-level reward design via coding large language models. In 
+
+International conference on learning Representations , vol-ume 2024, 26516–26560. Mnih, V.; Kavukcuoglu, K.; Silver, D.; Graves, A.; Antonoglou, I.; Wierstra, D.; and Riedmiller, M. 2013. Play-ing atari with deep reinforcement learning. arXiv preprint arXiv:1312.5602 .Novikov, A.; V˜ u, N.; Eisenberger, M.; Dupont, E.; Huang, P.-S.; Wagner, A. Z.; Shirobokov, S.; Kozlovskii, B.; Ruiz, F. J.; Mehrabian, A.; et al. 2025. Alphaevolve: A coding agent for scientific and algorithmic discovery. arXiv preprint arXiv:2506.13131 .Romera-Paredes, B.; Barekatain, M.; Novikov, A.; Balog, M.; Kumar, M. P.; Dupont, E.; Ruiz, F. J.; Ellenberg, J. S.; Wang, P.; Fawzi, O.; et al. 2024. Mathematical discoveries from program search with large language models. Nature ,625(7995): 468–475. Schulman, J.; Wolski, F.; Dhariwal, P.; Radford, A.; and Klimov, O. 2017. Proximal policy optimization algorithms. 
+
+arXiv preprint arXiv:1707.06347 .Shojaee, P.; Meidani, K.; Gupta, S.; Barati Farimani, A.; and Reddy, C. 2025. Llm-sr: Scientific equation discov-ery via programming with large language models. In Inter-national Conference on Learning Representations , volume 2025, 16054–16085. Slivkins, A. 2019. Introduction to multi-armed bandits. 
+
+Foundations and Trends ® in Machine Learning , 12(1-2): 1–286. Stengel-Eskin, E.; Prasad, A.; and Bansal, M. 2024. Regal: Refactoring programs to discover generalizable abstractions. 
+
+arXiv preprint arXiv:2401.16467 .Wang, G.; Xie, Y.; Jiang, Y.; Mandlekar, A.; Xiao, C.; Zhu, Y.; Fan, L.; and Anandkumar, A. 2023a. Voyager: An open-ended embodied agent with large language models. arXiv preprint arXiv:2305.16291 .Wang, H.; Xin, H.; Zheng, C.; Li, L.; Liu, Z.; Cao, Q.; Huang, Y.; Xiong, J.; Shi, H.; Xie, E.; et al. 2023b. Lego-prover: Neu-ral theorem proving with growing libraries. arXiv preprint arXiv:2310.00656 .Wang, Y.-N.; Lyu, S.-H.; Chen, N.; Xu, J.-L.; Ye, B.; and Zhang, Q. 2026. CDEoH: Category-Driven Automatic Algo-rithm Design With Large Language Models. arXiv preprint arXiv:2603.19284 .Wang, Z.; Fried, D.; and Neubig, G. 2024. Trove: Inducing verifiable and efficient toolboxes for solving programmatic tasks. arXiv preprint arXiv:2401.12869 .Xiang, C.; Wei, Y.; Ma, J.; Wang, H.; and Yan, J. 2026. BEAM: Bi-level Memory-adaptive Algorithmic Evo-lution for LLM-Powered Heuristic Design. arXiv preprint arXiv:2604.12898 .Ye, H.; Wang, J.; Cao, Z.; Berto, F.; Hua, C.; Kim, H.; Park, J.; and Song, G. 2024. ReEvo: large language models as hyper-heuristics with reflective evolution. In Proceedings of the 38th International Conference on Neural Information Processing Systems , 43571–43608. Ye, H.; Wang, J.; Cao, Z.; Liang, H.; and Li, Y. 2023. Deep-ACO: Neural-enhanced ant systems for combinatorial opti-mization. Advances in neural information processing sys-tems , 36: 43706–43728. Yuksel, K. A. 2025. EvoLattice: Persistent Internal-Population Evolution through Multi-Alternative Quality-Diversity Graph Representations for LLM-Guided Program Discovery. arXiv preprint arXiv:2512.13857 .Zhao, B.; Wang, H.; and Zeng, L. 2026. G-LNS: Gener-ative large neighborhood search for LLM-based automatic heuristic design. arXiv preprint arXiv:2602.08253 .Zheng, Z.; Xie, Z.; Wang, Z.; and Hooi, B. 2025. Monte Carlo Tree Search for Comprehensive Exploration in LLM-Based Automatic Heuristic Design. In Forty-second International Conference on Machine Learning .Detailed Task Description 
+
+This section defines the four tasks before specifying their evaluation settings. The control tasks require a heuristic pol-icy, whereas the two routing tasks expose different algorithm-design interfaces for the same underlying optimization prob-lem. The descriptions state the object being designed and the information available to it. 
+
+Racing Car 
+
+Racing Car uses the continuous-action Gymnasium Rac-ing Car environment (Brockman et al. 2016), as shown in Figure4. The target function receives an RGB observation, the current scalar speed, the previous action, and the previous observation. It returns a three-dimensional action consisting of steering, gas, and brake. The policy therefore combines visual perception with short-term action history. The objec-tive is to control the car so that it follows the generated track and maximizes track coverage. The task exposes several naturally separable policy com-ponents: extracting track direction, estimating a target speed, damping steering, and resolving the conflict between turning and acceleration. These components are useful examples for the EAP representation because an individual controller may be discarded while one of these local logic remains useful. The input RGB image in each step. 
+
+Figure 4: The visualization of task Racing Car. 
+
+Bipedal Walker 
+
+Bipedal Walker uses the continuous BipedalWalker-v3 envi-ronment (Brockman et al. 2016), as shown in Figure5. The target function receives a 24-dimensional observation, the previous four-dimensional action, and the previous observa-tion. It returns four motor torques for the left hip, left knee, right hip, and right knee. The action is clipped to the valid range by the evaluator, and the objective is episodic return. The observation contains hull orientation and angular ve-locity, horizontal and vertical velocity, the angles and angular velocities of both hip and knee joints, two foot-contact in-dicators, and ten lidar readings. The task is more strongly coupled than Racing Car because a local signal may help only when it is coordinated with support, swing, balance, and torque decisions elsewhere in the policy. 
+
+TSP-Construct 
+
+TSP-Construct evolves a function that receives the current node, the destination node, the set of unvisited nodes, and the distance matrix, and returns the next node. A complete 
+
+Figure 5: The visualization of task Bipedal Walker. tour is constructed by repeatedly calling this function until all nodes are visited and then returning to the start. For both variants, let the complete graph be G = ( V, E )
+
+with V = {1, . . . , n } and distance matrix D = ( dij ). A tour is a permutation π of V , and its cost is 
+
+L(π; D) = 
+
+> n−1
+
+X
+
+> t=1
+
+dπt,π t+1 + dπn,π 1 . (14) The objective is to minimize L.
+
+TSP-ACO 
+
+TSP-ACO evolves a function that maps a pairwise distance matrix to a finite heuristic matrix. The matrix is then con-sumed by a fixed ant-colony solver. The designed function is not the complete solver; it supplies the heuristic information used during tour construction. TSP-ACO places the search boundary at the heuristic-matrix interface, whereas TSP-Construct places it at the local next-node decision. Thus, the two tasks share the same formal problem but evaluate different levels of algorithm design. 
+
+## Details of Evaluations & Experiments 
+
+This section specifies the datasets, evaluation procedures, and baseline configurations used in the experiments. All methods use the same evaluator and fixed instances for a given task, as shown in Table 6. Test instances are evaluated only after the search selects the best-performing algorithm from the training performance. 
+
+LLM-based AAD Baselines 
+
+To ensure a fair comparison, all baseline methods, including EoH (Liu et al. 2024), ReEvo (Ye et al. 2024), MCTS-AHD (Zheng et al. 2025), and HsEvo (Dat, Doan, and Binh 2025), retain their original operators while sharing the identical task evaluator and training instances as PACE. All hyperpa-rameter configurations for these baselines follow the default settings reported in their original papers. The search budget for all algorithms is strictly normalized to 1, 000 complete-program evaluations. The detailed hyperparameter configu-rations for each baseline are summarized in Table 7. Table 6: Unified settings of evaluation algorithms, data generation, and experimential settings for control and routing tasks. Testing scores are computed using the best program selected by the training evaluator.                                         
+
+> Task Designed Algorithm Environment / Data Setup Training Protocol Testing Protocol
+> Continuous Control Tasks
+> Racing Car Continuous policy from image and state history Gym environment; fixed envi-ronment seeds 4 fixed seeds; mean track coverage 10 fixed seeds; training-best policy Bipedal Walker Continuous four-torque policy from state history Gym environment; fixed envi-ronment seeds 5fixed seeds; mean episodic return 10 fixed seeds; training-best policy
+> Routing Tasks
+> TSP-Construct Next-node selection func-tion Uniform [0 ,1] 2, NumPy seed 2024 16 instances at n= 50 64 fixed instances for each n∈{50 ,200 ,500 ,1000 }
+> TSP-ACO Distance-to-heuristic ma-trix transformation Uniform [0 ,1] 2, NumPy seed 1234 5 instances at n= 50 64 fixed instances for each n∈{50 ,200 ,500 ,1000 }
+
+Table 7: Hyperparameter configurations for baseline algo-rithms.          
+
+> Method Hyperparameter Configuration
+> EoH Population size = 20, samplers = 4, evaluators = 4 ReEvo Population size = 20, samplers = 4, evaluators = 4 MCTS-AHD Candidate pool size = 20, samplers = 4, evaluators = 4, parent selection = 2, α= 0 .5,λ0= 0 .1
+> HsEvo Population size = 10 (initial = 30), samplers = 8, evaluators = 8, mutation rate = 0.5, HMS = 5, HMCR = 0.7, PAR = 0.5, bandwidth = 0.2, harmony iterations = 5
+
+MLES 
+
+To adapt the multimodal baseline MLES for our benchmark, we utilize its proposed e1, e2, m1M , and m2M operators with a population size of 16, two parents, eight samplers, and eight evaluators. We employ GPT-4o-mini at temperature 1.0 and constrain the search budget to 1,000 model calls, adjusting from the 2,000 calls in the original paper. For both control tasks, MLES receives standard rendered behavioral evidence under a cold-start condition. For Bipedal Walker, which relies on a 24-dimensional con-tinuous state vector rather than native image inputs, standard environment frames fail to reflect the underlying state dynam-ics. To ensure a fair comparison under MLES’s multimodal requirement, we supply its interface with a trajectory visual-ization that formats vector dynamics into an image represen-tation. Specifically, the evaluator extracts the least success-ful reference episode and plots its trajectory into a 4-panel figure, accompanied by twelve sampled numerical records. As shown in Figure 6, the top banner reports episode-level metadata (total return, final displacement, and termination status), while the four subplots track forward position, torso height proxy, forward velocity, and action norm ( ∥a∥2). This setup provides MLES with necessary behavioral evidence to inspect failure modes such as balance loss and forward stagnation without altering its multimodal framework. 
+
+Figure 6: The visualization of task Bipedal Walker. Table 8: Experimental settings of PACE. PACE setting Value Population size 20 Maximum EAPs per algorithm, 
+
+k
+
+3EAP Generation / Extraction proposals At most 1 per generation Structural generation attempts, k 3
+
+PACE 
+
+Table 8 details the experimental setup for the PACE frame-work. Following (Liu et al. 2024), the population size is set to 
+
+20 . In each generation, at most 1 EAP proposal is generated. To control search complexity, a unified parameter k = 3 
+
+bounds both the maximum number of EAPs per algorithm and the maximum structural generation attempts. 
+
+Learned and Classical Baselines 
+
+To evaluate classical and learned non-AAD baselines, we in-clude Proximal Policy Optimization (PPO) (Schulman et al. Table 9: Configurations and execution status for non-AAD classical and learned baselines.                            
+
+> Baseline Task Hyperparameter Configuration Status
+> PPO (Racing Car) Racing Car Conv policy, LR = 2.5×10 −4, rollout = 512, batch = 512, 3 epochs, γ= 0 .99 ,λ= 0 .95 , 4,000 resets (4 seeds) Formal runs PPO (Bipedal Walker) Bipedal Walker MLP policy, LR = 3×10 −4, rollout = 2048, batch = 256, 10 epochs, γ= 0 .99 ,λ= 0 .95 , 4,000 resets (5 seeds) Formal runs Greedy Construct TSP-Construct Start node 0, nearest unvisited node selection 64-instance test ACO / DeepACO TSP-ACO 30 ants, 100 iterations, official pretrained checkpoints 64-instance test
+
+2017) for continuous control tasks, alongside Greedy Con-struction and Ant Colony Optimization (ACO) (Dorigo, Bi-rattari, and Stutzle 2006; Ye et al. 2023) variants for routing problems. All learned baselines are evaluated under stan-dardized execution protocols. For continuous control, PPO is trained with a total budget of 4,000 completed environment resets, allocated as 1,000 resets per seed across four seeds. Although Racing Car per-mits discrete action adaptation, preliminary DQN (Mnih et al. 2013) runs served solely as internal sanity checks and are ex-cluded from formal evaluation. Meanwhile, Bipedal Walker operates on a four-dimensional continuous action space, pre-cluding direct comparison with standard DQN algorithms. For TSP-Construct, Greedy Construction deterministi-cally selects the nearest unvisited node starting from node zero. For TSP-ACO, evaluations of learning-based routing baselines such as DeepACO strictly adhere to official pre-trained checkpoints and inference protocols, thereby avoid-ing performance degradation caused by uncalibrated models. The detailed hyperparameter configurations and appendix completion status for all non-AAD baselines are summarized in Table 9. 
+
+Token Usage 
+
+Table 11 reports total API token consumption for the exact three runs underlying the results in the main paper. Total us-age includes prompt and completion tokens. For PACE, this includes calls for both complete programs and EAP discov-ery. For the baselines, it includes candidate generation and method-specific auxiliary calls. MLES is evaluated only on the two control tasks. PPO, Greedy Construction, ACO, and DeepACO do not call an LLM and are therefore omitted from the table. 
+
+## Detailed Methodology 
+
+This section gives the prompts, representative programs, and complete PACE procedure. The prompts define each opera-tion, while the parsed call set is used to verify its structural contract before evaluation. 
+
+Prompts 
+
+This section reports the stable instruction layer of each prompt. At run time, PACE fills the shaded input fields with the task description, target template, parent programs, and EAP implementations. Operator prompts are shown in blue, whereas EAP-generation prompts are shown in green. This separation mirrors their roles in the search: the former pro-duce complete algorithms and the latter produce reusable functions. 
+
+I1: Complete Algorithm Initialization      
+
+> Inputs TASK DESCRIPTION ,FUNCTION TEMPLATE
+> Instruction First describe the new algorithm and its main steps in one sentence inside braces. Then implement the target function without changing its signature. Follow the declared input and return contracts.
+> Output contract Return the description followed by one complete target-function implementation. Do not provide additional explanation.
+
+P1: EAP Insertion            
+
+> Inputs TASK DESCRIPTION ,
+> FUNCTION TEMPLATE ,PARENT ,PROTECTED EAPs ,
+> FOCUS EAP
+> Instruction Insert the focus EAP into a complete offspring while preserving the mechanisms of the parent.
+> Structural contract The offspring must call FOCUS
+> and every protected EAP called by the parent. It must not merely wrap or rename the parent.
+> Output contract Return a one-sentence description in braces followed by the complete target function. Do not output EAP definitions.
+
+P2: EAP Replacement              
+
+> Inputs TASK DESCRIPTION ,
+> FUNCTION TEMPLATE ,PARENT ,PROTECTED EAPs ,
+> TARGET EAP ,REPLACEMENT EAP
+> Instruction Replace the target EAP with the replacement EAP and adapt the complete algorithm so that the replacement is used meaningfully.
+> Structural contract The offspring must call
+> REPLACEMENT , must not call TARGET , and must preserve every other protected EAP.
+> Output contract Return the complete target function without EAP definitions.
+
+Table 10: Representative best-program descriptions. Names are shown to make the EAP transfer traceable; they are not additional task-specific primitives.            
+
+> Task EAP calls Algorithm description Racing Car compute_adjusted_action; compute_steering_and_ throttle; compute_throttle_and_brake Estimate track direction and speed, damp steering changes, then resolve throttle and braking from current and previous observations. Bipedal Walker calculate_dynamic_torques; compute_torque; extract_ velocity_features Adapt motor torques from velocity features and current state while retaining a recovery rule for unstable body motion. TSP-ACO compute_attraction_score_matrix; compute_complex_ attraction_matrix; compute_quadratic_attraction_matrix Combine distance-sensitive, nonlinear, and quadratic edge preferences before ACO execution. TSP-Construct compute_average_neighbor_distance; compute_node_ diversity; compute_priority_score Score unvisited nodes using proximity, neighborhood diversity, and cumula-tive distance penalties.
+
+Table 11: LLM token consumption for the search runs reported in the main paper. Values are mean ± standard deviation over three independent runs. Total tokens ( ×10 6), GPT-4o-mini Method Racing Car Bipedal Walker TSP-ACO TSP-Construct PACE 4.88 ± 0.81 3.66 ± 0.71 1.85 ± 0.33 1.72 ± 0.32 
+
+EoH 2.58 ± 0.15 1.73 ± 0.01 0.85 ± 0.06 0.84 ± 0.04 
+
+ReEvo 4.83 ± 0.15 3.68 ± 0.28 2.25 ± 0.04 1.76 ± 0.01 
+
+MCTS-AHD 4.94 ± 0.44 3.88 ± 0.42 1.99 ± 0.17 1.97 ± 0.12 
+
+HsEvo 2.72 ± 0.29 2.04 ± 0.26 1.40 ± 0.15 1.39 ± 0.09 
+
+MLES (cold) 11 .22 ± 2.91 14 .69 ± 0.40 – –
+
+P3: EAP-Preserving Refinement 
+
+Inputs TASK DESCRIPTION ,
+
+FUNCTION TEMPLATE , PARENT ,
+
+PARENT EAP IMPLEMENTATIONS 
+
+Instruction Refine how the complete algorithm invokes, scales, combines, or conditions its existing EAPs. Thresholds and fallback behavior may also be changed. 
+
+Structural contract The offspring must call exactly 
+
+PARENT EAP NAMES ; no EAP may be added or removed. 
+
+Output contract Return the refined complete target function without EAP definitions. 
+
+P4: EAP-Aware Crossover 
+
+Inputs TASK DESCRIPTION ,
+
+FUNCTION TEMPLATE , PARENT 1 , PARENT 2 ,
+
+EAP IMPLEMENTATIONS 
+
+Instruction Create one complete offspring that combines meaningful mechanisms from both parents. 
+
+Structural contract The offspring must call every designated EAP, including at least one inherited from each parent, and may call at most k EAPs in total. 
+
+Output contract Return one description and the complete target function without EAP definitions. 
+
+E1: Initialing EAP 
+
+Inputs TASK DESCRIPTION , FUNCTION TEMPLATE 
+
+Instruction Design reusable local evaluators, feature extractors, or compact mid-level modules that may support complete algorithms for the task. 
+
+Function contract Each function must be narrower than the target function, self-contained, and restricted to inputs in the target signature. It must neither call another EAP nor reimplement the target function. 
+
+Output contract Return Python function definitions only. 
+
+E2: EAP Extraction 
+
+Inputs TASK DESCRIPTION ,
+
+History Best Algorithm 
+
+Instruction Identify one complex internal computation that contributes to the candidate and refactor it into a reusable function. 
+
+Function contract The function must be standalone, smaller than the complete algorithm, restricted to target-function inputs, and unable to call another EAP. 
+
+Output contract Return exactly one function definition and no explanation. E3: EAP Generation         
+
+> Inputs TASK ,TARGET SIGNATURE ,
+> TOP-kEAP SUMMARIES
+> Instruction Generate one self-contained function whose capability differs from the current EAPs.
+> Novelty contract Do not produce a superficial variant through symbol renaming, constant or exponent changes, or an equivalent transformation. Use only target-function inputs.
+> Output contract Return exactly one function definition and no explanation.
+
+Representative best programs 
+
+The following compact descriptions identify the best PACE programs used for the four task examples, summary ara shown in Table 10. They describe the algorithmic role of the EAP calls. The complete source and exact prompt are retained in the corresponding run directory. Listings 1–3 contain the exact complete program and EAP implementations used by the four representative solutions. The algorithm description, training score, and search evalu-ation are included in the header of each listing. Keeping the EAP implementations beside the complete function makes every external call in the selected program explicit. 1 # Algorithm description: Estimate track direction and speed, damp steering changes, then coordinate steering, throttle, and braking from current and previous observations.  
+
+> 23
+
+# Training score: 100.000000000  
+
+> 45
+
+# Search evaluation: 176  
+
+> 67
+
+# Executable Algorithmic Primitives  
+
+> 89
+
+def compute_adjusted_action (car_speed: float , action: np.ndarray, pre_action: np.ndarray) -> np.ndarray:  
+
+> 10
+
+"""Adjust the action array based on speed and previous actions; controls gas and brake behavior."""  
+
+> 11
+
+# Release brake if the previous action was braking  
+
+> 12
+
+if pre_action[2] > 0: # Previously braking  
+
+> 13
+
+action[2] = 0 # Release brake if it was previously pressing  
+
+> 14 15
+
+# Reduce gas if turning sharply and speed is high to maintain control  
+
+> 16
+
+if abs (action[0]) > 0.5 and car_speed > 20: # If turning sharply and speed is high  
+
+> 17
+
+action[1] = min (action[1], 0.5) # Limit gas to enhance control  
+
+> 18 19
+
+return action  
+
+> 20 21
+
+def compute_steering_and_throttle (observation: np.ndarray, car_speed: float , pre_action: np.ndarray) -> np.ndarray:  
+
+> 22
+
+"""Compute steering and throttle based on the current observation and previous action; returns an action array." ""  
+
+> 23
+
+MAX_STEERING = 1.0  
+
+> 24
+
+MAX_GAS = 0.6  
+
+> 25
+
+MIN_GAS = 0.1 # never zero to avoid total stop  
+
+> 26
+
+SPEED_LIMIT_SHARP_TURN = 15.0 # speed threshold for reducing gas in sharp turns  
+
+> 27
+
+SHARP_TURN_ANGLE = 0.5 # threshold in steering value to consider turn sharp  
+
+> 28 29
+
+H, W, _ = observation.shape  
+
+> 30 31
+
+# Step 1: Identify pixels of car, track, off-track grass, and curbs by color thresholds  
+
+> 32
+
+R = observation[:, :, 0]  
+
+> 33
+
+G = observation[:, :, 1]  
+
+> 34
+
+B = observation[:, :, 2]  
+
+> 35 36
+
+# Mask for car, track, grass, and curbs  
+
+> 37
+
+car_mask = (R > 190) & (R < 215) & (G < 20) & (B < 20)  
+
+> 38
+
+track_mask = (np. abs (R - 102) < 20) & (np. abs (G - 102) < 20) & (np. abs (B - 102) < 20)  
+
+> 39
+
+grass_mask = (np. abs (R - 102) < 40) & (np. abs (G - 204) < 50) & (np. abs (B - 102) < 40)  
+
+> 40
+
+curb_mask = ((R > 240) & (G < 20) & (B < 20)) | ((R > 240) & (G > 240) & (B > 240))  
+
+> 41 42
+
+# Step 2: Locate car centroid  
+
+> 43
+
+car_positions = np.argwhere(car_mask)  
+
+> 44
+
+if car_positions.shape[0] == 0:  
+
+> 45
+
+# Fallback if car not found:  
+
+> 46
+
+return np.array([0.0, max (MIN_GAS, pre_action[1] * 0.8), 0.0])  
+
+> 47 48
+
+car_y, car_x = car_positions.mean(axis=0)  
+
+> 49 50
+
+# Step 3: Extract the track region ahead of the car to estimate curvature and direction  
+
+> 51
+
+look_ahead_height = 20  
+
+> 52
+
+look_ahead_width = 40  
+
+> 53
+
+patch_top = int (max (car_y - look_ahead_height - 5, 0))  
+
+> 54
+
+patch_bottom = int (max (car_y - 5, 0))  
+
+> 55
+
+patch_left = int (max (car_x - look_ahead_width // 2, 0))  
+
+> 56
+
+patch_right = int (min (car_x + look_ahead_width // 2, W-1))  
+
+> 57 58
+
+track_patch = track_mask[patch_top:patch_bottom, patch_left:patch_right]  
+
+> 59 60
+
+if track_patch.size == 0 or np. sum (track_patch) < 10:  
+
+> 61
+
+return np.array([pre_action[0] * 0.9, max (MIN_GAS, pre_action[1] * 0.7), 0.0])  
+
+> 62 63
+
+cols = np.arange(track_patch.shape[1])  
+
+> 64
+
+col_weights = track_patch. sum (axis=0)  
+
+> 65
+
+if col_weights. sum () == 0:  
+
+> 66
+
+return np.array([0.0, MIN_GAS, 0.3])  
+
+> 67 68
+
+center_x_in_patch = np. sum (cols * col_weights) / col_weights. sum ()  
+
+> 69
+
+offset = (center_x_in_patch - track_patch.shape[1] / 2) / (track_patch.shape[1] / 2)  
+
+> 70 71
+
+steer = np.clip(offset, -MAX_STEERING, MAX_STEERING)  
+
+> 72 73
+
+# Step 6: Adjust gas based on turn and speed  
+
+> 74
+
+sharp_turn = (abs (steer) > SHARP_TURN_ANGLE) or (np. sum (curb_mask[patch_top:patch_bottom, patch_left:patch_right ]) / track_patch.size > 0.15)  
+
+> 75
+
+gas, brake = 0.0, 0.0  
+
+> 76 77
+
+if sharp_turn:  
+
+> 78
+
+if car_speed > SPEED_LIMIT_SHARP_TURN:  
+
+> 79
+
+gas = MIN_GAS  
+
+> 80
+
+brake = min (0.6, 0.5 + 0.5 * (car_speed - SPEED_LIMIT_SHARP_TURN)/20)  
+
+> 81
+
+else : 
+
+> 82
+
+gas = MAX_GAS * 0.5  
+
+> 83
+
+else : 
+
+> 84
+
+gas = MAX_GAS if car_speed < 30.0 else max (MIN_GAS, MAX_GAS * (1 - (car_speed - 30)/40))  
+
+> 85 86
+
+return np.array([steer, gas, brake])  
+
+> 87 88
+
+def compute_throttle_and_brake (car_speed: float , action: np.ndarray, pre_action: np.ndarray) -> np.ndarray:  
+
+> 89
+
+"""Computes adjusted throttle and brake values based on car speed and previous actions; returns an array of [gas , brake]."""  
+
+> 90
+
+MAX_GAS = 0.6  
+
+> 91
+
+MIN_GAS = 0.1 # never zero to avoid total stop  
+
+> 92 93
+
+# Adjusting throttle to ensure the car does not come to a full stop  
+
+> 94
+
+if action[1] < MIN_GAS:  
+
+> 95
+
+action[1] = MIN_GAS  
+
+> 96 97
+
+# Avoiding excessive braking if previous action was also braking  
+
+> 98
+
+if pre_action[2] > 0.5:  
+
+> 99
+
+action[2] = min (0.5, pre_action[2] * 0.5)  
+
+> 100 101
+
+# Maintaining throttle if speed is excessively low  
+
+> 102
+
+if car_speed < 7.0: # Condition updated for better responsiveness  
+
+> 103
+
+action[1] = max (action[1], 0.4)  
+
+> 104 105
+
+return action  
+
+> 106 107
+
+# Complete algorithm  
+
+> 108 109
+
+import numpy as np  
+
+> 110
+
+import cv2  
+
+> 111
+
+def choose_action (observation, car_speed, pre_action, pre_observation):  
+
+> 112
+
+"""  
+
+> 113
+
+Determine the next action for the Car Racing agent.  
+
+> 114
+
+This function takes into account the current state (observation and speed), the previous action, and the previous observation.  
+
+> 115 116
+
+Notes:  
+
+> 117
+
+- The car in this environment is a powerful rear-wheel-drive vehicle. Avoid accelerating while turning sharply,  
+
+> 118
+
+as this can easily lead to loss of control.  
+
+> 119
+
+- Occasionally, track segments (e.g., after a U-turn) may appear in the observation but are not part of the immediate drivable path. These should be distinguished to avoid premature or incorrect decisions.  
+
+> 120
+
+- Avoid coming to a complete stop, as this may prevent the car from finishing the race.  
+
+> 121 122
+
+Args:  
+
+> 123
+
+observation (np.ndarray): The current state observed by the agent, represented as a 96x96 RGB image 124 of the car and race track from a top-down view (shape: (96, 96, 3)).  
+
+> 125 126
+
+car_speed (float): The current speed of the car.  
+
+> 127 128
+
+pre_action (np.ndarray): The action taken by the agent in the previous step, represented as a 
+
+> 129
+
+3-element array.  
+
+> 130 131
+
+pre_observation (np.ndarray): The observation received when the previous action was taken. It has the same shape and format as ‘observation‘ (i.e., a 96x96 RGB image).  
+
+> 132 133
+
+Returns:  
+
+> 134
+
+np.ndarray: The action selected by the agent for the next step, represented as an array of shape (3,) where:  
+
+> 135
+
+- Index 0: Steering, where -1 is full left, +1 is full right (range: [-1, 1]).  
+
+> 136
+
+- Index 1: Gas, (range: [0, 1]).  
+
+> 137
+
+- Index 2: Braking, (range: [0, 1]).  
+
+> 138
+
+"""  
+
+> 139 140
+
+action = compute_steering_and_throttle (observation, car_speed, pre_action)  
+
+> 141
+
+action = compute_adjusted_action (car_speed, action, pre_action)  
+
+> 142
+
+action = compute_throttle_and_brake (car_speed, action, pre_action)  
+
+> 143 144
+
+return action 
+
+Listing 1: Selected PACE program for Racing Car. Green identifiers denote EAPs and blue denotes the complete target function.  
+
+> 1
+
+# Algorithm description: Adapt four motor torques from velocity features and current state while retaining recovery behavior for unstable body motion.  
+
+> 23
+
+# Training score: 143.110807357  
+
+> 45
+
+# Search evaluation: 634  
+
+> 67
+
+# Executable Algorithmic Primitives  
+
+> 89
+
+def calculate_dynamic_torques (observation: np.ndarray, last_action: np.ndarray, prev_observation: np.ndarray) -> np. ndarray:  
+
+> 10
+
+"""Computes dynamic motor torques for the Bipedal Walker based on observed states; returns four torques for [ left hip, left knee, right hip, right knee] in [-1, 1]."""  
+
+> 11 12
+
+# Extract observation features for easier referencing  
+
+> 13
+
+hull_angle = observation[0]  
+
+> 14
+
+hull_velocity = observation[1:3]  
+
+> 15
+
+joints = observation[3:7]  
+
+> 16
+
+contacts = observation[7:11]  
+
+> 17
+
+lidar_data = observation[11:21]  
+
+> 18 19
+
+# Calculate balance and stability torques  
+
+> 20
+
+balance_torque = -np.clip(hull_angle * 0.5, -1, 1) # Small corrective torque based on hull angle  
+
+> 21
+
+stability_adjustments = np.zeros(4)  
+
+> 22 23
+
+# Adjust for the joint states and their contacts  
+
+> 24
+
+for i in range (2):  
+
+> 25
+
+if contacts[i] > 0: # If there’s contact, provide more torque to stabilize  
+
+> 26
+
+stability_adjustments[i * 2] = np.clip(-joints[i * 2] * 0.5, -1, 1) # Left hip/knee stabilization  
+
+> 27
+
+stability_adjustments[i * 2 + 1] = np.clip(-joints[i * 2 + 1] * 0.5, -1, 1) # Right hip/knee stabilization  
+
+> 28 29
+
+# Forward motion control  
+
+> 30
+
+forward_torque = np.clip(hull_velocity[0] * 0.1, -1, 1) # Simple forward speed control adjustment  
+
+> 31 32
+
+# Combine all torques into a final control signal  
+
+> 33
+
+torques = np.array([  
+
+> 34
+
+balance_torque + stability_adjustments[0] + forward_torque, 35 stability_adjustments[1],  
+
+> 36
+
+balance_torque + stability_adjustments[2] + forward_torque,  
+
+> 37
+
+stability_adjustments[3]  
+
+> 38
+
+])  
+
+> 39 40
+
+return np.clip(torques, -1, 1) # Ensure torques are within the allowed range  
+
+> 41 42
+
+def compute_torque (hull_angle: float , joint_angle: float , joint_velocity: float , last_action: float ) -> float : 
+
+> 43
+
+"""Calculates torque for a joint based on hull angle, joint angle, joint velocity, and last action."""  
+
+> 44
+
+torque = ( 
+
+> 45
+
+-1.5 * hull_angle # Influence from hull orientation  
+
+> 46
+
+- 0.6 * joint_angle # Penalty for joint’s angle deviation  
+
+> 47
+
++ (0.5 * last_action if np. abs (joint_angle) < 0.25 else 0.0) # Prior action influence if angle is small  
+
+> 48
+
++ (0.15 * joint_velocity if joint_velocity < 0 else 0.0) # Consider velocity if moving backward  
+
+> 49
+
+) 
+
+> 50
+
+return torque  
+
+> 51 52
+
+def extract_velocity_features (observation: np.ndarray) -> np.ndarray:  
+
+> 53
+
+"""Extract velocity-related features: horizontal and vertical velocities."""  
+
+> 54
+
+return observation[2:4] # Returns a 2D array with horizontal and vertical velocities.  
+
+> 55 56
+
+# Complete algorithm  
+
+> 57 58
+
+import numpy as np  
+
+> 59
+
+def choose_action (observation: np.ndarray, last_action: np.ndarray, prev_observation: np.ndarray) -> np.ndarray:  
+
+> 60
+
+"""  
+
+> 61
+
+Select the four motor torques for BipedalWalker-v3.  
+
+> 62 63
+
+Args:  
+
+> 64
+
+observation: Current 24-dimensional state. Entries are ordered as:  
+
+> 65
+
+0 hull angle, 1 hull angular velocity, 2 horizontal velocity,  
+
+> 66
+
+3 vertical velocity, 4 left hip angle, 5 left hip angular velocity,  
+
+> 67
+
+6 left knee angle, 7 left knee angular velocity, 8 left foot contact,  
+
+> 68
+
+9 right hip angle, 10 right hip angular velocity, 11 right knee angle,  
+
+> 69
+
+12 right knee angular velocity, 13 right foot contact, and  
+
+> 70
+
+14:24 normalized lidar range readings in the environment’s fixed ray order.  
+
+> 71
+
+Joint angles and velocities use the environment’s normalized coordinates;  
+
+> 72
+
+contact entries are binary.  
+
+> 73
+
+last_action: The previous four torques in left-hip, left-knee, right-hip,  
+
+> 74
+
+right-knee order.  
+
+> 75
+
+prev_observation: The observation from the preceding environment step,  
+
+> 76
+
+with the same layout as observation.  
+
+> 77 78
+
+Returns:  
+
+> 79
+
+A finite array of four torques in [-1, 1], in left-hip, left-knee,  
+
+> 80
+
+right-hip, right-knee order.  
+
+> 81
+
+"""  
+
+> 82
+
+# {The algorithm enhances stability and control by intelligently adapting motor torques  
+
+> 83
+
+# based on observed states while effectively managing recovery strategies.}  
+
+> 84
+
+hull_angle = observation[0]  
+
+> 85 86
+
+# Joint angles and velocities extraction  
+
+> 87
+
+left_hip_angle, left_hip_velocity = observation[4], observation[5]  
+
+> 88
+
+left_knee_angle, left_knee_velocity = observation[6], observation[7]  
+
+> 89
+
+right_hip_angle, right_hip_velocity = observation[9], observation[10]  
+
+> 90
+
+right_knee_angle, right_knee_velocity = observation[11], observation[12]  
+
+> 91 92
+
+# Extracting velocity features  
+
+> 93
+
+horizontal_velocity, vertical_velocity = extract_velocity_features (observation)  
+
+> 94 95
+
+# Compute dynamic torques for balance and recovery adjustments  
+
+> 96
+
+dynamic_torques = calculate_dynamic_torques (observation, last_action, prev_observation)  
+
+> 97 98
+
+left_hip_torque = dynamic_torques[0] + compute_torque (hull_angle, left_hip_angle, left_hip_velocity, last_action [0]) 99 left_knee_torque = dynamic_torques[1] + ( 
+
+> 100
+
+-0.7 * left_knee_angle  
+
+> 101
+
++ 0.4 * last_action[1] * (1 if left_knee_angle < 0.2 else 0)  
+
+> 102
+
++ 0.1 * left_knee_velocity * (1 if left_knee_velocity < 0 else 0)  
+
+> 103
+
+) 
+
+> 104
+
+right_hip_torque = dynamic_torques[2] + compute_torque (-hull_angle, right_hip_angle, right_hip_velocity, last_action[2])  
+
+> 105
+
+right_knee_torque = dynamic_torques[3] + ( 
+
+> 106
+
+-0.7 * right_knee_angle  
+
+> 107
+
++ 0.4 * last_action[3] * (1 if right_knee_angle < 0.2 else 0)  
+
+> 108
+
++ 0.1 * right_knee_velocity * (1 if right_knee_velocity < 0 else 0)  
+
+> 109
+
+) 
+
+> 110 111
+
+torques = np.array([left_hip_torque, left_knee_torque, right_hip_torque, right_knee_torque])  
+
+> 112
+
+torques = np.clip(torques, -1, 1)  
+
+> 113 114
+
+return torques 
+
+Listing 2: Selected PACE program for Bipedal Walker. Green identifiers denote EAPs and blue denotes the complete target function.  
+
+> 1
+
+# Algorithm description: Score unvisited nodes by proximity, neighborhood diversity, and cumulative distance penalties.  
+
+> 23
+
+# Training score: 6.103043479  
+
+> 45
+
+# Search evaluation: 850  
+
+> 67
+
+# Executable Algorithmic Primitives  
+
+> 89
+
+def compute_average_neighbor_distance (current_node: int , unvisited_nodes: np.ndarray, distance_matrix: np.ndarray) -> float : 
+
+> 10
+
+"""Computes the average distance from the current node to all unvisited nodes; helps assess overall route efficiency."""  
+
+> 11
+
+if len (unvisited_nodes) == 0:  
+
+> 12
+
+return float (’inf’) # Return infinity if there are no unvisited nodes  
+
+> 13 14
+
+total_distance = 0 
+
+> 15
+
+for node in unvisited_nodes:  
+
+> 16
+
+total_distance += distance_matrix[current_node][node]  
+
+> 17 18
+
+average_distance = total_distance / len (unvisited_nodes)  
+
+> 19
+
+return average_distance  
+
+> 20 21
+
+def compute_node_diversity (current_node: int , unvisited_nodes: np.ndarray, distance_matrix: np.ndarray) -> np. ndarray:  
+
+> 22
+
+"""Calculates a diversity score for each unvisited node based on how far they are from each other, promoting exploration of less clustered nodes."""  
+
+> 23
+
+diversity_scores = np.zeros( len (unvisited_nodes))  
+
+> 24 25
+
+for i, node in enumerate (unvisited_nodes):  
+
+> 26
+
+distances_to_others = distance_matrix[node][unvisited_nodes]  
+
+> 27
+
+diversity_scores[i] = np.mean(distances_to_others)  
+
+> 28 29
+
+return diversity_scores  
+
+> 30 31
+
+def compute_priority_score (current_node: int , node: int , destination_node: int , cumulative_distance: float ,distance_matrix: np.ndarray) -> float : 
+
+> 32
+
+"""Computes a priority score for a node based on its distance from the current node and its distance to the destination."""  
+
+> 33
+
+distance_to_destination = distance_matrix[node][destination_node]  
+
+> 34
+
+distance_from_current = distance_matrix[current_node][node]  
+
+> 35 36
+
+# Enhanced heuristic with a more adaptive penalty based on the ratio of distances  
+
+> 37
+
+heuristic_penalty = (np.log1p(distance_to_destination) / (1 + np.log1p(distance_to_destination))) if 
+
+distance_to_destination > 0 else 0 
+
+> 38 39
+
+# Updated priority score calculations with more emphasis on proximity to the current node  
+
+> 40
+
+priority_score = (1.5 / (distance_from_current + 1)) + heuristic_penalty - (0.3 * cumulative_distance)  
+
+> 41 42
+
+return priority_score  
+
+> 43 44
+
+# Complete algorithm  
+
+> 45 46
+
+import numpy as np  
+
+> 47
+
+def select_next_node (current_node: int , destination_node: int , unvisited_nodes: np.ndarray, distance_matrix: np. ndarray) -> int : 
+
+> 48
+
+"""  
+
+> 49
+
+{This algorithm emphasizes a synergy between proximity, diversity, and cumulative distance penalties to optimize route selection.}  
+
+> 50
+
+"""  
+
+> 51
+
+cumulative_distance_from_start = 0 # to be updated in the overall algorithm  
+
+> 52
+
+best_node = None  
+
+> 53
+
+best_priority_score = -np.inf  
+
+> 54 55
+
+average_neighbor_distance = compute_average_neighbor_distance (current_node, unvisited_nodes, distance_matrix)  
+
+> 56
+
+diversity_scores = compute_node_diversity (current_node, unvisited_nodes, distance_matrix)  
+
+> 57 58
+
+for index, node in enumerate (unvisited_nodes):  
+
+> 59
+
+distance_from_current = distance_matrix[current_node][node]  
+
+> 60
+
+priority_score = compute_priority_score (current_node, node, destination_node, cumulative_distance_from_start , distance_matrix)  
+
+> 61 62
+
+exploration_factor = (diversity_scores[index] ** 1.5) / (1 + np.sqrt(distance_from_current)) # Encourage exploration of diverse nodes with squared scaling  
+
+> 63
+
+proximity_adjustment = (distance_from_current - average_neighbor_distance) * 0.05 # Reduced balancing impact for more leniency  
+
+> 64 65
+
+modified_score = priority_score + exploration_factor - proximity_adjustment  
+
+> 66 67
+
+if modified_score > best_priority_score:  
+
+> 68
+
+best_priority_score = modified_score  
+
+> 69
+
+best_node = node  
+
+> 70 71
+
+return best_node if best_node is not None else unvisited_nodes[0] 
+
+Listing 3: Selected PACE program for TSP-Construct. Green identifiers denote EAPs and blue denotes the complete target function.  
+
+> 1
+
+# Algorithm description: Combine distance-sensitive, nonlinear, and quadratic attraction matrices before ACO tour construction.  
+
+> 23
+
+# Training score: 5.795181757  
+
+> 45
+
+# Search evaluation: 428  
+
+> 67
+
+# Executable Algorithmic Primitives  
+
+> 89
+
+def compute_attraction_score_matrix (distance_matrix: np.ndarray) -> np.ndarray:  
+
+> 10
+
+"""Compute an attraction score matrix based on a modified polynomial function of distances; closer distances yield higher scores."""  
+
+> 11
+
+n = distance_matrix.shape[0]  
+
+> 12
+
+attraction_matrix = np.zeros_like(distance_matrix, dtype=np.float64)  
+
+> 13 14
+
+for i in range (n):  
+
+> 15
+
+for j in range (n): 16 if distance_matrix[i, j] > 0: # Avoid division by zero  
+
+> 17
+
+attraction_matrix[i, j] = 1 / (distance_matrix[i, j] ** 2)  
+
+> 18 19
+
+# Normalize attraction matrix row-wise to sum to 1 (optional, improve as needed)  
+
+> 20
+
+row_sums = attraction_matrix. sum (axis=1, keepdims=True)  
+
+> 21
+
+attraction_matrix = np.divide(attraction_matrix, row_sums, where=row_sums != 0)  
+
+> 22 23
+
+return attraction_matrix  
+
+> 24 25
+
+def compute_complex_attraction_matrix (distance_matrix: np.ndarray) -> np.ndarray:  
+
+> 26
+
+"""Computes an attraction score matrix using a combination of inverse distances and a sinusoidal function to introduce variability; closer distances yield higher scores with periodic attraction variations."""  
+
+> 27
+
+n = distance_matrix.shape[0]  
+
+> 28
+
+attraction_matrix = np.zeros((n, n))  
+
+> 29 30
+
+for i in range (n):  
+
+> 31
+
+for j in range (n):  
+
+> 32
+
+if i != j:  
+
+> 33
+
+inverse_distance = 1 / distance_matrix[i, j] if distance_matrix[i, j] != 0 else 0 
+
+> 34
+
+sinusoidal_factor = 1 + 0.5 * np.sin(np.pi * distance_matrix[i, j])  
+
+> 35
+
+attraction_matrix[i, j] = inverse_distance * sinusoidal_factor  
+
+> 36 37
+
+return attraction_matrix  
+
+> 38 39
+
+def compute_quadratic_attraction_matrix (distance_matrix: np.ndarray) -> np.ndarray:  
+
+> 40
+
+"""Computes an attraction score matrix using a quadratic function of inverse distances; closer distances yield exponentially higher scores."""  
+
+> 41
+
+# Initialize an attraction score matrix with the same shape as the distance matrix  
+
+> 42
+
+attraction_matrix = np.zeros_like(distance_matrix, dtype=np.float64)  
+
+> 43 44
+
+# Iterate through the distance matrix to compute attraction scores  
+
+> 45
+
+for i in range (distance_matrix.shape[0]):  
+
+> 46
+
+for j in range (distance_matrix.shape[1]):  
+
+> 47
+
+if distance_matrix[i, j] > 0: # Avoid division by zero  
+
+> 48
+
+attraction_matrix[i, j] = 1 / (distance_matrix[i, j] ** 2)  
+
+> 49
+
+else : 
+
+> 50
+
+attraction_matrix[i, j] = np.inf # Set to infinity if distance is zero  
+
+> 51 52
+
+return attraction_matrix  
+
+> 53 54
+
+# Complete algorithm  
+
+> 55 56
+
+import numpy as np  
+
+> 57
+
+def heuristics (distance_matrix: np.ndarray) -> np.ndarray:  
+
+> 58
+
+"""  
+
+> 59
+
+Design a heuristic matrix for ant colony optimization on TSP.  
+
+> 60 61
+
+Args:  
+
+> 62
+
+distance_matrix: Pairwise distance matrix of cities, shape (n, n).  
+
+> 63 64
+
+Returns:  
+
+> 65
+
+A finite non-negative heuristic matrix, shape (n, n). Larger values  
+
+> 66
+
+make an edge more attractive to ants.  
+
+> 67
+
+"""  
+
+> 68
+
+n = distance_matrix.shape[0]  
+
+> 69
+
+heuristic_matrix = np.zeros((n, n))  
+
+> 70 71
+
+# Call the quadratic attraction matrix computation  
+
+> 72
+
+quadratic_attraction_matrix = compute_quadratic_attraction_matrix (distance_matrix)  
+
+> 73 74
+
+# Enhanced thresholding mechanism  
+
+> 75
+
+non_inf_quad_attract = quadratic_attraction_matrix[quadratic_attraction_matrix > 0]  
+
+> 76
+
+if non_inf_quad_attract.size > 0:  
+
+> 77
+
+threshold = np.percentile(non_inf_quad_attract, 75)  
+
+> 78
+
+quadratic_attraction_matrix[quadratic_attraction_matrix < threshold] = 079 80 # Improved normalization process                                                
+
+> 81 min_quad_attraction =np.nanmin(quadratic_attraction_matrix[quadratic_attraction_matrix >0])
+> 82 max_quad_attraction =np.nanmax(quadratic_attraction_matrix)
+> 83 84 if max_quad_attraction >min_quad_attraction:
+> 85 heuristic_matrix =(quadratic_attraction_matrix -min_quad_attraction) /(max_quad_attraction -min_quad_attraction)
+> 86 87 #Call the complex attraction matrix computation
+> 88 attraction_matrix =compute_complex_attraction_matrix (distance_matrix)
+> 89 90 #Call the attraction score matrix computation
+> 91 attraction_score_matrix =compute_attraction_score_matrix (distance_matrix)
+> 92 93 heuristic_matrix =heuristic_matrix * attraction_matrix * attraction_score_matrix
+> 94 95 return heuristic_matrix
+
+Listing 4: Selected PACE program for TSP-ACO. Green identifiers denote EAPs and blue denotes the complete target function. 
+
+Total Algorithm 
+
+This subsection, we present the complete pseudo code of PACE, as shown in Algorithm 1. 
+
+## Licenses 
+
+Implementation sources 
+
+The programmatic AAD methods PACE, EoH, ReEvo, MCTS-AHD, HsEvo, and MLES are executed through a common LLM4AD evaluation interface. We preserve each method’s search operators and method-specific population settings while sharing the task evaluator and search bud-get. The classical and learned baselines use their respective released implementations: Gymnasium provides the control environments, Stable-Baselines3 provides PPO, and the re-leased DeepACO implementation provides the learned ACO baseline. Synthetic Euclidean TSP data are generated by our scripts. 
+
+Licenses 
+
+Table 12 reports the license attached to each software or data resource. Algorithm 1: PACE search procedure 
+
+1: Initialize population P with valid complete algorithms. 
+
+2: Initialize EAP set E and one Beta(1 , 1) posterior per EAP. 
+
+3: for t = 1 to the search budget do 
+
+4: Select parent algorithm(s) and operator ot from the fixed cycle. 
+
+5: if ot is Insertion or Replacement then 
+
+6: Draw ze ∼ Beta( αe, β e) for each eligible EAP. 
+
+7: Select the focus EAP with largest draw; fix parent and EAP assignment. 
+
+8: end if 
+
+9: Request an offspring using the operator prompt. 
+
+10: for a = 1 to 3 do 
+
+11: if the offspring violates the operator call-set contract then 
+
+12: Request a repair with the same parent and EAP assignment. 
+
+13: else 
+
+14: Evaluate the offspring; break .
+
+15: end if 
+
+16: end for 
+
+17: if the child is valid and finite then 
+
+18: Add the child to the history and update the population. 
+
+19: if the operator has focus EAP e then 
+
+20: if child score improves its fixed parent score then 
+
+21: αe ← αe + 1 .
+
+22: else 
+
+23: βe ← βe + 1 .
+
+24: end if 
+
+25: end if 
+
+26: end if 
+
+27: if the generation creates a strict best then 
+
+28: Propose at most one deduplicated EAP through Extraction .
+
+29: else 
+
+30: Propose at most one deduplicated EAP through Generation .
+
+31: end if 
+
+32: Retain EAP source independently of population survival. 
+
+33: end for 
+
+34: return best algorithm in the search history. Table 12: Software and data resources used in the experiments. Copyright notices and full license texts are retained in the released artifact. The anonymous artifact URL is replaced by the archival URL after review.

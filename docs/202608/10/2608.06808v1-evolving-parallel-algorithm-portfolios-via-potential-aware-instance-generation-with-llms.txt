@@ -1,0 +1,1791 @@
+Title: Evolving Parallel Algorithm Portfolios via Potential-Aware Instance Generation with LLMs
+
+URL Source: https://arxiv.org/pdf/2608.06808v1
+
+Published Time: Mon, 10 Aug 2026 00:27:52 GMT
+
+Number of Pages: 21
+
+Markdown Content:
+> 1
+
+# Evolving Parallel Algorithm Portfolios via Potential-Aware Instance Generation with LLMs 
+
+Shaofeng Zhang, Student Member, IEEE, Shengcai Liu, Member, IEEE, Zhiyuan Wang, Student Member, IEEE, 
+
+and Ke Tang, Fellow, IEEE 
+
+Abstract —The Automatic Construction of Portfolios via Large Language Models (LLM-ACP) suffers from poor generalization in practical few-shot scenarios when solving complex combinato-rial optimization problems. Instance and algorithm co-evolution frameworks address this by expanding the training dataset with generated hard instances on which the current algorithm port-folio underperforms, thereby enhancing generalization. However, this paradigm faces two critical limitations: evaluating instance hardness relies on high-quality reference solutions, and single-mode generation patterns limit instance diversity. To overcome these limitations, we introduce the Potential-aware Instance and Algorithm Co-evolution (PIAC) framework. Our core contribu-tion is twofold. First, we propose potential gain , a novel metric that eliminates the need for reference solutions. This metric estimates generalization gain by perturbing the generated algo-rithms and assessing their improvement potential on generated problem instances. Second, PIAC leverages LLMs to synthesize diverse instance mutators, exploring a broader region of the problem-instance space and thereby enhancing the portfolio’s generalization capabilities. Given that perturbation spaces vary across different algorithms, we instantiate our framework on Greedy Constructive, Ant Colony Optimization, and Guided Lo-cal Search algorithmic backbones. Comprehensive evaluations on the Traveling Salesman Problem (TSP) and Capacitated Vehicle Routing Problem (CVRP) across six distinct data distributions demonstrate that PIAC consistently outperforms state-of-the-art LLM-ACP baselines, notably achieving a 19.76% relative improvement for TSP Greedy Constructive portfolios. 
+
+Index Terms —Parallel algorithm portfolios, large language model, automatic algorithm design, co-evolutionary algorithm. 
+
+I. I NTRODUCTION 
+
+Parallel Algorithm Portfolios (PAPs) have emerged as a powerful paradigm for solving complex engineering optimiza-tion problems [1], [2]. Inspired by the No Free Lunch theo-rem [3], which posits that different algorithms exhibit varying performance across different problem characteristics, PAPs aim to construct a complementary set of member algorithms to enhance overall performance across the entire problem space. During inference, a PAP typically runs multiple member algorithms in parallel and returns the best solution found as the final output. In doing so, PAPs can effectively exploit the    
+
+> Shaofeng Zhang is with the Guangdong Provincial Key Laboratory of Brain-Inspired Intelligent Computation, Department of Computer Science and Engineering, Southern University of Science and Technology, Shenzhen 518055, China, and also with the Zhongguancun Academy, Beijing 100094, China (e-mail: 12445025@mail.sustech.edu.cn). Shengcai Liu, Zhiyuan Wang, and Ke Tang are with the Guangdong Provincial Key Laboratory of Brain-Inspired Intelligent Computation, Department of Computer Science and Engi-neering, Southern University of Science and Technology, Shenzhen 518055, China (e-mail: liusc3@sustech.edu.cn; wangzy2020@mail.sustech.edu.cn; tangk3@sustech.edu.cn).
+
+complementarity among their members while fully leverag-ing modern parallel computing resources, such as multi-core CPUs, to achieve superior overall performance. Since manually constructing a high-quality PAP is non-trivial, Automated Construction of Portfolios (ACP) has been extensively studied [4], [5]. To reduce manual effort, main-stream ACP frameworks adopt the data-driven paradigm. Given an algorithm search space (traditionally the parameter configuration space of base solvers) and a set of training in-stances, the standard framework iteratively explores this space to evolve candidate algorithms. Guided by their performance on the training instances, it ultimately returns a portfolio of complementary member algorithms that maximizes overall performance. Recent advances in the programming capabilities of Large Language Models (LLMs) have introduced Auto-matic Construction of Portfolios via LLMs (LLM-ACP) as a powerful new subfield of ACP [6]–[8]. The fundamental distinction between LLM-ACP and ACP lies in the algorithm search space. LLM-ACP shifts the paradigm from tuning fixed parameter configurations to exploring an open-ended programmatic space, such as heuristic code snippets. Despite this progress, ACP (including LLM-ACP) fre-quently encounters the few-shot generalization challenge. In practice, only a limited number of training instances are avail-able, and they often fail to capture the complex instance distri-butions encountered in real-world data [9], [10]. Consequently, portfolios constructed on such limited training sets are highly susceptible to overfitting and often fail to generalize to unseen instances. To overcome this limitation, prior studies (e.g., CEPS [11] and DACE [12]) have leveraged instance-algorithm co-evolution to dynamically expand the training dataset. In this paper, we define the quality of a problem instance as the improvement in a PAP’s generalization performance achieved by incorporating it into the training dataset. To obtain such high-quality instances, existing methods actively generate ad-versarial or “hard” instances that the current portfolio struggles to solve. Specifically, these hard instances expose regions of the problem space where current algorithms underperform. Augmenting the training set with these instances drives the portfolio to improve its performance in these specific regions, thereby enhancing overall generalization. However, adapting traditional co-evolutionary frameworks, such as CEPS and DACE, to the LLM-ACP paradigm exposes two critical limitations. First, regarding reliance on high-quality solutions , existing methods typically depend on near-optimal reference solutions to evaluate the quality of newly generated instances [13]–[15]. Specifically, these approaches evaluate an instance’s quality based on its difficulty, termed arXiv:2608.06808v1 [cs.AI] 7 Aug 2026 2
+
+the hardness metric , and quantify this metric by calculating the performance gap between the current PAP and the reference solutions. In many practical or newly formulated scenarios, acquiring such high-quality solutions is a challenging task. Second, regarding single-mode instance generation patterns ,prior instance generation strategies often rely on fixed, pre-defined operators, such as simple geometric transformations or random perturbations [11], [12]. This single-mode genera-tion paradigm lacks diversity, yielding highly homogeneous instances that restrict the generalization capability of the resulting algorithm portfolio. To overcome these limitations, we introduce the Potential-aware Instance and Algorithm Co-evolution ( PIAC ) frame-work. While building upon the co-evolution framework, PIAC advances the paradigm through two core innovations tailored to LLM-ACP. First, we propose potential gain , a novel potential-aware metric that avoids the need for high-quality reference solutions. Rather than relying on the hardness metric to determine an instance’s quality, PIAC shifts the evaluation focus to the algorithm portfolio’s “potential for improvement”. The potential gain metric operates by perturb-ing the designed algorithms and quantifying the performance improvement achieved by the perturbed algorithms relative to the original algorithms on newly generated instances. By directly measuring this empirical gain, potential gain provides a surrogate signal for the portfolio’s improvement potential on the given instance. Second, to enhance the diversity of generated instances, PIAC leverages the code-generation ca-pabilities of LLMs to synthesize and evolve a population of programmatic instance mutators. By transitioning from static, predefined operators to diverse mutators, PIAC effectively expands the searchable instance space and further enhances generalization. Together, potential-aware evaluation and pro-grammatic instance synthesis augment the training set with valuable instances, guiding portfolio evolution toward greater complementarity and better generalization. To evaluate the generalization of the algorithm portfolios, we construct the PAPs in the few-shot setting and measure their performance across six distinct data distributions for both the Traveling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP). The main contributions of this work are summarized as follows:  
+
+> •
+
+Potential-Aware Instance Evaluation. We propose a novel potential-aware metric to evaluate generated in-stances without reference solutions. By perturbing the generated algorithms, the metric estimates the perfor-mance gains achievable on each instance, thereby identi-fying high-quality training instances.  
+
+> •
+
+LLM-Driven Instance Evolution Mechanisms. We leverage the code-generation capabilities of LLMs to dynamically synthesize a diverse set of instance mutators, enabling the instance generation process to explore a broader and more diverse instance space.  
+
+> •
+
+Instantiation on Multiple Algorithmic Backbones. We apply our framework to Greedy Constructive, Ant Colony Optimization, and Guided Local Search algorithmic back-bones. Comprehensive evaluations demonstrate that PIAC consistently outperforms state-of-the-art LLM-ACP base-lines, notably achieving a 19.76% relative improvement for TSP Greedy Constructive portfolios. The remainder of this paper is organized as follows. Sec-tion II formalizes the problem of ACP and reviews relevant prior work. Section III introduces the proposed PIAC frame-work. Section IV provides algorithm-specific instantiations of the framework. Section V presents a comprehensive empirical evaluation of our approach. Finally, Section VI concludes the article and outlines directions for future research. Our code is available at https://anonymous.4open.science/r/piac-BAF3. II. P ROBLEM DEFINITION AND RELATED WORK 
+
+A. Problem Formulation 
+
+Assume that the construction of a PAP is defined over the entire problem class. Let x ∈ Ω denote a problem instance, where Ω represents the complete instance space. The backbone B specifies a complete solution procedure, such as greedy construction or ant colony optimization. Let HB denote the corresponding space of heuristic functions that can be constructed by the LLM. Given an instance x ∈ Ω and a solver state s encountered during solution construction or search, each H ∈ H B produces a heuristic matrix M = H(x, s )
+
+that guides the subsequent decision made by the backbone. Instantiating the fixed backbone B with H yields a complete executable algorithm, denoted by A = B[H]. Accordingly, the complete algorithm space under this backbone is 
+
+A = {B[H] | H ∈ H B }. (1) PIAC employs the LLM to construct and evolve the heuristic component H while keeping B unchanged. Throughout this paper, “algorithm” refers to the complete executable algorithm 
+
+A = B[H], rather than the isolated heuristic function H. A PAP is denoted by A = {A1, . . . , A K }, where Aj = B[Hj ] ∈A and A ⊆ A . Given a problem instance x, let F (A, x )
+
+denote the performance of algorithm A on x. Without loss of generality, we assume that smaller values indicate better performance. Accordingly, the performance of the PAP A on instance x is defined as 
+
+F (A, x ) = min  
+
+> A∈A
+
+F (A, x ), (2) which indicates that the portfolio performance on a given instance is determined by the best-performing algorithm within the PAP. Ideally, the objective of automated PAP construction is to identify an optimal PAP, denoted by A∗, that achieves the best generalization performance over the entire problem domain: 
+
+A∗ = arg min   
+
+> A⊆A ,|A|=K
+
+Ex∼p(x) [F (A, x )] , (3) where p(x) denotes the underlying distribution over the prob-lem instance space. However, in practical scenarios, the true distribution over the entire instance space is usually unavailable. Therefore, existing PAP construction methods commonly optimize the empirical performance of the PAP on a given training dataset D ⊂ Ω:
+
+bA∗ = arg min   
+
+> A⊆A ,|A|=K
+
+F (A, D), (4) 3Original Dataset 𝐀 0               
+
+> LLM Algorithm PAP 𝐀 0
+> Phase 1: Initialization
+> Evolve
+> Phase 2.1: LLM-Driven Instance Generation Phase 2.2: LLM-Driven PAP Construction
+> LLM Mutator Code Mutated Inst Evaluation (Potential Gain) Select Inst from 𝐀 0
+> Evaluate with 𝐀 𝐀−1
+> Evolve Top-k Selection Dataset 𝐀 𝐀 Generate Parent Algorithm(s)
+> LLM Evaluation Complementary Algorithm PAP 𝐀 𝐀
+> (Init with 𝐀 𝐀−1 )
+> Select & Evolve Crossover / Mutate Generate Evaluate with 𝐀 𝐀−1 𝐀𝐀𝐀𝐀𝐀
+> Greedy Select / Replace
+> Fig. 1. PIAC Framework: A co-evolutionary framework for LLM-driven portfolio construction. By alternating between instance synthesis via LLM-generated mutators and algorithm portfolio optimization, PIAC jointly enhances training data coverage and the generalization performance of the algorithm portfolios.
+
+where F (A, D) = 1
+
+> |D|
+
+P 
+
+> x∈D
+
+F (A, x ).This empirical objective implicitly assumes that the training dataset D is sufficiently representative of the complete problem instance space Ω. Nevertheless, in few-shot scenarios, the available training instances are often scarce and insufficient to capture the diversity and critical structural characteristics of the underlying problem distribution. As a result, the con-structed PAP may suffer from limited generalization ability when applied to unseen problem instances. 
+
+B. Existing ACP Framework 
+
+The automated construction of algorithm portfolios (ACP) has driven significant advancements in solving hard combina-torial problems [2], [16], [17]. Existing approaches generally follow two paradigms. The first constructs a globally comple-mentary set of member algorithms evaluated across the entire instance space, as exemplified by Hydra [4], GLOBAL [5], and PARHYDRA [5]. In contrast, the second paradigm ad-dresses instance heterogeneity by partitioning the problem space and constructing a tailored component algorithm for each specific cluster, as demonstrated by CLUSTERING [18] and PCIT [19]. By yielding diverse member algorithms, these paradigms inherently facilitate automated algorithm selection (AS) [20]–[22]. However, traditional frameworks typically cast ACP strictly as a parameter configuration problem. Conse-quently, they confine the search to the predefined parameter spaces of existing solvers, fundamentally precluding the dis-covery of structurally novel algorithms. To break these structural limits, recent studies leverage LLMs to automatically design heuristics or executable code for discrete optimization [23]–[26]. These methods generally es-tablish a novel paradigm integrating LLMs with Evolutionary Computation (EC). In this framework, LLMs act as intelligent variation operators within an evolutionary loop to iteratively generate and refine heuristic code, as demonstrated by methods such as FunSearch [27], EoH [28], ReEvo [29], HSEvo [30], and MCTS-AHD [31]. This paradigm, formally recognized as LLM-based Automatic Heuristic Design (LLM-AHD), has been widely applied across diverse domains, including recom-mender systems [32] and scientific discovery [33]. Building upon this foundation, the research frontier has shifted toward LLM-ACP to explicitly address instance heterogeneity. For ex-ample, InstSpecHH [34] partitions the problem space to evolve instance-specific heuristics for feature-based subclasses. Con-currently, EoH-S [8] directly targets portfolio synergy by employing a complementary-aware memetic search to evolve a highly cooperative heuristic set that collectively covers diverse instance distributions. While existing LLM-ACP methods demonstrate strong per-formance, they predominantly rely on the assumption of abundant training data, inherently struggling with the few-shot generalization challenge in data-scarce scenarios. In traditional ACP, data scarcity is typically mitigated via co-evolutionary frameworks, such as CEPS [11], GAST [35], and DACE [12]. These frameworks fundamentally operate through a compet-itive, two-step iterative mechanism. The process begins by evolving a PAP over a given training dataset to maximize overall portfolio performance. Subsequently, the training set is augmented by generating and incorporating novel instances explicitly designed to minimize the performance of the current PAP. These two adversarial phases alternate continuously, ultimately yielding a robust parallel algorithm portfolio with strong generalization capabilities. Extending this adversarial paradigm to deep learning, ASP [14] formulates distributional exploration as a two-player zero-sum meta-game to train best-response generators alongside neural solvers. Despite the potential of integrating this co-evolutionary 4
+
+paradigm with LLM-ACP, current frameworks present two primary limitations. First, regarding the reliance on high-quality solutions, existing methods typically depend on near-optimal reference solutions to evaluate the difficulty of newly generated instances [13]–[15]. This dependency severely re-stricts the framework’s applicability, making it challenging to extend to practical or newly formulated problem domains. Second, regarding single-mode instance generation, current instance generation strategies often rely on static, predefined generation operators [11], [12]. This unimodal generation paradigm fundamentally lacks diversity, yielding highly ho-mogeneous instances that hinder further improvements to the generalization capability of the evolved PAP. III. T HE PROPOSED PIAC F RAMEWORK 
+
+We extend the adversarial co-evolution framework [11] to the LLM-ACP paradigm. While our Potential-aware Instance and Algorithm Co-evolution (PIAC) framework adopts the alternating optimization phases of CEPS to iteratively evolve both the algorithm portfolio and the training instances, its core novelty lies within the instance evolution phase. Existing co-evolution frameworks typically equate instance quality with instance hardness, inherently relying on high-quality reference solutions, and are often restricted to single-mode generation patterns. PIAC addresses these limitations by introducing the potential gain metric, which circumvents the need for reference solutions, coupled with an evolutionary search over mutator programs to expand the searchable instance space. As illustrated in Algorithm 1, the framework consists of two alternating phases: 1) LLM-Driven Instance Generation: The LLM gener-ates executable mutator code to synthesize novel in-stances. The primary objective of this process is to maximize the overall quality of the generated instances 
+
+max Dt
+
+P 
+
+> x∈D t
+
+V (x; At−1), where V (x; At−1) denotes the potential gain of generated instance x with respect to the current portfolio At−1.2) LLM-Driven Algorithm Portfolio Construction: Sub-sequently, the LLM evolves the heuristic portfolio to address these challenging new instances. The goal is to identify a portfolio At of size K that minimizes the evaluation metric F over the accumulated training set 
+
+Dtrain : min At:|At|=K F (At, Dtrain ).To systematically present these contributions, Section III-A details the LLM-driven instance generation phase, encompass-ing both the mutator search and the potential-aware evaluation. Subsequently, Section III-B outlines the LLM-based algorithm portfolio construction process. 
+
+A. Potential-Aware Instance Generation 1) Potential-Aware Instance Evaluation: A critical chal-lenge in the instance generation process is evaluating the quality of newly generated instances. A straightforward ap-proach would be to incorporate each candidate instance into the training set and re-evolve the portfolio to measure the re-sulting performance improvement. Traditional methods instead approximate instance quality by absolute hardness, typically 
+
+Algorithm 1 PIAC 
+
+Require: Initial dataset D0, algorithmic backbone B, port-folio size K, max iterations T , max mutator evaluations 
+
+F E m, max algorithm evaluations F E a, number of aug-mented instances Naug , number of executions per mutator 
+
+Nexec 
+
+Ensure: Final complementary algorithm portfolio AT 
+
+> 1:
+
+/* Phase 1: Initialization */  
+
+> 2:
+
+Initialize accumulated training dataset: Dtrain ← D 0. 
+
+> 3:
+
+Construct initial portfolio A0 of size K on D0 via LLM generation and greedy selection.  
+
+> 4:
+
+/* Phase 2: Co-Evolution Loop */  
+
+> 5:
+
+for t = 1 , 2, . . . , T − 1 do  
+
+> 6:
+
+/* Step 2.1: LLM-Driven Data Generation*/  
+
+> 7:
+
+Initialize candidate instance set Xcand ← ∅ . 
+
+> 8:
+
+Prompt LLM to generate initial mutator set Mprev . 
+
+> 9:
+
+em ← 0, e a ← 0. 
+
+> 10:
+
+while em < F E m do  
+
+> 11:
+
+Select parent mutators from Mprev . 
+
+> 12:
+
+Prompt LLM to generate child mutators Mchild . 
+
+> 13:
+
+for each child mutator m ∈ M child do  
+
+> 14:
+
+Execute m for Nexec times, independently sam-pling base instances xbase ∼ D0 each time to synthesize Xnew . 
+
+> 15:
+
+Evaluate the potential gain V (x; At−1) for in-stances in Xnew via Eq. (6).  
+
+> 16:
+
+Update fitness of m via Eq. (7).  
+
+> 17:
+
+Add the evaluated instances Xnew to Xcand . 
+
+> 18:
+
+end for  
+
+> 19:
+
+Mprev ← M child , em ← em + |M child |. 
+
+> 20:
+
+end while  
+
+> 21:
+
+Select top-Naug instances from Xcand with maximum 
+
+V (x; At−1) to form Dt. 
+
+> 22:
+
+Dtrain ← D train ∪ D t. 
+
+> 23:
+
+/* Step 2.2: LLM-Driven Algorithm Construction */  
+
+> 24:
+
+Initialize current portfolio At ← At−1. 
+
+> 25:
+
+while ea < F E a do  
+
+> 26:
+
+Select parent algorithms from At for either 
+
+Crossover or Mutation . 
+
+> 27:
+
+Prompt the LLM to generate a set of child heuristic components Hchild . 
+
+> 28:
+
+Instantiate complete child algorithms Achild ←{B[H] | H ∈ H child }. 
+
+> 29:
+
+Evaluate Achild on Dtrain . 
+
+> 30:
+
+Update At using the greedy selection and replace-ment strategies in Eq. (10) and (11).  
+
+> 31:
+
+ea ← ea + |A child |. 
+
+> 32:
+
+end while  
+
+> 33:
+
+end for  
+
+> 34:
+
+return Final portfolio AT
+
+measured using the optimality gap to a high-quality refer-ence solution [13]–[15]. However, obtaining such reference solutions is challenging, and absolute hardness does not nec-essarily indicate that an instance can guide further portfolio improvement. For example, an instance may be challenging 5
+
+for every member algorithm in the current PAP yet offer little room for further performance improvement. PIAC instead uses potential gain V (x; At−1) as a surrogate for instance-quality evaluation. It measures the current portfolio’s improvement potential under controlled perturbations. If perturbing the generated algorithms yields a superior solution, the portfolio retains exploitable room for improvement on that instance, indicating higher estimated instance quality for subsequent evolution. The operational mechanism of this metric relies on the inter-nal heuristic component of each complete algorithm. Under the fixed backbone B, consider a portfolio member Aj = B[Hj ],where Hj is the LLM-constructed heuristic function embedded in B. For the instance x ∈ Ω and the solver state s encountered during solution construction or search, the heuristic component produces a heuristic matrix Mj = Hj (x, s ) that guides the subsequent decision. We introduce a perturbation operator 
+
+Pξ that acts only on this heuristic matrix: 
+
+fM (ξ) 
+
+> j
+
+= eH(ξ) 
+
+> j
+
+(x, s ) = Pξ (Mj ) = Mj ⊙ max 
+
+
+
+ε1, 1 + E(ξ)
+
+,
+
+(5) where ξ indexes an independent realization of the perturbation, 
+
+E(ξ) is a random matrix with the same dimensions as Mj ,and E(ξ) 
+
+> uv i.i.d.
+
+∼ N (0 , σ 2). Here, u and v index the entries of Mj , ⊙ denotes element-wise multiplication, 1 is the all-ones matrix with the same dimensions as Mj , and ε > 0
+
+is a small constant that clips the multiplicative factors away from zero. Embedding the perturbed heuristic component into the same backbone yields the complete perturbed algorithm 
+
+eA(ξ) 
+
+> j
+
+= B[ eH(ξ) 
+
+> j
+
+].To illustrate, consider a constructive framework for the Traveling Salesman Problem (TSP) where the heuristic outputs a priority vector M for unvisited nodes. Conventionally, the framework greedily visits the node with the highest priority at each step. Under our formulation, the priority of each node c
+
+is perturbed to ˜mc = mc max( ε, 1 + ϵc) with ϵc ∼ N (0 , σ 2).Although the framework strictly retains its standard greedy selection rule ( ˜c∗ = arg max c∈C ˜mc), the injected noise shifts the relative priority rankings and directly alters the chosen decision variables at each step. Consequently, by perturbing the original heuristic strategy, this mechanism effectively sim-ulates a newly constructed prioritization policy that empowers the search process to escape local optima. Based on this operator, we define the potential gain . Let Np
+
+denote the total perturbation budget for the current portfolio 
+
+A = {A1, . . . , A K }. We distribute this budget as evenly as possible among the K portfolio members. Specifically, let q = ⌊Np/K ⌋ and rp = Np mod K. The number of perturbations assigned to Aj is Np,j = q+I(j ≤ rp). Thus, the first rp algorithms receive q + 1 perturbations each, while the remaining algorithms receive q perturbations each, ensuring PKj=1 Np,j = Np. For each complete algorithm Aj = B[Hj ],we perform Np,j independent applications of the perturbation operator Pξ to its heuristic component Hj . This produces perturbed heuristic components eH(1)  
+
+> j
+
+, . . . , eH(Np,j ) 
+
+> j
+
+and the corresponding complete algorithms eA(ℓ) 
+
+> j
+
+= B[ eH(ℓ) 
+
+> j
+
+]. The re-sulting perturbed algorithm set is eA = { eA(ℓ) 
+
+> j
+
+= B[ eH(ℓ) 
+
+> j
+
+] | j =1, . . . , K, ℓ = 1 , . . . , N p,j }. The potential gain V (x; A) for an instance x is defined as the relative improvement achieved by the best-performing complete perturbed algorithm: 
+
+V (x; A) = F (A, x ) − F (eA, x )
+
+F (eA ∪ A, x ) . (6) If applying slight noise to the scoring matrix yields a significantly better solution than the original deterministic algorithm, it indicates that the portfolio’s decision boundary on this instance is suboptimal. This improvement, quantified as the potential gain, allows us to identify instances that expose latent weaknesses in the portfolio, marking them as high-value training data. Because the structure of the scoring matrix and its corresponding perturbation operation depend on the under-lying algorithmic architecture, we provide algorithm-specific instantiations of this perturbation mechanism in Section IV. 
+
+2) Instance Generation via Mutator Evolution: Conven-tional problem instance generators rely on predefined mutation operators, which often produce homogeneous patterns that fail to adequately expose algorithmic weaknesses [11]. To overcome this limitation, we conceptualize instance generation as an evolutionary search over the space of mutator programs. We maintain a population of mutators, where the fitness of each mutator m is evaluated by its ability to generate instances with high quality under the current algorithm portfolio At−1.To ensure a robust evaluation, the mutator m is applied to 
+
+Nexec base instances independently sampled from the initial data distribution D0, and its overall fitness is defined as the average value across these generated instances: 
+
+f (m) = 1
+
+Nexec Nexec X
+
+> r=1
+
+V  m(x(r)
+
+> base
+
+); At−1
+
+,
+
+where x(r) 
+
+> base
+
+∼ D 0, r = 1 , . . . , N exec .
+
+(7) We use potential gain V (x; A), defined in Eq. (6), as the surrogate quality score in the mutator fitness function. A higher fitness indicates that the mutator effectively synthesizes instances with higher surrogate quality scores with respect to the current portfolio. During each evolutionary generation, we sample parent mutators from the current population Mprev using rank-based stochastic selection, where selection probability is proportional to inverse rank, favoring lower-rank (better-performing) mu-tators. The LLM is then prompted to perform crossover and 
+
+mutation operations to construct a new generation of child mu-tators Mchild . The crossover operation recombines parent in-stance mutators to exploit existing high-quality mutator struc-tures, while the mutation operation enhances exploration by introducing diverse instance mutators (Algorithm 1, lines 11– 12). Full text descriptions of the corresponding prompts can be found in the supplementary material. After generating Mchild , we collect all valid mutated instances into a candidate set Xcand . To extract the most informative data, we select the Naug instances that collectively maximize the overall quality: 
+
+Dt = arg max 
+
+> S⊆X cand
+> |S| =Naug
+
+X
+
+> x∈S
+
+V (x; At−1). (8) 6
+
+Finally, these selected instances are appended to the training dataset ( Dtrain ← D train ∪ D t), driving the co-evolution of the subsequent algorithm portfolio (Algorithm 1, lines 21–22). 
+
+B. Automatic Construction of Algorithm Portfolio 
+
+Inspired by the EoH-S framework [8], we formulate port-folio construction as an evolutionary process, defining the population as the actively maintained algorithm portfolio. The overarching goal is to evolve an algorithm portfolio with strong generalization performance, whose member algorithms exhibit diverse and mutually compensatory behaviors. To achieve this, the framework employs two core mechanisms, namely evolutionary operations for generating novel heuristics and a portfolio maintenance strategy for evaluating and updating the population. 
+
+1) LLM-Driven Algorithm Evolutionary Operations: Dur-ing each iteration, parent algorithms are selected to generate novel child heuristics via two evolutionary operations: the complementary operation and the mutation operation. The complementary operation executes targeted recombination of two mutually compensatory parent heuristics, aiming to syn-thesize novel algorithms that overcome individual weaknesses and exhibit synergistic search behaviors. In parallel, the muta-tion operation injects structural variations into existing parent heuristics to continuously foster overall algorithmic diversity. The execution of the complementary operation begins by pairing mutually complementary parent heuristics. To facilitate this pairing, we employ a parent selection mechanism executed in two stages. In the first stage, the first parent Ai is sampled using rank-based stochastic selection, where the selection probability is proportional to the inverse of the greedy-selection rank R(A) defined via Eq. (10). In the second stage, the second parent Aj is selected from the remaining candidates based on a complementary gain criterion. Specifically, each candidate is ranked according to its complementary gain with respect to Ai, defined as: 
+
+G(Ai, A j ) = min {F ({Ai}, Dtrain ), F ({Aj }, Dtrain )}− F ({Ai, A j }, Dtrain ), (9) where F (·) denotes portfolio-level performance. A larger 
+
+G(Ai, A j ) indicates stronger complementarity. Following parent selection, we assign specific roles to the parents for the LLM prompt (illustrated in Fig. 2). The parent with relatively poorer individual performance is designated as the Reference Algorithm to expose latent algorithmic weak-nesses. The better-performing parent serves as the Comple-mentary Algorithm, providing the primary code structure. The LLM then synthesizes a new heuristic by structurally modify-ing the Complementary Algorithm while explicitly addressing the deficiencies highlighted by the Reference Algorithm. This ensures that the generated algorithms are not mere local refine-ments but genuinely exhibit complementary search behaviors. Additionally, the mutation operation targets individual heuristics to increase exploration. The parent algorithm is sampled with probability inversely proportional to its greedy-selection rank. Taking this selected parent as input, the LLM 
+
+Prompt Template: Algorithm Complementary Opera-tion   
+
+> {user generator }
+> Below are two complementary functions. They excel in different scenarios or handle different aspects of the problem.
+> [Reference Algorithm Description]
+> {worse algorithm }
+> [Reference Algorithm Code]
+> {worse code }
+> [Complement Seed Algorithm Description]
+> {better algorithm }
+> [Complement Seed Code]
+> {better code }
+> [Complementarity Reflection]
+> {reflection }
+> [Complementary Code]
+> Please write a new function ‘ {func name }v2’ which serves as a stronger complementary algorithm to the Reference Algo-rithm, according to the reflection. Return ‘[Algorithm Description]’, and one final Python code block.
+> Fig. 2. Prompt for algorithm complementary operation.
+
+integrates mutation logic into its structural framework to explore new regions within the algorithmic design space. This process introduces novel algorithmic components and alters existing search trajectories, thereby preventing premature con-vergence. To guide evolutionary search, the framework incorporates the reflection mechanism. Rather than evaluating parent heuris-tics in isolation, this mechanism analyzes sampled histori-cal search trajectories and the current parent. This process generates high-level conceptual hints for refining candidate heuristic structures. The exact prompt formulations driving these components are documented in the Supplement. 
+
+2) Algorithm Portfolio Construction: During the initializa-tion phase, we prompt the LLM to generate a diverse candidate pool C. The candidates are evaluated on the augmented training dataset Dtrain . We then construct the portfolio of size K
+
+using greedy selection [8]. The portfolio is initialized with the candidate in C that achieves the best individual performance on Dtrain . Subsequently, at each step h = 1 , . . . , K − 1, the candidate with the largest marginal gain is added: 
+
+∆h(A) = F
+
+
+
+A(h), Dtrain 
+
+− F
+
+
+
+A(h) ∪ { A}, Dtrain 
+
+,A(h+1) = arg max 
+
+> A∈C\ A(h)
+
+∆h(A).
+
+(10) The selection order defines the greedy-selection rank 
+
+R(A(h)) = h for h = 1 , . . . , K , where a lower rank indi-cates a larger marginal contribution. During parent selection, portfolio members are sampled with probabilities proportional to 1/R (A), thereby favoring algorithms with larger marginal 7
+
+contributions. To manage the integration of newly generated algorithms while strictly maintaining a fixed portfolio capacity K, a greedy replacement strategy is implemented. The replacement gain of substituting an existing algorithm Ai with a novel candidate Anew is formulated as: 
+
+∆rep (i; Anew ) = F (At, Dtrain )
+
+− F (( At \ { Ai}) ∪ { Anew }, Dtrain ). (11) The new candidate replaces the incumbent algorithm that yields the largest replacement gain. The replacement is per-formed only when this gain is positive, after which the greedy-selection ranks R(A) are recomputed; otherwise, the portfolio remains unchanged. If multiple incumbents yield the same gain, the one with poorer individual performance, measured by a higher mean objective value, is replaced. This update maintains the fixed portfolio size while progressively improving portfolio-level performance and complementarity (Algorithm 1, Step 2.2). IV. A LGORITHM -S PECIFIC INSTANTIATIONS OF 
+
+PERTURBATION 
+
+The perturbation operator Pξ in Eq. (5) acts on the heuristic matrix M = H(x, s ), which guides the decisions of the complete algorithm A = B[H]. We instantiate this mechanism for three representative backbones: Greedy Constructive, Ant Colony Optimization (ACO), and Guided Local Search (GLS). For each solver setting, the backbone B remains fixed and defines the overall solution procedure, whereas the LLM con-structs and evolves only the heuristic component H. Perturbing 
+
+M therefore changes the heuristic guidance used at each solver state without modifying the underlying construction or search process. The following subsections specify M and its role for each backbone. 
+
+A. Greedy Constructive Algorithms 
+
+Greedy algorithms iteratively build solutions by selecting candidates c ∈ Ct based on a heuristic priority matrix Mt.Rather than altering the underlying greedy selection rule, our matrix-level perturbation structurally modulates these relative priorities. The perturbed selection becomes: 
+
+ec∗ = arg max 
+
+> c∈Ct
+
+Pξ (Mt) 
+
+> c
+
+(12) If this perturbation yields a significantly superior final solution, it implies the instance is highly sensitive to the heuristic’s local scoring logic. Such instances are highly valuable for evaluation, as they explicitly expose critical vulnerabilities in standard greedy decision-making. 
+
+B. Ant Colony Optimization (ACO) 
+
+In ACO [36], the search is guided by both dynamic pheromone trails τij and a static heuristic information matrix 
+
+M . Under our framework, pheromone updates proceed con-ventionally based on search history, but the heuristic matrix is                      
+
+> TABLE I HYPERPARAMETER SETTINGS OF PIAC.
+> Parameter Symbol Value Framework
+> Max iterations T4
+> Algorithm evolution
+> Portfolio size K5# Algorithm evals/iter F E a100
+> Data evolution
+> Initial dataset size |D 0|8# Mutator evals/iter F E m30 # Executions per mutator Nexec 4# Augmented instances/iter Naug 8# Noise perturbations Np64 Noise strength σ0.01
+
+replaced by its perturbed counterpart Pξ (M ). The perturbed candidate-edge weight is computed as: 
+
+fWij = τ αij [Pξ (M )] βij (13) where α and β balance the pheromone and heuristic influences. By altering the ants’ sampling distribution, we can evaluate the instance’s underlying difficulty. If the perturbed matrix enables ACO to escape local optima and find better solutions, the instance serves as a valuable stress test, revealing cases where the original heuristic inappropriately biased the search trajectory. 
+
+C. Guided Local Search (GLS) 
+
+In GLS [37], the matrix M governs edge-level penalty selection to help the search escape local minima. Applying 
+
+Pξ directly reshapes the utility landscape dictating this penal-ization. The target edge (i∗, j ∗) in the current solution S is selected via: 
+
+(i∗, j ∗) = arg max 
+
+> (i,j )∈E(S)
+
+[Pξ (M )] ij 
+
+1 + pij 
+
+(14) where pij is the accumulated penalty. Following this selection, GLS updates the penalty-adjusted cost matrix (i.e., Wij =
+
+cij + kGLS pij ) conventionally. A high potential gain from this perturbation reveals that M
+
+originally formed a “utility trap” by overvaluing suboptimal edges for this specific instance. Incorporating these highly sensitive, vulnerable instances into training forces the evolu-tionary search to circumvent such traps, ultimately driving the evolution of a more generalizable search policy. V. E XPERIMENTS 
+
+We conduct extensive experiments to evaluate the pro-posed method on two representative combinatorial optimiza-tion problems: the Traveling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP). Our experi-ments are designed to answer four research questions ( RQs ): 
+
+RQ1 : Does the proposed framework construct an algorithm portfolio that generalizes across different data distri-butions? 8             
+
+> TABLE II PERFORMANCE OF VARIOUS METHODS ON CONSTRUCTIVE HEURISTIC DESIGN FOR SYNTHETIC TSP AND CVRP ACROSS SIX INSTANCE DISTRIBUTIONS .VALUES ON THE LEFT AND RIGHT UNDER EACH DISTRIBUTION REPRESENT THE OBJECTIVE VALUE (O BJ )AND OPTIMALITY GAP (G AP ), RESPECTIVELY
+> (LOWER IS BETTER ). B OLD VALUES INDICATE THE BEST RESULT AND ANY RESULTS NOT SIGNIFICANTLY DIFFERENT FROM IT (PAIRED WILCOXON SIGNED -RANK TEST WITH HOLM CORRECTION ,α= 0 .05 ).
+
+TSP Constructive Heuristic 
+
+Method Rue Explosion Implosion Expansion Cluster Grid Avg FunSearch 12.91 20.75% 10.27 22.44% 10.83 24.49% 10.59 21.99% 9.71 23.15% 13.11 18.14% 21.83% EoH 12.49 16.84% 10.05 19.83% 10.50 20.78% 10.26 18.26% 9.47 20.08% 12.75 14.83% 18.44% ReEvo 12.73 19.05% 10.15 21.04% 10.63 22.19% 10.41 19.92% 9.49 20.21% 12.98 16.97% 19.90% MCTS-AHD 12.97 21.31% 10.43 24.38% 10.81 24.27% 10.60 22.12% 9.76 23.71% 13.21 19.05% 22.47% EoH-S 12.25 14.54% 9.73 16.00% 10.09 15.99% 9.97 14.93% 9.07 14.88% 12.51 12.69% 14.83% PIAC (RND) 12.05 12.69% 9.67 15.32% 9.92 14.07% 9.85 13.48% 8.98 13.82% 12.37 11.45% 13.47% PIAC (GAP) 12.01 12.30% 9.66 15.16% 9.90 13.82% 9.80 12.99% 8.94 13.29% 12.34 11.14% 13.12% PIAC 11.93 11.54% 9.49 13.23% 9.80 12.68% 9.70 11.84% 8.85 12.23% 12.20 9.90% 11.90% CVRP Constructive Heuristic 
+
+Method Rue Explosion Implosion Expansion Cluster Grid Avg FunSearch 34.20 24.45% 32.60 22.41% 31.48 23.62% 30.54 21.87% 31.45 19.89% 34.31 25.74% 23.00% EoH 34.37 25.00% 32.47 21.94% 31.15 22.38% 30.63 22.23% 31.20 18.92% 34.54 26.53% 22.83% ReEvo 34.57 25.77% 33.05 24.21% 31.66 24.33% 31.14 24.30% 31.65 20.59% 34.47 26.20% 24.23% MCTS-AHD 34.77 26.54% 33.06 24.44% 31.78 24.96% 31.18 24.53% 31.84 21.52% 34.67 27.08% 24.85% EoH-S 33.67 22.55% 31.94 20.22% 30.60 20.32% 30.24 20.74% 30.58 16.69% 33.58 23.06% 20.60% PIAC (RND) 33.34 21.24% 31.43 17.99% 30.23 18.78% 29.69 18.47% 30.49 16.17% 33.33 22.09 % 19.12% PIAC (GAP) 33.19 20.78% 31.21 17.16 % 30.05 18.07 % 29.52 17.79 % 30.36 15.72 % 33.25 21.81 % 18.56% PIAC 33.07 20.36% 31.10 16.77% 29.97 17.79% 29.46 17.59% 30.30 15.48% 33.23 21.76% 18.29% 
+
+RQ2 : Do the two proposed components effectively con-tribute to the overall performance of the framework? 
+
+RQ3 : What is the relationship between the potential gain and the optimality gap? 
+
+RQ4 : Do the newly generated valuable instances contin-uously improve the performance of the algorithm portfolio? 
+
+A. Experimental Setup 
+
+Datasets. For each problem class, the training instances are generated under the random-distribution setting adopted in ReEvo. The test instances follow Bossek et al. [38], [39], where structured locations are generated from random uni-form Euclidean (Rue) point clouds by simulating five spatial patterns: explosion, implosion, cluster, expansion, and grid. The same location distributions are used for both TSP and CVRP. For all synthetic instances, the problem size is fixed to 
+
+n = 200 . In this work, we use 8 training instances for each problem class and generate 100 test instances for each spatial pattern. 
+
+Evaluation Metric. We report the optimality gap to evaluate the solution quality of each method. For each instance x, the gap is computed with respect to a reference objective value. Specifically, we use LKH [40] for TSP instances and HGS [41] for CVRP instances to obtain the reference objective value. Given the objective value F (A, x ) obtained by the algorithm portfolio A on instance x and the reference objective value 
+
+fref (x), the optimality gap is defined as: 
+
+Gap( A, x ) = F (A, x ) − fref (x)
+
+fref (x) × 100% . (15) Lower gap values indicate better performance. 
+
+Compared Methods. We compare the proposed method with representative LLM-based baselines, specifically Fun-Search [27], EoH [28], ReEvo [29], MCTS-AHD [31], and EoH-S [8]. Direct comparison with traditional frameworks like CEPS remains infeasible because they optimize continuous parameter spaces rather than discrete heuristics. To indirectly evaluate our instance evolution against CEPS strategies, we introduce two strong baselines within the algorithm space, as detailed below:  
+
+> •
+
+PIAC (RND): This variant replaces the LLM-based mutator with a fixed random (RND) perturbation operator, while retaining potential gain as the instance evaluation metric.  
+
+> •
+
+PIAC (GAP): This variant retains the LLM-based mu-tator but replaces potential gain with the Optimality Gap 
+
+(evaluated via strong solvers) as the instance evaluation metric. Since the base training dataset remains identical during the initial 100 evaluations, we directly reuse the algorithm port-folio evolved by the full PIAC at F E a = 100 to ensure an identical starting point for all comparisons. 
+
+Implementation Details. Unless otherwise specified, we employ DeepSeek-V3.2 [42] as the backbone LLM for both algorithm and generator queries. For the algorithm evolution process, the total number of algorithm evaluations is config-ured to T · F E a = 400 . Specifically, after every F E a = 100 
+
+algorithm evaluations, the data evolution process conducts 30 instance mutator evaluations. From these generated candidates, 8 newly constructed problem instances are selected and in-corporated into the training set for algorithm evaluation. The primary hyperparameters utilized in our framework are sum-marized in Table I. To ensure a fair comparison, these same hyperparameter settings are applied across all the baseline 9               
+
+> TABLE III PERFORMANCE COMPARISON OF DIFFERENT METHODS FOR DESIGNING HEURISTICS WITHIN TWO TSP BACKBONES : ACO AND GLS, ACROSS SIX INSTANCE DISTRIBUTIONS . V ALUES ON THE LEFT AND RIGHT UNDER EACH DISTRIBUTION REPRESENT THE OBJECTIVE VALUE (O BJ )AND OPTIMALITY GAP (G AP ), RESPECTIVELY (LOWER IS BETTER ). B OLD VALUES INDICATE THE BEST RESULT AND ANY RESULTS NOT SIGNIFICANTLY DIFFERENT FROM IT (PAIRED WILCOXON SIGNED -RANK TEST WITH HOLM CORRECTION ,α= 0 .05 ).
+
+ACO 
+
+Method Rue Explosion Implosion Expansion Cluster Grid Avg FunSearch 11.88 11.06% 9.45 12.55% 9.63 10.68% 9.66 11.29% 8.71 10.28% 12.24 10.26% 11.02% EoH 11.96 11.81% 9.49 13.12% 9.71 11.61% 9.69 11.71% 8.77 11.11% 12.30 10.81% 11.70% ReEvo 12.20 14.06% 9.70 15.64% 10.00 15.01% 9.89 14.07% 9.07 15.04% 12.50 12.66% 14.41% MCTS-AHD 11.98 12.02% 9.52 13.39% 9.75 12.10% 9.71 11.97% 8.78 11.24% 12.33 11.06% 11.96% EoH-S 11.78 10.16% 9.36 11.49% 9.58 10.12% 9.58 10.40% 8.64 9.49% 12.16 9.51% 10.20% PIAC (RND) 11.60 8.49% 9.19 9.53% 9.45 8.61% 9.42 8.61% 8.56 8.52% 11.97 7.89% 8.61% PIAC (GAP) 11.66 9.01% 9.22 9.93% 9.47 8.90% 9.46 9.05% 8.55 8.35% 12.01 8.23% 8.91% PIAC 11.56 8.06% 9.16 9.11% 9.37 7.67% 9.40 8.32% 8.46 7.22% 11.94 7.61% 8.00% GLS 
+
+Method Rue Explosion Implosion Expansion Cluster Grid Avg FunSearch 10.714 0.175% 8.402 0.090% 8.714 0.173% 8.698 0.247% 7.899 0.128% 11.124 0.209% 0.170% EoH 10.715 0.183% 8.405 0.120% 8.716 0.202% 8.700 0.266% 7.903 0.172% 11.128 0.241% 0.197% ReEvo 10.716 0.194% 8.405 0.124% 8.714 0.182% 8.699 0.261% 7.902 0.170% 11.123 0.196% 0.187% MCTS-AHD 10.715 0.185% 8.404 0.114% 8.712 0.157% 8.696 0.228% 7.903 0.178% 11.126 0.224% 0.181% EoH-S 10.701 0.057% 8.397 0.024% 8.703 0.055% 8.683 0.074% 7.893 0.051% 11.110 0.077% 0.056% PIAC (RND) 10.699 0.041 % 8.397 0.026 % 8.703 0.049 % 8.683 0.072% 7.893 0.054% 11.107 0.055% 0.050% 
+
+PIAC (GAP) 10.699 0.042% 8.396 0.022% 8.702 0.043% 8.682 0.065% 7.891 0.029% 11.108 0.060% 0.044% 
+
+PIAC 10.699 0.040% 8.396 0.018% 8.702 0.047% 8.685 0.098% 7.892 0.036% 11.108 0.063% 0.050% 
+
+methods introduced above. Each experiment is independently repeated 3 times, and we report the average performance across these runs. 
+
+B. Overall Results 1) Performance on Diverse Problem Distributions: Table II reports the performance of all evaluated methods using the Greedy Construction backbone on synthetic TSP and CVRP instances. To evaluate generalization capabilities, all methods are trained exclusively on the rue training dataset and sub-sequently tested across six distinct distributions, comprising the in-distribution rue instances and five additional unseen distributions. For constructive heuristics, PIAC consistently achieves the lowest optimality gaps, demonstrating strong generalization well beyond the training set. Notably, PIAC significantly outperforms single-algorithm baselines, including EoH, ReEvo, and MCTS. For instance, on the constructive TSP, PIAC achieves an average gap of 11 .90% , substantially lower than those of EoH ( 18 .44% ), ReEvo ( 19 .90% ), and MCTS ( 22 .47% ). This confirms that a complementary portfo-lio of heuristics is inherently more effective than discovering a single best algorithm. Furthermore, compared to EoH-S, PIAC achieves a 19 .76% relative reduction in the average gap on TSP (from 14 .83% to 11 .90% ) and an 11 .21% relative reduction on CVRP (from 20 .60% to 18 .29% ). While EoH-S also constructs an algorithm portfolio using fixed instances, PIAC dynamically co-evolves the complementary algorithms alongside valuable synthesized data. These outcomes directly answer RQ1 by demonstrating that our co-evolutionary frame-work constructs an algorithm portfolio capable of robustly gen-eralizing across diverse data distributions, rather than simply overfitting to the initial rue training set. This robust generalization extends across diverse algo-rithms, as shown in Table III. On TSP ACO, PIAC reduces the average gap from 10 .20% (EoH-S) to 8.00% . For TSP GLS, where baseline methods already achieve near-zero gaps and inherently limit further improvements, PIAC continues to outperform EoH-S, successfully reducing the average gap from 
+
+0.056% to 0.050% .To further validate generalization capabilities, we bench-mark the portfolios on standard public datasets, specifically TSPLib [9] for TSP and CVRPLib [10] for CVRP. As shown in Table IV, PIAC attains the lowest optimality gap on TSPLib, decreasing it from 13 .67% (EoH-S) to 11 .79% . On CVRP, PIAC secures the top rank across 8 of the 10 CVRPLib subsets and places second on the remaining two, dropping the overall average gap to 24 .53% compared to the 29 .88% achieved by EoH-S. Collectively, these findings directly answer RQ1 by demonstrating that the proposed co-evolutionary framework successfully constructs algorithm portfolios capable of robust generalization across diverse data distributions. 
+
+2) Effectiveness of the Proposed Components: To answer 
+
+RQ2 , we conduct an ablation study to validate the core mechanisms of PIAC. To isolate the contributions of our co-evolutionary design, we evaluate the full framework against two strong internal variants. First, we assess the impact of the LLM-driven instance generation by introducing PIAC (RND). This variant replaces the LLM-constructed mutator with a fixed random perturba-tion operator while retaining the proposed potential gain for instance evaluation. The evaluation reveals that the full PIAC outperforms the PIAC (RND) baseline, reducing the average optimality gap from 13 .47% to 11 .90% on the constructive TSP and from 19 .12% to 18 .29% on the constructive CVRP. This robust improvement demonstrates that LLM-evolved mu-10                                                                 
+
+> TABLE IV PERFORMANCE ON PUBLIC BENCHMARK INSTANCES . L OWER VALUES ARE BETTER . B OLD VALUES INDICATE THE BEST RESULT AND ANY RESULTS NOT SIGNIFICANTLY DIFFERENT FROM IT (PAIRED WILCOXON SIGNED -RANK TEST WITH HOLM CORRECTION ,α= 0 .05 ).
+> Benchmarks ReEvo EoH-S PIAC (RND) PIAC (GAP) PIAC
+> TSPLib 19.59% 13.67% 13.28% 12.92% 11.79%
+> CVRPLib A 29.60% 25.74% 25.36% 24.02% 22.97%
+> CVRPLib B 32.37% 24.75% 17.90% 18.10% 16.97%
+> CVRPLib CMT 39.17% 33.34% 34.65% 32.15% 32.95%
+> CVRPLib F 50.70% 44.43% 44.35% 36.85% 33.97%
+> CVRPLib Golden 26.82% 22.86% 22.22% 22.69% 20.58%
+> CVRPLib Li 27.89% 25.49% 21.42% 20.73% 18.26%
+> CVRPLib M 38.65% 36.17% 34.31% 33.21% 33.75%
+> CVRPLib P 25.21% 21.77% 21.39% 20.71% 20.22%
+> CVRPLib tai 51.52% 43.64% 33.57% 30.93% 28.53%
+> CVRPLib X 24.05% 20.65% 18.04% 17.76% 17.12%
+
+tators successfully explore a broader data space to effectively enhance generalization. Second, we evaluate the effectiveness of the instance eval-uation metric by comparing our full framework against PIAC (GAP). This variant retains the LLM mutator but relies on the traditional optimality gap evaluated via strong external solvers to assess generated instances. The full framework improves the average gap from 13 .12% to 11 .90% on the TSP Constructive Heuristic and from 8.91% to 8.00% on TSP ACO without requiring reference solvers. This advantage arises because potential gain exposes suboptimal decision boundaries, precisely targeting high-value instances that reveal latent algorithmic weaknesses rather than simply selecting universally hard problems. Collectively, these findings directly answer RQ2 by con-firming that both the LLM-driven mutator evolution and the potential-aware metric contribute to constructing robust algo-rithm portfolios. 
+
+3) Time Cost Analysis: To evaluate the computational effi-ciency of the proposed metric, we compare the time cost of potential gain against the traditional Opt Gap. We evaluate 120 Rue problem instances using a reference algorithm portfolio constructed after 100 function evaluations. The optimal objec-tives for Opt Gap are computed using default configurations of LKH for TSP and HGS for CVRP. Both metrics are computed using 64 parallel processes. Table V details the evaluation results. Regarding the time cost, the potential gain demonstrates highly competitive ef-ficiency. With the sole exception of TSP Constructive, where Opt Gap holds a minor computational edge, the proposed met-ric matches or significantly accelerates the evaluation process across all other paradigms. Most notably on CVRP Construc-tive instances, potential gain requires only 9.46 seconds, which is substantially faster than the 46.35 seconds consumed by Opt Gap. For both TSP ACO and TSP GLS, the execution times of the two metrics are strictly competitive and closely matched. Unlike Opt Gap, whose computational overhead fluctu-ates with external reference solvers, potential gain avoids these dependencies. By relying on controlled perturbations, its evaluation time is bounded by the execution time of the algorithm itself. Empirical results show that the evaluation cost of potential gain remains relatively stable.               
+
+> TABLE V COST ANALYSIS OF POTENTIAL GAIN VS OPT GAP . T HE REPORTED VALUES ARE COMPUTATIONAL TIME IN SECONDS .
+> Problem Potential Gain / s Opt Gap / s
+> TSP Constructive 8.91 3.59
+> CVRP Constructive 9.46 46.35 TSP ACO 16.63 17.46 TSP GLS 8.28 6.37
+
+C. Relationship Between Potential Gain and Optimality Gap 
+
+To address RQ3 , we investigate whether the proposed po-tential gain positively correlates with the hardness metric. To ensure a fair evaluation, we freeze the algorithm portfolio (PAP) after F E a = 100 evaluations for each problem domain (TSP constructive and CVRP constructive heuristics). We then use this static PAP to evaluate all problem instances generated by the LLM-evolved mutators. This setup ensures that instance hardness is measured against a consistent algorithmic baseline, isolating the evaluation from the dynamics of a continuously evolving portfolio. For each training instance i, let vi denote its potential gain and gi denote its optimality gap, both measured using the static PAP. We quantify their statistical relationship via the Pearson correlation coefficient: 
+
+ρv,g =
+
+PNi=1 (vi − ¯v)( gi − ¯g)
+
+qPNi=1 (vi − ¯v)2
+
+qPNi=1 (gi − ¯g)2
+
+, (16) where N is the total number of evaluated instances, and ¯v and 
+
+¯g are the sample means of the potential gains and optimality gaps, respectively. As illustrated in Figure 3, potential gain is positively asso-ciated with the optimality gap. The Pearson correlation coef-ficients are 0.7445 for TSP and 0.5230 for CVRP, indicating strong and moderate positive correlations, respectively. These results suggest that harder instances tend to exhibit greater improvement potential. However, some hard instances show only limited improvement after perturbation. The potential gain metric therefore favors instances with greater potential for improvement, rather than simply those with large optimality gaps. As a result, many selected instances have both high potential gains and large optimality gaps, without requiring reference solutions during instance evaluation. These results answer RQ3 by showing that potential gain is positively correlated with instance hardness while capturing a distinct, improvement-oriented signal rather than merely reproducing the optimality gap. 
+
+D. Performance Dynamics of the Algorithm Portfolio 
+
+To answer RQ4 regarding whether the introduction of newly generated valuable instances can continuously improve performance, we track the performance dynamics of the al-gorithm portfolios throughout the evolution process for the TSP constructive and CVRP constructive heuristics. In our experimental setup, the portfolio is initially trained on the initial dataset of 8 instances. Subsequently, PIAC dynami-cally expands the training dataset by introducing 8 newly 11 0.075 0.100 0.125 0.150 0.175 0.200 0.225 
+
+> Opt Gap
+> 0.00 0.02 0.04 0.06 0.08
+> Potential Gain
+> Generated Selected
+
+(a) TSP 0.00 0.05 0.10 0.15 0.20 0.25 0.30  
+
+> Opt Gap
+> 0.00 0.01 0.02 0.03 0.04 0.05 0.06
+> Potential Gain
+> Generated Selected
+
+(b) CVRP 
+
+Fig. 3. Relationship between the potential gain and the optimality gap on generated instances. 50 100 150 200 250 300 350 400 
+
+> # Evaluations
+> 12.0 12.2 12.4 12.6 12.8 13.0
+> Obj.
+> EoH-S PIAC PIAC (RND) PIAC (GAP)
+
+(a) TSP-Rue 50 100 150 200 250 300 350 400  
+
+> # Evaluations
+> 9.0 9.2 9.4
+> Obj.
+> EoH-S PIAC PIAC (RND) PIAC (GAP)
+
+(b) TSP-Cluster 50 100 150 200 250 300 350 400  
+
+> # Evaluations
+> 33.0 33.5 34.0 34.5
+> Obj.
+> EoH-S PIAC PIAC (RND) PIAC (GAP)
+
+(c) CVRP-Rue 50 100 150 200 250 300 350 400  
+
+> # Evaluations
+> 30.4 30.6 30.8 31.0 31.2
+> Obj.
+> EoH-S PIAC PIAC (RND) PIAC (GAP)
+
+(d) CVRP-Cluster 
+
+Fig. 4. Performance curves under different numbers of algorithm evaluations. Lower objective values indicate better performance. 
+
+synthesized problem instances every 100 algorithm evaluations (F E ). Figure 4 illustrates the performance of the algorithm portfolios across different test data distributions, including TSP-Rue, TSP-Cluster, CVRP-Rue, and CVRP-Cluster. On the TSP test datasets (TSP-Rue and TSP-Cluster), a clear divergence in search dynamics emerges. During the initial 100 algorithm evaluations, EoH-S and PIAC achieve highly comparable performance, as both methods rapidly reduce the objective values. However, the improvement of EoH-S slows down significantly thereafter, reaching a performance plateau after 200 evaluations with limited further gains. In contrast, PIAC sustains a continuous downward trend throughout the entire evaluation process. By dynamically introducing valuable training data, PIAC effectively avoids early convergence and consistently refines the algorithm portfolio. Transitioning to the CVRP test datasets, although both EoH-S and PIAC achieve substantial performance gains on CVRP-Rue, PIAC maintains a higher rate of improvement. Furthermore, a dis-tinct divergence occurs in the later stages across different distributions. While EoH-S continues to achieve considerable gains on CVRP-Rue after 200 evaluations, its improvement on the CVRP-Cluster distribution becomes severely limited. A similar stagnation is observed for PIAC (RND) on CVRP-Cluster. This limitation arises because PIAC (RND) intro-duces instances from a fixed random distribution, failing to adequately cover the structural properties of the Cluster distribution. In contrast, by leveraging LLMs to construct diverse instance mutators, both PIAC (GAP) and the full PIAC ensure that the generated training data covers a significantly broader problem space, enabling them to continuously enhance performance on the Cluster distribution. In summary, the evaluation dynamics explicitly answer RQ4 and confirm that continuously introducing newly generated valuable instances successfully drives the sustained performance improvement of the algorithm portfolio. 
+
+E. Foundation Model Analysis 
+
+To analyze PIAC’s performance across different LLMs, we evaluate PIAC using DeepSeek-V3.2 [42], DeepSeek-V4 [43], Kimi-K2.6 [44], and GPT-4.1 mini [45]. As shown in Table VI, the quality of the constructed algorithm portfolios consistently improves as the capability of the underlying model increases. DeepSeek-V4 achieves the best overall performance, reducing the optimality gaps to 10.08 and 10.31 on the Rue and Cluster instances, respectively. 
+
+TABLE VI PERFORMANCE COMPARISON OF DIFFERENT LLM S ON RUE AND 
+
+CLUSTER INSTANCES USING PIAC. 
+
+LLM Rue Cluster 
+
+DeepSeek-V3.2 [42] 11.54% 12.23% DeepSeek-V4 [43] 10.08% 10.31% 
+
+Kimi-K2.6 [44] 17.72% 17.68% GPT-4.1 mini [45] 13.63% 16.09% 
+
+F. Ablation Study: Complementary Operation 
+
+We conduct an ablation study to evaluate the effectiveness of the proposed Complementary Operation in guiding the evolutionary PAP algorithm. The experiments are performed on a fixed training dataset with 100 algorithm evaluations per portfolio. We compare three strategies: (i) random crossover operation , where parent algorithms are randomly paired from the current algorithm pool; (ii) distance-based crossover op-eration , where parent pairing is guided by score-list distance; 12 
+
+TABLE VII ABLATION STUDY ON COMPLEMENTARY OPERATION . L OWER VALUES ARE BETTER . V ALUES IN PARENTHESES INDICATE THE PERFORMANCE DEGRADATION COMPARED WITH PIAC. 
+
+Method Rue Cluster 
+
+EoH-S 18.71% 19.07% PIAC w/ random 17.52% (+1.63%) 18.52% (+2.25%) PIAC w/ distance 16.47% (+0.58%) 17.04% (+0.77%) PIAC 15.89% 16.27% 
+
+and (iii) the PIAC method with the proposed complementary crossover operation, which integrates two-stage parent selec-tion and complementary LLM prompting. As shown in Table VII, the PIAC variant using random crossover operation exhibits a clear performance degradation compared with the original PIAC, with Rue increasing from 15.89% to 17.52% and Cluster from 16.27% to 18.52%. The distance-based crossover operation improves over the random variant but still underperforms the original PIAC, indicating that score-list distance only captures partial diversity and fails to fully exploit complementary strengths. The origi-nal PIAC, leveraging the proposed complementary crossover operation with two-stage parent pairing and complementary LLM prompting, consistently achieves the best results. This demonstrates that explicitly guiding LLM-based crossover with complementary parent algorithms produces more diverse and synergistic heuristic rules, leading to superior algorithm portfolios. VI. C ONCLUSION 
+
+This work introduced PIAC, a potential-aware co-evolutionary framework for automated algorithm portfolio construction. PIAC advances both problem-instance evaluation and generation through the potential gain metric and diverse LLM-evolved instance mutators, respectively. Specifically, by perturbing generated algorithms, potential gain quantifies achievable performance gains to identify instances with high quality, thereby bolstering portfolio generalization without relying on high-quality reference solutions. Simultaneously, the framework leverages LLMs to synthesize diverse in-stance mutators, expanding coverage across the problem space beyond hand-crafted operators. Together, these components guide the co-evolution of training instances and complemen-tary portfolio members. Extensive experiments on the TSP and CVRP across six data distributions demonstrate that PIAC consistently outperforms state-of-the-art LLM-based portfolio construction methods. Ultimately, PIAC successfully extends the co-evolutionary paradigm into the domain of LLM-driven automated algorithm portfolio construction. While the current perturbation strategy assumes heuristic algorithms produce matrix-structured outputs, future research will design more universal perturbation schemes to accommodate arbitrary de-cision representations. REFERENCES [1] B. A. Huberman, R. M. Lukose, and T. Hogg, “An economics approach to hard computational problems,” Science , vol. 275, no. 5296, pp. 51–54, 1997. [2] C. P. Gomes and B. Selman, “Algorithm portfolios,” Artificial Intelli-gence , vol. 126, no. 1-2, pp. 43–62, 2001. [3] D. Wolpert and W. Macready, “No free lunch theorems for optimization,” 
+
+IEEE Transactions on Evolutionary Computation , vol. 1, no. 1, pp. 67– 82, 1997. [4] L. Xu, H. Hoos, and K. Leyton-Brown, “Hydra: Automatically config-uring algorithms for portfolio-based selection,” Proceedings of AAAI ,vol. 24, no. 1, p. 210–216, 2010. [5] M. Lindauer, H. Hoos, K. Leyton-Brown, and T. Schaub, “Automatic construction of parallel portfolios via algorithm configuration,” Artificial Intelligence , vol. 244, pp. 272–290, 2017. [6] F. Liu, Y. Yao, P. Guo, Z. Yang, X. Lin, Z. Zhao, X. Tong, K. Mao, Z. Lu, Z. Wang, M. Yuan, and Q. Zhang, “A systematic survey on large language models for algorithm design,” ACM Comput. Surv. , vol. 58, no. 8, 2026. [7] Y. Zhang, R. Cheng, G. Yi, and K. C. Tan, “A systematic survey on large language models for evolutionary optimization: From modeling to solving,” 2026. [Online]. Available: https://arxiv.org/abs/2509.08269 [8] F. Liu, Y. Liu, Q. Zhang, T. Xialiang, and M. Yuan, “Eoh-s: Evolution of heuristic set using llms for automated heuristic design,” Proceedings of AAAI , vol. 40, no. 43, pp. 37 090–37 098, 2026. [9] G. Reinelt, “Tsplib–a traveling salesman problem library,” ORSA Journal on Computing , vol. 3, no. 4, pp. 376–384, 1991. [10] E. Uchoa, D. Pecin, A. Pessoa, M. Poggi, T. Vidal, and A. Subramanian, “New benchmark instances for the capacitated vehicle routing problem,” 
+
+European Journal of Operational Research , vol. 257, no. 3, pp. 845–858, 2017. [11] K. Tang, S. Liu, P. Yang, and X. Yao, “Few-shots parallel algorithm port-folio construction via co-evolution,” IEEE Transactions on Evolutionary Computation , vol. 25, no. 3, pp. 595–607, 2021. [12] Z. Wang, S. Liu, P. Yang, and K. Tang, “Evolving generalizable parallel algorithm portfolios for binary optimization problems via domain-agnostic instance generation,” IEEE Transactions on Evolutionary Com-putation , pp. 1–1, 2025. [13] J. I. van Hemert, “Evolving combinatorial problem instances that are difficult to solve,” Evolutionary Computation , vol. 14, no. 4, pp. 433– 462, 2006. [14] C. Wang, Z. Yu, S. McAleer, T. Yu, and Y. Yang, “Asp: Learn a universal neural solver!” IEEE Transactions on Pattern Analysis and Machine Intelligence , vol. 46, no. 6, pp. 4102–4114, 2024. [15] J. Branke and C. W. Pickardt, “Evolutionary search for difficult problem instances to support the design of job shop dispatching rules,” European Journal of Operational Research , vol. 212, no. 1, pp. 22–32, 2011. [16] J. Pang, Y. Mei, and M. Zhang, “Balancing effectiveness and struc-tural complexities in scheduling heuristics via multi/many-objective multiform genetic programming,” IEEE Transactions on Evolutionary Computation , pp. 1–1, 2026. [17] T. Guo, Y. Mei, M. Zhang, H. Ding, and W. Du, “Multitree genetic pro-gramming with behavioral semantics for large-scale dynamic air traffic flow management,” IEEE Transactions on Evolutionary Computation ,pp. 1–1, 2026. [18] S. Kadioglu, Y. Malitsky, M. Sellmann, and K. Tierney, “Isac–instance-specific algorithm configuration,” in Proceedings of ECAI . IOS Press, 2010, pp. 751–756. [19] S. Liu, K. Tang, and X. Yao, “Automatic construction of parallel portfolios via explicit instance grouping,” Proceedings of AAAI , vol. 33, no. 01, p. 1560–1567, 2019. [20] X. Wu, Y. Zhong, J. Wu, B. Jiang, and K. C. Tan, “Large language model-enhanced algorithm selection: towards comprehensive algorithm representation,” in Proceedings of IJCAI , ser. IJCAI’24, 2024. [21] X. Wu, J. Wu, Y. Zhou, L. Feng, and K. Tan, “Towards robustness and explainability of automatic algorithm selection,” in ICML , 2025. [22] J. Pei, Y. Mei, J. Liu, M. Zhang, and X. Yao, “Adaptive operator selection for meta-heuristics: A survey,” IEEE Transactions on Artificial Intelligence , vol. 6, no. 8, pp. 1991–2012, 2025. [23] X. Wu, S.-H. Wu, J. Wu, L. Feng, and K. C. Tan, “Evolutionary computation in the era of large language model: Survey and roadmap,” 
+
+IEEE Transactions on Evolutionary Computation , vol. 29, no. 2, pp. 534–554, 2025. [24] C. Jiang, X. Shu, H. Qian, X. Lu, J. Zhou, A. Zhou, and Y. Yu, “LLMOPT: learning to define and solve general optimization problems from scratch,” in Proceedings of ICLR , 2025. 13 
+
+[25] S. Liu, C. Chen, X. Qu, K. Tang, and Y.-S. Ong, “Large language models as evolutionary optimizers,” in IEEE Congress on Evolutionary Computation (CEC) , 2024, pp. 1–8. [26] M. Xu, J. Liu, and Y. S. Ong, “Evospeak: Large language models for in-terpretable genetic programming-evolved heuristics,” IEEE Transactions on Evolutionary Computation , pp. 1–1, 2026. [27] B. Romera-Paredes, M. Barekatain, A. Novikov, M. Balog, M. P. Kumar, E. Dupont, F. J. R. Ruiz, J. S. Ellenberg, P. Wang, O. Fawzi, P. Kohli, and A. Fawzi, “Mathematical discoveries from program search with large language models,” Nature , vol. 625, no. 7995, pp. 468–475, 2024. [28] F. Liu, X. Tong, M. Yuan, X. Lin, F. Luo, Z. Wang, Z. Lu, and Q. Zhang, “Evolution of heuristics: towards efficient automatic algorithm design using large language model,” in Proceedings of ICML , ser. ICML’24, 2024. [29] H. Ye, J. Wang, Z. Cao, F. Berto, C. Hua, H. Kim, J. Park, and G. Song, “Reevo: Large language models as hyper-heuristics with reflective evolution,” in Advances in NeurIPS , 2024. [30] P. V. T. Dat, L. Doan, and H. T. T. Binh, “Hsevo: elevating au-tomatic heuristic design with diversity-driven harmony search and genetic algorithm using llms,” in Proceedings of the Thirty-Ninth AAAI Conference on Artificial Intelligence and Thirty-Seventh Confer-ence on Innovative Applications of Artificial Intelligence and Fifteenth Symposium on Educational Advances in Artificial Intelligence , ser. AAAI’25/IAAI’25/EAAI’25, 2025. [31] Z. Zheng, Z. Xie, Z. Wang, and B. Hooi, “Monte carlo tree search for comprehensive exploration in llm-based automatic heuristic design,” in 
+
+Proceedings of ICML , ser. ICML’25, 2025. [32] J. Liu, Z. Sun, S. Feng, C. Chen, and Y.-S. Ong, “Language model evolu-tionary algorithms for recommender systems: Benchmarks and algorithm comparisons,” IEEE Transactions on Evolutionary Computation , pp. 1– 1, 2025. [33] C. Chen, H. Hong, W. Lin, and K. C. Tan, “A physics-informed evolutionary transfer optimization framework for material design,” in 
+
+Proceedings of CEC , 2025, pp. 1–9. [34] S. Zhang, S. Liu, N. Lu, J. Wu, J. Liu, Y.-S. Ong, and K. Tang, “Llm-driven instance-specific heuristic generation and selection,” 2026. [Online]. Available: https://arxiv.org/abs/2506.00490 [35] S. Liu, K. Tang, and X. Yao, “Generative adversarial construction of parallel portfolios,” IEEE Transactions on Cybernetics , vol. 52, no. 2, pp. 784–795, 2022. [36] H. Ye, J. Wang, Z. Cao, H. Liang, and Y. Li, “DeepACO: Neural-enhanced ant systems for combinatorial optimization,” in Advances in NeurIPS , 2023. [37] F. Arnold and K. S¨ orensen, “Knowledge-guided local search for the vehicle routing problem,” Computers & Operations Research , vol. 105, pp. 32–46, 2019. [38] J. Bossek, P. Kerschke, A. Neumann, M. Wagner, F. Neumann, and H. Trautmann, “Evolving diverse tsp instances by means of novel and creative mutation operators,” in Proceedings of the 15th ACM/SIGEVO Conference on Foundations of Genetic Algorithms , ser. FOGA ’19. Association for Computing Machinery, 2019, pp. 58–71. [39] F. Zhou, A. Lischka, B. Kulcs´ ar, J. Wu, M. H. Chehreghani, and G. La-porte, “Learning for routing: A guided review of recent developments and future directions,” Transportation Research Part E: Logistics and Transportation Review , vol. 202, p. 104278, 2025. [40] K. Helsgaun, “An effective implementation of the lin–kernighan trav-eling salesman heuristic,” European Journal of Operational Research ,vol. 126, no. 1, pp. 106–130, 2000. [41] T. Vidal, “Hybrid genetic search for the cvrp: Open-source implementa-tion and swap* neighborhood,” Computers & Operations Research , vol. 140, p. 105643, 2022. [42] DeepSeek-AI, A. Liu, B. Feng, B. Xue et al. , “DeepSeek-V3 Technical Report,” arXiv e-prints , p. arXiv:2412.19437, 2024. [43] DeepSeek-AI, “DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence,” Technical report, 2026, accessed: 2026-05-31. [Online]. Available: https://huggingface.co/deepseek-ai/ DeepSeek-V4-Pro/blob/main/DeepSeek V4.pdf [44] Kimi Team, Y. Bai, Y. Bao et al. , “Kimi K2: Open Agentic Intelligence,” 
+
+arXiv e-prints , p. arXiv:2507.20534, 2025. [45] OpenAI, J. Achiam, S. Adler et al. , “GPT-4 Technical Report,” arXiv e-prints , p. arXiv:2303.08774, 2023. 1
+
+# Supplementary Material for “Evolving Parallel Algorithm Portfolios via Potential-Aware Instance Generation with LLMs” 
+
+I. P ROMPT DESIGN FOR INSTANCE AND ALGORITHM 
+
+GENERATION 
+
+A. Instance Mutator Prompts 
+
+To generate heterogeneous evaluation instances, we design two prompt types to evolve mutators through genetic opera-tions.  
+
+> •
+
+Mutator Crossover Operation. As shown in Figure 1, this prompt synthesizes an improved instance mutator by integrating the logic of a worse-performing mutator and a better-performing mutator, guided by a targeted reflection on their differences.  
+
+> •
+
+Mutator Mutation Operation. As shown in Figure 2, this prompt generates a novel mutator variant by applying structural perturbations to a single elite mutator based on a prior reflection. 
+
+B. Algorithm Evolution Prompts 
+
+We design four prompt types to support iterative heuristic evolution, including crossover, mutation, and two levels of reflection.  
+
+> •
+
+Algorithm Complementary Operation. As shown in Figure 3, this prompt constructs a complementary algo-rithm by combining the strengths of two heuristics.  
+
+> •
+
+Algorithm Mutation Operation. As shown in Figure 4, this prompt generates diverse variants by perturbing heuristic structures and decision rules.  
+
+> •
+
+Algorithm Complementary Analysis. As shown in Fig-ure 5, this prompt analyzes a reference algorithm and a seed algorithm to extract complementary behaviors.  
+
+> •
+
+Algorithm Long-term Reflection. As shown in Figure 6, this prompt aggregates historical reflections and new insights to guide future heuristic design. II. V ISUALIZATION OF PROBLEM INSTANCES 
+
+This section presents a visual analysis of the generated problem instances to demonstrate the structural diversity and complexity of our benchmark datasets. Visualizing these ge-ometries provides intuitive insights into the spatial char-acteristics and topological variations. We first examine the overall coordinate distributions that form the foundation of our testbed, followed by a detailed visual breakdown of the specific transformations induced by the LLM-based mutators for both the TSP and CVRP. 
+
+A. Visualization of Benchmark Distributions 
+
+The benchmark coordinate datasets for the TSP and CVRP are derived from random uniform Euclidean (Rue) point clouds 
+
+Prompt Template: Mutator Crossover Operation 
+
+{user generator }
+
+[Worse Algorithm Description] 
+
+{worse algorithm }
+
+[Worse Code] 
+
+{func signature0 }{worse code }
+
+[Better Algorithm Description] 
+
+{better algorithm }
+
+[Better Code] 
+
+{func signature1 }{better code }
+
+[Reflection] 
+
+{reflection }
+
+[Improved Code] 
+
+Return [Algorithm Description] , and one final Python code block. Please write an improved function 
+
+{func_name }_v2 , according to the reflection.  
+
+> Fig. 1. Prompt for the instance mutator crossover operation.
+
+Prompt Template: Mutator Mutation Operation 
+
+{user generator }
+
+[Prior Reflection] 
+
+{reflection }
+
+[Algorithm Description] 
+
+{elitist algorithm }
+
+[Code] 
+
+{func signature1 }{elitist code }
+
+[Mutated Code] 
+
+Please write a mutated instance mutation function 
+
+{func_name }_v2 , according to the reflection. Return [Algorithm Description] , and one final Python code block.  
+
+> Fig. 2. Prompt for the instance mutator mutation operation.
+
+subjected to structured transformations. This approach pro-duces five quintessential spatial paradigms: explosion , implo-sion , expansion , cluster , and grid . As demonstrated in Fig. 7, these distributions cover a comprehensive range of topologies, providing a rigorously controlled testbed for evaluating algo-rithmic robustness across diverse spatial conditions. 2
+
+Prompt Template: Algorithm Complementary Opera-tion   
+
+> {user generator }
+> Below are two complementary functions. They excel in different scenarios or handle different aspects of the problem.
+> [Reference Algorithm Description]
+> {worse algorithm }
+> [Reference Algorithm Code]
+> {worse code }
+> [Complement Seed Algorithm Description]
+> {better algorithm }
+> [Complement Seed Code]
+> {better code }
+> [Complementarity Reflection]
+> {reflection }
+> [Complementary Code]
+> Please write a new function ‘ {func name }v2’ which serves as a stronger complementary algorithm to the Reference Algo-rithm, according to the reflection. Return ‘[Algorithm Description]’, and one final Python code block.
+> Fig. 3. Prompt for algorithm complementary operation.
+
+B. LLM-based TSP Instance Mutators 
+
+The instances depicted in Fig. 8 are generated by an en-semble of LLM-based mutators. The figure shows their spatial coordinate projections. A key advantage of utilizing LLMs for mutator construction is their capacity to cover a significantly broader problem instance space. While conventional single-method schemes typically yield structurally homogeneous topologies, the LLM ensemble dynamically combines diverse spatial transformations. As demonstrated by the representative implementation in Fig. 10, these mutators can generate highly heterogeneous instances. These transformations exhibit higher-order spatial regulari-ties compared to purely random perturbations, ensuring that the resulting instances feature non-trivial structural shifts. Fig. 10 shows a representative code snippet of just one such mutator, illustrating how cluster construction, node assign-ment, and geometric transformations are defined in practice. 
+
+C. LLM-based CVRP Instance Mutators 
+
+The instances depicted in Fig. 9 are generated by an en-semble of LLM-based mutators. The figure shows their spatial coordinate projections. These visualizations effectively capture a diverse spectrum of geometric structures, ranging from dense multi-cluster arrangements to dispersed ring layouts. Beyond these macroscopic spatial topologies, the mutators further manipulate customer demands to cover a significantly broader space of problem instances. This concurrent mutation approach ensures that the generated datasets challenge evaluation algo-rithms across multiple structural dimensions rather than just pure spatial variations. As illustrated by the representative implementation in Fig. 12, the underlying generation logic explicitly couples geo-metric transformations with heterogeneous demand reshaping. The mutator dynamically assigns high-variance demands to specific nodes within a cluster and strategically inserts inter-cluster bridge customers with moderate requirement profiles. These multi-dimensional features significantly heighten the overall routing complexity. Consequently, the structured in-stances force algorithms to balance spatial proximity with varying demands, leading to challenging cross-region vehicle allocation decisions under strict capacity constraints. 
+
+Prompt Template: Algorithm Mutation Operation     
+
+> {user generator }
+> [Prior Reflection]
+> {reflection }
+> [Algorithm Description]
+> {algorithm }
+> [Algorithm Code]
+> {code }
+> [Reflection]
+> {reflection }
+> [Improved code]
+> Please write a mutated function ‘ {func name }v2’ according to the reflection. Return [Algorithm Description] and one final Python code block.
+> Fig. 4. Prompt for algorithm mutation operation.
+
+Prompt Template: Complementary Analysis            
+
+> Below are two complementary {func_name }functions for
+> {problem desc }. They excel in different scenarios or handle different aspects of the problem.
+> [Function Description]
+> {func desc }
+> [Reference Algorithm Description]
+> {worse algorithm }
+> [Reference Code]
+> {worse code }
+> [Complement Seed Algorithm Description]
+> {better algorithm }
+> [Complement Seed Code]
+> {better code }
+> [Task]
+> Analyze the unique strengths of each version. Provide a hint for constructing acomplementary algorithm scheme to the Reference Algorithm. Use fewer than 20 words .
+> Fig. 5. Prompt for algorithm complementary analysis. 3
+
+Prompt Template: Long-Term Reflection 
+
+Below is your prior long-term reflection on designing heuristics for {problem desc }.
+
+{prior reflection }
+
+Below are some newly gained insights. 
+
+{new reflection }
+
+Task 
+
+Write constructive hints for designing better heuristics, based on prior reflections and new insights. Use fewer than 50 words . 
+
+> Fig. 6. Prompt for algorithm long-term reflection.
+
+40.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+(a) Rue 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0  
+
+> Y
+
+(b) Explosion 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0  
+
+> Y
+
+(c) Implosion 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0  
+
+> Y
+
+(d) Expansion 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0  
+
+> Y
+
+(e) Cluster 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0  
+
+> Y
+
+(f) Grid 
+
+Fig. 7. Visualization of six TSP instance distributions. 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+Fig. 8. Visualization of TSP instances generated by LLM-based mutators. 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+Customers Depot 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+Customers Depot 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+Customers Depot 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+Customers Depot 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+Customers Depot 0.0 0.2 0.4 0.6 0.8 1.0 
+
+X
+
+0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Y
+
+Customers Depot 
+
+Fig. 9. Visualization of CVRP instances generated by LLM-based mutators. 5 
+
+> 1
+
+import numpy as np  
+
+> 23
+
+def mutate_v2(instance: dict ) -> dict : 
+
+> 4
+
+locations = np.asarray(instance["locations"], dtype= float ).copy()  
+
+> 5
+
+problem_size = len (locations)  
+
+> 67
+
+# Calculate bounding box and center  
+
+> 8
+
+x_min, x_max = np. min (locations[:, 0]), np. max (locations[:, 1])  
+
+> 9
+
+y_min, y_max = np. min (locations[:, 1]), np. max (locations[:, 1])  
+
+> 10
+
+x_center, y_center = (x_min + x_max) / 2, (y_min + y_max) / 2 
+
+> 11 12
+
+# 1. Create 2-4 overlapping clusters (deceptive structure)  
+
+> 13
+
+n_clusters = np.random.randint(2, min (5, problem_size // 4 + 2))  
+
+> 14
+
+# ... [Initialize cluster_centers omitted] ...  
+
+> 15 16
+
+# 2. Assign nodes: 60% to clusters, 40% as outliers  
+
+> 17
+
+cluster_probs = [0.4] + [0.6 / n_clusters] * n_clusters  
+
+> 18
+
+assignments = np.random.choice(n_clusters + 1, size=problem_size, p=cluster_probs)  
+
+> 19 20
+
+# 3. Spatial placement  
+
+> 21
+
+for i in range (problem_size):  
+
+> 22
+
+if assignments[i] == 0: # Outlier  
+
+> 23
+
+# ... [Strategic outlier placement omitted] ...  
+
+> 24
+
+pass  
+
+> 25
+
+else : # Cluster node  
+
+> 26
+
+cx, cy = cluster_centers[assignments[i] - 1]  
+
+> 27
+
+# ... [Radius calculation omitted] ...  
+
+> 28
+
+angle = np.random.uniform(0, 2*np.pi)  
+
+> 29
+
+orig_bias = np.random.uniform(0, 0.3)  
+
+> 30
+
+locations[i, 0] = (1-orig_bias)*(cx + radius*np.cos(angle)) + orig_bias*locations[i, 0]  
+
+> 31
+
+locations[i, 1] = (1-orig_bias)*(cy + radius*np.sin(angle)) + orig_bias*locations[i, 1]  
+
+> 32 33
+
+# 4. Apply non-uniform scaling  
+
+> 34
+
+scale_x = np.random.uniform(0.6, 1.4)  
+
+> 35
+
+scale_y = np.random.uniform(0.6, 1.4)  
+
+> 36
+
+locations[:, 0] = x_center + (locations[:, 0] - x_center) * scale_x  
+
+> 37
+
+locations[:, 1] = y_center + (locations[:, 1] - y_center) * scale_y  
+
+> 38 39
+
+# 5. Apply random rotation (15-45 degrees)  
+
+> 40
+
+angle = np.random.uniform(15, 45) * np.pi / 180  
+
+> 41
+
+cos_a, sin_a = np.cos(angle), np.sin(angle)  
+
+> 42
+
+rotated_x = x_center + (locations[:, 0] - x_center) * cos_a - (locations[:, 1] - y_center) * sin_a  
+
+> 43
+
+rotated_y = y_center + (locations[:, 0] - x_center) * sin_a + (locations[:, 1] - y_center) * cos_a  
+
+> 44
+
+locations[:, 0], locations[:, 1] = rotated_x, rotated_y  
+
+> 45 46
+
+# ... [Ensure no exact duplicates] ...  
+
+> 47 48
+
+return {"problem_size": problem_size, "locations": locations.tolist()} 
+
+Fig. 10. Example of LLM-generated TSP instance mutator. 6 
+
+> 1
+
+import numpy as np  
+
+> 2
+
+from typing import List  
+
+> 34
+
+def priority_v2(current_node: int , unvisited_nodes: List[ int ], distance_matrix: np.ndarray) -> List[ 
+
+float ]:  
+
+> 5
+
+"""  
+
+> 6
+
+Priority function for TSP constructive heuristic emphasizing cluster linking and frontier expansion.  
+
+> 78
+
+Args:  
+
+> 9
+
+current_node: Index of current node  
+
+> 10
+
+unvisited_nodes: List of indices of unvisited nodes  
+
+> 11
+
+distance_matrix: Square matrix of pairwise distances  
+
+> 12 13
+
+Returns:  
+
+> 14
+
+List of priority scores for each unvisited node (higher = better)  
+
+> 15
+
+"""  
+
+> 16
+
+priorities = []  
+
+> 17
+
+k = 3 # Number of nearest neighbors to consider for local density  
+
+> 18 19
+
+for candidate in unvisited_nodes:  
+
+> 20
+
+# 1. Immediate cost (inverse)  
+
+> 21
+
+direct_cost = distance_matrix[current_node][candidate]  
+
+> 22 23
+
+# 2. Local density: average distance to k nearest unvisited neighbors  
+
+> 24
+
+other_nodes = [n for n in unvisited_nodes if n != candidate]  
+
+> 25
+
+if other_nodes:  
+
+> 26
+
+dists_to_others = [distance_matrix[candidate][n] for n in other_nodes]  
+
+> 27
+
+nearest_dists = sorted (dists_to_others)[:k]  
+
+> 28
+
+local_density = np.mean(nearest_dists) if nearest_dists else 0 
+
+> 29
+
+else : 
+
+> 30
+
+local_density = 0 
+
+> 31 32
+
+# 3. Frontier expansion: maximum distance to any unvisited node  
+
+> 33
+
+# Favors nodes that expand reach into sparse regions  
+
+> 34
+
+if other_nodes:  
+
+> 35
+
+frontier_expansion = max (dists_to_others)  
+
+> 36
+
+else : 
+
+> 37
+
+frontier_expansion = 0 
+
+> 38 39
+
+# 4. Isolation penalty: penalize nodes far from all others  
+
+> 40
+
+if other_nodes:  
+
+> 41
+
+avg_dist_all = np.mean(dists_to_others)  
+
+> 42
+
+isolation_penalty = -np.std(dists_to_others) if len (dists_to_others) > 1 else 0 
+
+> 43
+
+else : 
+
+> 44
+
+avg_dist_all = 0 
+
+> 45
+
+isolation_penalty = 0  
+
+> 46 47
+
+# Combined priority with weights  
+
+> 48
+
+w1, w2, w3, w4 = 0.4, 0.25, 0.2, 0.15  
+
+> 49
+
+priority = ( 
+
+> 50
+
+-w1 * direct_cost +  
+
+> 51
+
+w2 * local_density +  
+
+> 52
+
+w3 * frontier_expansion + 
+
+> 53
+
+w4 * isolation_penalty  
+
+> 54
+
+) 
+
+> 55
+
+priorities.append(priority)  
+
+> 56 57
+
+return priorities 
+
+Fig. 11. Example of LLM-generated TSP algorithm. 7 
+
+> 1
+
+import numpy as np  
+
+> 23
+
+def mutate_v2(instance: dict ) -> dict : 
+
+> 4
+
+locations = np.asarray(instance["locations"], dtype= float ).copy()  
+
+> 5
+
+demands = np.asarray(instance["demands"], dtype= float ).copy()  
+
+> 6
+
+problem_size = int (instance.get("problem_size", locations.shape[0]))  
+
+> 7
+
+vehicle_capacity = float (instance["vehicle_capacity"])  
+
+> 89
+
+# 1. Create 2-4 distant cluster centers (placed in opposing corners/edges)  
+
+> 10
+
+n_clusters = rng.integers(2, min (5, len (customer_idx)))  
+
+> 11
+
+# ... [Generate cluster_centers in a ring with radius 0.7 * span] ...  
+
+> 12 13
+
+cluster_probs = rng.dirichlet(np.ones(n_clusters) * 2.0)  
+
+> 14
+
+cluster_assign = rng.choice(n_clusters, size= len (customer_idx), p=cluster_probs)  
+
+> 15 16
+
+# 2. Spatial mutation: Pull locations toward cluster centers  
+
+> 17
+
+for i, idx in enumerate (customer_idx):  
+
+> 18
+
+center = cluster_centers[cluster_assign[i]]  
+
+> 19
+
+pull_strength = rng.uniform(0.7, 0.95) # Strong pull towards center  
+
+> 20 21
+
+# Linear interpolation + noise for subtle dispersion  
+
+> 22
+
+locations[idx] = pull_strength * center + (1 - pull_strength) * customer_locations[i]  
+
+> 23
+
+locations[idx] += rng.normal(0, rng.uniform(0.05, 0.15) * span, size=2)  
+
+> 24 25
+
+# 3. Demand mutation: Create high variance within each cluster  
+
+> 26
+
+for c in range (n_clusters):  
+
+> 27
+
+cluster_cust = customer_idx[cluster_assign == c]  
+
+> 28
+
+# 30-50% of cluster nodes become high-demand  
+
+> 29
+
+n_high = max (1, int (len (cluster_cust) * rng.uniform(0.3, 0.5)))  
+
+> 30
+
+high_idx = rng.choice(cluster_cust, size= min (n_high, len (cluster_cust)), replace=False)  
+
+> 31 32
+
+for idx in cluster_cust:  
+
+> 33
+
+if idx in high_idx:  
+
+> 34
+
+demands[idx] = rng.uniform(0.7, 0.95) * vehicle_capacity # Saturating  
+
+> 35
+
+else : 
+
+> 36
+
+demands[idx] = d_min + rng.uniform(0.05, 0.3) * d_range # Trivial  
+
+> 37 38
+
+# 4. Strategic trap: Add bridge customers between clusters  
+
+> 39
+
+n_bridge = max (1, int (len (customer_idx) * 0.1)) # 10% bridge nodes  
+
+> 40
+
+bridge_indices = rng.choice(customer_idx, size=n_bridge, replace=False)  
+
+> 41 42
+
+for idx in bridge_indices:  
+
+> 43
+
+c1, c2 = rng.choice(n_clusters, size=2, replace=False)  
+
+> 44
+
+midpoint = (cluster_centers[c1] + cluster_centers[c2]) / 2 
+
+> 45 46
+
+# Place at midpoint with slight offset and moderate demand  
+
+> 47
+
+locations[idx] = midpoint + rng.normal(0, 0.1 * span, size=2)  
+
+> 48
+
+demands[idx] = min (d_min + rng.uniform(0.4, 0.6) * d_range, vehicle_capacity)  
+
+> 49 50
+
+# ... [Bounds checking, depot logic, and collision resolution omitted] ...  
+
+> 51 52
+
+return { 
+
+> 53
+
+"problem_size": problem_size,  
+
+> 54
+
+"vehicle_capacity": vehicle_capacity,  
+
+> 55
+
+"locations": locations.tolist(),  
+
+> 56
+
+"demands": demands.tolist(),  
+
+> 57
+
+}
+
+Fig. 12. Example of LLM-generated CVRP instance mutator. 8 
+
+> 1
+
+import numpy as np  
+
+> 23
+
+def priority_v2(current_node: int , depot: int , unvisited_nodes: np.ndarray, rest_capacity: float ,demands: np.ndarray, distance_matrix: np.ndarray) -> np.ndarray:  
+
+> 4
+
+"""  
+
+> 5
+
+Priority function combining angular alignment and radial grouping with capacity-aware decay,  
+
+> 6
+
+selecting nodes that align spatially with the route direction while efficiently using capacity  
+
+> 7
+
+through a dynamic distance penalty system.  
+
+> 8
+
+"""  
+
+> 9
+
+if len (unvisited_nodes) == 0:  
+
+> 10
+
+return np.array([])  
+
+> 11 12
+
+num_nodes = len (unvisited_nodes)  
+
+> 13
+
+priorities = np.full(num_nodes, -np.inf)  
+
+> 14 15
+
+# Precompute distances  
+
+> 16
+
+depot_dists = distance_matrix[depot, unvisited_nodes]  
+
+> 17
+
+current_to_depot = distance_matrix[current_node, depot]  
+
+> 18
+
+current_to_nodes = distance_matrix[current_node, unvisited_nodes]  
+
+> 19 20
+
+# Capacity utilization factor  
+
+> 21
+
+max_demand = np. max (demands[unvisited_nodes]) if len (unvisited_nodes) > 0 else 1.0  
+
+> 22
+
+capacity_ratio = rest_capacity / max_demand  
+
+> 23 24
+
+# Dynamic decay factor: sigmoid transition around 35% capacity ratio  
+
+> 25
+
+decay_factor = 1.0 / (1.0 + np.exp(-7.0 * (capacity_ratio - 0.35)))  
+
+> 26 27
+
+# Radial grouping similarity  
+
+> 28
+
+radial_similarity = 1.0 / (1.0 + np. abs (depot_dists - current_to_depot) / (depot_dists + 1e-6))  
+
+> 29 30
+
+# Angular alignment component  
+
+> 31
+
+alignment_scores = np.zeros(num_nodes)  
+
+> 32
+
+for i in range (num_nodes):  
+
+> 33
+
+d_cn = current_to_nodes[i]  
+
+> 34
+
+d_nd = depot_dists[i]  
+
+> 35
+
+if d_cn > 0 and d_nd > 0 and current_to_depot > 0:  
+
+> 36
+
+cos_theta = (d_cn**2 + d_nd**2 - current_to_depot**2) / (2 * d_cn * d_nd + 1e-6)  
+
+> 37
+
+alignment_scores[i] = (cos_theta + 1.0) / 2.0 # normalized to [0,1]  
+
+> 38
+
+else : 
+
+> 39
+
+alignment_scores[i] = 0.5  
+
+> 40 41
+
+for i in range (num_nodes):  
+
+> 42
+
+node = unvisited_nodes[i]  
+
+> 43
+
+demand = demands[node]  
+
+> 44 45
+
+if demand > rest_capacity:  
+
+> 46
+
+continue  
+
+> 47 48
+
+d_cn = current_to_nodes[i]  
+
+> 49
+
+d_nd = depot_dists[i]  
+
+> 50 51
+
+# Proximity with alignment weighting  
+
+> 52
+
+proximity = 1.0 / (d_cn + 1e-6) * (1.0 + 0.4 * alignment_scores[i])  
+
+> 53
+
+# Capacity efficiency component  
+
+> 54
+
+capacity_efficiency = demand / (rest_capacity + 1e-6)  
+
+> 55
+
+# Distance decay penalty  
+
+> 56
+
+distance_penalty = d_nd * (1.0 - decay_factor)  
+
+> 57
+
+# Spatial coherence score combining alignment and radial similarity  
+
+> 58
+
+spatial_coherence = 0.6 * alignment_scores[i] + 0.4 * radial_similarity[i]  
+
+> 59
+
+# Savings component (modified Clarke-Wright)  
+
+> 60
+
+savings = depot_dists[i] + current_to_depot - d_cn  
+
+> 61
+
+savings_boost = savings * (0.7 + 0.3 * capacity_ratio) * spatial_coherence  
+
+> 62
+
+# Combined priority score  
+
+> 63
+
+priority_score = (savings_boost + 0.6 * proximity + 0.5 * capacity_efficiency + 
+
+> 64
+
+0.4 * spatial_coherence - 0.3 * distance_penalty)  
+
+> 65
+
+priorities[i] = priority_score  
+
+> 66 67
+
+return priorities 
+
+Fig. 13. Example of LLM-generated CVRP algorithm.

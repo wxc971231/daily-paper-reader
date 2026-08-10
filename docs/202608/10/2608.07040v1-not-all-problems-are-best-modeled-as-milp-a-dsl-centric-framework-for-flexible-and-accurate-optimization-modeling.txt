@@ -1,0 +1,481 @@
+Title: Not All Problems Are Best Modeled as MILP: A DSL-Centric Framework for Flexible and Accurate Optimization Modeling
+
+URL Source: https://arxiv.org/pdf/2608.07040v1
+
+Published Time: Mon, 10 Aug 2026 00:43:56 GMT
+
+Number of Pages: 19
+
+Markdown Content:
+# Not All Problems Are Best Modeled as MILP: A DSL-Centric Framework for Flexible and Accurate Optimization Modeling 
+
+## Shaofeng Zhang 1,4∗ Hongyuan Su 2,4∗ Qingwen Peng 3,4 ∗ Zefang Zong 2
+
+## Shengcai Liu 1 Ke Tang 1 Yong Li 2 †
+
+> 1
+
+Southern University of Science and Technology, Shenzhen 
+
+> 2
+
+Tsinghua University, Beijing 
+
+> 3
+
+Tianjin University, Tianjin 
+
+> 4
+
+Zhongguancun Academy, Beijing 
+
+Abstract 
+
+Solving combinatorial optimization problems (COPs) re-quires not only efficient algorithms but also carefully crafted formulations. While recent works have leveraged LLMs to automate optimization modeling, current frameworks pre-dominantly rely on a rigid mixed-integer linear program-ming (MILP) paradigm. In this paper, we argue that not all problems are best modeled as MILP, as forcing complex domains into linear constraints can induce prohibitive mod-eling complexity and severely restrict solver flexibility. To address this, we propose OptiDSL, a framework that shifts the focus from rigid MILP formulations to domain-specific language (DSL) representations. By utilizing LLMs to map natural language onto standardized, domain-accepted struc-tures, OptiDSL decouples problem formulation from exe-cution. This paradigm enables seamless integration with a diverse library of specialized solvers, ranging from tradi-tional heuristics to modern learning-based methods. Exper-imental results on the comprehensive benchmark of 44 COP types show that OptiDSL significantly surpasses MILP-based pipelines, yielding a 51.66% gain in formulation accuracy and a 91.71% decrease in modeling time. Notably, it also out-performs MILP-based pipelines on the existing benchmark, achieving a 23.09% higher formulation accuracy. Our code is available at https://anonymous.4open.science/r/OptiDSL. 
+
+## Introduction 
+
+Combinatorial optimization problems (COPs) encompass a broad range of real-world decision-making tasks, from manu-facturing scheduling (Wang, Pan, and Wang 2021) to logistics and operations planning (Zong et al. 2025). While solving COPs efficiently has been a long-standing research focus, a more fundamental and often overlooked challenge lies in their formulation: translating high-level requirements into precise mathematical models that solvers can process. Traditionally, this formulation process is carried out manually by domain experts, who must encode the optimization objectives and constraints and then select and execute an appropriate solver. Due to the diverse and domain-specific nature of COPs, this manual pipeline is not only time-consuming but also error-
+
+> ∗
+
+These authors contributed equally. 
+
+> †
+
+Corresponding author. 
+
+prone, presenting a major barrier to broader adoption and full automation of optimization workflows. The emergence of large language models (LLMs) (Chowd-hery et al. 2023; Brown et al. 2020) presents an opportunity to bridge this gap. By leveraging LLMs, it becomes possible to process problem descriptions in natural language and au-tomatically translate them into formal optimization formula-tions. Recent efforts have explored this direction by mapping arbitrary problem statements into unified formulations via Linear Programming (LP) or Mixed-integer LP (MILP), and further solved via corresponding MILP solvers (Gurobi Op-timization 2024; Cplex 2009). While the MILP modeling paradigm has shown promise, it faces significant limitations when applied to complex COPs. First, the MILP paradigm struggles with modeling complex-ity in certain combinatorial domains. For instance, when for-mulating the capacitated vehicle routing problem (CVRP), the Dantzig-Fulkerson-Johnson formulation (Miller, Tucker, and Zemlin 1960) serves as the representative modeling scheme to eliminate subtours and ensure solution feasibil-ity. However, this approach requires a number of constraints that grows exponentially with problem scale, as illustrated in Figure 1. This explosion in constraints frequently exceeds the context and reasoning capabilities of LLMs, leading to a sharp decline in modeling accuracy. Second, rigid adher-ence to MILP restricts the choice of solvers, preventing the utilization of efficient, domain-specific algorithms that of-fer significantly higher computational efficiency than MILP solvers. In this paper, we argue that not all optimization prob-lems are best formulated as MILP and present OptiDSL , a framework centered on a domain-specific language (DSL) modeling workflow. Here, the DSL refers to the widely rec-ognized and adopted format tailored for describing problem instances within specialized domains. Moreover, almost all solvers developed for these domains are natively compati-ble with this DSL template. For example, in routing prob-lems, it utilizes VRPLib-style (Wouda, Lan, and Kool 2024) structures to transform natural language into standardized, solver-ready formats. By adopting these templates as the intermediate representation, OptiDSL effectively decouples problem formulation from solver execution and enables au-arXiv:2608.07040v1 [cs.AI] 7 Aug 2026 Sets                                            
+
+> •Nodes: 𝐀 = {𝐀, 𝐀, 𝐀, 𝐀}
+> •Customers: 𝐀 = {𝐀, 𝐀, 𝐀}
+> •Directed arcs set: 𝐀 = {(𝐀, 𝐀) | 𝐀, 𝐀 ∈ 𝐀, 𝐀 ≠ 𝐀}
+> Parameters
+> •Distance: 𝐀 𝐀𝐀
+> •Demand: 𝐀 𝐀 (with 𝐀 𝐀 = 0 )
+> •Vehicle Capacity: 𝐀
+> Variables
+> •Route decision: 𝐀 𝐀𝐀 ∈ {0,1}
+> •Visit order: 𝐀 𝐀 ∈ ℤ +
+> •Cumulative Load: 𝐀 𝐀 ∈ [𝐀 𝐀 , 𝐀]
+> (Load after visiting node)
+> Objective
+> •Minimize 𝐀 𝐀 𝐀 𝐀𝐀 𝐀 𝐀𝐀
+> Constraints
+> •Visit / Leave constraints:
+> 𝐀∈𝐀,𝐀≠𝐀 𝐀 𝐀𝐀 = 1, 𝐀∈𝐀,𝐀≠𝐀 𝐀 𝐀𝐀 = 1, ∀𝐀, 𝐀 ∈ 𝐀 .
+> •Capacity & Subtour elimination (MTZ constraints):
+> 𝐀 𝐀 − 𝐀 𝐀 + 𝐀 ∙ 𝐀 𝐀𝐀 ≤ 𝐀 − 𝐀 𝐀 , ∀𝐀, 𝐀 ∈ 𝐀 .
+> •Load Bounds:
+> 𝐀 𝐀 ≤ 𝐀 𝐀 ≤ 𝐀, ∀𝐀 ∈ 𝐀 .
+
+MILP Formulation (Five-Element)                   
+
+> Content: Consider a depot (Node A) and three customers: B, C, and D.
+> Fleet: A vehicle with capacity 𝐀 = 16 .
+> Demands: B(10) , C (5) , D (8)
+> Symmetric distances 𝐀 𝐀𲠀 :
+> •A to B: 2
+> •A to C: 5
+> •A to D: 4
+> •B to C: 4
+> •B to D: 3
+> •C to D: 6
+> Objective: Determine the route with the minimum total distance:
+> •Start & end at the Depot
+> •All customers are visited exactly once
+> •Never exceeds the vehicle capacity 𝐀
+
+Problem Statement (CVRP) DSL Formulation (VRPLIB)      
+
+> TYPE: CVRP
+> DIMENSION: 4
+> CAPACITY: 16
+> EDGE_WEIGHT_TYPE: EXPLICIT
+> EDGE_WEIGHT_FORMAT: FULL_MATRIX
+> EDGE_WEIGHT_SECTION
+> 0 2 5 4 2 0 4 3 5 4 0 6 4 3 6 0
+> DEMAND_SECTION
+> 1 0 2 10 3 5 4 8
+> DEPOT_SECTION
+> 1-1 EOF
+
+Figure 1: An illustrative example of modeling paradigms for the CVRP case. The DSL formulation is more appropriate than the MILP formulation for representing CVRP instances. tomatic matching of problem instances with a diverse library of specialized solvers, ranging from traditional heuristics to modern learning-based methods. To support systematic evaluation, we introduce a com-prehensive benchmark dataset spanning 44 common COP types, each featuring natural language descriptions and struc-tured instance data. This benchmark is constructed in a semi-automated manner by expanding a manually curated set of seed examples into diverse variants using controlled language generation techniques. Our main contributions are summarized as follows: 
+
+• OptiDSL Workflow Development : We propose Op-tiDSL , a DSL-based framework that overcomes the ex-pressive limitations of MILP by mapping natural language into specialized DSL templates. This framework enables seamless adaptation to diverse specialized solvers where MILP remains inefficient or inapplicable. 
+
+• Comprehensive Dataset Construction : We introduce a comprehensive benchmark covering 44 COP types across domains like VRP, Scheduling, and Packing. By provid-ing diverse natural language descriptions and structured instances, this dataset ensures a realistic and comprehen-sive assessment of modeling capabilities across varied COPs. 
+
+• Extensive Experimental Evaluation : Our evaluation demonstrates that OptiDSL significantly outperforms MILP-only paradigms. On the comprehensive bench-mark, it achieves a 51.66% gain in formulation accu-racy and a 91.71% reduction in modeling time, exhibit-ing superior scalability and effectiveness. Notably, it also outperforms MILP-based pipelines on the existing bench-mark, achieving a 23.09% higher formulation accuracy. 
+
+## Related Works 
+
+Solvers for COPs 
+
+Existing COP solvers generally fall into two categories based on optimality and specificity. First, exact MILP solvers (Gurobi Optimization 2024; Cplex 2009) guarantee mathematical optimality but suffer from prohibitive compu-tational costs and poor scalability on large instances (Kool, van Hoof, and Welling 2019). Moreover, reformulating di-verse COPs into rigid MILP matrices is notoriously com-plex (Ramamonjison et al. 2022; Xiao et al. 2024). Conversely, flexible algorithms trade strict optimality for significant computational efficiency by exploiting domain-specific strategies. This category spans traditional search heuristics (Mu et al. 2016; Sohrabi, Fathollahi-Fard, and Gromov 2024; Flerova 2015; Consolini, Laurini, and Lo-catelli 2019) and modern Neural Combinatorial Optimiza-tion (NCO) methods (Sun and Yang 2023; Berto et al. 2024; Jin et al. 2024; Bello et al. 2017; Kwon et al. 2020). While these solvers rapidly deliver high-quality solutions, they na-tively require domain-specific data formats (DSLs) rather than standard MILP matrices, creating a critical integration barrier for generalized automated pipelines. 
+
+Auto Formulating-Solving COPs Methods 
+
+Recent benchmarks in automated combinatorial optimiza-tion focus predominantly on translating natural language de-scriptions into Mixed-Integer Linear Programming (MILP) formulations. Early work pioneered this direction by decou-pling the formulation process into semantic entity recog-nition and logic generation (Ramamonjison et al. 2022). For lengthy and complex scenarios, subsequent frameworks have leveraged multi-agent cooperative reasoning (Xiao et al. Seed Scenario LLM (Generator) Diverse Scenarios DSL Template Pool LLM (Modeler) Domain-accepted Structure Solver Pool Selector Solution   
+
+> Modeling Solving
+> DSL Task Formulation Adaptive Solver Execution
+> Augmenting
+> COPs Benchmark Evaluation
+
+Figure 2: OptiDSL Workflow: The framework begins with DSL Task Formulation (left), where an LLM translates unstructured natural language descriptions into standardized DSL data templates. These structured instances are then passed to the Adaptive Solver Execution module (center), which dynamically routes the tasks to the optimal solvers based on performance trade-offs. Finally, the COPs Benchmark Evaluation (right) systematically assesses the generated formulations and solutions across diverse problem scenarios. 2024; Ahmaditeshnizi, Gao, and Udell 2024). To address data scarcity, other methods enhance formulation capabil-ities via data synthesis, employing either automated data augmentation (Huang et al. 2025a) or solver-verified syn-thetic datasets (Huang et al. 2025c). More recently, unified frameworks have utilized multi-instruction tuning and self-correction mechanisms to improve modeling accuracy and generalization across diverse real-world domains (Jiang et al. 2025a). However, the previous text-to-MILP paradigm presents two critical limitations. First, formulating complex combina-torics (e.g., subtour elimination) as MILP constraints creates an expressive bottleneck, generating an exponential number of constraints that overwhelm the reasoning capacities of current LLMs. Second, standard MILP matrices inherently preclude the use of highly efficient flexible solvers (such as search heuristics and neural methods), which require domain-specific inputs. OptiDSL overcomes these limitations via a 
+
+text-to-DSL paradigm. By leveraging domain-specific lan-guages (e.g., VRPLib format), OptiDSL circumvents the mathematical complexity of MILP modeling and naturally unlocks seamless integration with a diverse pool of both ex-act algorithms and flexible solvers. 
+
+## Preliminary 
+
+The core problem addressed in this paper is the automated formulation of COPs from unstructured text. Formally, given a natural language description T of a COP, our objective is to automate both its formulation and solution processes. Unlike previous approaches that rigidly restrict the pipeline to MILP formulations and exact MILP solvers, our work adopts a text-to-DSL modeling paradigm. Different families of COPs in-herently possess their own specialized modeling formats. By utilizing DSLs as established domain standards, our formula-tion naturally adapts to a diverse array of specialized solvers. This decoupling allows us to flexibly alternate between exact solvers and flexible solvers . While exact solvers guarantee optimal solutions but often incur prohibitive computational costs, flexible solvers (e.g., NCO solvers) prioritize compu-tational efficiency, rapidly delivering high-quality solutions despite lacking strict optimality guarantees. To evaluate our proposed framework, this work selects five broad and widely studied combinatorial optimization tasks. The specific domains and their corresponding problem types are detailed as follows: 
+
+• Capacitated Vehicle Routing Problems (CVRP) : Opti-mize vehicle routes to serve customers while minimizing cost and satisfying constraints like capacity and time win-dows. We consider 24 VRP variants with control variables including Open Route (O), Backhaul (B), Mixed Backhaul (MB), Duration Limit (L), and Time Windows (TW). 
+
+• Scheduling Problems (SP) : Assign jobs to machines over time, respecting operation precedence and machine con-straints, with objectives such as minimizing makespan. We include six variants: Job Shop, Flexible Job Shop, Flow Shop, Hybrid Flow Shop, Open Shop, and Assembly Scheduling. 
+
+• Bin Packing Problems (BPP) : Pack items into bins with fixed capacity while minimizing bin count. We exam-ine eight variants derived from combinations of Dimen-sion (2D/3D) and Orientation Constraint (rotatable/non-rotatable). 
+
+• Graph Problems (GP) : Optimize structural objectives in graphs, such as cuts or independent sets. We focus on four problems: Maximum Independent Set, Minimum Vertex Cover, Max Cut, and Max Clique. 
+
+• Knapsack Problems (KP) : Select a subset of items with given weights and values to maximize total value without exceeding the knapsack’s capacity. Domain Problem Type Solver Non-Learning Learning                     
+
+> VRP CVRP, OVRP, VRPB, VRPL Gurobi (Gurobi Optimization 2024) RouteFinder (Berto et al. 2024) VRPTW, OVRPTW, OVRPB OVRPL, VRPBL, VRPBTW LKH (Helsgaun 2017) VRPLTW, OVRPBL, OVRPBTW OVRPLTW, VRPBLTW, OVRPBLTW PyVRP (Wouda, Lan, and Kool 2024) VRPMB, OVRPMB, VRPMBL VRPMBTW, OVRPMBL, OVRPMBTW OR-Tools (Google Optimization Tools 2019) VRPMBLTW, OVRPMBLTW SP JSSP, FJSSP, FSSP, HFSSP, OSSP, ASP Gurobi L2D (Zhang et al. 2020) CP-SAT (Perron, Didier, and Gay 2023) FJSP-DRL (Song et al. 2023) Dispatching Rules (Blackstone, Phillips, and and 1982) DANIEL (Wang et al. 2024) Genetic Algorithm (GA) (Zhang, Gao, and Shi 2011) MatNet (Kwon et al. 2021) GOAL (Drakulic, Michel, and Andreoli 2025) BPP 2DBPP, 2DBPPR Gurobi PCT (Zhao and Xu 2022) 3DBPP, 3DBPPR Genetic Algorithm (GA) GP MIS, MVC Gurobi FastT2T (Li et al. 2024) Max Cut, Max Clique DiffUCO (Sanokowski, Hochreiter, and Lehner 2024) KP 0-1KP, BKP, UKP Gurobi POMO (Kwon et al. 2020) MD0-1KP, MDBKP, MDUKP Dynamic Programming (DP)
+
+Table 1: Overview of the OptiDSL Solver Pool: Covering 5 problem domains and 44 distinct COPs, the framework integrates diverse domain-specific solvers. These are categorized into classical non-learning algorithms and modern learning-based methods. 
+
+## OptiDSL 
+
+To automate and efficiently solve COPs, we introduce Op-tiDSL , a framework that leverages DSLs to decouple prob-lem formulation from downstream solvers, thereby overcom-ing the constraint explosion of rigid MILP paradigms. As depicted in Figure 2, OptiDSL comprises three core compo-nents: (1) DSL-Based Task Formulation, translating natural language into structured DSL templates; (2) Adaptive Solver Execution, dynamically routing instances to specialized algo-rithms; and (3) COPs Benchmark Evaluation, systematically assessing performance via our proposed OptiDSLBench .
+
+DSL-Based Task Formulation 
+
+Instead of mapping natural language to the complex MILP format, OptiDSL leverages pre-defined DSL templates. Rep-resenting widely adopted paradigms in optimization, these DSLs are highly standardized, as shown in Figure 1. Our candidate pool T = {T1, . . . , T k} spans five major COP domains derived from established benchmarks: VRP from VRPLIB (Wouda, Lan, and Kool 2024); BPP (Hopper and Turton 2001), SP (Taillard 1993), and KP (Chu and Beasley 1998) from OR-Library; and GP from Network Reposi-tory (Rossi and Ahmed 2015). Adopting these domain stan-dards as our intermediate representation circumvents the constraint explosion plaguing MILP formulations and sig-nificantly reduces the LLM’s reasoning burden. To map a problem description m into a structured DSL file d, we design a hierarchical agentic workflow for the LLM L. The process begins with DSL semantic routing to mitigate context bloat. Instead of loading all structural rules simultaneously, each candidate DSL in T is represented by a concise meta-description. The LLM acts as a routing agent, aligning the semantic profile of m with these descriptions to autonomously dispatch the task to the appropriate template 
+
+T ∗. Following this selection, the workflow advances to the DSL instantiation phase. Governed by the rigorous syntax of 
+
+T ∗, the agent structures the natural language text into a for-malized problem instance. Beyond naive data extraction, the agent performs logical deduction to ground natural language into symbolic constraints. For example, in the open vehi-cle routing scenario, the problem description may simply state that “vehicles are not required to return to the starting point” without explicitly providing a boolean value. Conse-quently, the model deduces this return-to-depot requirement and subsequently toggles the ‘OPEN_ROUTE’ flag in the DSL format file. This two-stage formulation ensures precise constraint cap-ture while minimizing LLM context overhead. Furthermore, the COPs curated in our framework serve as fundamental problem classes. Therefore, the corresponding DSLs provide foundational formats upon which more complex real-world optimization problems can be seamlessly extended (e.g., im-posing time windows on the standard CVRP to formulate CVRPTW). By leveraging the reasoning capabilities of the LLM, OptiDSL dynamically adapts these base templates to accommodate novel constraints. This endows the framework with strong generalization, ensuring its broad applicability and universality across diverse practical optimization do-mains. 
+
+Adaptive Solver Execution 
+
+Unlike the rigid MILP formulation paradigm, OptiDSL stan-dardizes the intermediate representation via DSLs to ef-fectively decouple problem formulation from downstream solvers. This architectural flexibility enables seamless inte-gration with a versatile solver pool S (see Table 1). Since exhaustive parallel execution of all solvers incurs prohibitive computational overhead, we introduce an adap-tive solver routing mechanism driven by offline empirical profiling. For each DSL domain, we benchmark all compat-ible solvers s ∈ S on a set of representative instances. This establishes multi-dimensional performance profiles captur-ing metrics like optimality gap and computational time. As demonstrated in Table 5, solvers inherently exhibit distinct trade-offs between solving time and solution quality. For example, exact MILP solvers provide strict theoretical guar-antees for optimality but incur exponentially high time costs, whereas NCO solvers offer exceptional computational effi-ciency but lack theoretical bounds. Consequently, different problem scales and deployment constraints necessitate dis-tinct solver selection strategies. By capturing these varying dynamics, the empirical profiles effectively map the Pareto-optimal front for each problem domain. During online execution, the framework leverages these profiles to dynamically route the DSL data d to the optimal solver s∗, guided by user-specified preferences P . Whether prioritizing rapid execution for real-time dispatching or max-imum solution quality for strategic planning, OptiDSL adap-tively selects the best solver. This preference-aware execution ensures a Pareto-efficient balance between computational cost and performance, unlocking efficiency unattainable by monolithic MILP pipelines. 
+
+COPs Benchmark Evaluation 
+
+To systematically evaluate our framework, we introduce Op-tiDSLBench , a comprehensive benchmark spanning 44 com-mon COP types. To construct diverse, high-fidelity natural language descriptions that reflect real-world requirements, we employ a three-stage semi-automated generation pipeline: 
+
+• Generate : For each COP type, we initialize a seed dataset of scenarios. We then prompt an LLM to expand this set with novel descriptions, explicitly restricting generated ti-tles from duplicating existing ones to ensure semantic va-riety. 
+
+• Check & Modify : To mitigate LLM hallucinations (Huang et al. 2025b) that may omit critical constraints, we deploy a scenario-checking agent. It verifies whether a generated scenario logically aligns with its formal COP definition. In-valid scenarios are manually revised based on the agent’s rationale, while valid ones undergo random sampling au-dits to guarantee dataset quality. 
+
+• Data Placeholder Substitution : Because large-scale nu-merical data generation via LLMs is error-prone, we de-couple structural generation from data instantiation. The placeholder tags (e.g., ⟨demand ⟩) are explicitly defined by the user. Guided by the problem’s semantic context and the provided DSL field descriptions, the LLM automatically identifies and matches these user-defined placeholders dur-ing formulation, focusing purely on constraint validity. 
+
+## Experiments 
+
+Experimental Setup 
+
+We evaluate OptiDSL on our proposed OptiDSLBench 
+
+(44 COP types, 100 instances each) against three repre-sentative baselines: Chain-of-Experts (Xiao et al. 2024), ORLM (Huang et al. 2025a), and LLMOPT (Jiang et al. 2025a). OptiDSL and CoE use DeepSeek-V3.2 (Guo et al. 2025), while ORLM and LLMOPT rely on their specific fine-tuned Llama3 and Qwen2.5-14B models, respectively. Following LLMOPT (Jiang et al. 2025a), we assess mod-eling performance using Execution Rate (ER) and Optimal-ity Rate (OR). For N instances, ER = 1
+
+> N
+
+PNi=1 I(exec i),where I(exec i) = 1 if the formulation is successfully parsed and executed, reflecting structural reliability. Simi-larly, OR = 1
+
+> N
+
+PNi=1 I(opt i), where I(opt i) = 1 if the for-mulation yields the optimal solution. Because baseline meth-ods exclusively support MILP formats, we adopt Gurobi as the unified downstream solver across all evaluations to elim-inate solver-dependent bias and ensure a fair comparison of formulation quality. 
+
+Overall Performance Comparison 
+
+To assess the effectiveness of OptiDSL, we compare it with three representative baselines: Chain-of-Experts (CoE), ORLM, and LLMOPT. The evaluation is conducted on Op-tiDSLBench , a benchmark introduced in this work that cov-ers five problem domains. To ensure a fair comparison at the modeling stage, we use Gurobi as the unified down-stream solver for all problems. Furthermore, to ensure that all evaluation instances can be solved to optimality, we set the problem size to 5 for the VRP and 10 for all other problems. The experimental results are summarized in Table 2. 
+
+Superior Executability and Optimality. Our method (OptiDSL) consistently maintains high ER and OR across all problem domains. Experimental results on OptiDSLBench demonstrate that, compared to baseline methods, OptiDSL achieves a 10.13% improvement in average ER and a sig-nificant 51.66% increase in average OR. Specifically, our approach shows the most substantial gains in the VRP do-main, with ER and OR increasing by 13.05% and 68.83%, respectively. This clearly underscores the superiority of our method in complex problem domains like VRP, which are traditionally difficult to formulate as a standard five-elements. 
+
+Broad Generalization Across Problem Domains. Mod-eling difficulty varies significantly across different problem domains, and baseline methods often suffer severe perfor-mance degradation in complex scenarios. This is exempli-fied by the VRP, where even the best-performing baseline Domain Type Our Method COE ORLM LLMOPT ER ↑ OR ↑ MT ↓ ER ↑ OR ↑ MT ↓ ER ↑ OR ↑ MT ↓ ER ↑ OR ↑ MT ↓                                                                                                                                                                                                                                                                                                              
+
+> VRP
+> CVRP 0.98 0.93 10.61 0.94 0.46 147.53 0.77 0.28 81.86 0.30 0.00 120.35 OVRP 0.98 0.94 10.66 0.93 0.17 152.00 0.79 0.09 84.80 0.30 0.02 116.95 OVRPB 0.91 0.60 11.47 0.86 0.04 144.20 0.76 0.03 90.33 0.28 0.00 128.40 OVRPBL 0.87 0.51 11.70 0.85 0.02 240.53 0.75 0.01 155.02 0.22 0.00 151.96 VRPMBL 0.86 0.68 11.52 0.81 0.18 166.08 0.70 0.14 94.62 0.18 0.00 130.23 . . . (see complete results for all 24 types of VRP in supplementary material)
+> SP
+> ASP 1.00 0.84 5.92 0.92 0.47 75.64 0.84 0.45 42.93 0.29 0.17 88.49 JSSP 1.00 0.96 6.38 0.93 0.54 67.85 0.91 0.40 37.61 0.33 0.09 81.40 FJSSP 1.00 0.88 8.68 0.91 0.53 71.42 0.86 0.48 38.77 0.24 0.09 94.57 FSSP 1.00 0.74 6.12 0.90 0.65 66.40 0.85 0.62 34.16 0.44 0.20 78.35 OSSP 1.00 1.00 14.78 0.97 0.56 64.09 0.92 0.43 42.14 0.45 0.13 76.70 HFSSP 0.97 0.74 14.56 0.93 0.29 69.38 0.85 0.25 39.08 0.22 0.01 95.52
+> BPP 2DBPP 1.00 0.99 4.35 0.88 0.41 86.87 0.67 0.25 52.52 0.45 0.26 94.19 2DBPPR 1.00 0.99 3.86 0.88 0.44 84.93 0.57 0.23 52.51 0.40 0.28 87.80 3DBPP 1.00 0.85 4.51 0.83 0.44 95.99 0.54 0.21 66.75 0.62 0.39 77.51 3DBPPR 1.00 1.00 4.44 0.88 0.48 92.14 0.63 0.25 54.45 0.55 0.37 84.21
+> KP
+> 0-1KP 1.00 0.95 4.17 0.95 0.70 61.19 0.91 0.73 32.77 0.97 0.81 55.05 BKP 1.00 0.87 4.45 0.96 0.68 67.62 0.92 0.53 38.01 0.98 0.76 64.67 UKP 1.00 0.83 3.84 0.92 0.75 61.85 0.89 0.63 31.52 1.00 0.82 49.04 MD0-1KP 1.00 0.97 4.56 1.00 0.78 63.55 0.95 0.91 39.40 0.97 0.93 59.65 MDBKP 1.00 0.98 4.55 0.95 0.81 69.88 0.89 0.69 44.06 0.92 0.69 75.69 MDUKP 1.00 0.94 4.49 0.91 0.83 63.57 0.86 0.63 32.01 1.00 0.86 63.53
+> GP MVC 1.00 1.00 3.85 1.00 0.90 47.05 0.78 0.76 31.16 0.94 0.82 59.51 MIS 0.99 0.99 3.93 0.98 0.88 44.96 0.82 0.68 23.88 0.91 0.77 62.26 MAXCUT 0.98 0.98 5.30 0.99 0.31 49.34 0.71 0.38 24.69 0.17 0.09 86.89 MAXCLIQUE 0.98 0.90 4.06 0.89 0.74 48.69 0.63 0.55 24.64 0.75 0.39 87.56
+
+Table 2: Benchmarking OptiDSL and baselines on the OptiDSLBench dataset, comprising 44 COP types and 4400 instances. Each cell presents the Execution Rate ( ER ), Optimality Rate ( OR ), and Modeling Time ( MT ) averaged across the 100 test instances for each problem type. The best results are highlighted in bold .                                           
+
+> Method CVRP JSSP MIS MVC ER ↑OR ↑ER ↑OR ↑ER ↑OR ↑ER ↑OR ↑
+> COE 0.87 0.03 0.42 0.14 0.96 0.88 0.91 0.85 ORLM 0.72 0.05 0.31 0.04 0.79 0.68 0.83 0.63 LLMOPT 0.06 00.56 00.81 0.47 0.77 0.32 OptiDSL(Ours) 0.94 0.83 1.00 0.87 0.96 0.96 0.92 0.90
+
+Table 3: Performance comparison on existing COP bench-mark (Jiang et al. 2025b). yields an ER of only 83 .04% and a critically low OR of 
+
+11 .79% . In contrast, our method demonstrates exceptional robustness: across five distinct problem domains, we consis-tently maintain an ER above 95% and an OR exceeding 80% .This clearly demonstrates the high generalization ability of our approach. 
+
+Significant Computational and Resource Efficiency. Adefining advantage of our method is the drastic reduction in both Modeling Time and Token Consumption. While base-line methods achieve an average optimal modeling time of 69.52 s across all problem domains, our method completes modeling in only 9.89 s (see Figure 3a). Furthermore, by uti-lizing a concise DSL datafile representation, our approach significantly reduces token usage—particularly output to-kens—compared to verbose MILP formulations (As shown in Figure 3b). This makes the framework highly cost-effective and suitable for large-scale, time-sensitive industrial appli-cations. 
+
+Scalability Analysis 
+
+To evaluate the scalability of OptiDSL, we conducted exper-iments on the CVRP with increasing numbers of nodes, i.e., 
+
+n ∈ { 5, 10 , 50 }. As shown in Figure 4, OR is not reported for n = 50 , since computing global optima at this scale is intractable. As the problem size increases, both ER and OR exhibit a decreasing trend, indicating that larger instances are more challenging. Nevertheless, OptiDSL consistently outperforms all baselines and maintains a clear advantage across scales. Specifically, OptiDSL achieves an ER above 84% even at n = 50 , while the best baseline attains only about 76%. Moreover, at n = 10 , OptiDSL still obtains an OR of approximately 75%, compared with only 9% for the strongest baseline. These results demonstrate the superior robustness and scalability of OptiDSL. 
+
+Modeling Performance on Existing Benchmarks 
+
+To further evaluate the modeling performance of OptiDSL, we conduct experiments on both existing COP and MILP benchmarks. For COP benchmarks, we use the dataset de-rived from LLMCoSolver (Jiang et al. 2025b), covering CVRP, JSSP, MIS, and MVC. Although this dataset was originally tailored for learning the direct mapping from nat-ural language descriptions to solutions, we repurposed its diverse problem descriptions as a robust testbed to assess OptiDSL’s modeling capabilities. As shown in Table 3, Op-tiDSL achieves the best average performance, with ER of 0.94 and OR of 0.89, outperforming the strongest baselines by 10.96% in ER and 23.09% in OR. The gains are partic-(a) Modeling Time (b) Total Token Consumption 
+
+Figure 3: Comparison of modeling time and token consumption across different domains.      
+
+> (a) Impact of non ER (b) Impact of non OR
+
+Figure 4: Performance of different methods on CVRP across varying node counts n.               
+
+> Type NL4Opt MamoComplex NLP4LP
+> CoE 100.0 (6/6) 75.8 (22/29) 100.0 (4/4) ORLM 100.0 (6/6) 44.8 (13/29) 100.0 (4/4) LLMOPT 83.3 (5/6) 37.9 (11/29) 75.0 (3/4)
+> OptiDSL 100.0 (6/6) 89.6 (26/29) 100.0 (4/4)
+
+Table 4: Performance comparison on existing MILP bench-marks in terms of optimality rate (OR). ularly notable on CVRP and JSSP, indicating that OptiDSL produces more reliable and accurate formulations across di-verse COP domains. We also evaluate OptiDSL on existing MILP-oriented benchmarks, including NL4Opt, MamoComplex, and NLP4LP. Since these benchmarks mainly focus on MILP-style formulations, we first filter COP-related instances and use Gurobi as the unified downstream solver for all methods to ensure a fair modeling-stage comparison. As shown in Ta-ble 4, OptiDSL achieves the highest average OR of 92.3%, outperforming CoE, ORLM, and LLMOPT by 10.2, 32.3, and 43.6 percentage points, respectively. These results fur-ther show that OptiDSL improves modeling accuracy over generic MILP-style formulation methods. 
+
+Downstream Solver Analysis 
+
+Unlike baselines with rigid dependencies on specific solvers, OptiDSL employs a solver-agnostic paradigm that decou-ples modeling from solving. Table 5 highlights the necessity of this flexibility: while exact solvers (Gurobi) are optimal for small-scale instances with negligible latency, they be-come computationally intractable as complexity scales. In large-scale regimes ( n ≥ 50 ), OptiDSL enables a strategic trade-off based on deployment needs: users can prioritize the learning-based solvers (RouteFinder) for time-critical scenarios, or prioritize solution precision using Heuristics (PyVRP) to ensure near-optimal performance. This architec-tural decoupling ensures that OptiDSL maintains tractability and high solution quality across varying problem scales, a capability absent in static code generation methods.                                          
+
+> Size Gurobi PyVRP RouteFinder Obj. ↓Time / s Obj. ↓Time / s Obj. ↓Time / s
+> n= 5 2.44 0.22 2.45 7.56 2.45 0.05
+> n= 10 3.76 0.52 3.77 10.59 3.89 0.07
+> n= 50 –>200 10.12 15.57 10.32 0.23
+> n= 100 –>200 14.58 25.60 14.98 0.56
+
+Table 5: Solver comparison on CVRP with different problem sizes. 
+
+## Conclusion 
+
+In this work, we introduce OptiDSL, a comprehensive frame-work for COPs. Leveraging LLMs, we construct a diverse benchmark OptiDSLBench encompassing 44 distinct COP types across 5 problem domains. Distinct from traditional MILP-based baselines, OptiDSL models problems as DSL data files. Empirical experiments demonstrate that our mod-eling approach achieves significant advantages in both solu-tion quality and computational efficiency. Furthermore, Op-tiDSL exhibits exceptional adaptability by seamlessly sup-porting a diverse array of domain-specific solvers. This flex-ibility enables users to navigate the trade-off between com-putational speed and solution quality, allowing for precise matching of solvers to varying practical requirements. 
+
+## References 
+
+Ahmaditeshnizi, A.; Gao, W.; and Udell, M. 2024. Opti-MUS: Scalable Optimization Modeling with (MI)LP Solvers and Large Language Models. In Proceedings of the 41st In-ternational Conference on Machine Learning , volume 235 of Proceedings of Machine Learning Research , 577–596. PMLR. Bello, I.; Pham, H.; Le, Q. V.; Norouzi, M.; and Bengio, S. 2017. Neural combinatorial optimization with reinforcement learning. In Proceedings of the International Conference on Learning Representations (ICLR) Workshops .Berto, F.; Hua, C.; Zepeda, N. G.; Hottung, A.; Wouda, N.; Lan, L.; Tierney, K.; and Park, J. 2024. RouteFinder: Towards Foundation Models for Vehicle Routing Problems. In ICML 2024 Workshop on Foundation Models in the Wild .Blackstone, J. H.; Phillips, D. T.; and and, G. L. H. 1982. A state-of-the-art survey of dispatching rules for manufacturing job shop operations. International Journal of Production Research , 20(1): 27–45. Brown, T.; Mann, B.; Ryder, N.; Subbiah, M.; Kaplan, J. D.; Dhariwal, P.; Neelakantan, A.; Shyam, P.; Sastry, G.; Askell, A.; et al. 2020. Language models are few-shot learners. Ad-vances in neural information processing systems , 33: 1877– 1901. Chowdhery, A.; Narang, S.; Devlin, J.; Bosma, M.; Mishra, G.; Roberts, A.; Barham, P.; Chung, H. W.; Sutton, C.; Gehrmann, S.; et al. 2023. Palm: Scaling language model-ing with pathways. Journal of Machine Learning Research ,24(240): 1–113. Chu, P. C.; and Beasley, J. E. 1998. A Genetic Algorithm for the Multidimensional Knapsack Problem. Journal of Heuristics , 4(1): 63–86. Consolini, L.; Laurini, M.; and Locatelli, M. 2019. Graph-based Algorithms for the Efficient Solution of Optimization Problems Involving Monotone Functions. Computational Optimization and Applications , 73(1): 101–128. Cplex, I. I. 2009. User’s Manual for CPLEX , v12.1 edition. Drakulic, D.; Michel, S.; and Andreoli, J.-M. 2025. GOAL: A Generalist Combinatorial Optimization Agent Learner. In 
+
+The Thirteenth International Conference on Learning Rep-resentations .Flerova, N. 2015. Methods for Advancing Combinatorial Op-timization Over Graphical Models . Ph.D. thesis, University of California, Irvine. Google Optimization Tools. 2019. OR-Tools. https:// developers.google.com/optimization. Guo, D.; Yang, D.; Zhang, H.; Song, J.; Zhang, R.; Xu, R.; Zhu, Q.; Ma, S.; Wang, P.; Bi, X.; et al. 2025. Deepseek-r1: Incentivizing reasoning capability in llms via reinforcement learning. arXiv preprint arXiv:2501.12948 .Gurobi Optimization, L. 2024. Gurobi Optimizer Reference Manual .Helsgaun, K. 2017. An Extension of the Lin-Kernighan-Helsgaun TSP Solver for Constrained Traveling Salesman and Vehicle Routing Problems: Technical report . Roskilde Universitet. Hopper, E.; and Turton, B. 2001. An empirical investigation of meta-heuristic and heuristic algorithms for a 2D pack-ing problem. European Journal of Operational Research ,128(1): 34–57. Huang, C.; Tang, Z.; Hu, S.; Jiang, R.; Zheng, X.; Ge, D.; Wang, B.; and Wang, Z. 2025a. ORLM: A Customizable Framework in Training Large Models for Automated Opti-mization Modeling. Operations Research .Huang, L.; Yu, W.; Ma, W.; Zhong, W.; Feng, Z.; Wang, H.; Chen, Q.; Peng, W.; Feng, X.; Qin, B.; and Liu, T. 2025b. A Survey on Hallucination in Large Language Models: Prin-ciples, Taxonomy, Challenges, and Open Questions. ACM Trans. Inf. Syst. , 43(2). Huang, X.; Shen, Q.; Hu, Y.; Gao, A.; and Wang, B. 2025c. LLMs for Mathematical Modeling: Towards Bridging the Gap between Natural and Mathematical Languages. In 
+
+Findings of the Association for Computational Linguistics: NAACL 2025 , 2678–2710. ISBN 979-8-89176-195-7. Jiang, C.; Shu, X.; Qian, H.; Lu, X.; Zhou, J.; Zhou, A.; and Yu, Y. 2025a. LLMOPT: Learning to Define and Solve Gen-eral Optimization Problems from Scratch. In The Thirteenth International Conference on Learning Representations .Jiang, X.; Wu, Y.; Li, M.; Cao, Z.; and Zhang, Y. 2025b. Large Language Models as End-to-end Combinatorial Opti-mization Solvers. In The Thirty-ninth Annual Conference on Neural Information Processing Systems .Jin, Y.; Yan, X.; Liu, S.; and Wang, X. 2024. A Unified Framework for Combinatorial Optimization Based on Graph Neural Networks. arXiv preprint arXiv:2406.13125 .Kool, W.; van Hoof, H.; and Welling, M. 2019. Attention, Learn to Solve Routing Problems! In International Confer-ence on Learning Representations .Kwon, Y.-D.; Choo, J.; Kim, B.; Yoon, I.; Gwon, Y.; and Min, S. 2020. POMO: Policy Optimization with Multiple Optima for Reinforcement Learning. In Advances in Neural Information Processing Systems , volume 33, 21188–21198. Kwon, Y.-D.; Choo, J.; Yoon, I.; Park, M.; Park, D.; and Gwon, Y. 2021. Matrix encoding networks for neural com-binatorial optimization. In Advances in Neural Information Processing Systems , volume 34, 5138–5149. Curran Asso-ciates, Inc. Li, Y.; Guo, J.; Wang, R.; Zha, H.; and Yan, J. 2024. Fast T2T: Optimization Consistency Speeds Up Diffusion-Based Training-to-Testing Solving for Combinatorial Optimization. In The Thirty-eighth Annual Conference on Neural Informa-tion Processing Systems .Miller, C. E.; Tucker, A. W.; and Zemlin, R. A. 1960. Integer Programming Formulation of Traveling Salesman Problems. 
+
+Journal of the ACM , 7(4): 326–329. Mu, D.; Wang, C.; Zhao, F.; and Sutherland, J. W. 2016. Solving Vehicle Routing Problem with Simultaneous Pickup and Delivery Using Parallel Simulated Annealing Algorithm. 
+
+International Journal of Shipping and Transport Logistics ,8(1): 81–106. Perron, L.; Didier, F.; and Gay, S. 2023. The CP-SAT-LP Solver (Invited Talk). In 29th International Conference on Principles and Practice of Constraint Programming, CP 2023, Toronto, Canada, August 27-31, 2023 , volume 280 of LIPIcs , 3:1–3:2. Ramamonjison, R.; Yu, T.; Li, R.; Li, H.; Carenini, G.; Ghad-dar, B.; He, S.; Mostajabdaveh, M.; Banitalebi-Dehkordi, A.; Zhou, Z.; and Zhang, Y. 2022. NL4Opt Competition: Formu-lating Optimization Problems Based on Their Natural Lan-guage Descriptions. In Proceedings of the NeurIPS 2022 Competitions Track , volume 220 of Proceedings of Machine Learning Research , 189–203. PMLR. Rossi, R. A.; and Ahmed, N. K. 2015. The Network Data Repository with Interactive Graph Analytics and Visualiza-tion. In Proceedings of the Twenty-Ninth AAAI Conference on Artificial Intelligence .Sanokowski, S.; Hochreiter, S.; and Lehner, S. 2024. ADiffusion Model Framework for Unsupervised Neural Com-binatorial Optimization. In Proceedings of the 41st Inter-national Conference on Machine Learning , volume 235 of 
+
+Proceedings of Machine Learning Research , 43346–43367. PMLR. Sohrabi, M.; Fathollahi-Fard, A. M.; and Gromov, V. A. 2024. Genetic Engineering Algorithm (GEA): An Efficient Meta-heuristic Algorithm for Solving Combinatorial Optimization Problems. Avtomatika i Telemekhanika , 85(3): 23–37. Song, W.; Chen, X.; Li, Q.; and Cao, Z. 2023. Flexible Job-Shop Scheduling via Graph Neural Network and Deep Reinforcement Learning. IEEE Transactions on Industrial Informatics , 19(2): 1600–1610. Sun, Z.; and Yang, Y. 2023. DIFUSCO: Graph-based Diffu-sion Solvers for Combinatorial Optimization. In Proceedings of the 37th Conference on Neural Information Processing Systems (NeurIPS 2023) .Taillard, E. 1993. Benchmarks for basic scheduling prob-lems. European Journal of Operational Research , 64(2): 278–285. Project Management anf Scheduling. Wang, L.; Pan, Z.; and Wang, J. 2021. A review of reinforce-ment learning based intelligent optimization for manufactur-ing scheduling. Complex System Modeling and Simulation ,1(4): 257–270. Wang, R.; Wang, G.; Sun, J.; Deng, F.; and Chen, J. 2024. Flexible Job Shop Scheduling via Dual Attention Network-Based Reinforcement Learning. IEEE Transactions on Neu-ral Networks and Learning Systems , 35(3): 3091–3102. Wouda, N. A.; Lan, L.; and Kool, W. 2024. PyVRP: a high-performance VRP solver package. INFORMS Journal on Computing , 36(4): 943–955. Xiao, Z.; Zhang, D.; Wu, Y.; Xu, L.; Wang, Y. J.; Han, X.; Fu, X.; Zhong, T.; Zeng, J.; Song, M.; and Chen, G. 2024. Chain-of-Experts: When LLMs Meet Complex Operations Research Problems. In The Twelfth International Conference on Learning Representations .Zhang, C.; Song, W.; Cao, Z.; Zhang, J.; Tan, P. S.; and Chi, X. 2020. Learning to Dispatch for Job Shop Scheduling via Deep Reinforcement Learning. In Advances in Neural Infor-mation Processing Systems , volume 33, 1621–1632. Curran Associates, Inc. Zhang, G.; Gao, L.; and Shi, Y. 2011. An effective genetic al-gorithm for the flexible job-shop scheduling problem. Expert Systems with Applications , 38(4): 3563–3573. Zhao, H.; and Xu, K. 2022. Learning Efficient Online 3D Bin Packing on Packing Configuration Trees. In International Conference on Learning Representations .Zong, Z.; Feng, T.; Wang, J.; Xia, T.; and Li, Y. 2025. Deep Reinforcement Learning for Demand-Driven Services in Lo-gistics and Transportation Systems: A Survey. ACM Trans. Knowl. Discov. Data , 19(4). Supplementary Material for “Not All Problems Are Best Modeled as MILP: A DSL-Centric Framework for Flexible and Accurate Optimization Modeling” 
+
+## Overview of Solvers 
+
+In this section, we provide a detailed information of the solvers used for solving various COPs in our experiments. These solvers can be categorized into two groups as follows, 
+
+Non-Learning solvers : LKH (Helsgaun 2000) is a pow-erful solver for the TSP based on the Lin-Kernighan heuris-tic, which efficiently finds near-optimal solutions through flexible edge exchange strategies and local search, and is widely applied to large-scale TSPs and related combina-torial optimization problems. PyVRP (Wouda, Lan, and Kool 2024) is an open-source Python library specifically designed for solving VRPs, offering flexible modeling capa-bilities and efficient heuristics to support various VRP vari-ants, including capacity constraints and time windows. OR-Tools (Google Optimization Tools 2019) is an open-source optimization toolkit developed by Google that supports solv-ing a wide range of combinatorial optimization problems such as vehicle routing, scheduling, and constraint program-ming, featuring powerful solvers and multi-language APIs. 
+
+CP-SAT (Perron, Didier, and Gay 2023) is a hybrid solver within OR-Tools that integrates constraint programming and Boolean satisfiability (SAT) techniques, designed to effi-ciently solve complex logical and combinatorial optimization problems, and is widely applied in scheduling, routing, and resource allocation domains. Gurobi (Gurobi Optimization 2024) is a high-performance and fast solver that supports lin-ear programming, integer programming, and mixed-integer programming, utilizing advanced mathematical optimiza-tion techniques such as branch-and-bound, cutting planes, and heuristic algorithms to efficiently explore the solution space and find global optimal solutions. Genetic Algorithm (GA) (Yao 1999) is a stochastic optimization technique in-spired by natural selection that iteratively improves solutions through selection, crossover, and mutation, often used with heuristics for complex problems like bin packing. Dynamic Programming (DP) solves optimization problems by break-ing them into overlapping subproblems and reusing solutions based on optimal substructure. MILP formulates problems with linear objectives and constraints, including integer vari-ables, enabling precise solutions in logistics and scheduling. 
+
+Dispatching Rules (Blackstone, Phillips, and and 1982) are simple heuristic methods that quickly make priority-based decisions in dynamic scheduling and routing but do not guar-antee optimality. 
+
+Learning solvers : RouteFinder (Berto et al. 2024) is a transformer-based multi-task reinforcement learning frame-work that efficiently models and generalizes across 48 VRP variants using mixed batch training, reward normalization, and adaptable fine-tuning. PCT (Zhao and Xu 2022) struc-tures 3D bin packing actions into a tree and combines a Transformer with reinforcement learning to guide efficient and feasible packing, significantly improving generalization and performance. L2D (Zhang et al. 2020) is a reinforcement learning-based scheduling method that learns dispatching policies to handle task allocation in dynamic and complex environments. FJSP-DRL (Song et al. 2023) employs graph neural networks and deep reinforcement learning to solve flexible job shop scheduling problems by jointly considering task sequences and resource assignments. DANIEL (Wang et al. 2024) introduces a graph attention-based framework that models the structural relationships between jobs and machines to enhance policy generalization. MatNet (Kwon et al. 2021) focuses on job-machine matching using graph neural networks to capture scheduling dependencies and learn effective policies. GOAL (Drakulic, Michel, and An-dreoli 2025) proposes a generalized order-agnostic learning framework that improves adaptability to different permu-tations, making it suitable for a wide range of scheduling optimization problems. FastT2T (Li et al. 2024) is an ef-ficient Transformer-to-Transformer learning framework de-signed for unified combinatorial optimization tasks. It learns fast mappings from problem instances to high-quality solu-tions and demonstrates strong generalization and inference efficiency. DiffUCO (Sanokowski, Hochreiter, and Lehner 2024) is a diffusion-based approach to unified combinato-rial optimization, which models the optimization process in continuous solution spaces and achieves effective approx-imations for complex combinatorial problems with strong empirical performance and generalization. POMO (Kwon et al. 2020) is a reinforcement learning framework that si-multaneously explores multiple optimal solutions to improve performance and generalization in combinatorial optimiza-tion tasks. 
+
+## Dataset Statistics 
+
+To evaluate the effectiveness of DSL Modeling Workflow, we construct a comprehensive and high-quality dataset named OptiDSL. As illustrated in Table 1, we compare OptiDSL Table 1: Comparison of OptiDSL : OptiDSL provides the largest sample size and the highest average number of problem pa-rameters, reflecting greater instance complexity. It supports multi-dimensional parameter spaces for flexible scenario description and includes problem type recognition for precise modeling. Dataset # Samples # Parameters (avg.) Multi-dimensional Parameters Problem Recognition NL4OPT 1101 4.96 × ×
+
+NLP4LP 269 7.64 ✓ ×
+
+IndustryOR 100 20.23 × ×
+
+OR-Instruct-Data-3K 3000 18.89 × ×
+
+MAMO 1209 19.19 × ×
+
+ComplexOR 18 15.72 ✓ ×
+
+OptiDSL (ours) 4400 33.61 ✓ ✓
+
+with several existing mainstream datasets in the Operations Research (OR) domain, including NL4OPT, NLP4LP, and IndustryOR. 
+
+• Largest Sample Size : With 4,400 samples, OptiDSL is nearly 1.5 times the size of OR-Instruct-Data-3K. This large-scale data ensures better generalization for model training and evaluation. 
+
+• Higher Instance Complexity : The average number of problem parameters in OptiDSL reaches 33.61. This in-dicates that our dataset contains more intricate constraints and decision variables, reflecting real-world complexity more accurately than previous benchmarks. 
+
+## Solver-Compatible Structure Extraction 
+
+Figure 1 illustrates the process of converting natural lan-guage descriptions into structured data files. The LLM maps data such as coordinates, requirements, and capac-ity from the description to standard fields; simultaneously, it parses business logic—for example, inferring parameters like OPEN_ROUTE: TRUE based on phrases like ”avoiding unnecessary return journeys to the warehouse.” 
+
+## Supplementary Data for Complete 24 VRP Types and Model Performance 
+
+We present the complete experimental results for 24 distinct Vehicle Routing Problem (VRP) variants in Table 2. Addi-tionally, the performance of OptiDSL across various open-source and closed-source LLMs is presented in Table 3 and Table 4, respectively. 
+
+## Impact of Base LLM Backend. 
+
+Table 3 evaluates the modularity of OptiDSL across dif-ferent base models, revealing a distinct trade-off between modeling efficiency and reasoning depth. Lightweight mod-els like Llama3.3-70B prioritize speed, achieving the lowest Modeling Time suitable for latency-sensitive applications. Conversely, reasoning-enhanced models such as DeepSeek-R1 (660B) deliver state-of-the-art solution quality, attaining the highest Optimality Rates and Execution Rates at the cost of increased computational overhead. These results confirm that OptiDSL allows for flexible customization to fit spe-cific computational budgets, effectively balancing inference latency with complex reasoning capabilities. 
+
+## Generative AI Usage Statement 
+
+LLMs were used both as experimental components and to assist with language editing. All AI-assisted content was re-viewed and verified by the authors, who take full responsi-bility for the manuscript. 
+
+## Parameter Settings for Instance Generation 
+
+Now, we present the parameter settings used for generating instances of COPs in our experiments. 
+
+CVRP :We follow RouteFinder (Berto et al. 2024) for data generation. Locations of m depots and n customers are sam-pled uniformly from the [0 , 1] 2. The vehicle capacity C is determined by the number of customers n, and is calculated as follows: 
+
+C =
+
+
+
+30 + ⌊ 1000 5 + n−1000 33 .3 ⌋, if 1000 < n 
+
+30 + ⌊ n 
+
+> 5
+
+⌋, if 20 < n ≤ 1000 30 . otherwise Customer demands are randomly sampled from the discrete set {1, 2, . . . , 9}. Then, the demands are divided by the ve-hicle capacity to scale them into the range [0 , 1] . For each customer, the probabilities of having linehaul and backhaul demands are 0.8 and 0.2, respectively. For each customer 
+
+i ∈ { 0, . . . , n − 1}, the time windows [ei, l i] and service times si are generated through the following procedure: ser-vice times si are first sampled uniformly from [0 .15 , 0.18] ,and time window lengths ti are drawn from [0 .18 , 0.2] . The maximum distance dmax from any depot j ∈ { 0, . . . , m − 1}
+
+to customer i is computed as dmax = max j (dij ). Us-ing this, an upper bound hi = tmax −si−ti 
+
+> dmax −1
+
+for the start time is determined. The start time ei is then calculated as ei = (1 + ( hi − 1) · ui) · dmax , where ui ∼ U (0 , 1) 
+
+is a uniform random variable. Finally, the end time li is given by li = ei + ti. We sample distance limit L from 
+
+U (2 · max( d0i), l max ), where d0i is the distance from the de-pot to customer i, and lmax = 3 .0 is a predefined upper bound. During the construction of the OptiDSLBench dataset, n is set to 5. Agricultural Supply Delivery Network 
+
+Data File    
+
+> Your farming cooperative needs to distribute fertilizers, seeds, and pesticides from the central warehouse ([0.04, 0.76]) to scattered farms ([[0.53, 0.97], [0.78, 0.39], [0.35, 0.32], [0.60, 0.31], [0.94, 0.63]]). Each farm requires a specific amount of supplies ([0.16, 0.10, 0.23, 0.10, 0.06] kg), and your delivery trucks have a maximum load capacity (1 kg). The goal is to design routes that:
+> ✓Never exceed a truck’s capacity while loading supplies.
+> ✓Ensure all farms receive their orders in as few trips as possible.
+> ✓Let drivers conclude their shifts at the last farm on their route, avoiding unnecessary return journeys to the warehouse. This approach reduces fuel costs and keeps farmers supplied efficiently. CAPACITY : 1 NODE_COORD_SECTION 1 0.04 0.76 2 0.53 0.97 3 0.78 0.39 4 0.35 0.32 5 0.60 0.31 6 0.94 0.63 DEMAND_LINEHAUL_SECTION 1 0.16 2 0.10 3 0.23 4 0.10 5 0.06 DEPOT_SECTION 1-1 EOF OPEN_ROUTE : TRUE
+
+Problem Description Figure 1: Transformation of natural language descriptions into structured data files via LLM 
+
+Scheduling Problems (SP) : For each SP instance, we ran-domly sample the number of jobs J ∈ [4 , 10] and machines 
+
+M ∈ [2 , 5] . For each job j, the number of operations Oj
+
+is drawn from [2 , 5] . The processing time of each operation 
+
+pj,k is drawn from the integer range [1 , 10] (time units). All quantities are integers, and all ranges are inclusive. 
+
+Bin Packing Problems (BPP) : Each edge of the bins mea-sures 10 in both the 2D and 3D cases. The size of each item is randomly generated, with each side length independently sampled from the discrete set {1, 2, . . . , 10 }. The number of items to be packed is set to 10. 
+
+Graph Problems (GP) : Following the Dif-fuCO (Sanokowski, Hochreiter, and Lehner 2024) setup, we generate MaxCut instances on Barabasi–Albert (BA) graphs (Barabási and Albert 1999), and MIS, MVC, and Max Clique instances on RB-model random graphs (Xu et al. 2005). The number of nodes is randomly sampled from the inclusive range [9 , 15] .
+
+Knapsack Problems (KP) : The experimental instances are generated with the following configuration. The number of items per instance is fixed at N = 10 . The value pi and weight wi for each item i are independently sampled from discrete uniform distributions, specifically pi ∼ U (0 , 20) 
+
+and wi ∼ U (0 , 10) . Regarding the constraints, the knapsack capacity C is dynamically determined based on the total weight of the items, calculated as C = ⌊0.6 ∑Ni=1 wi⌋. For multi-dimensional variants, an additional volume dimension 
+
+vi ∼ U{ 1, 5} is introduced, with a corresponding volume capacity set to 60% of the total volume. The item availability limit li is adapted to the problem type: li = 1 for 0-1 KP, 
+
+li ∼ U (1 , 5) for Bounded KP, and li → ∞ for Unbounded KP. 
+
+## Implementation Details 
+
+All experiments are conducted on a single Ubuntu 22.04 LTS server equipped with an Intel Xeon Platinum 8378A CPU (3.00GHz), 8 NVIDIA A800-SXM4-40GB GPUs, and 1 TB of RAM. 
+
+## The Introduction of Benchmark Datasets 
+
+Below, we introduce several benchmark datasets that use nat-ural language to describe optimization problems, particularly in the context of MILP. 
+
+NL4OPT (Ramamonjison et al. 2022) is a dataset devel-oped for the NL4Opt competition, containing 1,101 anno-tated LPWPs from six distinct domains. The dataset is par-titioned for training, development, and testing with 713, 99, and 289 samples, respectively. Instances from three source domains including sales, advertising, and investment are present across all splits, whereas instances from three target domains including production, transportation, and sciences are exclusively reserved for the development and test sets. This configuration facilitates a rigorous evaluation of model generalization and cross-domain transfer performance. 
+
+NLP4LP (Ahmaditeshnizi, Gao, and Udell 2024) con-tains problem instances sourced from textbooks and lecture notes in the field of optimization. It covers various types of optimization problems, including resource allocation, ad-vertising placement, scheduling, and more. Each instance in the dataset includes a problem description, sample param-eter data, and optimal value obtained either from textbook solutions or manual solving. 
+
+IndustryOR (Huang et al. 2025a) is the first industrial benchmark dataset consisting of 100 real-world operations Table 2: Comparison of Different Methods on 24 VRP Types. 
+
+Domain Type Our Method COE ORLM LLMOPT ER OR ↑ MT ↓ ER OR ↑ MT ↓ ER OR ↑ MT ↓ ER OR ↑ MT ↓
+
+VRP 
+
+CVRP 0.98 0.93 10.61 0.94 0.46 147.53 0.77 0.28 81.86 0.30 0.00 120.35 OVRP 0.98 0.94 10.66 0.93 0.17 152.00 0.79 0.09 84.80 0.30 0.02 116.95 OVRPB 0.91 0.60 11.47 0.86 0.04 144.20 0.76 0.03 90.33 0.28 0.00 128.40 OVRPBL 0.87 0.51 11.70 0.85 0.02 240.53 0.75 0.01 155.02 0.22 0.00 151.96 VRPMBL 0.86 0.68 11.52 0.81 0.18 166.08 0.70 0.14 94.62 0.18 0.00 130.23 VRPMBLTW 0.98 0.88 15.59 0.78 0.06 160.38 0.66 0.08 99.95 0.12 0.00 171.91 VRPMBTW 0.98 0.80 15.79 0.77 0.03 164.94 0.67 0.15 96.90 0.14 0.02 148.98 VRPTW 1.00 0.99 15.45 0.82 0.15 155.18 0.61 0.02 91.21 0.10 0.00 161.23 OVRPBLTW 0.97 0.74 16.42 0.67 0.04 189.70 0.58 0.03 104.23 0.24 0.00 155.99 OVRPBTW 0.98 0.67 16.43 0.82 0.00 164.26 0.68 0.03 95.90 0.18 0.00 145.29 OVRPL 0.98 0.96 10.56 0.96 0.17 148.38 0.82 0.14 87.48 0.26 0.02 138.72 OVRPLTW 1.00 0.88 15.23 0.89 0.12 150.64 0.73 0.10 93.15 0.24 0.00 177.67 OVRPMB 0.96 0.74 10.88 0.81 0.10 154.71 0.68 0.08 96.91 0.28 0.00 143.35 OVRPMBL 0.78 0.55 11.29 0.84 0.09 151.26 0.74 0.07 79.39 0.36 0.00 140.49 OVRPMBLTW 0.95 0.87 15.85 0.78 0.04 142.84 0.66 0.03 81.89 0.14 0.00 172.87 OVRPMBTW 0.97 0.92 15.58 0.64 0.05 173.55 0.51 0.04 104.93 0.10 0.00 143.70 OVRPTW 1.00 0.97 14.73 0.94 0.11 175.00 0.79 0.09 91.06 0.22 0.00 159.80 VRPB 0.97 0.76 10.86 0.87 0.11 162.14 0.74 0.09 101.77 0.16 0.00 143.85 VRPBL 0.98 0.73 11.01 0.91 0.07 165.70 0.75 0.05 95.78 0.20 0.00 141.30 VRPBLTW 1.00 0.67 15.70 0.74 0.08 168.53 0.65 0.06 86.84 0.14 0.02 164.96 VRPBTW 0.99 0.67 15.43 0.72 0.06 169.43 0.60 0.04 107.56 0.10 0.00 155.97 VRPL 1.00 0.99 10.21 0.93 0.25 140.25 0.82 0.22 88.03 0.20 0.02 127.78 VRPLTW 1.00 0.96 14.90 0.91 0.18 160.48 0.74 0.15 84.47 0.26 0.00 158.38 VRPMB 0.97 0.94 10.70 0.74 0.25 150.93 0.65 0.20 82.02 0.46 0.00 140.64 
+
+Table 3: Comparison of Different Open-Source LLMs as Base Model on COPs. Model Size VRP SP BPP GP KP ER OR MT ER OR MT ER OR MT ER OR MT ER OR MT Llama3.3 70B 0.96 0.40 7.17 0.45 0.40 4.09 1.00 0.97 2.92 0.87 0.61 2.58 0.94 0.53 3.09                                                 
+
+> Qwen3 235B 0.98 0.30 15.66 0.87 0.70 7.25 1.00 0.88 6.09 0.99 0.97 5.27 0.99 0.92 5.37 DS-V3.2 671B 0.96 0.81 13.29 1.00 0.85 6.77 1.00 0.95 4.29 0.98 0.96 4.28 1.00 0.92 4.34 DS-R1 660B 0.99 0.88 178.09 0.62 0.40 118.44 1.00 0.97 69.93 0.95 0.95 45.16 0.96 0.91 55.78
+
+Table 4: Comparison of Different Closed-Source LLMs as Base Models on COPs. Model CVRP JSSP 2DBPP MDBKP MAXCLIQUE ER OR MT ER OR MT ER OR MT ER OR MT ER OR MT Claude-Sonnet-4.6 90 77 5.95 100 91 4.17 100 100 3.74 100 99 3.59 98 88 4.13 Gemini-3-Flash 99 85 4.29 98 97 3.25 100 99 3.76 100 98 3.22 100 97 2.95 GPT-5.4 98 82 4.32 90 85 2.94 100 100 2.17 100 98 2.13 100 95 2.07 
+
+research problems collected from eight different industries. It covers five types of optimization problems including linear programming, integer programming, mixed integer program-ming, nonlinear programming, and others. The problems are categorized into three difficulty levels. Each instance in-cludes a problem description, the optimal solution, and its difficulty level. 
+
+OR-Instruct-Data-3K (Huang et al. 2025a) is a sam-ple consisting of 3000 instances selected from the OR-INSTRUCT dataset. OR-INSTRUCT dataset is a semi-automatically generated dataset produced by the OR-INSTRUCT framework and is commonly used as training data for LLMs in operations research and optimization. 
+
+MAMO (Huang et al. 2025b) is a benchmark dataset for mathematical modeling, comprising 346 ordinary differen-tial equation (ODE) problems and 863 LP problems. The ODE problems are categorized into three types: 196 based on first-order differential equations, 110 based on second-order differential equations, and 40 involving systems of dif-ferential equations. The LP problems are divided into two difficulty levels: the Easy LP subset contains 652 MILP prob-lems designed for the high school level, while the Complex LP subset includes 211 undergraduate-level problems that integrate both LP and MILP models. Each problem instance is provided with a description and its optimal solution. 
+
+ComplexOR (Xiao et al. 2024) is the first dataset for complex operations research problems, constructed with the assistance of three experts in the field of operations research. The instances are sourced from academic papers, textbooks, and real-world industrial scenarios, covering multiple areas such as supply chain optimization, scheduling, and ware-housing logistics. 
+
+## Examples of OptiDSL Problem Formulations 
+
+VRPL Problem Statement: 
+
+A healthcare NGO must deliver critical medical sup-plies from the central warehouse located at [0.131, 0.977] to remote clinics situated at [[0.389, 0.560], [0.993, 0.860], [0.772, 0.004], [0.993, 0.644], [0.698, 0.244]] locations. Each clinic has a demand of [0.266, 0.266, 0.300, 0.033, 0.066] kg of medical equipment. The delivery vehicles have a maximum capacity of [1.0] kg. Due to fuel constraints and difficult terrain, each vehicle must complete its route without exceed-ing a round-trip distance limit of [2.424] km. Design vehicle routes to ensure all clinics receive their sup-plies while respecting vehicle capacity and distance constraints. 
+
+DSL Formulation:                      
+
+> TYPE: CVRP DIMENSION: 6EDGE_WEIGHT_TYPE: EUC_2D CAPACITY: 1.0 DISTANCE_LIMITATIONS: 2.424 OPEN_ROUTE: FALSE NODE_COORD_SECTION 10.131 0.977 20.389 0.560 30.993 0.860 40.772 0.004 50.993 0.644 60.698 0.244 DEMAND_LINEHAUL_SECTION 10.266 20.266 30.300 40.033 50.066 DEMAND_BACKHAUL_SECTION: FALSE DEPOT_SECTION 1-1 EOF MIXED_BACKHAUL: FALSE TIME_WINDOWS: FALSE SERVICE_TIME: FALSE
+
+OVRPLTW Problem Statement: 
+
+A regional distribution center ([0.155, 0.126]) needs to deliver medical supplies to 5 healthcare clin-ics ([[0.296, 0.920], [0.622, 0.4392], [0.565, 0.004], [0.457, 0.134], [0.093, 0.417]]). Each clinic requires a specific quantity of supplies ([0.100, 0.300, 0.2666, 0.1666, 0.066]), and deliveries must occur within strict time windows ([[0.0, 4.599], [3.079, 3.273], [1.566, 1.753], [1.308, 1.493], [2.669, 2.857], [1.726, 1.915]]) to ensure operational readiness. Delivery vehicles have a maximum load capacity ([1.0]) and each vehicle’s route cannot exceed a maximum travel distance ([2.696]) to maintain efficiency. Each deliv-ery requires a fixed service time ([0.0, 0.175, 0.156, 0.160, 0.176, 0.153]) for unloading. Drivers start at the distribution center, deliver supplies to clinics in optimal sequences, and end their routes at the final customer without returning. The goal is to ensure all supplies are delivered within their time windows while minimizing total travel distance and adhering to vehicle capacity and distance constraints. 
+
+DSL Formulation:                                           
+
+> TYPE: CVRP DIMENSION: 6 EDGE_WEIGHT_TYPE: EUC_2D CAPACITY: 1.0 DISTANCE_LIMITATIONS: 2.696 OPEN_ROUTE: TRUE NODE_COORD_SECTION 10.155 0.126 20.296 0.920 30.622 0.439 40.565 0.004 50.457 0.134 60.093 0.417 DEMAND_LINEHAUL_SECTION 10.0 20.100 30.300 40.266 50.166 60.066 DEMAND_BACKHAUL_SECTION: FALSE DEPOT_SECTION 1-1 EOF MIXED_BACKHAUL: FALSE TIME_WINDOWS 10.0 4.599 23.079 3.273 31.566 1.753 41.308 1.493 52.669 2.857 61.726 1.915 SERVICE_TIME 10.0 20.175 30.156 40.160 50.176 60.153
+
+UKP Problem Statement: 
+
+An investor aims to allocate capital 34 across various financial assets, where each asset requires an invest-ment amount [10, 7, 10, 4, 6, 1, 6, 5, 1, 8] and offers an expected return [1, 16, 13, 1, 13, 17, 19, 2, 20, 5], with the possibility of purchasing fractional shares of the same asset multiple times to maximize total returns without surpassing the capital limit. 
+
+DSL Formulation:   
+
+> item_number: 10 weight_limit: 34 volume_limit: false item_value: 116 13 113 17 19 220 5item_weight: 10 710 4616518item_volume: false item_limit: false
+
+MDBKP Problem Statement: 
+
+A military unit must prepare supply packages for aerial delivery to forward bases, where each supply type (e.g., ammunition, rations) has a weight [9, 1, 8, 7, 8, 10, 9, 4, 9, 7], a volume [1, 1, 1, 2, 5, 5, 1, 5, 5, 2], a priority score [10, 3, 17, 1, 18, 17, 18, 11, 3, 13], and a maximum available quantity [3, 5, 5, 3, 3, 1, 4, 3, 5, 1]. Each cargo plane has a strict maximum payload 43 and cargo hold volume 16. The challenge is to select the optimal mix and quantity of supplies to load into each aircraft to maximize the total priority of delivered goods while adhering to both weight and volume constraints, ensuring critical mission needs are met under logistical limitations. 
+
+DSL Formulation:    
+
+> item_number: 10 weight_limit: 43 volume_limit: 16 item_value: 10 317 118 17 18 11 313 item_weight: 9187810 9497item_volume: 1112551552item_limit: 3553314351
+
+MAXCLIQUE Problem Statement: 
+
+In blockchain analysis, the [(0, 1), (0, 2), (1, 2), (3, 4), (3, 5), (3, 8), (3, 7), (4, 5), (4, 8), (5, 6), (5, 7), (5, 8), (6, 7), (6, 8), (7, 8)] represents transactional relationships between wallet addresses, where 1 in-dicates a direct transfer between wallets and 0 means no recorded interaction. The task is to uncover the largest group of wallets that have all transacted with each other, potentially exposing coordinated trading rings or illicit financial networks that regulators may investigate. 
+
+DSL Formulation:   
+
+> TYPE: maxclique num_nodes: 9num_edges: 15 0 1 0 2 1 2 3 4 3 5 3 8 3 7 4 5 4 8 5 6 5 7 5 8 6 7 6 8 7 8
+
+3DBPPR Problem Statement: 
+
+In the pharmaceutical industry, temperature-sensitive vaccines, vials, and medical supplies must be transported in refrigerated containers with strict [10, 10, 10] constraints. These fragile items come in varied [[8, 4, 4], [3, 3, 9], [9, 10, 9], [6, 3, 5], [1, 9, 8], [3, 3, 6], [1, 1, 5], [9, 10, 10], [8, 5, 6], [10, 7, 3]] forms from cylindrical vials to rectangular packaging and must be rotated strategically to max-imize space while maintaining temperature stability. Using the fewest possible containers is critical to re-duce costs and ensure timely delivery of life-saving medications. 
+
+DSL Formulation: 
+
+name: 3DBPPR bin_size: 10 10 10 rotation: TRUE no Length width height 1 8 4 42 3 3 93 9 10 94 6 3 55 1 9 86 3 3 67 1 1 58 9 10 10 9 8 5 610 10 7 3
+
+## Prompt for generating description 
+
+The following prompt is used to generate diverse real-world scenarios for the 2D Multiple Knapsack Problem. It is struc-tured to ensure consistent use of placeholders and varied linguistic styles. 
+
+Please provide 5 real-world application scenarios of the 2-dimensional Multiple Knapsack Problem, described in a single paragraph. [Variable Requirements] Each item has a weight <item_weight>, avolume <item_volume>, a value <item_value>, and a maximum quantity < item_limit>. The knapsack has two capacity limits: maximum weight <knapsack_capacity> and maximum volume < knapsack_volume>. [Task Constraints] - The goal is to find the optimal subset of items and quantities to maximize total value without exceeding weight or volume limits. - Descriptions must be complete (definition, attributes, limits, objective, and significance). - Language style must be varied and natural across examples. - Placeholders MUST be used exactly as defined. - NO DUPLICATES: The industry titles of the 5 new scenarios MUST NOT duplicate or be similar to the following: [Military Supply Airdrop, Spacecraft Payload Configuration,......]. [Few-shot Examples] # Example 1: Logistics ##Warehouse Order Fulfillment## A logistics company needs to pack multiple customer orders into delivery trucks, where each product has a weight <item_weight>, a volume <item_volume>, a profit < item_value>, and a maximum available stock <item_limit>. Each truck has maximum weight <knapsack_capacity> and maximum volume <knapsack_volume> restrictions. The goal is to select which products and how many units of each to load onto each truck to maximize total profit while not exceeding the trucks’ weight and volume capacities. &&& # Example 2: Healthcare ##Hospital Medical Supply Allocation## A hospital is distributing medical supplies to multiple departments, where each supply type has a weight <item_weight>, a volume <item_volume>, a criticality value <item_value>, and a maximum stock limit <item_limit>. Each department’s storage has maximum weight <knapsack_capacity> and volume < knapsack_volume>. The objective is to assign the optimal quantity of each supply to maximize total medical utility while respecting storage constraints. &&& # Example 3: Retail ##Retail Store Shelf Allocation## A retail chain needs to allocate products across multiple store shelves, where each product has a weight <item_weight>, a volume <item_volume>, a sales value < item_value>, and a maximum stock limit < item_limit>. Each shelf has maximum weight <knapsack_capacity> and volume < knapsack_volume>. The goal is to determine the quantities of each product to place on each shelf to maximize expected sales. [Output Format] - Start each scenario with ##Industry Title ##. - Separate examples with the symbol &&&. - Output EVERYTHING in a single paragraph without line breaks. 
+
+## Prompt for DSL formulation                                                                                                             
+
+> You are an information extraction system .Task: Select the SINGLE matching template and fill it with data. Rules: -Output ONLY the completed template. -Keep field names, order, and structure EXACTLY as in the template. -Do NOT add or remove any fields. -If a field is missing in the problem, fill in FALSE. -The output must begin and end with ###. -No explanations or extra text. -Do not include any parentheses and explanations in the output content -----------------------------------------------------------------Problem: An investor aims to allocate capital 34 across various financial assets, where each asset requires an investment amount [10, 7, 10, 4, 6, 1, 6, 5, 1, 8] and offers an expected return [1, 16, 13, 1, 13, 17, 19, 2, 20, 5], with the possibility of purchasing fractional shares of the same asset multiple times to maximize total returns without surpassing the capital limit. Templates: -------------------------------------[Templates ]...
+
+## References 
+
+Ahmaditeshnizi, A.; Gao, W.; and Udell, M. 2024. Opti-MUS: Scalable Optimization Modeling with (MI)LP Solvers and Large Language Models. In Proceedings of the 41st In-ternational Conference on Machine Learning , volume 235 of Proceedings of Machine Learning Research , 577–596. PMLR. Barabási, A.-L.; and Albert, R. 1999. Emergence of Scaling in Random Networks. Science , 286(5439): 509–512. Berto, F.; Hua, C.; Zepeda, N. G.; Hottung, A.; Wouda, N.; Lan, L.; Tierney, K.; and Park, J. 2024. RouteFinder: Towards Foundation Models for Vehicle Routing Problems. In ICML 2024 Workshop on Foundation Models in the Wild .Blackstone, J. H.; Phillips, D. T.; and and, G. L. H. 1982. A state-of-the-art survey of dispatching rules for manufacturing job shop operations. International Journal of Production Research , 20(1): 27–45. Drakulic, D.; Michel, S.; and Andreoli, J.-M. 2025. GOAL: A Generalist Combinatorial Optimization Agent Learner. In 
+
+The Thirteenth International Conference on Learning Rep-resentations .Google Optimization Tools. 2019. OR-Tools. https:// developers.google.com/optimization. Gurobi Optimization, L. 2024. Gurobi Optimizer Reference Manual .Helsgaun, K. 2000. An Effective Implementation of the Lin-Kernighan Traveling Salesman Heuristic. Technical Report RR 2000-12, Roskilde University. Huang, C.; Tang, Z.; Hu, S.; Jiang, R.; Zheng, X.; Ge, D.; Wang, B.; and Wang, Z. 2025a. ORLM: A Customizable Framework in Training Large Models for Automated Opti-mization Modeling. Operations Research .Huang, X.; Shen, Q.; Hu, Y.; Gao, A.; and Wang, B. 2025b. LLMs for Mathematical Modeling: Towards Bridging the Gap between Natural and Mathematical Languages. In 
+
+Findings of the Association for Computational Linguistics: NAACL 2025 , 2678–2710. ISBN 979-8-89176-195-7. Kwon, Y.-D.; Choo, J.; Kim, B.; Yoon, I.; Gwon, Y.; and Min, S. 2020. POMO: Policy Optimization with Multiple Optima for Reinforcement Learning. In Advances in Neural Information Processing Systems , volume 33, 21188–21198. Kwon, Y.-D.; Choo, J.; Yoon, I.; Park, M.; Park, D.; and Gwon, Y. 2021. Matrix encoding networks for neural com-binatorial optimization. In Advances in Neural Information Processing Systems , volume 34, 5138–5149. Curran Asso-ciates, Inc. Li, Y.; Guo, J.; Wang, R.; Zha, H.; and Yan, J. 2024. Fast T2T: Optimization Consistency Speeds Up Diffusion-Based Training-to-Testing Solving for Combinatorial Optimization. In The Thirty-eighth Annual Conference on Neural Informa-tion Processing Systems .Perron, L.; Didier, F.; and Gay, S. 2023. The CP-SAT-LP Solver (Invited Talk). In 29th International Conference on Principles and Practice of Constraint Programming, CP 2023, Toronto, Canada, August 27-31, 2023 , volume 280 of LIPIcs , 3:1–3:2. Ramamonjison, R.; Yu, T.; Li, R.; Li, H.; Carenini, G.; Ghad-dar, B.; He, S.; Mostajabdaveh, M.; Banitalebi-Dehkordi, A.; Zhou, Z.; and Zhang, Y. 2022. NL4Opt Competition: Formu-lating Optimization Problems Based on Their Natural Lan-guage Descriptions. In Proceedings of the NeurIPS 2022 Competitions Track , volume 220 of Proceedings of Machine Learning Research , 189–203. PMLR. Sanokowski, S.; Hochreiter, S.; and Lehner, S. 2024. ADiffusion Model Framework for Unsupervised Neural Com-binatorial Optimization. In Proceedings of the 41st Inter-national Conference on Machine Learning , volume 235 of 
+
+Proceedings of Machine Learning Research , 43346–43367. PMLR. Song, W.; Chen, X.; Li, Q.; and Cao, Z. 2023. Flexible Job-Shop Scheduling via Graph Neural Network and Deep Reinforcement Learning. IEEE Transactions on Industrial Informatics , 19(2): 1600–1610. Wang, R.; Wang, G.; Sun, J.; Deng, F.; and Chen, J. 2024. Flexible Job Shop Scheduling via Dual Attention Network-Based Reinforcement Learning. IEEE Transactions on Neu-ral Networks and Learning Systems , 35(3): 3091–3102. Wouda, N. A.; Lan, L.; and Kool, W. 2024. PyVRP: a high-performance VRP solver package. INFORMS Journal on Computing , 36(4): 943–955. Xiao, Z.; Zhang, D.; Wu, Y.; Xu, L.; Wang, Y. J.; Han, X.; Fu, X.; Zhong, T.; Zeng, J.; Song, M.; and Chen, G. 2024. Chain-of-Experts: When LLMs Meet Complex Operations Research Problems. In The Twelfth International Conference on Learning Representations .Xu, K.; Boussemart, F.; Hemery, F.; and Lecoutre, C. 2005. A simple model to generate hard satisfiable instances. In Pro-ceedings of the 19th International Joint Conference on Ar-tificial Intelligence , IJCAI’05, 337–342. Morgan Kaufmann Publishers Inc. Yao, X. 1999. Evolutionary computation: Theory and appli-cations . World scientific. Zhang, C.; Song, W.; Cao, Z.; Zhang, J.; Tan, P. S.; and Chi, X. 2020. Learning to Dispatch for Job Shop Scheduling via Deep Reinforcement Learning. In Advances in Neural Infor-mation Processing Systems , volume 33, 1621–1632. Curran Associates, Inc. Zhao, H.; and Xu, K. 2022. Learning Efficient Online 3D Bin Packing on Packing Configuration Trees. In International Conference on Learning Representations .
