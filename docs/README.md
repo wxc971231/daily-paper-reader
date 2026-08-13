@@ -6,26 +6,31 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-12
-- 运行时间：2026-08-12 21:06:24 UTC
+- 最新运行日期：2026-08-13
+- 运行时间：2026-08-13 19:48:01 UTC
 - 运行状态：成功
 - 本次总论文数：2
-- 精读区：1
-- 速读区：1
+- 精读区：0
+- 速读区：2
 
 ### 今日简报（AI）
-今日精读聚焦“优化器即智能体”的推理驱动搜索范式，速读补充了LLM嵌入在程序分析中的应用。最值得关注的是精读论文（8.0/10）提出的跨提示、程序与ML工作流的统一视角，以及LLM嵌入对优化瓶颈的潜在价值。建议普通读者优先消化精读结论，后续可沿“智能体优化”与“程序分析嵌入”两条线延伸。
-- 详情：[/202608/12/README](/202608/12/README)
+今日共速读2篇论文，暂无精读，整体进展平稳。
+
+值得关注的两篇均为6分：《From Interpretation to Compilation》探索语义算子系统的编译执行引擎，《Janus》提出面向昂贵评估预算的LLM算法-评估器协同进化框架。
+
+建议未来优先精读其中任一篇，结合自身研究兴趣深挖编译加速或高效评估方法论。
+- 详情：[/202608/13/README](/202608/13/README)
 
 ### 精读区论文标签
-1. [The Optimizer Is the Agent: Reasoning-Driven Search across Prompts, Programs, and ML Workflows](/202608/12/2608.06714v1-the-optimizer-is-the-agent-reasoning-driven-search-across-prompts-programs-and-ml-workflows)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：统一LLM智能体框架，以推理驱动方式优化提示、程序和机器学习工作流
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [LLM-Based Embeddings for Program Analysis and Optimization](/202608/12/2608.07894v1-llm-based-embeddings-for-program-analysis-and-optimization)  
+1. [From Interpretation to Compilation: A Compilation-Based Execution Engine for Semantic Operator Systems](/202608/13/2608.06677v1-from-interpretation-to-compilation-a-compilation-based-execution-engine-for-semantic-operator-systems)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：利用LLM对源代码和中间表示进行嵌入，用于程序分析与优化任务
+   evidence：将LLM语义算子编译为确定性代码，是可用于优化求解器生成的LLM代码生成方法。
+2. [Janus: An Algorithm-Evaluator Co-Evolution Framework for LLM-Driven Discovery under Expensive Evaluation Budgets](/202608/13/2608.08189v1-janus-an-algorithm-evaluator-co-evolution-framework-for-llm-driven-discovery-under-expensive-evaluation-budgets)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：LLM驱动的目标程序与评估器协同进化框架，可直接支撑优化任务中的自动求解代码生成
 
 
 <div class="dpr-home-promo-card">

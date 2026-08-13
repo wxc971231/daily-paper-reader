@@ -1,0 +1,39 @@
+{
+  "label": "2026-08-13",
+  "date": "2026-08-13",
+  "generated_at": "2026-08-13T19:48:07",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202608/13/2608.06677v1-from-interpretation-to-compilation-a-compilation-based-execution-engine-for-semantic-operator-systems",
+      "section": "quick",
+      "title_en": "From Interpretation to Compilation: A Compilation-Based Execution Engine for Semantic Operator Systems",
+      "authors": "Wenkai Dong, Yifan Wang",
+      "date": "2026-08-07",
+      "pdf": "https://arxiv.org/pdf/2608.06677v1",
+      "score": "6.0",
+      "evidence": "将LLM语义算子编译为确定性代码，是可用于优化求解器生成的LLM代码生成方法。",
+      "tldr": "现有语义算子系统通过解释执行，对每条数据调用大模型，开销随数据规模增长。本文提出SemBaker编译型执行引擎，作为外部插件，一次调用大模型生成Python函数，本地执行免去逐条调用。成本优化器动态选择执行路径，编译与流水线重叠。在三个问答工作负载上加速4.8-6.3倍、成本降低5.4-10.7倍，且质量稳定。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Semantic operators extend data processing with natural-language predicates. Existing semantic operator systems commonly execute these operators through interpretation-based execution: for every data item, an LLM interprets the operator predicate and directly produces the corresponding result. Although expressive, this design places expensive model invocations inside the data-processing loop, causing latency and monetary cost to scale with input cardinality.   We present SemBaker, a compilation-based execution engine for semantic operator systems. SemBaker acts as an external plugin rather than replacing a backend's native execution. For selected semantic filters, maps, and joins, it invokes an LLM once to generate a deterministic Python function and executes that function locally without per-item LLM calls. A cost-based optimizer routes each operator to native or compiled execution, while compilation overlaps pipeline execution. SemBaker supports Palimpzest, LOTUS, Nirvana, and DocETL through thin adapters. Across three 200-query QA workloads, SemBaker achieves average speedups of 4.8 to 6.3 times and average cost reductions of 5.4 to 10.7 times, with competitive processing quality.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/13/2608.08189v1-janus-an-algorithm-evaluator-co-evolution-framework-for-llm-driven-discovery-under-expensive-evaluation-budgets",
+      "section": "quick",
+      "title_en": "Janus: An Algorithm-Evaluator Co-Evolution Framework for LLM-Driven Discovery under Expensive Evaluation Budgets",
+      "authors": "Ximeng Liu, Qianlong Wang, Yingming Mao, Annan Li, Yatao Li, Shizhen Zhao, Jianmin Wu, Dawei Yin, Dou Shen",
+      "date": "2026-08-08",
+      "pdf": "https://arxiv.org/pdf/2608.08189v1",
+      "score": "6.0",
+      "evidence": "LLM驱动的目标程序与评估器协同进化框架，可直接支撑优化任务中的自动求解代码生成",
+      "tldr": "LLM驱动程序发现通常依赖廉价评估器，但科学工程任务中真实评估昂贵。现有固定代理评估器易受分布偏移影响且难以从稀疏标签中拟合。本文提出Janus框架，利用LLM协同进化目标程序和可执行的代理评估器，通过领域知识生成评估程序并用真实结果校准，同时在线更新评估器组合以缓解分布偏移。代理预测仅用于优先级排序，真实验证仍为必需。在五个科学与工程设计任务中，Janus以更少真实评估达到更高最终性能，平均节省59.1%评估预算。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "LLM-driven program discovery relies on rapid evaluator feedback, but many scientific and engineering tasks require high-fidelity simulations, hardware execution, or physical experiments, making each evaluation expensive. Cheap surrogate evaluators can reduce this cost, yet fixed surrogates are vulnerable to search-induced distribution shift and are difficult to fit reliably from sparse, search-biased labels. We introduce Janus, a framework that uses LLMs to co-evolve target programs and executable proxy evaluators. To address label scarcity, Janus leverages domain knowledge encoded in LLMs to generate task-specific evaluator programs and calibrates them using real outcomes. To mitigate distribution shift, Janus evolves evaluators alongside target programs, selects them using a promotion-aligned objective, and maintains region-conditioned portfolios with online credit updates. Because proxy predictions remain fallible, Janus uses them only to prioritize candidates and requires real validation before candidates can enter the target-program population or update the incumbent. Across five scientific and engineering design tasks, Janus achieves a larger area under the best-so-far improvement curve over the real-evaluation budget and higher final performance than a matched baseline that evolves only target programs. On average, Janus reaches 99/% of the baseline's final improvement with 59.1/% fewer real evaluations. Evolved proxy evaluators also rank promising candidates more accurately than their seed versions. Together, these results extend evaluator-guided LLM discovery from tasks with cheap, scalable feedback to scientific domains where trustworthy evaluation is scarce and expensive.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

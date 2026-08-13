@@ -1,0 +1,96 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-13T19:47:13.715917+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.06677v1",
+      "source": "arxiv",
+      "title": "From Interpretation to Compilation: A Compilation-Based Execution Engine for Semantic Operator Systems",
+      "abstract": "Semantic operators extend data processing with natural-language predicates. Existing semantic operator systems commonly execute these operators through interpretation-based execution: for every data item, an LLM interprets the operator predicate and directly produces the corresponding result. Although expressive, this design places expensive model invocations inside the data-processing loop, causing latency and monetary cost to scale with input cardinality.   We present SemBaker, a compilation-based execution engine for semantic operator systems. SemBaker acts as an external plugin rather than replacing a backend's native execution. For selected semantic filters, maps, and joins, it invokes an LLM once to generate a deterministic Python function and executes that function locally without per-item LLM calls. A cost-based optimizer routes each operator to native or compiled execution, while compilation overlaps pipeline execution. SemBaker supports Palimpzest, LOTUS, Nirvana, and DocETL through thin adapters. Across three 200-query QA workloads, SemBaker achieves average speedups of 4.8 to 6.3 times and average cost reductions of 5.4 to 10.7 times, with competitive processing quality.",
+      "authors": [
+        "Wenkai Dong",
+        "Yifan Wang"
+      ],
+      "primary_category": "cs.DB",
+      "categories": [
+        "cs.DB"
+      ],
+      "published": "2026-08-07T00:51:01+00:00",
+      "link": "https://arxiv.org/pdf/2608.06677v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Compiles LLM semantic operators into deterministic code, an LLM-to-code generation method applicable to optimization solver generation.",
+      "llm_evidence_cn": "将LLM语义算子编译为确定性代码，是可用于优化求解器生成的LLM代码生成方法。",
+      "llm_evidence": "将LLM语义算子编译为确定性代码，是可用于优化求解器生成的LLM代码生成方法。",
+      "canonical_evidence": "将LLM语义算子编译为确定性代码，是可用于优化求解器生成的LLM代码生成方法。",
+      "llm_tldr_en": "SemBaker invokes an LLM once to generate deterministic code for semantic filters, maps, and joins, removing per-item LLM calls and cutting latency and cost. Demonstrates efficient LLM-to-code compilation that could be adapted to generate optimization model solving code.",
+      "llm_tldr_cn": "现有语义算子系统对每个数据项解释执行LLM谓词，延迟和成本随数据规模线性增长。论文提出SemBaker，作为外部插件在首次调用LLM后将语义算子编译为确定性代码，后续无需重复调用模型。实验显示延迟和成本大幅下降。该方法展示了从自然语言语义到可执行代码的可靠编译路径，为LLM自动生成优化问题求解代码提供了可借鉴的高效架构。",
+      "llm_tldr": "现有语义算子系统对每个数据项解释执行LLM谓词，延迟和成本随数据规模线性增长。论文提出SemBaker，作为外部插件在首次调用LLM后将语义算子编译为确定性代码，后续无需重复调用模型。实验显示延迟和成本大幅下降。该方法展示了从自然语言语义到可执行代码的可靠编译路径，为LLM自动生成优化问题求解代码提供了可借鉴的高效架构。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.08189v1",
+      "source": "arxiv",
+      "title": "Janus: An Algorithm-Evaluator Co-Evolution Framework for LLM-Driven Discovery under Expensive Evaluation Budgets",
+      "abstract": "LLM-driven program discovery relies on rapid evaluator feedback, but many scientific and engineering tasks require high-fidelity simulations, hardware execution, or physical experiments, making each evaluation expensive. Cheap surrogate evaluators can reduce this cost, yet fixed surrogates are vulnerable to search-induced distribution shift and are difficult to fit reliably from sparse, search-biased labels. We introduce Janus, a framework that uses LLMs to co-evolve target programs and executable proxy evaluators. To address label scarcity, Janus leverages domain knowledge encoded in LLMs to generate task-specific evaluator programs and calibrates them using real outcomes. To mitigate distribution shift, Janus evolves evaluators alongside target programs, selects them using a promotion-aligned objective, and maintains region-conditioned portfolios with online credit updates. Because proxy predictions remain fallible, Janus uses them only to prioritize candidates and requires real validation before candidates can enter the target-program population or update the incumbent. Across five scientific and engineering design tasks, Janus achieves a larger area under the best-so-far improvement curve over the real-evaluation budget and higher final performance than a matched baseline that evolves only target programs. On average, Janus reaches 99/% of the baseline's final improvement with 59.1/% fewer real evaluations. Evolved proxy evaluators also rank promising candidates more accurately than their seed versions. Together, these results extend evaluator-guided LLM discovery from tasks with cheap, scalable feedback to scientific domains where trustworthy evaluation is scarce and expensive.",
+      "authors": [
+        "Ximeng Liu",
+        "Qianlong Wang",
+        "Yingming Mao",
+        "Annan Li",
+        "Yatao Li",
+        "Shizhen Zhao",
+        "Jianmin Wu",
+        "Dawei Yin",
+        "Dou Shen"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-08T15:31:12+00:00",
+      "link": "https://arxiv.org/pdf/2608.08189v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-driven co-evolution of target programs and evaluators directly supports automatic solution generation for optimization tasks",
+      "llm_evidence_cn": "LLM驱动的目标程序与评估器协同进化框架，可直接支撑优化任务中的自动求解代码生成",
+      "llm_evidence": "LLM驱动的目标程序与评估器协同进化框架，可直接支撑优化任务中的自动求解代码生成",
+      "canonical_evidence": "LLM驱动的目标程序与评估器协同进化框架，可直接支撑优化任务中的自动求解代码生成",
+      "llm_tldr_en": "Janus uses LLMs to co-evolve target programs and executable proxy evaluators under expensive evaluation budgets, addressing surrogate drift and label scarcity for automatic program/solution generation.",
+      "llm_tldr_cn": "在昂贵评估预算下，基于LLM的程序发现常依赖快速评估反馈，但高保真仿真或硬件执行使每次评估成本高昂，固定替代评估器又存在分布偏移和标签稀疏的问题。为此论文提出Janus框架，利用LLM同时协同进化目标任务程序和可执行的代理评估器，并利用领域知识生成评估程序、结合真实结果进行校准，以缓解分布偏移。该方法可泛化到自动生成优化求解代码等场景，为在昂贵评估条件下利用LLM自动构造求解方案提供了通用范式。",
+      "llm_tldr": "在昂贵评估预算下，基于LLM的程序发现常依赖快速评估反馈，但高保真仿真或硬件执行使每次评估成本高昂，固定替代评估器又存在分布偏移和标签稀疏的问题。为此论文提出Janus框架，利用LLM同时协同进化目标任务程序和可执行的代理评估器，并利用领域知识生成评估程序、结合真实结果进行校准，以缓解分布偏移。该方法可泛化到自动生成优化求解代码等场景，为在昂贵评估条件下利用LLM自动构造求解方案提供了通用范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
