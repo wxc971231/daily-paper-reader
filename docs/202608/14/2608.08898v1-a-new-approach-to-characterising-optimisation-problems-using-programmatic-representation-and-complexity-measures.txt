@@ -1,0 +1,202 @@
+Title: A New Approach to Characterising Optimisation Problems Using Programmatic Representation and Complexity Measures
+
+URL Source: https://arxiv.org/pdf/2608.08898v1
+
+Published Time: Tue, 11 Aug 2026 01:35:10 GMT
+
+Number of Pages: 16
+
+Markdown Content:
+# A New Approach to Characterising Optimisation Problems Using Programmatic Representation and Complexity Measures 
+
+Marcus Gallagher 1[0000 −0002 −6694 −9572] and Katherine M. Malan 2[0000 −0002 −6070 −2632]  
+
+> 1
+
+School of Electrical Engineering and Computer Science, University of Queensland, Australia. marcusg@uq.edu.au  
+
+> 2
+
+Department of Decision Sciences, University of South Africa, Pretoria, South Africa 
+
+malankm@unisa.ac.za 
+
+Abstract. Characterising optimisation problem instances is a funda-mental part of understanding the behaviour and performance of differ-ent algorithms as well as providing information for algorithm selection and configuration. In this paper we propose a novel approach to problem characterisation based on the representation of instances when imple-mented as a program. The intuition is that the complexity of the code required to express an objective function should relate to the complexity of the search landscape. We identify the Halstead volume as a measure of code complexity, which can be seen as a simplified version of the entropy of the program. Given a code implementation of the objective function, the Halstead volume and entropy can be quickly calculated using existing libraries. We apply the proposed complexity measures to the well-known BBOB optimisation problem suite and the simple feed-forward neural network training task. We also show that the measures are negatively correlated with algorithm performance and therefore show potential as predictive meta-features for algorithm selection and other problem analysis. We envisage the proposed measures as complementary to other problem characterisation approaches, but with the advantages of not requiring any sampling of the search space, being invariant to transformations, and being very quick to calculate automatically. 
+
+Keywords: Problem analysis · Optimisation problems · Program com-plexity · Halstead volume · Shannon entropy. 
+
+# 1 Introduction 
+
+In metaheuristic optimisation, the performance of an algorithm depends on both the operators and internal mechanisms of the algorithm and the properties of the problem instance(s) on which it is applied. To solve new problems effectively, we need to be able to understand and identify the relationship between algorithm performance and problem properties. This requires the ability to characterise or distinguish between problem instances. This is an active area of research, where arXiv:2608.08898v1 [cs.NE] 9 Aug 2026 2 Gallagher and Malan 
+
+different approaches have been taken (e.g. using information available from the formulation or representation of the problem, or by using information gained by exploring the landscape). See Section 2 for a more detailed overview. In a general sense, any summary description of an optimisation problem must incur a loss of information. Practical assumptions and limitations are also important, e.g. in exploratory landscape analysis the computational effort re-quired to generate/evaluate a sample of candidate solutions and the modelling assumptions behind landscape features. As a result, it is likely that different classifications/categorisations/features of problem instances will provide differ-ent information or representations. While one specific problem feature might be, for example, highly predictive of the performance of a specific algorithm, differ-ent types of features in combination may provide complementary information to more completely characterise a problem instance. This paper proposes a new direction in problem characterisation by exploring programmatic representations of optimisation problem instances. In Section 2, we review existing ways of characterising problems and discuss the key aspects and limitation of these approaches. In Section 3, we discuss the abstract idea of representation of an optimisation problem and introduce the idea of mea-suring the complexity of programmatic representations for quantifying similar-ity/difference between different problem instances. Section 4 proposes the use of two specific measures of program complexity: the Halstead volume and the Shannon entropy, showing that the former can be seen as a special case of the latter. Illustrative examples and implementation details are provided, together with evaluation on the BBOB test set and neural network weight optimisation problems. In Section 5, we show that the measures are generally correlated with algorithm performance. Section 6 provides conclusions and suggestions for future work. Code and data to reproduce the experiments is provided 3.
+
+# 2 Problem Classes, Characterisation and Features 
+
+An important practical consequence of the No Free Lunch theorems [27] is the implication that when the space of optimisation problems is restricted in some way, there will be performance differences between some given algorithm in-stances. This generally motivates work towards identifying algorithms that per-form well/poorly for certain classes of problems of interest. However, the task of defining problem classes is far from simple and a variety of different approaches exist. One possibility is to use any information known from the formulation of the optimisation problem instances. At the highest level, this might include the dimensionality of the problem, the type of decision vari-ables (e.g. discrete or continuous), whether the objective function is noisy or not, the total budget of objective function evaluations and whether the problem is constrained or not. While this provides very little information concerning the structure of the problem landscape, it has been shown that it is still enough to   
+
+> 3Zenodo URL to be provided after acceptance. Characterising Problems Using Programmatic Representation 3
+
+drive successful algorithm selection “wizards”; notably the ABBO/NGOpt wiz-ard that is a hand-crafted, static selector based purely on this type of informa-tion [24]. It is also true that the formulation of a problem may deliberatly impose structure on the landscape; e.g. engineering the problem so that the objective function should be convex in order to apply certain classes of algorithms. In combinatorial problems, broad problem classes have been named based on the definitional formulation - e.g. graph colouring, travelling salesperson problem, knapsack, bin-packing. Within these classes, “problem-specific features” have been used to further categorise problems, e.g. [22]. For continuous prob-lems, broad classes can also follow from the problem formulation, by making assumptions such as smoothness or the availability of derivative information. It is also common to describe optimisation problem classes in a more quali-tative way. For example, the five categories of problems in the BBOB noiseless benchmark set [5] are: (1) separable, (2) low or moderate conditioning, (3) high conditioning and unimodal, (4) multi-modal with adequate global structure, and (5) multi-modal with weak global structure. Other qualitative terms include “big valley” structure [1] or “funnel” [23]. These terms describe landscape properties in an informal way, but detecting these properties in an unknown landscape is non-trivial. With some effort and/or assumptions, quantitative definitions can sometimes be developed for such terms, however measuring these properties ex-perimentally is a challenge. Fitness landscape analysis takes a different approach, by modelling and sum-marising the geometrical or topographical structure of the landscapes of problem instances (as defined by the fitness function, search space and search operators or notion of distance in the search space) [10]. Landscape analysis has been shown to be useful in characterising and comparing problem instances and ex-tracted features have been used successfully to build machine learning pipelines for predicting algorithm performance and achieving algorithm selection [9, 18]. However, there are important practical limitations and challenges. The popular exploratory landscape analysis (ELA) [15] with extended landscape features in the flacco package [7] is based on generating and evaluating a sample of solution points over the landscape. It is desirable to keep this sample small since it con-sumes objective function evaluations that may be expensive or could be used by the optimiser [8]. However a small sample is unlikely to be able to provide rich information about the properties of a complex fitness landscape. Previous work has shown that landscape analysis is sensitive to the sample size and sampling strategy used [17, 20]. Many of the ELA features themselves often estimate a very simple statistic or model of the data points, meaning that they may not be able to distinguish between different problem instances, or present a representation of the instance space that is robust [3, 21]. Considerable challenges remain when it comes to evaluating the strengths and limitations of landscape features if the goal is to understand or explain the relationship between algorithm performance and landscape features. Alterna-tively, if landscape features are used as part of a machine learning pipeline for algorithm selection, it seems beneficial to calculate large, diverse feature sets to 4 Gallagher and Malan 
+
+provide a better characterisation of problem landscapes. Therefore, it is worth-while exploring a wide variety of alternative representations of problem instances to see if any advantages or benefits can be gained. 
+
+# 3 Characterising Problems Using Their Programmatic Representation 
+
+In this paper we focus on the continuous unconstrained, single-objective optimi-sation problem: 
+
+x∗ = arg min f (x), x ∈ X ⊆ ℜ n (1) However, the ideas are quite general and should be applicable to other types of problems (e.g. discrete, constrained, multi-objective). The structure of an optimisation problem instance is determined by the ob-jective function, f . In the context of textbooks and benchmarking, it is natural to think about the objective as a mathematical function that we can write down (even though in black-box optimisation we do not assume any knowledge of the function). However in many optimisation problems, the objective function is implemented partly based on computer simulations, physical measurements or data sets. Evolutionary computation has also been used in many scenarios where the objective function used is a ranking or preference over candidate solutions, which may be determined by human preferences, etc. Along these lines, we take an abstract view that any well-defined representation of f could potentially be used to measure properties of the problem, thereby providing useful information for problem characterisation and comparison. In the following we consider a novel approach based purely on a representa-tion of the objective function as implemented in code (i.e. a computer program in some language). The premise is that the complexity inherent in the pro-grammatic implementation of the objective function captures useful information about how it will ultimately manifest as a search landscape. Intuitively, a func-tion that has a simple mathematical structure will tend to be simple to imple-ment in code, needing very few operators and manifests as a smooth landscape. On the other hand, a complex function tends to require a longer description, using many more operators and operands and manifests as a highly irregular landscape. Considering a programmatic representation opens up the possibility of using ideas from software engineering and information theory to measure the proper-ties of code. As far as we are aware, this is an unexplored avenue of research for optimisation problem instances. Nurminen [19] measured the programmatic complexity of shortest path algorithms using Halstead volume, lines of code and cyclomatic measures. The results show a high correlation between these measures and the running time of the different algorithms. While the aims of this work are quite different to ours, the paper makes the general argument that the empirical comparison of algorithms should consider the implementation (in code) of the algorithms to be studied. Information theoretic ideas have been used to develop Characterising Problems Using Programmatic Representation 5
+
+some landscape features, in particular information content [25], entropy [12] and the adaptation of (normalised) compression distance [16]. However, as landscape features they are calculated from a sample of data points from the search space and do not consider a programmatic representation. 
+
+# 4 Measuring Program Complexity of Optimisation Problems 
+
+Measuring the complexity of code is of considerable interest in software engi-neering. However, much of the work in this area is focussed on the human effort required to develop or debug software. The “number of lines of code” is a rough measure of software complexity, but is often used in practice. The program-ming language used is also a significant factor, since different languages produce code that is more compact or verbose and have a different set of operators and operands. To compare the structural logic of programs, there is the possibility of working with a more general representation, such as a tokenization, abstract syntax tree or any other representation between source code and the executable binary. In this paper, our focus is not on aspects related to software development, but rather on the complexity of a block of code that implements a given objective function. Halstead [4] proposed to measure the properties of a program that is focussed on the representation and structure of the code, in a way that is independent of its execution behaviour on a given architecture. In particular, the Halstead volume, VH is defined as 
+
+VH = ( N1 + N2) log 2(η1 + η2), (2) where N1 and N2 are the total numbers of operators and operands respectively, and η1 and η2 the number of distinct operators and operands in a given program. 
+
+VH is clearly one measure of the complexity of some entity (e.g. an objective function) expressed as a program. The Halstead difficulty, DH is defined as 
+
+DH = η1
+
+2 × N2
+
+η2
+
+, (3) which is related to the difficulty of a program to write or understand, as well as the Halstead effort, which may be used to measure required human coding time. We therefore focus on VH which seems more relevant for our purposes. The Halstead volume is closely related to the Shannon entropy, also proposed to measure software complexity [6]. The entropy per token is given by: 
+
+Hx = − X
+
+> x∈X
+
+p(x) log 2 p(x) (4) where x is a member of the discrete set X of possible tokens (operators and operands, i.e. η) and p(x) is a discrete probability over the total number of tokens 6 Gallagher and Malan 
+
+in the program, N . Harrison [6] considers only operators (and the total number of operators) and suggests this measure as it is not dependent on the total size of the program. However for code specifically describing objective functions we assume that the total size is relevant. The total entropy of the program is then: 
+
+H = N H x (5) If we assume uniform probability values for each operator and operand, H be-comes equal to VH .
+
+4.1 Halstead Volume and Entropy: Illustrative Example 
+
+As an example, consider firstly the Sphere function: f1(x) = Pni=1 x2 
+
+> i
+
+.A simple Python implementation of this function is shown in Listing 1.1. For this implementation: 
+
+• η1 = 10 ( def, (, ), :, =, for, in, +=, *, return )
+
+• η2 = 5 ( f1, x, s, 0, v )
+
+• N1 = 11 
+
+• N2 = 10 
+
+so VH (f1) ≈ 82 .04 . Entropy accounts for the multiple occurrences of tokens s, v (p(s) = p(v) = 321 ) and x,: (p(x) = p(:) = 221 ), leading to Hf1 ≈ 78 .73 
+
+Compare this with an implementation of the Lunacek bi-Rastrigin function (BBOB f24 , Listing 1.2), for which we have VH (f24 ) ≈ 764 .32 and Hf24 ≈ 703 .24 
+
+(η = 44 , N = 140 ). According to VH , f24 is ≈ 9.32 times more complex than 
+
+f1 and ≈ 8.93 times more complex according to H. Halstead volume is more sensitive to longer programs with repeated uses of the same tokens, for example nested brackets in a complex mathematical expression.               
+
+> def f1 ( x ) : s=0for vin x : s+= v*vreturn s
+> Listing 1.1. Implementation of f1in Python.
+
+There are clearly limitations as to what is captured by the programmatic representation. In particular, we can see from the examples that the dimen-sionality of a problem has no effect on VH and H, since dimensionality is just represented as a single operand and/or the number of times the loop is executed to evaluate the summation in functions such as f1 and f24 . On the other hand, this limitation is transparent, in comparison to sample-based ELA features that may capture dimensionality to some extent, but the effectiveness depends on the sample size and technique. Characterising Problems Using Programmatic Representation 7                                                                 
+
+> def f24 ( x ) : d=len ( x ) s=1.0 -(1.0 /(2.0 *math . sqrt ( d +20.0) -8.2) ) mu0 =2.5 mu1 =- math . sqrt (( mu0 **2 -1.0) /s ) sum1 , sum2 , sum3 =0 , 0 , 0for iin range ( d ) : sum1 += ( x [ i ] -mu0 ) **2 sum2 += ( x [ i ] -mu1 ) **2 sum3 += math . cos (2 *math . pi *( x [ i ] -mu0 ) ) res =min ( sum1 , d+s*sum2 ) +10 *( d -sum3 ) return res
+> Listing 1.2. Implementation of f24 in Python.
+
+4.2 Practical Considerations for Calculating VH and H
+
+The examples above suggest the possibility of comparing different optimisation problem instances via Halstead volume and/or entropy. However there are a number of factors to consider before this can be done in practice: 
+
+Programming language: since the measures are dependent on the language used, the best option would be to compare problems based on their implementation in the same language. While the measures are not directly comparable across different languages, the difference could be assumed to be a roughly constant factor, meaning that a ranking of functions according to these measures would be preserved (i.e. if H(f1) < H (f24 ) for Python implementations, we could expect that H(f1) < H (f24 ) for C implementations). 
+
+Style: we expect that the style of different programmers would lead to some variability in the measures if these programs were compared. This suggests that the measures are likely to be more reliable when used on programs that were developed by the same programming teams or there is some attempt to adhere to agreed style guidelines or principles. 
+
+4.3 Complexity Measures of BBOB functions 
+
+To test Halstead volume and entropy for characterising optimisation problems, we perform an analysis on the well known suite of 24 bound-constrained, noiseless BBOB functions [5] as they are documented and implemented on the COCO platform [2]. We extract only the underlying objective functions as they are implemented in the C language without any wrapper COCO functionality. Error checking code and boundary handling were also removed. For example, the code used for BBOB function f1 is shown in Listing 1.3. To compute the Halstead metrics on the BBOB functions, we firstly used the 
+
+multimetric Python package 4. Multimetric calculates a number of code metrics   
+
+> 4multimetric 2.4.4 (https://pypi.org/project/multimetric/) 8Gallagher and Malan
+
+directly including VH . Internally, it uses the Pygments package 5 which tokenises the code using regular expressions. Alternatively, we also use the Python package for Clang 6 to tokenise the C code, from which we calculate VH and H using (2) and (5).                             
+
+> static double f_sphere_raw ( const double *x , const size_t number_of_variables ) {size_t i=0; double result ; result =0.0; for ( i =0; i<number_of_variables ; ++ i ) {result += x [ i ] *x [ i ]; }return result ; }
+> Listing 1.3. BBOB f 1raw function in C.
+
+Table 1 shows the results for the 24 BBOB functions. We make the following observations: 
+
+– For all three complexity measures the lowest value is for f 1 (Sphere) and the highest is for f 24 (Lunacek bi-Rastrigin), which supports the intuition that higher VH and H are associated with more complex functions. 
+
+– The complexity metrics are invariant to rotation. This is evident in functions such as f 2 (Ellipsoid Original) and f 10 (Ellipsoid Rotated) having the same 
+
+VH and H values. 
+
+– The complexity metrics are also invariant to different degrees of conditioning (see f 17 and f 18 ). 
+
+– For the Gallagher Peaks functions (f 21 and f 22 ), the number of peaks is specified as a parameter of the generating function, so is also not captured in the complexity metrics. Figure 1 (left) shows a heatmap visualisation of the pairwise absolute differ-ences between the VH (multimetric) values of the BBOB functions (the heatmaps of differences between VH (Clang) and H (Clang) look very similar, so are not shown). Functions f7, f 21 , f 22 and f24 clearly stand out because of their relatively large values. To compare with the differences in entropy values, we normalise the values of VH and H in the range [0 , 1] and visualise the pairwise difference of 
+
+(VH − H) across the functions, see Figure 1 (right). The scale is quite small, indicating that VH and H are fairly consistent across the problem set. Most of the higher-numbered functions give a higher relative entropy value (resulting in a negative difference), suggesting that the complexity of the functions still   
+
+> 5https://pygments.org/
+> 6https://pypi.org/project/clang/
+
+Characterising Problems Using Programmatic Representation 9
+
+Table 1. Halstead volume ( VH ) and entropy ( H) values of base BBOB functions based on the C implementation in COCO. Function Function Name VH (multimetric ) VH (Clang ) H (Clang )Separable functions f1 Sphere 208.15 267.93 253.05 f2 Ellipsoid Original 437.47 537.67 493.42 f3 Rastrigin Original 380.80 468.05 437.22 f4 Büche-Rastrigin 394.84 482.15 451.18 f5 Linear Slope 500.37 649.28 587.21 Functions with low or moderate conditioning f6 Attractive Sector 408.66 488.40 448.88 f7 Step Ellipsoidal 2434.09 2604.00 2255.70 f8 Rosenbrock Original 460.64 539.27 504.81 f9 Rosenbrock Rotated 460.64 539.27 504.81 Functions with high conditioning and unimodal f10 Ellipsoid Rotated 437.47 537.67 493.42 f11 Discus 267.93 346.13 325.61 f12 Bent Cigar 267.93 346.13 325.61 f13 Sharp Ridge 509.58 615.51 571.37 f14 Different Powers 393.50 498.55 444.07 Multi-modal functions with adequate global structure f15 Rastrigin Rotated 380.80 468.05 437.22 f16 Weierstrass 579.03 653.53 602.45 f17 Schaffers F7 559.39 665.96 618.90 f18 Schaffers F7 Ill-conditioned 559.39 665.96 618.90 f19 Griewank-Rosenbrock 605.33 707.20 665.35 Multi-modal functions with weak global structure f20 Schwefel 351.86 427.35 399.38 f21 Gallagher 101 Peaks 1540.77 1697.00 1512.00 f22 Gallagher 21 Peaks 1540.77 1697.00 1512.00 f23 Katsuura 766.75 906.19 837.32 f24 Lunacek bi-Rastrigin 2838.00 3024.00 2610.70 
+
+produces a relatively uniform distribution over tokens, with f14 , f 24 and to some extent f20 being exceptions. 
+
+4.4 Complexity Measures for Neural Network Weight Optimisation 
+
+As a different optimisation problem scenario, we consider the task of searching for the combination of weights that minimises error on a neural network learning task. Consider the training of a simple feed-forward neural network as a black-box optimisation problem (as proposed in the CORNN suite [11]). Calculating the objective function involves a forward pass through the network to calculate the output and the corresponding error, which is to be minimised. To be comparable with the complexity measures for the BBOB functions, we analysed C implementations for calculating the mean squared error between 10 Gallagher and Malan        
+
+> Fig. 1. BBOB function results. Left: heatmap of differences between VHvalues. Right: heatmap of differences between (normalised) VHand Hvalues.
+
+the output and the target without using any C libraries. We implemented two versions of the code using different activation functions in the hidden layers: rectified linear unit (ReLU) and hyperbolic tangent (Tanh). Note that since the same code is used for different sized networks, the complexity measures are independent of the number of layers and neurons in the network. The complexity measures of these two error functions are provided in Table 2. Due to the higher number of operands and operators required to implement Tanh compared to ReLU, the complexity values are slightly higher.                
+
+> Table 2. Halstead volume ( VH) and entropy ( H) values of neural network mean squared error functions implemented in C without any libraries. Activation function VH(multimetric )VH(Clang )H(Clang )ReLU 931.4 1065.3 1021.4 Tanh 1005.3 1135.8 1103.8
+
+The proposed complexity measures consider the objective function on its own for characterising and comparing problems. In the context of neural network weight optimisation, this means that the complexity measures are not affected by the number of weights (the dimension of the search space) or the training dataset (i.e. the learning task). This notion that the characteristics of a neural network optimisation problem are not affected by the learning task was observed in a landscape analysis study of neural network training tasks by Malan and Muñoz [14]. In that study, they extracted the ELA features of BBOB and neural network regression tasks, equalling the BBOB function dimensions to the number of neural network weights (41 in this case). A 2D projection of the instances (see Fig. 2) showed that the neural network instances (the two pink clusters at the Characterising Problems Using Programmatic Representation 11  
+
+> Fig. 2. 2D projection of ELA features of instances of BBOB functions 1-24 and in-stances of neural network regression tasks from [14].
+
+bottom of the plot) were only differentiated based on the activation function. This was a surprising result, as the neural network training instances covered a wide range of difficulty as regression tasks and yet occupied the same area of ELA feature space. The fact that our proposed complexity measures are only affected by the activation function aligns with the finding that the activation function was the key differentiator between problem instances with respect to landscape features. 
+
+# 5 Linking Complexity to Performance of Algorithms 
+
+Much of the early work in fitness landscape analysis was focussed on finding a general measure of “problem hardness” for evolutionary search [13]. Recognising the futility of this endeavour, the focus later shifted to characterise multiple features of problems using a range of different measures with the hope that these feature vectors capture differences between problem instances. If algorithm 12 Gallagher and Malan 
+
+selection is to be achieved, however, we still need features that in some way link to algorithm performance. The ELA feature set is commonly used as the basis for algorithm selection [9]. However, in a large benchmark study, Vermetten et al. [26] found that “the ELA features are not sufficiently representative to accurately represent the problems in a way which is relevant for ranking optimization algorithms” . In this section, we investigate to what extent Halstead and entropy complexity measures link to algorithm performance and capture aspects of problem difficulty. 
+
+5.1 Performance of Algorithms 
+
+We use the performance data from a benchmark study by Vermetten et al. [26] on the BBOB functions in 2 and 5 dimensions. Performance data was shared for five algorithms: (1) Diagonal CMA-ES (dCMA), (2) COBYLA (COB) – a local gradient-free optimizer, (3) Differential Evolution (DE), (4) Modular CMA-ES (mCMA), and (5) L-SHADE (aDE) – an adaptive version of DE. Performance was reported as the normalized area under the curve (AUC) of the empirical cumulative distribution function. Table 3 shows the AUC values for the five algorithms for each BBOB function in 2D and 5D. Note that the values displayed are averages of five instances of each BBOB function. We also provide the average AUC (AUC) of the five algorithms for each function. From the AUC values, we notice that they are generally high (close to 1) for f1 and are lower for the later functions, indicating that the algorithms performed better on the early simpler functions, which is as expected. 
+
+5.2 Correlation to Algorithm Performance 
+
+Since it is difficult to observe patterns in Table 3, we provide the Spearman’s rank correlation coefficients of each column of AUC values with the Halstead volume ( VH ) given in Table 1 (see bottom two rows of Table 3). A first observation is that all of the correlation coefficients are negative. This confirms that the Halstead volume is negatively correlated with the AUC for all algorithms. This matches our intuition – the more complex functions (as measured by VH ) are harder to optimise. We also see that there is a range of correlations from weak to moderate. For example, for the DE algorithm on 2D instances, the correlation is weak at −0.138 , but is stronger on 5D problems at 
+
+−0.524 .To further investigate the correlation, Fig. 3 plots the average AUC (over 5 algorithms) against Halstead volume for the 2D and 5D BBOB functions. A clear trend is shown for VH values below 1000 in both cases. The four outliers are f7, f21 , f22 , and f24 . This seems to indicate that Halstead volume is a better predictor of algorithm performance when excluding instances with relatively high 
+
+VH values. Characterising Problems Using Programmatic Representation 13 
+
+Table 3. AUC performance metrics for five algorithms on BBOB function instances showing negative correlations with Halstead volume. 2D problem instances 5D problem instances dCMA COB DE mCMA aDE AUC dCMA COB DE mCMA aDE AUC f1 0.976 0.996 0.841 0.976 0.845 0.927 0.972 0.996 0.554 0.970 0.705 0.839 f2 0.950 0.587 0.734 0.931 0.795 0.799 0.953 0.434 0.546 0.900 0.658 0.698 f3 0.426 0.366 0.476 0.423 0.672 0.473 0.302 0.254 0.304 0.298 0.377 0.307 f4 0.368 0.372 0.444 0.358 0.657 0.440 0.299 0.262 0.309 0.290 0.367 0.305 f5 0.927 0.271 0.595 0.992 0.983 0.753 0.923 0.239 0.410 0.978 0.960 0.702 f6 0.948 0.489 0.669 0.956 0.795 0.771 0.929 0.465 0.481 0.941 0.621 0.687 f7 0.886 0.427 0.874 0.702 0.857 0.749 0.470 0.314 0.448 0.428 0.606 0.453 f8 0.567 0.540 0.668 0.942 0.738 0.691 0.511 0.534 0.446 0.868 0.499 0.572 f9 0.699 0.587 0.663 0.945 0.754 0.730 0.540 0.549 0.437 0.876 0.501 0.581 f10 0.528 0.526 0.605 0.932 0.684 0.655 0.435 0.409 0.398 0.895 0.456 0.518 f11 0.372 0.402 0.522 0.906 0.583 0.557 0.318 0.311 0.329 0.870 0.400 0.446 f12 0.706 0.614 0.657 0.890 0.708 0.715 0.605 0.601 0.455 0.857 0.487 0.601 f13 0.366 0.342 0.494 0.908 0.576 0.537 0.412 0.410 0.304 0.840 0.353 0.464 f14 0.614 0.557 0.636 0.939 0.708 0.691 0.572 0.561 0.449 0.918 0.524 0.605 f15 0.488 0.392 0.410 0.430 0.547 0.453 0.300 0.238 0.275 0.300 0.284 0.279 f16 0.412 0.236 0.382 0.657 0.432 0.424 0.273 0.147 0.186 0.326 0.194 0.225 f17 0.503 0.165 0.430 0.566 0.498 0.432 0.330 0.126 0.270 0.452 0.316 0.299 f18 0.303 0.183 0.377 0.336 0.428 0.325 0.287 0.134 0.261 0.348 0.287 0.263 f19 0.548 0.363 0.473 0.519 0.535 0.488 0.272 0.223 0.205 0.236 0.210 0.229 f20 0.622 0.540 0.594 0.556 0.722 0.607 0.451 0.444 0.466 0.442 0.507 0.462 f21 0.486 0.418 0.741 0.462 0.805 0.582 0.353 0.373 0.358 0.336 0.530 0.390 f22 0.414 0.409 0.736 0.527 0.821 0.581 0.349 0.399 0.312 0.321 0.448 0.366 f23 0.306 0.106 0.135 0.494 0.127 0.234 0.140 0.114 0.106 0.180 0.104 0.129 f24 0.339 0.289 0.319 0.319 0.318 0.317 0.267 0.236 0.246 0.264 0.246 0.252 -0.370 -0.531 -0.138 -0.336 -0.164 -0.369 -0.444 -0.527 -0.524 -0.462 -0.319 -0.502 Spearman’s rank correlation with Halstead volume 
+
+Fig. 3. Scatter plots of Halstead volume against average AUC for the 2D (left) and 5D (right) BBOB functions. 14 Gallagher and Malan 
+
+# 6 Conclusion 
+
+In this paper we have proposed the use of programmatic complexity measures as a new approach to characterising and comparing optimisation problem in-stances. While a programmatic approach cannot capture every property of a problem landscape that might be relevant to algorithm performance, it has a number of benefits. In particular, measuring code complexity does not require sampling, statistical estimation or the use of any objective function evaluations and can be pre-calculated statically for each problem instance. The Halstead volume and entropy were evaluated and compared experimentally and shown to provide information that could be used to compare problem instances. In addi-tion, the Halstead volume showed correlation to algorithm performance for the BBOB functions, so has potential as a feature to complement existing features in algorithm selection and configuration studies. There is considerable scope for further work. It would be interesting to see results for a wider set of problems, including real-world representative and prob-lems where the objective function value involves a more extensive execution of code, e.g. a numerical simulation or model. Further, it would be interesting to see if algorithm selectors/wizards can be produced that can take advantage of programmatic complexity to improve performance results. In addition, further work is needed in extend this idea to apply to different classes of optimisation problems, including constrained and multi-objective problems. 
+
+Acknowledgments. The authors would like to acknowledge the Dagstuhl Seminar 26072 on “Best Practice for Leveraging Domain Knowledge in Real-World Optimiza-tion”, which provided the opportunity for research discussions that led to the ideas and work in this paper. 
+
+# References 
+
+1. Boese, K.D.: Models for iterative global optimization. Ph.D. thesis, University of California, Los Angeles (1996) 2. COCO: The BBOB Test Suite, https://coco-platform.org/testsuites/bbob/overview.html 3. Gallagher, M., Muñoz, M.A.: Towards an improved understanding of features for more interpretable landscape analysis. In: Proceedings of the Genetic and Evolu-tionary Computation Conference Companion. pp. 135–138 (2024) 4. Halstead, M.H.: Elements of Software Science (Operating and programming sys-tems series). Elsevier Science Inc. (1977) 5. Hansen, N., Finck, S., Ros, R., Auger, A.: Real-Parameter Black-Box Optimization Benchmarking 2009: Noiseless Functions Definitions. Research Report RR-6829, INRIA (2009), https://inria.hal.science/inria-00362633 6. Harrison, W.: An entropy-based measure of software complexity. IEEE Transac-tions on Software Engineering 18 (11), 1025–1029 (1992) 7. Kerschke, P., Trautmann, H.: Comprehensive feature-based landscape analysis of continuous and constrained optimization problems using the R-package flacco. Ap-plications in Statistical Computing pp. 93–123 (2019) Characterising Problems Using Programmatic Representation 15 8. Kerschke, P., Preuss, M., Wessing, S., Trautmann, H.: Low-budget exploratory landscape analysis on multiple peaks models. In: Proceedings of the Genetic and Evolutionary Computation Conference 2016. p. 229–236. ACM (2016) 9. Kerschke, P., Trautmann, H.: Automated algorithm selection on continuous black-box problems by combining exploratory landscape analysis and machine learning. Evolutionary Computation 27 (1), 99–127 (2019) 10. Malan, K.M.: A survey of advances in landscape analysis for optimisation. Algo-rithms 14 (2), 40 (2021) 11. Malan, K.M., Cleghorn, C.W.: A continuous optimisation benchmark suite from neural network regression. In: Parallel Problem Solving from Nature – PPSN XVII. p. 177–191. Springer International Publishing (2022) 12. Malan, K.M., Engelbrecht, A.P.: Quantifying ruggedness of continuous land-scapes using entropy. In: 2009 IEEE Congress on Evolutionary Computation. p. 1440–1447. IEEE (May 2009) 13. Malan, K.M., Engelbrecht, A.P.: A survey of techniques for characterising fitness landscapes and some possible ways forward. Information Sciences 241 , 148–163 (Aug 2013) 14. Malan, K.M., Muñoz, M.A.: Why we should be benchmarking evolutionary al-gorithms on neural network training tasks. In: Proceedings of the Genetic and Evolutionary Computation Conference. p. 30–38. GECCO ’25, ACM (2025) 15. Mersmann, O., Bischl, B., Trautmann, H., Preuss, M., Weihs, C., Rudolph, G.: Exploratory landscape analysis. In: Proceedings of the 13th Annual Conference on Genetic and Evolutionary Computation. p. 829–836. ACM (2011) 16. Morgan, R.: Analysing and comparing problem landscapes for black-box optimiza-tion via length scale. Ph.D. thesis, University of Queensland (2015) 17. Muñoz, M.A., Kirley, M., Smith-Miles, K.: Analyzing randomness effects on the reliability of exploratory landscape analysis. Natural Computing 21 (2), 131–154 (2022) 18. Muñoz, M.A., Sun, Y., Kirley, M., Halgamuge, S.K.: Algorithm selection for black-box continuous optimization problems: A survey on methods and challenges. In-formation Sciences 317 , 224–245 (Oct 2015) 19. Nurminen, J.K.: Using software complexity measures to analyze algorithms—an experiment with the shortest-paths algorithms. Computers & Operations Research 
+
+30 (8), 1121–1134 (2003) 20. Renau, Q., Doerr, C., Dreo, J., Doerr, B.: Exploratory landscape analysis is strongly sensitive to the sampling strategy. In: Parallel Problem Solving from Na-ture – PPSN XVI. p. 139–153. Springer International Publishing (2020) 21. Skvorc, U., Eftimov, T., Korosec, P.: A comprehensive analysis of the invariance of exploratory landscape analysis features to function transformations. In: 2022 IEEE Congress on Evolutionary Computation (CEC). p. 1–8. IEEE (2022) 22. Smith-Miles, K., Lopes, L.: Measuring instance difficulty for combinatorial opti-mization problems. Computers & Operations Research 39 (5), 875–889 (2012) 23. Sutton, A.M., Whitley, D., Lunacek, M., Howe, A.: PSO and multi-funnel land-scapes: how cooperation might limit exploration. In: Proceedings of the 8th Annual Conference on Genetic and Evolutionary Computation. pp. 75–82 (2006) 24. Trajanov, R., Nikolikj, A., Cenikj, G., Teytaud, F., Videau, M., Teytaud, O., Efti-mov, T., López-Ibáñez, M., Doerr, C.: Improving Nevergrad’s algorithm selection wizard NGOpt through automated algorithm configuration. In: International Con-ference on Parallel Problem Solving from Nature. pp. 18–31. Springer (2022) 25. Vassilev, V.K., Fogarty, T.C., Miller, J.F.: Information characteristics and the structure of landscapes. Evolutionary Computation 8(1), 31–60 (2000) 16 Gallagher and Malan 26. Vermetten, D., Ye, F., Bäck, T., Doerr, C.: MA-BBOB: Many-affine combinations of BBOB functions for evaluating automl approaches in noiseless numerical black-box optimization contexts. In: International Conference on Automated Machine Learning. pp. 7–1. PMLR (2023) 27. Wolpert, D.H., Macready, W.G.: No free lunch theorems for optimization. IEEE Transactions on Evolutionary Computation 1(1), 67–82 (2002)

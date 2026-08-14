@@ -1,0 +1,403 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-14T20:52:12.023242+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 4,
+    "deep_cap": 6,
+    "deep_selected": 4,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2608.13333v1",
+      "source": "arxiv",
+      "title": "LLM-Guided Graph Generation for Structure-Based Local Improvement Methods",
+      "abstract": "Large neighborhood search normally selects a random subset of decision variables for iterative optimization. For efficiently solving different problems, researchers tend to design variable selection strategies by taking into account structural features from different domains. In this paper, we build an automatic pipeline that is problem-agnostic to all problems in the MiniZinc format. By prompting an LLM with our semantic guidelines, we guide the LLM to produce a graph generator that maps any instance of a problem type to a uniform weighted graph, where nodes represent decision variables and edges represent constraint relationships. These problem-agnostic graphs guide our structure-based local improvement framework (SLIM) in variable selection. Meanwhile, the weighted graph enables all problem instances to share the same generic graph representation, from which the same graph features can be extracted and used for configuration selection. We evaluated our pipeline on instances across 20 MiniZinc competition problems, finding that algorithm selection achieves a 39.5% average problem-weighted win rate against a one-shot Gurobi baseline, more than doubling the best single configuration (19.3%). Configuration and feature ablation boost the performance further to 44.0%, demonstrating that LLM-based semantic generation enables effective automated structure extraction and feature extraction for constraint optimization.",
+      "authors": [
+        "Hai Xia",
+        "Vaidyanathan Peruvemba Ramaswamy",
+        "Stefan Szeider"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-13T15:01:03+00:00",
+      "link": "https://arxiv.org/pdf/2608.13333v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Uses LLM to generate a graph generator for any MiniZinc problem instance, guiding local search optimization; a clear case of LLM-driven optimization code generation.",
+      "llm_evidence_cn": "借助LLM为MiniZinc格式问题生成图生成器，并指导局部搜索改进，属于LLM驱动的优化代码生成案例。",
+      "llm_evidence": "借助LLM为MiniZinc格式问题生成图生成器，并指导局部搜索改进，属于LLM驱动的优化代码生成案例。",
+      "canonical_evidence": "借助LLM为MiniZinc格式问题生成图生成器，并指导局部搜索改进，属于LLM驱动的优化代码生成案例。",
+      "llm_tldr_en": "This work builds an automatic pipeline that prompts an LLM to generate a graph generator for any MiniZinc problem; the resulting instance graphs guide a structure-based local improvement framework, enabling automatic optimization solution generation.",
+      "llm_tldr_cn": "局部搜索经常随机选择变量，利用结构特征可提升求解效率，但依赖人工设计。本文构建全自动管道，通过语义指南指导LLM为MiniZinc问题生成图生成器，将变量和约束映射为加权图。该图引导结构化的局部改进框架进行变量选择，实验结果表明其在多个问题上显著优于随机选择和其他基线，为LLM自动生成优化求解代码提供了新思路。",
+      "llm_tldr": "局部搜索经常随机选择变量，利用结构特征可提升求解效率，但依赖人工设计。本文构建全自动管道，通过语义指南指导LLM为MiniZinc问题生成图生成器，将变量和约束映射为加权图。该图引导结构化的局部改进框架进行变量选择，实验结果表明其在多个问题上显著优于随机选择和其他基线，为LLM自动生成优化求解代码提供了新思路。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.10957v1",
+      "source": "arxiv",
+      "title": "DD-suite: A cross-platform package to build Decision Diagrams for optimization purposes",
+      "abstract": "Decision diagrams (DDs) have become a powerful tool for discrete optimization, supporting a wide range of algorithms that span cut-generation procedures, decomposition methods, and specialized branch-and-bound searches. Despite this growth, their adoption remains limited, partly because most existing DD code is tailored to a specific algorithm or application and is therefore hard to reuse. We introduce DD-suite, a cross-platform, open-source software package for building and manipulating DDs for discrete optimization. DD-suite is available in both Python and C++ through a shared modeling interface, and lets users construct exact, restricted, and relaxed DDs for any discrete optimization problem expressed in recursive form. The package implements the DD reduction procedure, shortest-path routines for obtaining primal and dual bounds, a visualization tool, and an extensive automated test suite. Furthermore, it includes extensive documentation, a support webpage, and ready-to-use examples for four combinatorial problems. Rather than a closed solver, DD-suite is designed as an extensible building block: users can add new construction mechanisms or run custom algorithms on top of the resulting diagram, as we illustrate with a DD-based cutting plane procedure embedded in a state-of-the-art mixed-integer programming solver. Our numerical experiments show that the C++ implementation is 5-6 times faster than the Python one while producing identical diagrams, and remains within a small constant factor of ddo, a specialized Rust framework, confirming that DD-suite combines an accessible, extensible codebase with competitive performance.",
+      "authors": [
+        "Antonia F. Blanco",
+        "Margarita Castro",
+        "Rodrigo Toro Icarte"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-08-11T14:24:34+00:00",
+      "link": "https://arxiv.org/pdf/2608.10957v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Cross-platform package for building decision diagrams for discrete optimization modeling",
+      "llm_evidence_cn": "面向离散优化的决策图构建跨平台软件包，直接支撑运筹优化建模",
+      "llm_evidence": "面向离散优化的决策图构建跨平台软件包，直接支撑运筹优化建模",
+      "canonical_evidence": "面向离散优化的决策图构建跨平台软件包，直接支撑运筹优化建模",
+      "llm_tldr_en": "DD-suite is a cross-platform open-source package (Python and C++) to build exact, restricted, and relaxed decision diagrams for discrete optimization, improving modeling and reuse.",
+      "llm_tldr_cn": "决策图(DD)是离散优化的有力工具，但现有代码往往耦合特定算法导致复用困难。DD-suite提供跨平台开源软件包，通过共享建模接口在Python和C++中统一构建精确、受限和松弛决策图，支持任意以递归形式表达的离散优化问题。该包面向优化建模与求解算法开发，为运筹优化领域的建模工具链提供了可复用基础。",
+      "llm_tldr": "决策图(DD)是离散优化的有力工具，但现有代码往往耦合特定算法导致复用困难。DD-suite提供跨平台开源软件包，通过共享建模接口在Python和C++中统一构建精确、受限和松弛决策图，支持任意以递归形式表达的离散优化问题。该包面向优化建模与求解算法开发，为运筹优化领域的建模工具链提供了可复用基础。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.10694v2",
+      "source": "arxiv",
+      "title": "Optimize Cheap, Deploy Strong: Cost-Aware Cross-Tier Transfer for Evolutionary Optimization",
+      "abstract": "Evolutionary optimization of LLM prompts and agentic programs (e.g., GEPA) is dominated by fitness evaluation: scoring each candidate runs an answering LLM over a validation set, so the evaluator's price tier dictates total search cost. We restructure that search by decoupling the three roles an LLM plays, running the high-volume answering role on the cheapest tier, reserving a strong model for the rare reflection/variation operator, then exploiting upward cross-tier transfer to deploy the cheaply evolved prompt on a stronger target. We contribute a cost-controlled characterization of when cheap-tier search substitutes for target-tier search, and where it fails. Across four tasks (HotpotQA, IFBench, LiveBench-Math, HoVer) and eleven models in four model families, the resulting prompt matches or exceeds same-tier optimization while placing over 96% of search tokens on the cheapest tier, at 5.6-14x lower search cost, rising to 25-54x where reasoning tiers emit long chains of thought on every fitness call.",
+      "authors": [
+        "Tal Oved",
+        "Roi Pony",
+        "Oshri Naparstek",
+        "Udi barzelay"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL",
+        "cs.NE"
+      ],
+      "published": "2026-08-11T09:17:22+00:00",
+      "link": "https://arxiv.org/pdf/2608.10694v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "cost-aware cross-tier transfer for evolutionary optimization of LLM prompts/agentic programs improves LLM-driven optimization code search",
+      "llm_evidence_cn": "对LLM提示词与智能体程序做演化优化，通过成本感知跨档迁移提升LLM优化代码搜索效率",
+      "llm_evidence": "对LLM提示词与智能体程序做演化优化，通过成本感知跨档迁移提升LLM优化代码搜索效率",
+      "canonical_evidence": "对LLM提示词与智能体程序做演化优化，通过成本感知跨档迁移提升LLM优化代码搜索效率",
+      "llm_tldr_en": "Evolutionary LLM optimization is dominated by costly fitness evaluation. This work decouples the answering, reflection, and variation roles, runs high-volume evaluations on a cheap tier, and transfers upward to a stronger target model. On four tasks, it cuts cost while maintaining deployed quality.",
+      "llm_tldr_cn": "在LLM提示词与智能体程序的演化优化中，适应度评估常由大模型完成，成本高昂。本文把LLM在搜索中的三个角色解耦：高频打分用最便宜档位，低频反思/变异用强模型，并通过向上跨档迁移将廉价搜索得到的提示词部署到更强模型上。在四个任务和十一组设置下刻画了廉价档搜索可替代目标档的条件与失效边界，显著降低搜索成本且保持部署质量。该工作为LLM自动生成优化代码的算力调度提供了成本可控的高效策略。",
+      "llm_tldr": "在LLM提示词与智能体程序的演化优化中，适应度评估常由大模型完成，成本高昂。本文把LLM在搜索中的三个角色解耦：高频打分用最便宜档位，低频反思/变异用强模型，并通过向上跨档迁移将廉价搜索得到的提示词部署到更强模型上。在四个任务和十一组设置下刻画了廉价档搜索可替代目标档的条件与失效边界，显著降低搜索成本且保持部署质量。该工作为LLM自动生成优化代码的算力调度提供了成本可控的高效策略。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.12522v1",
+      "source": "arxiv",
+      "title": "$\\varepsilon$-MemEvo: Adaptive Cross-Task Memory Transfer for LLM Program Evolution",
+      "abstract": "LLM-based program evolution systems such as FunSearch and AlphaEvolve have shown strong ability to discover novel algorithms, but typically optimize each task in isolation, discarding search experience after completion. We introduce $\\varepsilon$-MemEvo, a framework for cross-task knowledge transfer in LLM program evolution. $\\varepsilon$-MemEvo stores prior experience as task-agnostic tactic memories: compact natural-language summaries of successful algorithmic strategies rather than raw code, enabling transfer across tasks with different APIs and evaluators. To avoid negative transfer from semantically mismatched memories, $\\varepsilon$-MemEvo uses an adaptive injection gate that decides whether retrieved memories should be injected, and at what intensity. We evaluate $\\varepsilon$-MemEvo on 8 diverse optimization benchmarks spanning mathematical optimization and systems engineering, using a content-level Leave-One-Out protocol that excludes target-task memory entries. On the primary GPT-5 backbone, $\\varepsilon$-MemEvo improves AUCC over AdaEvolve on all 8 tasks, with a mean relative gain of +8.7%, and improves early-stage convergence by +9.4% on average. Ablations show that naive memory injection can fail catastrophically, while adaptive gating remains safe across all five ablation tasks. The data-updated posterior is interpretable in observed states: it favors skip during improving search and shifts from skip to hint across early and late plateaus. These gains incur less than 1% computational overhead.",
+      "authors": [
+        "Aofan Liu",
+        "Shiyuan Song",
+        "Yiyan Qi"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-12T18:56:31+00:00",
+      "link": "https://arxiv.org/pdf/2608.12522v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM program evolution generates code for optimization tasks; cross-task memory transfer improves generated algorithms",
+      "llm_evidence_cn": "LLM程序演化自动生成优化算法代码，跨任务记忆迁移可提升代码生成质量",
+      "llm_evidence": "LLM程序演化自动生成优化算法代码，跨任务记忆迁移可提升代码生成质量",
+      "canonical_evidence": "LLM程序演化自动生成优化算法代码，跨任务记忆迁移可提升代码生成质量",
+      "llm_tldr_en": "LLM program evolution usually discards prior search experience. epsilon-MemEvo stores successful strategies as task-agnostic tactic memories and uses an adaptive injection gate to transfer across tasks, improving generated code/algorithm quality.",
+      "llm_tldr_cn": "现有LLM程序演化系统通常孤立优化每个任务，丢弃搜索经验。本文提出ε-MemEvo，将历史成功策略提炼为任务无关的自然语言战术记忆，并通过自适应注入门控避免负迁移，从而实现跨任务知识复用。实验表明该方法能提升LLM演化生成程序在多种任务上的表现。相关工作为LLM自动生成优化求解代码提供了可迁移的范式。",
+      "llm_tldr": "现有LLM程序演化系统通常孤立优化每个任务，丢弃搜索经验。本文提出ε-MemEvo，将历史成功策略提炼为任务无关的自然语言战术记忆，并通过自适应注入门控避免负迁移，从而实现跨任务知识复用。实验表明该方法能提升LLM演化生成程序在多种任务上的表现。相关工作为LLM自动生成优化求解代码提供了可迁移的范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.07926v1",
+      "source": "arxiv",
+      "title": "Refining LLM-based Directed Test Input Generation via Runtime Value Feedback",
+      "abstract": "LLM-based directed input generation techniques have shown promising effectiveness at producing target-reaching test inputs. However, due to the constraint of available code information and inherent unpredictability of LLM inference, reliable directed input generation requires mechanisms to ground the process in observed runtime behavior. We propose ReDig, a runtime feedback-guided refinement framework which adds a control loop around an LLM-based directed test input generation technique to refine the directed input generation with runtime values observed in prior target-missing test executions. In the case studies with Poppler and Libsndfile, we found that ReDig effectively derive runtime value feedback to diagnose why the previous test script failed to reach the target lines, and also effectively leverage given runtime value feedback to refine the test scripts in subsequent steps.",
+      "authors": [
+        "Narin Han",
+        "Shin Hong"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-08-08T05:05:55+00:00",
+      "link": "https://arxiv.org/pdf/2608.07926v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-based directed code generation with runtime feedback refinement, transferable to optimization code generation",
+      "llm_evidence_cn": "LLM定向代码生成结合运行时反馈细化，可迁移到优化求解代码生成",
+      "llm_evidence": "LLM定向代码生成结合运行时反馈细化，可迁移到优化求解代码生成",
+      "canonical_evidence": "LLM定向代码生成结合运行时反馈细化，可迁移到优化求解代码生成",
+      "llm_tldr_en": "ReDig adds a runtime feedback control loop around LLM-generated directed test inputs, using observed runtime values to refine missing-target scripts; case studies show effective diagnosis.",
+      "llm_tldr_cn": "LLM生成的定向测试输入常因缺少运行时信息而无法到达目标。ReDig在LLM生成测试脚本外增加控制回路，利用前次目标未命中执行中观察到的运行时值来诊断失败原因并细化生成过程。在Poppler和Libsndfile的案例中，ReDig能有效提取运行时反馈并改进脚本。该思路同样适用于LLM生成优化求解代码时的迭代修正。",
+      "llm_tldr": "LLM生成的定向测试输入常因缺少运行时信息而无法到达目标。ReDig在LLM生成测试脚本外增加控制回路，利用前次目标未命中执行中观察到的运行时值来诊断失败原因并细化生成过程。在Poppler和Libsndfile的案例中，ReDig能有效提取运行时反馈并改进脚本。该思路同样适用于LLM生成优化求解代码时的迭代修正。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.08898v1",
+      "source": "arxiv",
+      "title": "A New Approach to Characterising Optimisation Problems Using Programmatic Representation and Complexity Measures",
+      "abstract": "Characterising optimisation problem instances is a fundamental part of understanding the behaviour and performance of different algorithms as well as providing information for algorithm selection and configuration. In this paper we propose a novel approach to problem characterisation based on the representation of instances when implemented as a program. The intuition is that the complexity of the code required to express an objective function should relate to the complexity of the search landscape. We identify the Halstead volume as a measure of code complexity, which can be seen as a simplified version of the entropy of the program. Given a code implementation of the objective function, the Halstead volume and entropy can be quickly calculated using existing libraries. We apply the proposed complexity measures to the well-known BBOB optimisation problem suite and the simple feed-forward neural network training task. We also show that the measures are negatively correlated with algorithm performance and therefore show potential as predictive meta-features for algorithm selection and other problem analysis. We envisage the proposed measures as complementary to other problem characterisation approaches, but with the advantages of not requiring any sampling of the search space, being invariant to transformations, and being very quick to calculate automatically.",
+      "authors": [
+        "Marcus Gallagher",
+        "Katherine M. Malan"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE",
+        "cs.AI"
+      ],
+      "published": "2026-08-09T20:19:51+00:00",
+      "link": "https://arxiv.org/pdf/2608.08898v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Directly addresses optimization problem characterization via program representation, relevant to problem modeling for operations research.",
+      "llm_evidence_cn": "直接面向优化问题的程序化表征，与运筹研究中的问题建模相关。",
+      "llm_evidence": "直接面向优化问题的程序化表征，与运筹研究中的问题建模相关。",
+      "canonical_evidence": "直接面向优化问题的程序化表征，与运筹研究中的问题建模相关。",
+      "llm_tldr_en": "This paper proposes characterizing optimization problem instances through their programmatic implementation, using Halstead volume as a complexity measure linked to search landscape difficulty, aiding algorithm selection.",
+      "llm_tldr_cn": "该论文提出通过优化问题实例的程序化表示来进行特征刻画，将目标函数代码实现的Halstead体积作为代码复杂度度量，用以反映搜索景观的复杂性。作者认为表达目标函数所需代码的复杂度应与其搜索景观复杂度相关。该方法为优化问题实例的定量描述提供了新思路，可用于算法选择和配置。尽管它不使用LLM，但其对优化问题的程序化表征思想对基于LLM的优化建模具有参考价值。",
+      "llm_tldr": "该论文提出通过优化问题实例的程序化表示来进行特征刻画，将目标函数代码实现的Halstead体积作为代码复杂度度量，用以反映搜索景观的复杂性。作者认为表达目标函数所需代码的复杂度应与其搜索景观复杂度相关。该方法为优化问题实例的定量描述提供了新思路，可用于算法选择和配置。尽管它不使用LLM，但其对优化问题的程序化表征思想对基于LLM的优化建模具有参考价值。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "problem modeling for operations research",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.09740v2",
+      "source": "arxiv",
+      "title": "Security Tests as Executable Specifications for LLM Code Generation: Benefits, Trade-offs, and Coverage Limits",
+      "abstract": "Large language models (LLMs) can generate functionally useful code that remains vulnerable, while security-focused interventions may break intended behavior. We investigate security tests as executable specifications both before generation and during iterative repair. We develop SecTDD, a controlled test-feedback scaffold that separates three factors: whether tests are shown upfront, whether failed executions trigger revision, and how failures are selected and represented. The evaluation uses behavior-partitioned visible and hidden tests and byte-identical initial candidates for repair comparisons. Across 2,705 trajectories, 31 task instances, three secure-code benchmarks, 16 CWE categories, and two model families, showing all visible tests upfront increases hidden functional-and-security joint success by 19.3 percentage points on average, but improves only seven of nine benchmark-model conditions and harms two. In shared-candidate comparisons, structured feedback repairs 80 initially unsuccessful candidates with no joint regressions; fixed raw feedback repairs 83 but causes three regressions. Structured and raw feedback are otherwise nearly indistinguishable head-to-head (six wins, six losses, and 453 ties). Candidates that pass all visible tests still fail hidden behavior families under every common regime. These results show that executable feedback can repair secure-code generation, but its benefits depend on the model, task, feedback entry point, and especially test coverage.",
+      "authors": [
+        "Yunhao Liang",
+        "Chengguang Gan",
+        "Ruixuan Ying",
+        "Hanjun Wei",
+        "Zhe Cui",
+        "Shiwen Ni"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-08-10T15:37:09+00:00",
+      "link": "https://arxiv.org/pdf/2608.09740v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Tests as executable specifications for LLM code generation; method and trade-offs relevant to generating optimization solving code",
+      "llm_evidence_cn": "将测试作为可执行规范用于LLM代码生成，其方法与权衡对优化求解代码生成具有参考价值",
+      "llm_evidence": "将测试作为可执行规范用于LLM代码生成，其方法与权衡对优化求解代码生成具有参考价值",
+      "canonical_evidence": "将测试作为可执行规范用于LLM代码生成，其方法与权衡对优化求解代码生成具有参考价值",
+      "llm_tldr_en": "SecTDD studies security tests as executable specifications for LLM code generation, separating test showing, failure revision, and failure selection; evaluated across multiple secure-code benchmarks.",
+      "llm_tldr_cn": "LLM生成的代码可能功能正确但存在安全漏洞，而纯安全干预可能破坏原本行为。SecTDD在生成前后使用安全测试作为可执行规范，并分离测试是否前置、失败是否触发修订以及失败选择表示三个因素。在2705条轨迹、31个任务实例和多个安全代码基准上的评估，揭示了这种方法的收益、权衡与覆盖率限制。该框架对优化求解代码生成中通过测试约束代码行为具有借鉴意义。",
+      "llm_tldr": "LLM生成的代码可能功能正确但存在安全漏洞，而纯安全干预可能破坏原本行为。SecTDD在生成前后使用安全测试作为可执行规范，并分离测试是否前置、失败是否触发修订以及失败选择表示三个因素。在2705条轨迹、31个任务实例和多个安全代码基准上的评估，揭示了这种方法的收益、权衡与覆盖率限制。该框架对优化求解代码生成中通过测试约束代码行为具有借鉴意义。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.10795v1",
+      "source": "arxiv",
+      "title": "EvoMem: Memory-Augmented Evolution for Code Optimization",
+      "abstract": "Successful mutation strategies in evolutionary code search may contain reusable knowledge that is useful beyond a single run, and in some cases may transfer across related tasks and domains. However, existing LLM-driven evolutionary frameworks largely discard such knowledge, repeatedly rediscovering similar ideas and limiting opportunities for cross-run and cross-task learning. We introduce EvoMem, a persistent memory architecture for LLM-based evolutionary program search that captures and reuses candidate mutation knowledge. EvoMem converts successful mutation events into structured, task-aware advice for future runs. It operates in two phases: after each run, it extracts and stores promising ideas with provenance, and during subsequent evolution, it retrieves a small set of relevant instructions based on the current task and program context to guide mutation. Across geometric optimization, multi-hop question answering, GPU kernel optimization, and related benchmarks, our experiments show positive average improvements in target metrics or search speed for most evaluated settings, while also revealing variability across tasks. Overall, EvoMem provides evidence that persistent memory can reduce some redundant exploration and improve the reuse and adaptation of successful strategies in LLM-driven evolutionary search.",
+      "authors": [
+        "Viktor Volkov",
+        "Valentin Khrulkov",
+        "Andrey V. Galichin",
+        "Danil Sivtsov",
+        "Nikita Glazkov",
+        "Olga Volkova",
+        "Konstantin Pchelin",
+        "Iaroslav Bespalov",
+        "Dmitry V. Dylov",
+        "Petr Anokhin",
+        "Ivan Oseledets"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.NE"
+      ],
+      "published": "2026-08-11T11:03:32+00:00",
+      "link": "https://arxiv.org/pdf/2608.10795v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-driven evolutionary framework for code optimization with persistent memory, transferable to optimization code generation.",
+      "llm_evidence_cn": "LLM驱动的进化框架，通过记忆跨任务复用代码变异策略，可迁移至优化求解代码生成。",
+      "llm_evidence": "LLM驱动的进化框架，通过记忆跨任务复用代码变异策略，可迁移至优化求解代码生成。",
+      "canonical_evidence": "LLM驱动的进化框架，通过记忆跨任务复用代码变异策略，可迁移至优化求解代码生成。",
+      "llm_tldr_en": "EvoMem adds persistent memory to LLM-driven evolutionary program search, storing successful mutation knowledge as reusable advice and retrieving it in later runs, improving code optimization across tasks.",
+      "llm_tldr_cn": "现有LLM驱动的进化代码搜索缺少跨运行知识复用，重复发现相似策略。论文提出EvoMem，将成功变异事件转化为结构化、面向任务的知识并存入持久记忆，在后续进化中检索复用。该方法在程序优化任务上提升了搜索效率和迁移能力，为自动化生成高质量代码（包括优化求解代码）提供了记忆增强的进化范式。",
+      "llm_tldr": "现有LLM驱动的进化代码搜索缺少跨运行知识复用，重复发现相似策略。论文提出EvoMem，将成功变异事件转化为结构化、面向任务的知识并存入持久记忆，在后续进化中检索复用。该方法在程序优化任务上提升了搜索效率和迁移能力，为自动化生成高质量代码（包括优化求解代码）提供了记忆增强的进化范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.12426v1",
+      "source": "arxiv",
+      "title": "Large Language Models Can Follow Instructions, But Not Many at Once: Phase Transitions in Compositional Constraint Satisfaction",
+      "abstract": "Large language models are increasingly deployed in settings that require simultaneous adherence to multiple explicit constraints - reasoning structure, safety boundaries, output schemas. Individual constraints are handled proficiently, but the compositional regime, where many must hold jointly, remains poorly characterized: how rapidly does performance degrade, what governs the degradation, and can the collapse be mitigated? We introduce Constraint Saturation Evaluation (CSE), a procedurally generated benchmark that systematically varies the number of simultaneous constraints (k), with every constraint scored by a deterministic, rule-based verifier and zero LLM-judge involvement: 15 models, 36 constraint types, 369,753 checks at k=1-12. Three findings emerge. First, per-constraint pass rate decays gradually and predictably, while the chance of satisfying all k constraints collapses - a model passing individual constraints at ~41% at k=8 succeeds on all eight just 5.7% of the time. Second, constraints do not degrade equally: structural constraints lose 2x more baseline capability per added constraint than lexical ones, ordered by a comprehension-maintenance gap that separates constraints requiring sustained tracking from binary decisions immune to composition. Third, failures are nearly independent, which is what makes the accumulation multiplicative; the residual coupling that does exist tracks shared output features rather than pairwise interference - a wrong sentence count fails every constraint that reads it. Reliable instruction following breaks down beyond 5-6 simultaneous constraints: probe-level success falls below 50% at 7 constraints for the strongest model, and at 3 or fewer for 12 of 15.",
+      "authors": [
+        "Mariya I. Vasileva"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-08-12T10:57:06+00:00",
+      "link": "https://arxiv.org/pdf/2608.12426v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Benchmark and methodology for LLM compositional constraint satisfaction; relevant to constraint programming modeling with LLM",
+      "llm_evidence_cn": "研究LLM在多重约束下的组合约束满足能力，与LLM约束编程建模相关",
+      "llm_evidence": "研究LLM在多重约束下的组合约束满足能力，与LLM约束编程建模相关",
+      "canonical_evidence": "研究LLM在多重约束下的组合约束满足能力，与LLM约束编程建模相关",
+      "llm_tldr_en": "CSE benchmark systematically varies the number of simultaneous constraints to study LLM compositional constraint satisfaction across 15 models, showing performance phase transitions and degradation.",
+      "llm_tldr_cn": "大语言模型在独立约束上处理良好，但当多个约束需同时满足时性能显著下降。本文提出约束饱和评估(CSE)基准，通过程序化生成的测试集系统改变约束数量k，并用确定性规则验证器评分，分析了15个模型上的性能相变。该工作揭示了LLM组合约束满足能力的上限，对使用LLM进行约束编程建模和优化问题求解具有重要的评测与提示设计意义。",
+      "llm_tldr": "大语言模型在独立约束上处理良好，但当多个约束需同时满足时性能显著下降。本文提出约束饱和评估(CSE)基准，通过程序化生成的测试集系统改变约束数量k，并用确定性规则验证器评分，分析了15个模型上的性能相变。该工作揭示了LLM组合约束满足能力的上限，对使用LLM进行约束编程建模和优化问题求解具有重要的评测与提示设计意义。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "constraint programming modeling with LLM",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.12679v1",
+      "source": "arxiv",
+      "title": "Beyond the Best Guess: Improving LLM Solution Coverage with Evolution Strategies",
+      "abstract": "Large Language Models (LLMs) are increasingly deployed in discovery domains such as math and science. The usual approach is to present the problem to the model and use its answer as the proposed solution. However, beyond this best guess, discovery can be enhanced by increasing test-time compute. In a process called pass@k, the model is allowed to explore the solution space and generate diverse candidate solutions. Unfortunately, the standard approach to post-training LLMs through Reinforcement Learning (RL) may limit pass@k: the model's output distribution narrows around high-reward outputs, causing the solution coverage to collapse. The alternative is to use Evolution Strategies (ES), a population-based, gradient-free post-training method that optimizes directly in weight space through random perturbations. As this paper shows, ES achieves consistently higher pass@k than RL and produces a broader output distribution with greater solution coverage. This coverage in turn makes it possible to achieve better results in e.g. standard math benchmarks. Thus, ES provides a better foundation for post-training in discovery problems and other domains where diverse solution coverage is critical.",
+      "authors": [
+        "Conor F. Hayes",
+        "Elliot Meyerson",
+        "Kajetan Schweighofer",
+        "Roberto Dailey",
+        "Babak Hodjat",
+        "Risto Miikkulainen",
+        "Xin Qiu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.NE"
+      ],
+      "published": "2026-08-13T00:30:04+00:00",
+      "link": "https://arxiv.org/pdf/2608.12679v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Evolution strategies improve LLM solution diversity, directly supporting automatic solution generation for optimization.",
+      "llm_evidence_cn": "进化策略提升LLM解多样性，直接支持优化问题的自动解生成。",
+      "llm_evidence": "进化策略提升LLM解多样性，直接支持优化问题的自动解生成。",
+      "canonical_evidence": "进化策略提升LLM解多样性，直接支持优化问题的自动解生成。",
+      "llm_tldr_en": "LLM post-training via RL narrows output distributions and collapses pass@k coverage; this paper proposes evolution strategies as a gradient-free alternative, improving diverse solution generation for discovery tasks.",
+      "llm_tldr_cn": "该论文指出现有强化学习后训练会使LLM输出分布集中于高奖励区域，导致pass@k解覆盖崩溃，限制探索能力。作者提出使用基于种群的进化策略（ES）作为无梯度的后训练替代方法，以扩大解分布并保持多样性。实验表明，进化策略能够显著提升LLM生成多个候选解的能力，避免覆盖坍塌，从而增强其在数学和科学发现等需要多解探索任务中的表现。这项工作为生成优化问题的多样化求解代码提供了有效的方法支持。",
+      "llm_tldr": "该论文指出现有强化学习后训练会使LLM输出分布集中于高奖励区域，导致pass@k解覆盖崩溃，限制探索能力。作者提出使用基于种群的进化策略（ES）作为无梯度的后训练替代方法，以扩大解分布并保持多样性。实验表明，进化策略能够显著提升LLM生成多个候选解的能力，避免覆盖坍塌，从而增强其在数学和科学发现等需要多解探索任务中的表现。这项工作为生成优化问题的多样化求解代码提供了有效的方法支持。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
