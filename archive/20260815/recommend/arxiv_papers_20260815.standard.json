@@ -1,0 +1,131 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-15T19:07:54.158108+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2608.09343v1",
+      "source": "arxiv",
+      "title": "LLM-Guided Heuristic Design from Simulation Traces: A Case Study in Dynamic Production and AGV Scheduling",
+      "abstract": "Simulation-based optimization (SBO) evaluates executable policies under stochastic dynamics, but most methods treat the simulator as a black box: aggregate scores rank candidates without revealing why they fail or which policy logic should change. We present an LLM-guided heuristic design framework that uses repeated simulation for selection and event-level traces for diagnosis. Each incumbent is assessed through multiple replications, while replaying its lowest-scoring one produces a queryable trace. A manager agent formulates bottleneck hypotheses from this evidence, and editing agents implement parallel code-level revisions. After execution checks and repeated evaluation, best-so-far selection retains only improvements. LLM revision occurs between evaluation batches, while a fixed policy controls each simulation run.   We evaluate the framework in a discrete-event simulation of dynamic production and automated guided vehicle (AGV) scheduling. Across five independent optimization runs with Gemini-3.1-Pro, final mean scores averaged 77.51 on the simulator's 0-100 scale. In the highest-scoring run, trace-based diagnoses motivated proactive charging, distance-aware AGV assignment, and rebalanced dispatch priorities, raising the best-so-far mean score from 62.49 to 78.61. On 100 matched seeds, the best final policy outscored representative rolling-MILP, rule-based, and metaheuristic policies on every seed and retained its advantage under random faults without re-optimization. After separate re-optimization for a longer horizon and variable order interarrival times, the resulting policies again outscored all baselines. Ablations with two LLM backbones showed that removing either parallel candidate generation or trace-database access reduced final mean scores. These results show that simulation traces can guide targeted code-level policy improvement in complex simulation-based scheduling.",
+      "authors": [
+        "Jinbo Li",
+        "Chuanhao Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-10T09:20:56+00:00",
+      "link": "https://arxiv.org/pdf/2608.09343v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-guided heuristic design for dynamic production and AGV scheduling; generating code-level revisions",
+      "llm_evidence_cn": "LLM引导的启发式设计用于动态生产和AGV调度；生成代码级修改",
+      "llm_evidence": "LLM引导的启发式设计用于动态生产和AGV调度；生成代码级修改",
+      "canonical_evidence": "LLM引导的启发式设计用于动态生产和AGV调度；生成代码级修改",
+      "llm_tldr_en": "This work presents an LLM-guided heuristic design framework that uses simulation traces to diagnose bottlenecks and generate code-level revisions for dynamic production and AGV scheduling optimization.",
+      "llm_tldr_cn": "针对动态生产与AGV调度问题，现有模拟优化方法将模拟器视为黑盒，难以定位失败原因。本文提出LLM引导的启发式设计框架，通过多次模拟评估候选策略，回放最低分轨迹生成可查询事件痕迹，由管理者智能体提出瓶颈假设，编辑智能体并行实现代码级修改。实验表明该方法能有效保持改进并提升调度策略性能，为运筹优化中的自动求解代码生成提供了实用范式。",
+      "llm_tldr": "针对动态生产与AGV调度问题，现有模拟优化方法将模拟器视为黑盒，难以定位失败原因。本文提出LLM引导的启发式设计框架，通过多次模拟评估候选策略，回放最低分轨迹生成可查询事件痕迹，由管理者智能体提出瓶颈假设，编辑智能体并行实现代码级修改。实验表明该方法能有效保持改进并提升调度策略性能，为运筹优化中的自动求解代码生成提供了实用范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.06871v1",
+      "source": "arxiv",
+      "title": "CEDAR: Agent-Orchestrated Tree Search for Goal-Directed Optimization of Complex Systems",
+      "abstract": "Complex systems, core objects of study in artificial life, model diverse phenomena through nonlinear, feedback-driven interactions that produce emergent behavior, with applications from population dynamics and biology to economic policy and strategic decision-making. Yet the difficulty of predicting how feedback structure gives rise to emergent behavior, a central open problem in artificial life, makes goal-directed design exceptionally challenging. In established practice, system structures are written in specialized modeling languages such as DYNAMO or STELLA, compounding the challenge with labor-intensive workflows that limit adoption and hinder timely decision-making. To address these challenges, we introduce CEDAR, an autonomous method that uses Large Language Model (LLM) agents to discover complex systems satisfying user-specified behavioral goals. Our key innovation is an LLM-driven Monte Carlo Tree Search (MCTS) deeply coupled with complex systems: at each iteration, an LLM Judge evaluates emergent behavior against specified goals and an LLM Editor proposes improved variants, with the Judge acting as a fitness function and the Editor as a variation operator, akin to a generate-and-evaluate loop in evolutionary computation. We represent complex systems as a restricted, runnable subset of Python with domain-specific primitives, letting LLMs modify system dynamics directly. CEDAR formalizes this as an MCTS variant with an LLM-parameterized transition kernel and value function, enabling goal-directed discovery of complex system behaviors while preserving solution diversity, and its LLM-based interpretability reveals how structural changes drive emergent behavior. CEDAR reduces human effort while enabling capabilities difficult to achieve with existing approaches, facilitating broader adoption of complex systems across domains.",
+      "authors": [
+        "Yingtao Tian"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-07T06:54:58+00:00",
+      "link": "https://arxiv.org/pdf/2608.06871v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM agent-orchestrated tree search for goal-directed optimization of complex systems; automatically generates/optimizes system model code.",
+      "llm_evidence_cn": "LLM智能体编排树搜索自动生成并优化复杂系统模型，属于自动求解生成方向，可迁移到OR建模.",
+      "llm_evidence": "LLM智能体编排树搜索自动生成并优化复杂系统模型，属于自动求解生成方向，可迁移到OR建模.",
+      "canonical_evidence": "LLM智能体编排树搜索自动生成并优化复杂系统模型，属于自动求解生成方向，可迁移到OR建模.",
+      "llm_tldr_en": "CEDAR uses agent-orchestrated tree search to automatically model and goal-directedly optimize complex systems written in specialized languages, offering a transferable LLM-agent method for optimization modeling.",
+      "llm_tldr_cn": "该论文针对复杂系统结构依赖DYNAMO或STELLA等专业建模语言、人工建模流程繁琐的问题，提出CEDAR自主智能体，通过编排树搜索在系统结构空间中探索修改，以自动实现目标导向的系统设计与优化。该方法替代了原有劳动密集的建模工作流，可辅助预测反馈结构如何产生涌现行为。它展示了LLM智能体自动建模和优化复杂系统的能力，对利用LLM进行运筹优化建模具有方法迁移价值，但面向的不是标准OR求解代码生成。",
+      "llm_tldr": "该论文针对复杂系统结构依赖DYNAMO或STELLA等专业建模语言、人工建模流程繁琐的问题，提出CEDAR自主智能体，通过编排树搜索在系统结构空间中探索修改，以自动实现目标导向的系统设计与优化。该方法替代了原有劳动密集的建模工作流，可辅助预测反馈结构如何产生涌现行为。它展示了LLM智能体自动建模和优化复杂系统的能力，对利用LLM进行运筹优化建模具有方法迁移价值，但面向的不是标准OR求解代码生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.12751v1",
+      "source": "arxiv",
+      "title": "SynAct: A Reasoning-Acting Large Language Model Agent for Adaptive Synthesis Optimization",
+      "abstract": "Logic synthesis transforms RTL designs into gate-level netlists, where PPA results are highly sensitive to the choice of optimization commands, making synthesis tuning both high-dimensional and expensive. Previous approaches fall into two categories: automated methods, which perform black-box search over fixed action spaces with limited decision-level interpretability, and LLM-based methods, which typically generate static scripts upfront and cannot adapt to evolving circuit states. We present SynAct, an adaptive closed-loop LLM reasoning--acting agent that iteratively diagnoses live synthesis reports and reasons over the current circuit state, retrieved tool knowledge, and historical optimization experience to issue targeted commands. SynAct focuses on improving timing, particularly worst negative slack (WNS), while maintaining balanced area and power trade-offs. Experiments on a commercial synthesis tool across 14 designs show that SynAct reduces average WNS to 27% of that from bootstrap synthesis.",
+      "authors": [
+        "Fangzhou Liu",
+        "Peiyi Han",
+        "Jiawei Liu",
+        "Yuan Pu",
+        "Zhuolun He",
+        "Rongliang Fu",
+        "Tsung-Yi Ho",
+        "Bei Yu"
+      ],
+      "primary_category": "cs.AR",
+      "categories": [
+        "cs.AR",
+        "cs.AI"
+      ],
+      "published": "2026-08-13T03:02:25+00:00",
+      "link": "https://arxiv.org/pdf/2608.12751v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "adaptive LLM reasoning-acting agent generates targeted optimization commands from live synthesis reports; transferable to automatic solution generation for optimization.",
+      "llm_evidence_cn": "LLM推理-行动智能体根据实时状态生成优化命令，实现闭环自适应优化，对自动生成求解方案具有迁移价值.",
+      "llm_evidence": "LLM推理-行动智能体根据实时状态生成优化命令，实现闭环自适应优化，对自动生成求解方案具有迁移价值.",
+      "canonical_evidence": "LLM推理-行动智能体根据实时状态生成优化命令，实现闭环自适应优化，对自动生成求解方案具有迁移价值.",
+      "llm_tldr_en": "SynAct is an adaptive closed-loop LLM reasoning-acting agent that generates targeted logic synthesis optimization commands from live reports, illustrating LLM-driven automatic solution generation beyond OR.",
+      "llm_tldr_cn": "该论文针对逻辑综合中优化命令选择维度高、成本高且LLM静态脚本无法适应电路状态变化的问题，提出SynAct自适应闭环推理-行动智能体。它迭代地诊断实时综合报告，结合当前电路状态、检索的工具知识和历史优化经验，生成有针对性的优化命令。该方法在PPA指标上具有潜力，并展示了LLM智能体在自动生成优化方案方面的通用范式。虽然领域是芯片设计而非运筹优化，但其命令生成与状态反馈机制可为LLM生成优化求解代码提供借鉴。",
+      "llm_tldr": "该论文针对逻辑综合中优化命令选择维度高、成本高且LLM静态脚本无法适应电路状态变化的问题，提出SynAct自适应闭环推理-行动智能体。它迭代地诊断实时综合报告，结合当前电路状态、检索的工具知识和历史优化经验，生成有针对性的优化命令。该方法在PPA指标上具有潜力，并展示了LLM智能体在自动生成优化方案方面的通用范式。虽然领域是芯片设计而非运筹优化，但其命令生成与状态反馈机制可为LLM生成优化求解代码提供借鉴。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
