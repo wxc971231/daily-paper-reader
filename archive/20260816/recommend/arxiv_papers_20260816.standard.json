@@ -1,0 +1,54 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-16T19:38:21.156996+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.09740v1",
+      "source": "arxiv",
+      "title": "Security Tests as Executable Specifications for LLM Code Generation: Benefits, Trade-offs, and Coverage Limits",
+      "abstract": "Large language models (LLMs) can generate functionally useful code that remains vulnerable, while security-focused interventions may break intended behavior. We investigate security tests as executable specifications both before generation and during iterative repair. We develop SecTDD, a controlled test-feedback scaffold that separates three factors: whether tests are shown upfront, whether failed executions trigger revision, and how failures are selected and represented. The evaluation uses behavior-partitioned visible and hidden tests and byte-identical initial candidates for repair comparisons. Across 2,705 trajectories, 31 task instances, three secure-code benchmarks, 16 CWE categories, and two model families, showing all visible tests upfront increases hidden functional-and-security joint success by 19.3 percentage points on average, but improves only seven of nine benchmark-model conditions and harms two. In shared-candidate comparisons, structured feedback repairs 80 initially unsuccessful candidates with no joint regressions; fixed raw feedback repairs 83 but causes three regressions. Structured and raw feedback are otherwise nearly indistinguishable head-to-head (six wins, six losses, and 453 ties). Candidates that pass all visible tests still fail hidden behavior families under every common regime. These results show that executable feedback can repair secure-code generation, but its benefits depend on the model, task, feedback entry point, and especially test coverage.",
+      "authors": [
+        "Yunhao Liang",
+        "Chengguang Gan",
+        "Ruixuan Ying"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-08-10T15:37:09+00:00",
+      "link": "https://arxiv.org/pdf/2608.09740v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM code generation with test feedback scaffolds; transferable to optimization code generation",
+      "llm_evidence_cn": "基于测试反馈的LLM代码生成框架，可迁移到优化代码生成",
+      "llm_evidence": "基于测试反馈的LLM代码生成框架，可迁移到优化代码生成",
+      "canonical_evidence": "基于测试反馈的LLM代码生成框架，可迁移到优化代码生成",
+      "llm_tldr_en": "Paper studies security tests as executable specifications in LLM code generation, controlling test display and repair feedback across many trajectories, offering a reusable scaffold for test-driven code generation.",
+      "llm_tldr_cn": "论文考察了在LLM代码生成中把安全测试作为可执行规范的价值，提出SecTDD受控测试反馈脚手架，分离测试是否前置展示、失败执行是否触发修订以及失败选择表示三个因素，并通过行为划分的可见/隐藏测试进行评估。跨2705条轨迹、31个任务和两个模型家族的结果揭示了测试反馈对生成安全代码的收益与覆盖局限。该测试驱动的生成与修复范式可迁移到运筹优化代码生成，用测试定义优化问题期望行为。",
+      "llm_tldr": "论文考察了在LLM代码生成中把安全测试作为可执行规范的价值，提出SecTDD受控测试反馈脚手架，分离测试是否前置展示、失败执行是否触发修订以及失败选择表示三个因素，并通过行为划分的可见/隐藏测试进行评估。跨2705条轨迹、31个任务和两个模型家族的结果揭示了测试反馈对生成安全代码的收益与覆盖局限。该测试驱动的生成与修复范式可迁移到运筹优化代码生成，用测试定义优化问题期望行为。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

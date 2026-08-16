@@ -1,0 +1,24 @@
+{
+  "label": "2026-08-16",
+  "date": "2026-08-16",
+  "generated_at": "2026-08-16T19:39:31",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202608/16/2608.09740v1-security-tests-as-executable-specifications-for-llm-code-generation-benefits-trade-offs-and-coverage-limits",
+      "section": "quick",
+      "title_en": "Security Tests as Executable Specifications for LLM Code Generation: Benefits, Trade-offs, and Coverage Limits",
+      "authors": "Yunhao Liang, Chengguang Gan, Ruixuan Ying",
+      "date": "2026-08-10",
+      "pdf": "https://arxiv.org/pdf/2608.09740v1",
+      "score": "6.0",
+      "evidence": "基于测试反馈的LLM代码生成框架，可迁移到优化代码生成",
+      "tldr": "大语言模型生成的代码功能可用却常含安全漏洞，而安全干预可能破坏预期行为。为此提出SecTDD，将安全测试作为可执行规范，系统评估其在生成前展示与迭代修复中的效果。预先展示全部可见测试平均提升隐藏功能-安全联合成功率19.3个百分点，但九种条件中仅改善七种、弄巧成拙两种；结构化反馈修复80个失败候选无回归，原始反馈修复83个却有3个回归。结果表明可执行反馈能有效修复安全代码，但其收益依赖模型、任务、反馈入口点与测试覆盖。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language models (LLMs) can generate functionally useful code that remains vulnerable, while security-focused interventions may break intended behavior. We investigate security tests as executable specifications both before generation and during iterative repair. We develop SecTDD, a controlled test-feedback scaffold that separates three factors: whether tests are shown upfront, whether failed executions trigger revision, and how failures are selected and represented. The evaluation uses behavior-partitioned visible and hidden tests and byte-identical initial candidates for repair comparisons. Across 2,705 trajectories, 31 task instances, three secure-code benchmarks, 16 CWE categories, and two model families, showing all visible tests upfront increases hidden functional-and-security joint success by 19.3 percentage points on average, but improves only seven of nine benchmark-model conditions and harms two. In shared-candidate comparisons, structured feedback repairs 80 initially unsuccessful candidates with no joint regressions; fixed raw feedback repairs 83 but causes three regressions. Structured and raw feedback are otherwise nearly indistinguishable head-to-head (six wins, six losses, and 453 ties). Candidates that pass all visible tests still fail hidden behavior families under every common regime. These results show that executable feedback can repair secure-code generation, but its benefits depend on the model, task, feedback entry point, and especially test coverage.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
