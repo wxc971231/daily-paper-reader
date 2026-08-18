@@ -6,44 +6,35 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-17
-- 运行时间：2026-08-17 19:40:12 UTC
+- 最新运行日期：2026-08-18
+- 运行时间：2026-08-18 20:55:34 UTC
 - 运行状态：成功
-- 本次总论文数：8
-- 精读区：2
-- 速读区：6
+- 本次总论文数：5
+- 精读区：4
+- 速读区：1
 
 ### 今日简报（AI）
-今日精读聚焦LLM引导图生成优化与多阶段清洁能源规划的Benders分解，速读覆盖代码验证与组合优化；最值得看的是LLM图生成结合局部改进的求解质量提升，以及清洁能源规划的分解算法可扩展性；建议关注代码生成中程序-证明协同对齐方向，可拓展至自动化验证场景。
-- 详情：[/202608/17/README](/202608/17/README)
+今日共读5篇论文，精读4篇、速读1篇，聚焦神经符号约束求解与模型转换。最值得关注的是两篇9.0分工作：最小核心引导的神经符号约束修复，以及用CPMpy统一翻译约束模型到多类求解器。下一步可优先精读这两篇，快速掌握约束修复与多求解器对接的实用方法。
+- 详情：[/202608/18/README](/202608/18/README)
 
 ### 精读区论文标签
-1. [LLM-Guided Graph Generation for Structure-Based Local Improvement Methods](/202608/17/2608.13333v2-llm-guided-graph-generation-for-structure-based-local-improvement-methods)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：用LLM为MiniZinc问题生成图生成器，将约束关系映射为图以指导变量选择
-2. [Benders Decomposition with Partial Non-Anticipativity Relaxation for Multi-Stage Stochastic Clean Energy Transition Planning](/202608/17/2608.14105v1-benders-decomposition-with-partial-non-anticipativity-relaxation-for-multi-stage-stochastic-clean-energy-transition-planning)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：建立多阶段随机混合整数规划并开发Benders分解算法，是核心运筹优化建模工作
+1. [From Errors to Proofs: Minimal-Core-Guided Repair for Neuro-Symbolic Constraint Solving](/202608/18/2608.14771v1-from-errors-to-proofs-minimal-core-guided-repair-for-neuro-symbolic-constraint-solving)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：针对LLM将约束问题转写为形式规约的建模流程，用最小不可满足核修复错误翻译，直接相关
+2. [Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy](/202608/18/2608.15143v1-translating-finite-domain-integer-constraint-models-to-cpsmtilppbsat-solvers-with-cpmpy)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：将高层约束模型翻译为CP/SMT/ILP/PB/SAT等运筹求解器
+3. [ATLAS: Scaffold-Free Algorithm Synthesis by LLMs via Embedding-Guided Quality-Diversity Search](/202608/18/2608.15546v1-atlas-scaffold-free-algorithm-synthesis-by-llms-via-embedding-guided-quality-diversity-search)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：LLM直接从目标和约束合成组合优化完整算法代码
+4. [Admission Without Answers: Label-Free Certification and Experience Learning for LLM-Based Optimization Modeling](/202608/18/2608.15565v1-admission-without-answers-label-free-certification-and-experience-learning-for-llm-based-optimization-modeling)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：直接研究LLM优化建模的无标签认证与经验学习
 
 ### 速读区论文标签
-1. [P$^{3}$: Joint Program-and-Proof Planning for Verified Code Generation](/202608/17/2608.09277v1-p3-joint-program-and-proof-planning-for-verified-code-generation)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：LLM联合规划程序与证明的代码生成方法，可提升优化求解代码的正确性
-2. [GraphAlignCoder: Aligning Program and Proof Graphs for Code Generation](/202608/17/2608.11394v1-graphaligncoder-aligning-program-and-proof-graphs-for-code-generation)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：利用LLM生成代码，将程序图与证明图对齐，可迁移至优化问题代码生成
-3. [SSPO: Structure-Aware Similarity-Weighted Preference Optimization for Neural Combinatorial Optimization](/202608/17/2608.12443v1-sspo-structure-aware-similarity-weighted-preference-optimization-for-neural-combinatorial-optimization)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：神经组合优化用于自动求解生成，与运筹优化直接相关
-4. [SynAct: A Reasoning-Acting Large Language Model Agent for Adaptive Synthesis Optimization](/202608/17/2608.12751v2-synact-a-reasoning-acting-large-language-model-agent-for-adaptive-synthesis-optimization)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：LLM智能体以闭环方式生成优化命令
-5. [MetaStrategy: Generative Ranking with Executable LLM Strategies](/202608/17/2608.09440v1-metastrategy-generative-ranking-with-executable-llm-strategies)  
+1. [T-LLM Compiler: Trusted LLM-based Code Optimization and Verification Framework](/202608/18/2608.14953v1-t-llm-compiler-trusted-llm-based-code-optimization-and-verification-framework)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：LLM生成带目标权重与约束的可执行排序策略，契合自动解决方案生成
-6. [ELMER: Evolutionary Language Model that Explores and Refines](/202608/17/2608.10196v1-elmer-evolutionary-language-model-that-explores-and-refines)  
-   标签：评分：6.0/10、query:llm-opt-code
-   evidence：演化语言模型搜索并精化程序，可实现自动解生成与优化
+   evidence：可信的基于LLM的代码优化与验证框架，是生成可靠优化代码的支撑方法。
 
 
 <div class="dpr-home-promo-card">

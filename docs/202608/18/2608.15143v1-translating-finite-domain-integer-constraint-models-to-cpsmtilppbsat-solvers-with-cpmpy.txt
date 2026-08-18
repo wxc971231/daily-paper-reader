@@ -1,0 +1,1312 @@
+Title: Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy
+
+URL Source: https://arxiv.org/pdf/2608.15143v1
+
+Published Time: Tue, 18 Aug 2026 00:41:27 GMT
+
+Number of Pages: 31
+
+Markdown Content:
+# Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy 
+
+## TIAS GUNS and IGNACE BLEUKX, KU Leuven, Belgium 
+
+## HENDRIK BIERLEE, KU Leuven, Belgium 
+
+## JO DEVRIENDT, Nonfiction Software, Belgium 
+
+## EMILIO GAMBA, Flanders Make, Belgium 
+
+## ORESTIS LOMIS, KU Leuven, Belgium 
+
+## WOUT PIESSENS, KU Leuven, Belgium 
+
+## THOMAS SERGEYS, KU Leuven, Belgium 
+
+## DIMOS TSOUROS, University of Western Macedonia, Greece 
+
+## WOUT VANROOSE, KU Leuven, Belgium 
+
+## HÉLÈNE VERHAEGHE, UCLouvain, Belgium 
+
+Background: Constraint solving is a declarative approach for solving combinatorial satisfaction and optimization problems. The user specifies their problem through constraints and decision variables, and a generic solver is used to find a solution. Several constraint-solving technologies exist, and certain solvers perform well on certain problems. Therefore, it is useful to try different solvers given a particular application. However, each solving paradigm supports different types of constraints and decision variables. 
+
+Objectives: Our goal is to translate high-level constraint satisfaction and optimization problems into any lower-level formalism, including CP, SMT QF-LIA, ILP, PB and (Max)SAT. This allows for comparing different solving technologies for a particular problem, without requiring a user to manually remodel it for each solving paradigm. 
+
+Methods: We define a high-level language of logical and arithmetic operations, and useful additional functions and constraints, which are known as global constraints in the CP community. We then present a modular framework for transforming our high-level modeling language to CP/SMT/ILP/PB and (Max)SAT solvers. While many transformations are partly described in the literature, we observe that they can be implemented through a modular waterfall of smaller components, where lower-level paradigms reuse the transformations of higher-level paradigms. Two recurring challenges are handling the negation of arbitrary subexpressions and avoiding the introduction of auxiliary variables. Additionally, we take special care linearizing non-linear operators for ILP, PB and SAT-solvers. 
+
+Results: The transformation waterfall is implemented and evaluated in the open-source CPMpy library. Our results show that constraint models significantly change throughout the transformations, and that optimizations to the linearization of constraints are essential for ILP and PB solvers. Additional Key Words and Phrases: modeling languages, constraint reformulation, constraint solving, constraint satisfaction 
+
+Authors’ Contact Information: Tias Guns, orcid: 0000-0002-2156-2155, tias.guns@kuleuven.be; Ignace Bleukx, orcid: 0000-0001-7810-8351, ignace.bleukx@kuleuven.be, KU Leuven, Belgium; Hendrik Bierlee, orcid: 0000-0001-6766-5435, bierlee.henk@gmail.com, KU Leuven, Belgium; Jo Devriendt, orcid: 0000-0002-6346-3665, jo.devriendt@nonfictionsoftware.com, Nonfiction Software, Belgium; Emilio Gamba, orcid: 0000-0003-1720-9428, emilio.gamba@flandersmake.be, Flanders Make, Belgium; Orestis Lomis, orcid: 0009-0006-2934-0510, orestis.lomis@kuleuven.be, KU Leuven, Belgium; Wout Piessens, orcid: 0009-0005-5608-2097, wout.piessens@kuleuven.be, KU Leuven, Belgium; Thomas Sergeys, orcid: 0009-0003-3817-4516, thomas.sergeys@kuleuven.be, KU Leuven, Belgium; Dimos Tsouros, orcid: 0000-0002-3040-0959, dtsouros@uowm.gr, University of Western Macedonia, Greece; Wout Vanroose, orcid: 0009-0004-8945-0442, wout@vanroose.be, KU Leuven, Belgium; Hélène Verhaeghe, orcid: 0000-0003-0233-4656, helene.verhaeghe@uclouvain.be, UCLouvain, Belgium. 
+
+This work is licensed under a Creative Commons Attribution International 4.0 License. © 2026 Copyright held by the owner/author(s). doi: TBD Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. arXiv:2608.15143v1 [cs.AI] 15 Aug 2026 2 • Guns and Bleukx et al.    
+
+> JAIR Associate Editor: TBD
+> JAIR Reference Format:
+> Tias Guns, Ignace Bleukx, Hendrik Bierlee, Jo Devriendt, Emilio Gamba, Orestis Lomis, Wout Piessens, Thomas Sergeys, Dimos Tsouros, Wout Vanroose, and Hélène Verhaeghe. 2026. Translating finite-domain integer constraint models to CP/SMT/ILP/P-B/SAT solvers with CPMpy. Journal of Artificial Intelligence Research 1 (August 2026), 31 pages. doi: TBD
+
+1 Introduction 
+
+A prevalent AI approach to solving combinatorial satisfaction and optimization problems is the model + solve 
+
+paradigm. In this paradigm, the user first describes their problem in a constraint model in terms of constraints over 
+
+decision variables , optionally with an objective function over a subset of the decision variables. This declarative problem specification is then given to a highly optimized constraint solver , which searches for an (optimal) solution, where the constraints are used to effectively reduce the search space. Many generic solvers have been developed, differing in the type of constraints and decision variables they support. For example, SAT solvers support Boolean variables and clauses as constraints (Biere et al. 2021). MaxSAT solvers additionally support a weighted linear sum as an objective function (Li and Manyà 2021). Pseudo-Boolean solvers support linear constraints over Boolean variables (Roussel and Manquinho 2021). There are also Integer Linear Programming (ILP) solvers, Mixed continuous-Integer Linear Programming (MILP) and non-linear programming solvers, Constraint Programming (CP) (Rossi et al. 2006) solvers with global constraints, and SAT Modulo Theories (SMT) solvers with arbitrary theories including quantified formulas and unbounded variables (C. W. Barrett et al. 2021). We here focus on discrete, finite-domain integer constraint models, which have a wide range of real-life applications, including scheduling, packing, assignment, allocation, routing, and more (Clautiaux et al. 2008; De Backer et al. 2000; Fromherz 2001; Schwerin and Wäscher 1997; van Beek and Chen 1999). The supported decision variables are Boolean and finite-domain integer. Constraint solvers are typically categorized by the types of constraints they support, that is, relations they can enforce to be satisfied (such as 𝑎 ∨ 𝑏 , 2 𝑥 + 3𝑦 ≤ 4, 𝑥 ≠ 𝑦 ). In contrast, SMT solvers and modeling languages are defined by the expressions they support, where basic expressions can be combined into nested expressions, which together with a comparison or Boolean operator become a constraint that must be satisfied (such as 
+
+𝑎 ⇒ (¬( 𝑏 ∧ 𝑐 ) ∨ 𝑑 ) or 𝑥 · 𝑦 + 3 · ( 𝑧 = 0) ≤ 𝑟  
+
+> 10
+
+). What we will describe is a modeling language, with a practical implementation that is embedded in the Python programming language, with the following types of expressions: 
+
+• Boolean logical operators (and, or, not, implication, eqivalence, exclusive-or) 
+
+• Integer arithmetic operators (+, -, multiplication, integer-division, modulo, power, max, min, abs) 
+
+• Integer comparison (=, ≠, >, ≥, <, ≤)
+
+• Integer “global” constraints (AllDifferent, Table, Circuit, NoOverlap, Cumulative, LexLess ...) 
+
+• Integer “global” functions (Array-Lookup, Count, Among, NValue ...) The “global” constraints are constructs from the constraint programming community (Beldiceanu, Carlsson, and Rampon 2012) that offer two benefits: 1) they provide meaningful abstractions that users can use to compactly write down their problem specification; 2) many CP solvers have specialized reasoning methods (propagators) to efficiently reduce the search space based on the semantics of the global constraint. For solvers that do not support such global constraints, there are well-known translations into basic Boolean and integer operators (called decompositions). The integer global constraints are Boolean-valued (they can be true or false). The “global” functions are integer-valued functions that have a corresponding global constraint, e.g., the Count (Arr , Val )
+
+operator has CountEqals (Arr , Val , Cnt ). Our choice of language follows from the combinatorial scheduling, routing, and assignment type of applications we target.   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •3
+
+A number of modeling languages and transformation libraries exist for combinatorial problems, including MiniZinc (Nethercote et al. 2007), Essence Prime (Akgün et al. 2022) in combination with Savile Row (Nightingale 2022), PicatSAT (Zhou et al. 2015), and Pyomo (Hart et al. 2011). They differ in 1) the type of expressions they support, and 2) the type of solvers they can translate to. 
+
+> Table 1. Comparison of different constraint modeling systems and their capabilities.
+
+Solvers Language Global constraints Global functions Variables Savile Row CP/SMT/SAT Text-based ✓ ✓ Bool/int MiniZinc CP/ILP/FZN-based Text-based ✓ ✓ Bool/int/float PyCSP3 CP Python ✓ ✓ Bool/int PicatSAT SAT Text-based ✓ - Bool/int Pyomo ILP/SMT Python - - Bool/int/float OR-Tools API CP Python ✓ ✓ Bool/int Gurobi API ILP Python - - Bool/int/float CPMpy (ours) CP/SMT/ILP/PB/SAT Python ✓ ✓ Bool/int The system closest to CPMpy that we will describe here is the Savile Row system for the Essence Prime language. The Savile Row system translates constraint models in the Essence language to CP solvers, SAT solvers and SMT solvers. However, Essence Prime is a text-based modeling language, whereas our CPMpy modeling language is embedded in Python. Another important difference is that Savile Row has different backends for the 3 types of solvers, where they reuse low-level components up to some extent, which corresponds to how it has been developed over time. In contrast, we describe a holistic, hierarchical approach that aims to maximize the number of transformations that can be reused for different solver paradigms and solvers. Another highly related technology is PyCSP3, which, like CPMpy, is also a Python-embedded system, but it only translates to the XML-based CP language XCSP3, not to other solver paradigms. The Pyomo system is also relevant to our framework. While it is embedded in Python and translates to multiple MIP, ILP, and SMT solvers, the system does not compile “down” to PB or SAT solvers. Additionally, global constraints and operators are not supported by the Pyomo framework as they are specific to CP modeling. Finally, the well-known MiniZinc system (Nethercote et al. 2007) is highly related as well. Together with Essence Prime, it has been an inspiration both conceptually and academically, based on the different papers and reports published on these systems. MiniZinc is a text-based language that also supports floating-point decision variables and floating-point arithmetic. Its main output language is the text-based FlatZinc constraint language, which supports (custom definable) flat (= non-nested) constraints over floating-point, integer, and Boolean decision variables. The key difference is that the MiniZinc compiler does not translate directly to the language of a specific solver. Rather, it translates to a flat intermediate language, and this intermediate language must then be reformulated to a specific solver in a separate program (e.g., PicatSAT (Zhou et al. 2015), fzn2omt (Contaldo et al. 2020)...). The latter requires rebuilding certain data structures and modeling patterns, and potentially undoing some of the flattening done by the MiniZinc compiler. The translation to integer linear and mixed integer programming solvers can be handled by MiniZinc through configuration options that change how different constraints are decomposed/rewritten (Belov et al. 2016; Nethercote et al. 2007). We propose a more holistic approach, and adopt the view that solvers (or solver APIs, more specifically) accept a subset of our language as input, and our goal is to minimally rewrite our expressions so that only supported expressions remain. Furthermore, multiple families of solvers require the same rewrite operations: only CP solvers support global constraints, both ILP and PB solvers benefit from good linearizations, and both PB and SAT solvers require the conversion of integer decision variables to Boolean decision variables. As we will describe   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 4•Guns and Bleukx et al.
+
+below, the result is a hierarchical waterfall of transformations that can effectively rewrite models in the above language to any of the mentioned solvers. Technically, some solver families will benefit from different rewrite choices than others, most notably integer linear programming solvers, which benefit from global constraint decompositions that lead to strong LP relax-ations, for example, that reason over a direct Boolean encoding of the categorical integers. The proposed approach is modular and allows for such custom decompositions as we describe in Section 4.5. In general, the performance of lower-level solvers can be greatly impacted by the choice of rewrites and the encodings used (Tamura et al. 2009; Vielma 2015; Walsh 2000). While the transformations we describe are based on techniques described and validated in the literature, we make no attempt to claim they are the optimal choice. Indeed, determining the optimal choice of encodings is an ongoing active research topic in the specific solver fields of research (Akgün et al. 2022). Instead, we believe that constraint-solving communities can benefit from having accessible libraries that offer good baseline encodings. As the knowledge of encoding choices further develops, modeling system developers can take over the best practices and make them more widely available. Furthermore, the modular nature of the proposed approach makes modeling systems a good framework for investigating the effect of different encodings. Our key contribution is hence not any specific transformation, but the presentation of a modular end-to-end translation pipeline that covers five different constraint-solving paradigms and that has been validated in real applications (Bleukx, Boumazouza, et al. 2025; Foschini et al. 2026) and competitions (Audemard et al. 2024, 2025). 
+
+2 Background 
+
+A Constraint Satisfaction Problem (CSP) is a triple (X , D, C) (Rossi et al. 2006). Here, X is a set of decision variables and D is a set of finite and discrete domains, which detail the allowed values for each variable. For any integer variable 𝑥 , 𝐷 𝑥 ⊂ Z and Boolean variables have a domain {true , false }. In our constraint modeling language, only contiguous domains are allowed, and each variable 𝑥 has a domain [lb (𝑥 ).. ub (𝑥 )] where lb (𝑥 )
+
+and ub (𝑥 ) are the lower and upper bounds of 𝑥 , respectively. An assignment maps a variable to a value in its domain, which we write as 𝑥 ↦ → 𝑣 . C is a set of constraints, where each constraint 𝑐 ∈ C maps an assignment to 
+
+true or false . A constraint is typically written as a mathematical expression or predicate and often only contains a subset of the variables in the full CSP. E.g., the constraint 𝑥 + 2𝑦 − 8𝑧 ≥ 3 only contains variables 𝑥, 𝑦 and 𝑧 . These variables are said to be in the scope of the constraint. To refer to the set of variables occurring in 𝑐 , we write 
+
+scope (𝑐 ). If an assignment is mapped to true by the constraint, we say the assignment satisfies the constraint. An assignment 𝛼 projected to a subset of variables X is written as 𝛼 | X .An assignment that satisfies all constraints in the CSP is a solution of the CSP. If there exists no solution to the CSP, it is said to be unsatisfiable . The set of solutions of a CSP is written as sols (X , D, C) or, when the variables and domains are clear from the context, we write sols (C) in short. The set of solutions of a set of constraints, projected to a set of variables X is written as sols X (C) .A Constraint Optimization Problem (COP) generalizes the definition of a CSP to also include an objective function 𝑓 . That is, a COP is a quadruple (X , D, C, 𝑓 ) where 𝑓 is a numerical expression that maps a full assignment 𝛼 to a numerical value. This allows us to score or rank the set of solutions to a constraint problem and allows searching for an optimal solution of the problem. An optimal solution (w.l.o.g.) minimizes the objective value. That is, a solution 𝛼 ∗ is optimal if for each 𝛼 ∈ sols (C) , 𝑓 (𝛼 ) is greater than or equal to 𝑓 (𝛼 ∗).
+
+2.1 Constraint reformulations 
+
+A constraint satisfaction or optimization problem (hereafter referred to as “constraint problem”) can be modeled in multiple ways by choosing a particular set of variables and constraints. We will be interested in semantically equivalent formulations of a constraint problem. We say two CSPs are semantically equivalent to a set of decision   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •5
+
+variables if they have the same set of solutions when projected onto that set of decision variables. We say two such CSPs are constraint reformulations of one another, as formalized by Bessiere and Van Hentenryck (2003). Definition 1 (Constraint reformulation). A CSP (X ′, D′, C′) is a constraint reformulation of another CSP 
+
+(X , D, C) if and only if both CSPs are semantically equivalent with respect to the set of original decision variables 
+
+X. That is, if sols X (X , D, C) = sols X (X ′, D′, C′) and X ⊆ X ′.
+
+An example of a constraint reformulation for {Min (𝑥, 𝑦, 𝑧 ) ≤ 10 } is {Min (𝑥, 𝑦, 𝑧 ) = 𝑚, 𝑚 ≤ 10 } where 
+
+X = {𝑥, 𝑦, 𝑧 } and X′ = {𝑥, 𝑦, 𝑧, 𝑚 }. To write a CSP to a reformulated CSP, we say it has to be transformed into the new CSP. Therefore, we will refer to the process of rewriting a CSP to a constraint reformulation as a 
+
+transformation . Transformations can introduce new variables into the CSP, such as 𝑚 in the reformulation of the constraint above, and X′ \ X in general. These fresh variables are introduced by the modeling system and do not belong to the set of user-defined variables. We call such variables auxiliary variables (Smith 2006). The values of these auxiliary variables do not need to be uniquely determined by a solution over X. In this case, for an original solution there may exist multiple extensions to a solution of the reformulated CSP. In general, the reformulation must be sound and complete with respect to CSP (X , D, C) : every solution of the reformulated CSP must project onto a solution of the original CSP, and every solution of the original CSP must admit at least one extension to a solution of the reformulated CSP. A constraint reformulation generalizes to optimization problems as well. That is, a COP (X ′, D′, C′, 𝑓 ′) is a reformulation of (X , D, C, 𝑓 ) if the set of constraints are semantically equivalent to X and for each solution 
+
+𝛼 ∈ sols (X ′, D′, C′), it holds that 𝑓 ′ (𝛼 ) = 𝑓 (𝛼 | X )
+
+Note that in practice, constraint modeling systems can also remove variables from the input CSP when transforming it to a CSP suitable for a particular solver. We distinguish three cases where variables are removed: (1) Unconstrained variables, also known as free variables, can be removed from the model. (2) Constant variables with a singleton domain can be replaced by that single value in their domain. (3) Functionally defined variables whose value is determined by a set of (auxiliary) variables X′′ .Whenever such variables are removed during the transformation process, we assume the modeling system keeps a mapping from the remaining variables to the removed variables. The modeling system then only posts the relevant part of the transformed CSP to the solver (e.g., only Boolean encoding literals of integer variables for SAT solvers), and derives the value for all removed decision variables after the solver has found a solution. 
+
+2.2 Functional constraints 
+
+Some constraints used in constraint models represent a function. That is, they define the value of one or more “output” variables, given a value to the “input” variables. Functional constraints can be either total or partial .Definition 2 (Total function constraint). A functional constraint 𝐹 (𝑋, 𝑌 ) is total if and only if for each assignment to 𝑋 , there exists exactly one assignment to 𝑌 that satisfies the constraint. 
+
+Total function constraints with a single input and output variable are sometimes also referred to as views in constraint programming nomenclature (Van Hentenryck and Michel 2014). An example of such a total function with a single “output” variable is the Min (𝑋, 𝑚 ) constraint, as for assignment to the set of variables 𝑋 , the minimum value always exists and is unique. Another example is the GlobalCardinality (𝑋, 𝑉 , 𝑂 ) constraint, which enforces the number of occurrences of each value 𝑣 𝑖 in the array of 𝑋 to be exactly 𝑜 𝑖 . The open version of this constraint allows values in 𝑋 to take a value not occurring in 𝑉 , i.e. it allows Í𝑜 𝑗 ∈𝑂 𝑜 𝑗 ≤ | 𝑋 | (van Hoeve and Régin 2006). This constraint is an example of a total function constraint with multiple output variables 𝑂 . Indeed, for any value assigned to the variables in 𝑋 and a fixed set of values 𝐶 , the number of occurrences 𝑂 𝑣 of value 𝑣 
+
+in 𝑋 is always defined and unique.   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 6•Guns and Bleukx et al.
+
+Definition 3 (Partial function constraint). A functional constraint 𝐹 (𝑋, 𝑌 ) is partial if for each assignment to 𝑋 , there exists at most one assignment to 𝑌 that satisfies the constraint. 
+
+This means the output of a partial function may be undefined for some input values. An example of a partial function is the Division function, for which the output is undefined when the denominator is 0. Note that the 
+
+closed version of GlobalCardinality (𝑋, 𝑉 , 𝑂 ), which enforces values of 𝑋 to be assigned to a value in 𝑉 , can be interpreted as a partial function. Indeed, given an assignment to 𝑋 , the constraint only defines the number of occurrences for each value in 𝑉 when all variables 𝑋 take a value occurring in 𝑉 . Section 4.1 elaborates further on the semantics of (nested) partial functions in constraint models. 
+
+3 Language 
+
+We now formally define the constraint modeling language as shown in Grammar 1, which is used throughout the remainder of this paper. The modeling language consists of Boolean and integer expressions, which can be arbitrarily nested to form complex expressions. We say a Boolean expression is a constraint when it is “top-level”, i.e., if it occurs in the list of Boolean expressions in the model definition. If a Boolean expression occurs as a subexpression, we say it is “nested”. Naturally, integer expressions only occur as a subexpression, as they cannot be enforced to true at the top-level of the model. E.g., 𝑥 + 𝑦 is not a constraint. 
+
+3.1 Core language 
+
+We first define the core language of finite-domain integer modeling, that is, everything in Grammar 1 except global constraints and functions. The language allows for two types of decision variables: Boolean variables and 
+
+Grammar 1 The constraint modeling language. 
+
+⟨Model ⟩ ::= [ ⟨BoolExpr ⟩ (, ⟨BoolExpr ⟩)* ], minimize= ⟨IntExpr ⟩⟨BoolExpr ⟩ ::= | ⟨Bool ⟩
+
+| ⟨BoolVar ⟩
+
+| ¬ ⟨ BoolExpr ⟩
+
+| ⟨BoolExpr ⟩ ∧ | ∨ | ⇒ | ⇔ ⟨ BoolExpr ⟩
+
+| ⟨IntExpr ⟩ ≤ | < | ≥ | > | = | ≠ ⟨IntExpr ⟩
+
+| ⟨GlobalConstraint ⟩ [ ⟨Arg ⟩ (, ⟨Arg ⟩)* ]
+
+⟨IntExpr ⟩ ::= | ⟨Int ⟩
+
+| ⟨IntVar ⟩
+
+| ⟨BoolExpr ⟩
+
+| - ⟨IntExpr ⟩
+
+| ⟨IntExpr ⟩ + | - ⟨IntExpr ⟩
+
+| ⟨Int ⟩×⟨IntExpr ⟩
+
+| ⟨GlobalFunction ⟩ [ ⟨Arg ⟩ (, ⟨Arg ⟩)* ]
+
+⟨BoolVar ⟩ ::= ⟨String ⟩⟨IntVar ⟩ ::= ⟨String ⟩ ⟨ Int ⟩ ⟨ Int ⟩⟨Arg ⟩ ::= ⟨BoolExpr ⟩ | ⟨IntExpr ⟩ | [ ⟨Arg ⟩ (, ⟨Arg ⟩)* ]  
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •7
+
+integer variables. Each integer variable is defined with a name, a lower bound, and an upper bound. Boolean variables are defined with a name, and the implicit domain {false , true }
+
+Similar to variables, each expression has either a Boolean or an integer return type. Boolean variables (and expressions) can be used in logic operators from propositional logic: negation ( ¬), conjunction ( ∧), disjunction ( ∨), implication ( ⇒), and reification/equivalence ( ⇔). Integer variables (and expressions) can be used as arguments to the comparisons ≤, <, ≥, >, = and ≠. Operators with an integer return type are the linear arithmetic operators plus ( +) and minus ( −) and the multiplication operator × to “scale” an integer expression with a constant. Other Boolean and integer operators will be implemented through global constraints and global functions. Note that our language does not support casting from integer to Boolean. That is, Boolean variables and expressions can be used as an integer (where False and True are interpreted as 0 and 1, respectively), but not vice versa. E.g., it is not valid to write ¬( 𝑥 + 𝑦 ), even if the expression 𝑥 + 𝑦 is bounded to only take values 0 or 1. This is similar to the format supported by SMT-solvers (C. Barrett et al. 2010; C. W. Barrett et al. 2021). However, in contrast to the language supported in SMT, our constraint modeling language includes the use of global constraints and global functions, as described in the next section. 
+
+3.2 Global constraints and functions 
+
+We now extend the core language with additional Boolean and integer operators and functions. What differentiates them from the core operators is that they can be decomposed , i.e., rewritten into (a conjunction of) core operators. To stay somewhat close to constraint programming nomenclature, we will call these additional operators and functions “global constraints” if they have a Boolean return type, and when they have an integer return type we will call them “global functions”. Definition 4 (Global constraint). A global constraint is a Boolean predicate that can be reformulated to a semantically equivalent (see Definition 1) set of constraints in the core language. 
+
+For example, the global constraint AllDifferent (𝑥 1, . . . , 𝑥 𝑛 ) holds if all variables take pairwise distinct values. It can be decomposed into the following conjunction of core constraints: Ó1≤𝑖 < 𝑗 ≤𝑛 𝑥 𝑖 ≠ 𝑥 𝑗 . Other examples of well-known global constraints are GlobalCardinalityCount, Cumulative, Table and Xor. In Section 4.3 we elaborate on the semantics of these constraints and their decompositions implemented in our framework. Definition 5 (Global function). A global function is an integer-valued function that can be reformulated to a semantically equivalent function and set of supporting constraints in the core language. 
+
+Examples of global functions supported in our language are the Min, Abs and Element functions. Note that our use of “global functions” is often not described in existing papers on constraint modeling languages; they often consider the operator together with an equality operator as a global constraint and silently extract it when the function is used as a subexpression. However, treating it as a function is a first key aspect in avoiding unnecessary introductions of auxiliary variables (Stuckey and Tack 2013). 
+
+4 Transformations 
+
+We now describe the modular transformation pipeline that allows us to translate the described language to different solver paradigms. The goal of our transformation process is to transform each constraint in the input constraint model to a set of primitive constraints for the targeted solver. A primitive constraint is a constraint the solver accepts as input. Naturally, each solver (paradigm) has a certain set of such primitive constraints. Each stage in the transformation pipeline shown in Figure 2 has a specific purpose of reformulating certain types of constraints. Each box corresponds to a particular subsection describing the transformation. A key insight of our transformation pipeline is that lower-level solvers can re-use transformations that are shared with higher-level solvers. The first step for all solvers is to eliminate partial functions, which is described in   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 8•Guns and Bleukx et al.
+
+⇔∨
+
+𝑎 𝑏 
+
+≤+
+
+𝑥 ∧
+
+𝑝 𝑞 
+
+3
+
+(a) (𝑎 ∨ 𝑏 ) ⇔ ( 𝑥 + ( 𝑝 ∧ 𝑞 ) ≤ 3)
+
+AllDifferent 
+
+𝑎 Div 
+
+𝑏 𝑐 
+
++
+
+𝑑 3
+
+(b) AllDifferent (𝑎, Div (𝑏, 𝑐 ), 𝑑 + 3)
+
+Fig. 1. Examples of constraints in our constraint language and their corresponding expression trees. 
+
+Section 4.1. This ensures all subsequent transformations and solver interfaces can assume every global function in the constraint model is a total function. Next, negation operators are removed from the expression tree as described in Section 4.2. More specifically, we follow a set of standard reformulation rules that allow to “push down” any negation operator into its arguments. Note that this step is omitted for SMT solvers, as they typically have their own set of simplification rules for eliminating negation from the expression tree. As a third general transformation step, we decompose all unsupported global constraints and functions (Section 4.3). Here, we replace every unsupported global constraint with a Boolean expression consisting of only 
+
+model 
+
+No partial functions Eliminate negation Decompose global Flatten Linearize Integer to Bool To CNF 
+
+SMT-solvers CP-solvers ILP-solvers PB-solvers SAT-solvers 
+
+Fig. 2. Transformation pipeline.   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •9
+
+supported operators by the solver at hand, and all global functions are replaced with a numerical expression. After eliminating all these global constraints and functions, we can post the constraint model to SMT-solvers, which accept nested expression trees as input. For CP-solvers, however, further flattening of the expression tree is required, as CP-solvers only support flat constraints or their reification (Section 4.4). That is, constraints in which each argument is a variable or a constant. For ILP solvers, further linearization of the flattened constraints is required (Section 4.5). Indeed, these solvers only support linear inequality constraints, so all logical constraints should be linearized as such. Pseudo-Boolean (PB) solvers also support linear inequality constraints, but only over Boolean variables. Hence, all integer variables must be encoded with an appropriate Boolean encoding. Section 4.6 describes which encodings are currently implemented in our framework. Finally, SAT-solvers only support clauses of Boolean literals. Hence, the set of constraints suited for PB-solvers must be processed further before it can be posted to a SAT-solver. For this final step, our framework largely relies on external libraries such as PyPBlib (Philipp and Steinke 2015) and Pindakaas (Bierlee and Dekker n.d.) Note that, given a target solver to transform the input model to, certain steps in the transformation may be skipped. E.g., if a CP-solver supports the AllDifferent constraint, then naturally it should not be decomposed by the transformation stack. Similarly, some ILP solvers support the use of an implication constraint in their API; this means the linearization of implications is skipped in our transformation stack. In practice, we implement this using an “exclude” set, which lists the operators that are left unchanged during a particular transformation. Two key challenges for transforming a high-level constraint model will be to 1) correctly handle negation of arbitrary Boolean expressions and 2) avoid introducing superfluous auxiliary variables. The first challenge will largely be handled during safening of partial functions, and subsequent elimination of negation constraints. To avoid introducing unnecessary auxiliary variables, we apply Common Subexpression Elimination (CSE) (Rendl et al. 2008) during flattening and subsequent transformations. This ensures all semantically equivalent subexpressions are channeled to the same auxiliary variable. For constraint optimization problems, the objective function may also need to be reformulated given a particular solver. For example, several CP-solvers only support minimizing the value of a single variable, while ILP-solvers only support weighted linear objective functions. Therefore, we apply the same reformulations to the numerical objective function as we do for the constraints, before posting the objective function to a solver. The architecture of every transformation is designed such that it can take both Boolean and numerical expressions as input. 
+
+4.1 Eliminating Partial Functions 
+
+Our constraint modeling language allows the use of global functions. These functions map a set of “input” variables to a single output variable. However, some of the global functions implemented in our system are “partial” functions, for which the output can be undefined (see Definition 3). Common examples of partial function constraints in constraint programming models are the division constraint (Div (𝑥, 𝑦 ) = 𝑧 ) and the Element constraint (written as 𝑋 [𝑖 ] = 𝑣 ). Indeed, division is undefined when (𝑦 = 0) and an array lookup is undefined when the index is out-of-bounds (i.e., 𝑖 < 1 or 𝑖 > |𝑋 |). When the domains of the variables in a partial function allow it to be undefined, we say the function is unsafe , and it should be safened . We handle undefinedness using the relational semantics for constraint modeling languages (Frisch and Stuckey 2009). That is, when the result of a numerical function is undefined , it asserts its nearest Boolean context to false . In the context of our modeling language, this means the nearest Boolean parent expression is asserted to be false . Both MiniZinc and Savile Row also implement the relational semantics for handling partial functions (Nightingale 2022; Stuckey and Tack 2013). In Figure 3 we show different expression trees that contain a partial function, in this case Division. We focus on partial functions for which the nearest Boolean context is not top-level (e.g., Figures 3c and 3d). Indeed, solvers supporting top-level partial function constraints will exclude any unsafe value from the domains themselves, e.g., through root-level propagation for CP-solvers.                          
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 10 •Guns and Bleukx et al.
+> =Div
+> 𝑥 𝑦 𝑧
+> (a) Top-level
+> =+Div
+> 𝑥 𝑦 𝑑 𝑧
+> (b) Nested in ⟨IntExpr ⟩∨
+> =Div
+> 𝑥 𝑦 𝑧 𝑝
+> (c) Nested in a disjunction
+> ¬
+> =Div
+> 𝑥 𝑦 𝑧
+> (d) Nested in a negation Fig. 3. In Figure 3a, the nearest Boolean context of the division is the top-level =constraint, so the model forbids 𝑦 ↦→0. The same holds for Figure 3b, where the only intermediate parent is Sum (numerical). In Figure 3c, the nearest Boolean context is the comparison within the top-level disjunction, so 𝑦 ↦→0causes the left-hand side to evaluate to false , requiring 𝑝 to be true. In Figure 3d, the nearest Boolean context is the negation, allowing solutions where the division is false or where 𝑦 ↦→0.
+
+4.1.1 Safening partial functions using guards. The general idea of safening a nested partial function is to introduce a guard , which determines whether the partial function is defined or not, and to replace the argument that can cause the function to be undefined with a safe alternative. This guard is placed in conjunction with the nearest Boolean context (Frisch and Stuckey 2009). We observe that for our modeling framework, two kinds of guards can be needed, depending on the domain for which the partial function is defined. Both cases are discussed below. 
+
+Case 1: Safening to a range of values. The first type of partial functions is only defined for a contiguous range of values. We will use the array lookup function 𝑋 [𝑦 ] as an example, which is only defined when the index 
+
+𝑦 ∈ [ 1.. |𝑋 |] . Hence, a natural guard is (1 ≤ 𝑦 ≤ | 𝑋 |) . To safen the constraint, we introduce a new integer variable 
+
+𝑦 safe ∈ [ 1.. |𝑋 |] , and we ensure the original decision variable 𝑦 is equal to 𝑦 safe whenever the function is defined. 
+
+Example 4.1 (Safening of an Element constraint). Consider the constraint (𝑋 [𝑖 ] = 𝑣 ) ∨ 𝑝 . After safening, this constraint is reformulated as a conjunction of the constraints: 
+
+ (𝑋 [𝑦 safe ] = 𝑣 ) ∧ ( 1 ≤ 𝑦 ≤ | 𝑋 |)  ∨ 𝑝 ∧ (1) 
+
+(1 ≤ 𝑦 ≤ | 𝑋 |) ⇒ ( 𝑦 = 𝑦 safe ) ∧ (2) 
+
+𝑦 safe ∈ [ 1.. |𝑋 |] (3) where constraint 1 is the original, safe constraint and 2 ensures the new index is equal to the original index variable whenever it is in the bounds of the array. 
+
+Case 2: Excluding a single value from the domain. The second type of partial functions are undefined for a single value in the domain of one of their arguments. Common examples are the Div (𝑥, 𝑦 ) and Modulo (𝑥, 𝑦 ) functions, which are both undefined when 𝑦 = 0. A natural guard is 𝑦 ≠ 0. As our modeling language only allows integer variables with a contiguous domain (see Grammar 1), we need to model both sides of the domain around the excluded value separately. More specifically, we introduce two auxiliary variables 𝑦 neg and 𝑦 pos to represent the safe negative and positive parts of the domain of 𝑦 , respectively. 
+
+Example 4.2 (Safening a nested division constraint). Consider the unsafe constraint (Div (𝑥, 𝑦 ) = 𝑣 ) ∨ 𝑝 as introduced previously. After safening, this expression becomes a conjunction: 
+
+ (𝑧 = 𝑣 ) ∧ ( 𝑦 ≠ 0) ∨ 𝑝 ∧ (4) 
+
+(𝑦 < 0) ⇒ ( Div (𝑥, 𝑦 neg ) = 𝑧 ∧ 𝑦 = 𝑦 neg ) ∧ (5) 
+
+(𝑦 > 0) ⇒ ( Div (𝑥, 𝑦 pos ) = 𝑧 ∧ 𝑦 = 𝑦 pos ) ∧ (6) 
+
+𝑦 neg ∈ [ lb (𝑦 ).. −1] ∧ 𝑦 pos ∈ [ 1.. ub (𝑦 )] (7)   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •11
+
+Where constraint 4 is the original, but now safe constraint; and constraints 5 and 6 ensure the auxiliary variables are asserted to the original 𝑦 when 𝑦 takes a value that is different from 0; and that the division constraint holds. 
+
+4.2 Eliminating negation 
+
+After eliminating partial functions, we focus on eliminating negation from the expression tree. More specifically, we traverse the expression tree and “push down” any ¬ operator into its arguments. For this, we follow a set of standard simplification rules. To rewrite the negation of a comparison, we can simply replace the comparison with its negative counterpart. That is, = is mapped to ≠, ≤ to > and < to ≥. For logical operators, we follow De Morgan’s laws (De Morgan 1864): ¬( 𝑎 ∧ 𝑏 ) is simplified to (¬ 𝑎 ) ∨ (¬ 𝑏 ), ¬( 𝑎 ∨ 𝑏 ) to (¬ 𝑎 ) ∧ (¬ 𝑏 ), and ¬( 𝑎 ⇒ 𝑏 )
+
+to 𝑎 ∧ (¬ 𝑏 ). When 𝑎 or 𝑏 is an expression, negation is further eliminated recursively. Finally, negating global constraints is non-trivial, and no generic system exists for (efficiently) negating them. However, for some global constraints, it is possible to define their negation in terms of other global constraints, as observed by Fages and Soliman (2012). Below is a non-exhaustive list of constraint reformulations for negated global constraints as implemented in our system: 
+
+• ¬ Table (𝑋,𝑇 ) is mapped to NegativeTable (𝑋,𝑇 )• ¬ AllDifferent (𝑋 ) is mapped to NValue (𝑋 ) < |𝑋 |• ¬ Regular (𝑋, 𝑁 ,𝑇 , 𝑠, 𝐴 ) is mapped to Regular (𝑋, 𝑁 ,𝑇 , 𝑠, 𝑁 \ 𝐴 ) for complete automata 
+
+• ¬ Xor (𝑥 1, 𝑥 2, . . . , 𝑥 𝑛 ) is mapped to Xor (¬ 𝑥 1, 𝑥 2, . . . , 𝑥 𝑛 )
+
+For global constraints where no specialized negation is implemented, we keep the negated global constraint in the expression tree. This is shown in Grammar 2, where all negation operators are eliminated, apart from negated Boolean variables and negated global constraints. Note that no transformations further down the transformation stack are allowed to explicitly introduce the negation of an expression. E.g., when the decomposition of a global constraint requires negating one of its arguments, that negation operator must immediately be eliminated using the transformation described in this section. For example, the decomposition of IfThen (𝑥 ≤ 𝑦, 𝑧 = 2, 𝑧 = 3) is {( 𝑥 ≤ 𝑦 ) ⇒ ( 𝑧 = 2), ¬( 𝑥 ≤ 𝑦 ) ⇒ ( 𝑧 =
+
+3))} . The latter of these constraints is then further rewritten as (𝑥 > 𝑦 ) ⇒ ( 𝑧 = 3) to eliminate the negation operator from the new expression. 
+
+Grammar 2 Boolean expressions after eliminating negation. 
+
+⟨BoolExpr ⟩ ::= | ⟨Bool ⟩
+
+| ⟨BoolVar ⟩
+
+| ¬⟨ BoolVar ⟩
+
+| ⟨BoolExpr ⟩ ∧ | ∨ | ⇒ | ⇔ ⟨ BoolExpr ⟩
+
+| ⟨IntExpr ⟩ ≤ | < | ≥ | > | = | ≠ ⟨IntExpr ⟩
+
+| ⟨GlobalConstraint ⟩ [ ⟨Arg ⟩ (, ⟨Arg ⟩)* ]
+
+| ¬⟨ GlobalConstraint ⟩ [ ⟨Arg ⟩ (, ⟨Arg ⟩)* ]
+
+4.3 Decomposing unsupported global constraints and functions 
+
+Our constraint modeling language supports the use of global constraints (Beldiceanu, Carlsson, and Rampon 2012; van Hoeve and Katriel 2006) to model constraint satisfaction or optimization problems. However, not all solvers support (all) global constraints. Indeed, while most CP-solvers support a variety of global constraints and functions, SMT or ILP solvers rarely support them (apart from some common functions such as Min or Abs).   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 12 •Guns and Bleukx et al.
+
+Hence, for all solvers, the unsupported global constraints and functions must be decomposed before posting the model to the solver. Note that in our language, global constraints can be used as any other Boolean expression, and thus they can occur as a nested expression in the model. However, CP-solvers typically do not support such arbitrary nesting of global constraints. Instead, they only support using the global constraints at the “top-level” of the constraint model, where the solver will maintain its satisfaction during search. Hence, we define two general types of “supportedness” of global constraints: they are either supported at the top-level, or supported as a nested expression. Each solver interface is configured using two sets, Supp and SuppNested , that list the set of global constraints supported at the top-level and in a nested context, respectively. In this transformation, we avoid decomposing the same global constraint or global function multiple times by keeping a cache of decomposed expressions. This generally reduces the number of expressions and auxiliary variables in the decomposed constraint model. While it may be uncommon for a user to write the exact same global constraint twice, decompositions or other reformulations may introduce the same expression in various places. 
+
+4.3.1 Decomposing top-level global constraints. Each solver will support a subset of global constraints that are supported at the “top-level” of the constraint model. This is the most common case where global constraints occur: e.g., AllDifferent constraints in allocation problems or Cumulative constraints in many scheduling problems. Any top-level global constraint that is not listed in Supp , will need to be decomposed into a conjunction of expressions that is equivalent to the original global constraint. For example, given a constraint solver that does not support the constraint AllDifferent (𝑥, 𝑦, 𝑧 ), we can replace it with the conjunction (𝑥 ≠ 𝑦 ) ∧ ( 𝑥 ≠ 𝑧 ) ∧ ( 𝑦 ≠ 𝑧 ).However, note that global constraints may be decomposed into other global constraints. This means that we need to recursively check whether all unsupported global constraints and functions are eliminated. An example is the decomposition of the GlobalCardinalityCount constraint, as shown in Figure 4, which is decomposed using Count functions. GlobalCardinality (( 𝑥, 𝑦, 𝑧 ), (7, 9), (𝑐 1, 𝑐 2)) 
+
+Count (( 𝑥, 𝑦, 𝑧 ), 7) = 𝑐 1
+
+(𝑥 = 7) + ( 𝑦 = 7) + ( 𝑧 = 7) = 𝑐 1
+
+Count (( 𝑥, 𝑦, 𝑧 ), 9) = 𝑐 2
+
+(𝑥 = 9) + ( 𝑦 = 9) + ( 𝑧 = 9) = 𝑐 2
+
+𝑐 1 + 𝑐 2 ≤ 3
+
+> Fig. 4. Decomposing the GlobalCardinalityCount constraint into two global functions, which are in turn decomposed into nested arithmetic constraints.
+
+As we will discuss in this section, some global constraints require the introduction of auxiliary variables to formulate the relation represented by the constraint. Following Beldiceanu, Carlsson, Flener, et al. (2013), our framework returns two sets of constraints as the decomposition of a global constraint 𝐺 (X) : a set of defining 
+
+constraints T (X , A) and a set of value constraint(s) V (X , A) . The defining constraints determine the value of the auxiliary variables A, using the decision variables X. The value constraints represent the truth value of the global constraint. Note that this decomposition scheme is compatible with decomposing global functions as well. Indeed, while for global constraints, the value constraint is a set of constraints representing a single Boolean-valued conjunction, for global functions it is an integer-valued expression.   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •13
+
+Example 4.3 (Decomposition of Min using an auxiliary variable). Consider the constraint Min (𝑥, 𝑦, 𝑧 ) ≥ 3. If the solver does not support the global function Min, we decompose it using an auxiliary variable 𝑚 . More specifically, the defining constraints become T ({ 𝑥, 𝑦, 𝑧 }, {𝑚 }) =  𝑚 ≤ 𝑥  ∧  𝑚 ≤ 𝑦  ∧  𝑚 ≤ 𝑧  ∧  (𝑚 ≥ 𝑥 ) ∨ ( 𝑚 ≥ 𝑦 ) ∨ ( 𝑚 ≥ 𝑧 )
+
+and the value expression is the auxiliary variable: V ({ 𝑥, 𝑦, 𝑧 }, {𝑚 }) = 𝑚 . As part of the decomposition procedure, the value expression 𝑚 is put in place of the original Min constraint: 𝑚 ≥ 3. 
+
+Example 4.4 (Decomposition of MDD using auxiliary variables). Consider the following MDD constraint: MDD (( 𝑥, 𝑦 ), (𝑆, 1, 𝐴 ), (𝑆, 2, 𝐵 ), (𝐴, 1, 𝐹 ), (𝐵, 1, 𝐹 ), (𝐵, 2, 𝐹 ), 𝐹 ) with starting node 𝑆 and accepting state 𝐹 . This con-straint is satisfied if the paths defined by the transitions of the MDD represent an accepting path through the MDD. The decomposition uses a Boolean edge variable J𝑋 𝑖 
+
+−→ 𝑌 K for each edge 𝑋 → 𝑌 with label 𝑖 in the MDD; and enforces a “flow” to the accepting state (Ahuja et al. 1993). Its defining and value constraints are: 
+
+𝐸 = {J𝑆 1
+
+−→ 𝐴 K, J𝑆 2
+
+−→ 𝐵 K, J𝐴 1
+
+−→ 𝐹 K, J𝐵 1
+
+−→ 𝐹 K, J𝐵 2
+
+−→ 𝐹 K}T ({ 𝑥, 𝑦 }, 𝐸 ) =  (𝑥 = 1) ⇔ J𝑆 1
+
+−→ 𝐴 K ∧  (𝑥 = 2) ⇔ J𝑆 2
+
+−→ 𝐵 K∧
+
+ (𝑦 = 1) ⇔ J𝐴 1
+
+−→ 𝐹 K ∨ J𝐵 1
+
+−→ 𝐹 K ∧  (𝑦 = 2) ⇔ J𝐵 2
+
+−→ 𝐹 K∧
+
+ J𝑆 1
+
+−→ 𝐴 K = J𝐴 1
+
+−→ 𝐹 K∧
+
+ J𝑆 2
+
+−→ 𝐵 K = J𝐵 1
+
+−→ 𝐹 K + J𝐵 2
+
+−→ 𝐹 K
+
+V ({ 𝑥, 𝑦 }, 𝐸 ) =  J𝑆 1
+
+−→ 𝐴 K + J𝑆 2
+
+−→ 𝐵 K = 1∧
+
+ J𝐴 1
+
+−→ 𝐹 K + J𝐵 1
+
+−→ 𝐹 K + J𝐵 2
+
+−→ 𝐹 K = 1
+
+𝑆 𝐴 𝐵 𝐹 𝑥 𝑦 
+
+1 21 12Here, the channeling constraints determine the value of the auxiliary variables and the consistency of flow are the defining constraints, and the constraints enforcing that there is a non-zero flow from the starting node to the accepting state are the value constraints. While the auxiliary variables cannot be avoided in the previous two examples to reformulate the constraint, for many decompositions, we can circumvent explicitly introducing auxiliary variables in the decomposition. 
+
+Avoiding introduction of functionally defined auxiliary variables. For many decompositions, the auxiliary variables used in the decomposition are functionally defined by the user-defined decision variables. In general, we try to avoid explicitly introducing auxiliary variables that represent a subexpression used in the decomposition. Instead, we use the subexpression itself as an argument to build the complex expression that represents the decomposition. We will call this the functional form of decomposing global constraints. 
+
+Example 4.5 (Functional decomposition of ArgMin). Consider the following naive decomposition of the con-straint ArgMin (𝑋, 𝑖 ): (𝑋 [𝑖 ] = 𝑤 ) ∧ ( Min (𝑋 ) = 𝑣 ) ∧ ( 𝑤 = 𝑣 ) (Beldiceanu, Carlsson, Flener, et al. 2012). This decomposition introduces two auxiliary variables 𝑤 and 𝑣 , to define the relation. However, their value is function-ally defined. An equivalent reformulation which avoids the explicit use of auxiliary variables is (𝑋 [𝑖 ] = Min (𝑋 )) .Solvers that support nested expressions will benefit from an explicitly nested structure. For other solvers, the flattening will introduce the auxiliary variables automatically, but it will use Common Subexpression Elimination (CSE) to avoid creating duplicates and will compute tight bounds on the variables automatically. This scheme is also compatible with the decomposition of global functions, as the following example shows. 
+
+Example 4.6 (Decomposing NValue). The standard decomposition for the constraint NValue (𝑥, 𝑦, 𝑧 ) = 𝑛 
+
+introduces a Boolean variable 𝐵 𝑣 =𝑖 for each of the domain values 𝑥, 𝑦 and 𝑧 (Bessiere, Katsirelos, et al. 2010). The   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 14 •Guns and Bleukx et al.
+
+decomposition then enforces the constraints: ∀𝑣 ∈ { 𝑥, 𝑦, 𝑧 }∀ 𝑖 ∈ 𝐷 𝑣 : 𝐵 𝑣 =𝑖 ⇔ ( 𝑣 = 𝑖 ) and 𝑛 = Í𝑖 ∈𝐷 𝑥 ∪𝐷 𝑦 ∪𝐷 𝑧 (𝐵 𝑥 =𝑖 ∨
+
+𝐵 𝑦 =𝑖 ∨ 𝐵 𝑧 =𝑖 ). However, it is easier to formulate the decomposition over the subexpressions directly, which avoids explicitly introducing any auxiliary variables at this stage: 𝑛 = Í𝑖 ∈𝐷 𝑥 ∪𝐷 𝑦 ∪𝐷 𝑧 (( 𝑥 = 𝑖 ) ∨ ( 𝑦 = 𝑖 ) ∨ ( 𝑧 = 𝑖 )) .Avoiding the introduction of auxiliary variables at decomposition time has several advantages. First, it reduces the overall number of variables for solvers that support nested expressions (see Section 4.4). Indeed, some solvers (e.g., most SMT-solvers) directly support the nested constraints as shown in the example. Secondly, given the ArgMin constraint from Example 4.5, it is not unthinkable that the user will use the expression 𝑋 [𝑖 ] elsewhere in the constraint model – say in constraint 𝐶 2. If at some point in the transformation stack, an auxiliary variable is made for this other occurrence in the model (e.g., during flattening of 𝐶 2), then it can be used to replace the subexpression in the decomposition as well. Hence, by postponing the introduction of auxiliary variables as long as possible in the transformation stack, we can localize all CSE-logic into the flattening transformation and potentially enable more opportunities to do CSE (Rendl et al. 2008). 
+
+ILP-friendly decompositions. When reformulating a CSP for an Integer Linear Programming (ILP) solver, virtually all global constraints in the model must be decomposed. Indeed, apart from occasional support for numerical global functions such as Min or Abs constraints, ILP solvers typically only support linear inequalities as input language. Standard “CP-style” decompositions of global constraints are often unsuited for ILP solvers. A prime example is the AllDifferent constraint, whose standard decomposition is a set of 𝑛 (𝑛 − 1) binary disequality constraints (van Hoeve 2001). However, to linearize disequality constraints, we need to use big-M style constraints (see Section 4.5), which are generally unwanted for performant ILP models. Belov et al. (2016) proposes that many global constraints can instead be decomposed in an “ILP-friendly” way. These specialized decompositions (implicitly) use a Boolean encoding variable 𝐵 𝑥 =𝑣 to represent that a categorical variable 𝑥 is assigned to value 𝑣 .Below, we show several examples of such decompositions. 
+
+Example 4.7 (ILP-friendly flow decomposition of AllDifferent). Given the constraint AllDifferent (𝑋 ) with a set of integer variables 𝑋 , the flow-based decomposition is Ó𝑣 ∈lb .. ub 
+
+Í𝑥 𝑖 ∈𝑋 (𝑥 𝑖 = 𝑣 ) ≤ 1
+
+Example 4.8 (ILP-friendly decomposition of Element). Given an array 𝐴 of integer constants , and an index variable 𝑖 the constraint 𝐴 [𝑖 ] = 𝑣 can be decomposed as the linear constraint Í𝑗 =1.. |𝐴 | 𝑎 𝑗 × ( 𝑖 = 𝑗 ) = 𝑣 . The linear relaxation of this constraint ensures the bounds of variable 𝑣 are [min (𝐴 ), max (𝐴 )] .Our framework currently implements specialized linear decompositions for AllDifferent, Element, Table, Regular and Circuit constraints. Interestingly, by avoiding explicitly creating auxiliary variables when de-composing global constraints, several CP-style decompositions already work well for ILP solvers, as they are further processed by the linearize transformation down the transformation stack. For example, we decompose the function Count (𝑋, 𝑣 ) as Í𝑥 ∈𝑋 (𝑥 = 𝑣 ) for all solvers. When targeting a CP-solver, our transformation pipeline will introduce Boolean variables 𝐵 𝑥 =𝑣 used in Í𝑥 ∈𝑋 𝐵 𝑥 =𝑣 and reification constraints 𝐵 𝑥 =𝑣 ⇔ ( 𝑥 = 𝑣 ). For ILP solvers, the decomposition will be the same Í𝑥 ∈𝑋 𝐵 𝑥 =𝑣 but the direct encodings 𝐵 𝑥 =𝑣 can be done in a more ILP-friendly way. Section 4.5 further elaborates on the implementation of this feature. 
+
+4.3.2 Decomposing nested global constraints. We now focus on the case of fully reified global constraints, but the techniques are valid for any nesting of global constraints in Grammar 1. When introducing auxiliary variables to decompose a nested global constraint, we need to ensure their value is at all times functionally defined by the decision variables (Beldiceanu, Carlsson, Flener, et al. 2013). That is, given any value to the decision variables, there is exactly one satisfying assignment to the auxiliary variables. We say the auxiliary variables are totally defined by the decision variables. In practice, this means the defining constraints T (X , A) must represent a total function, written as T𝐹 (X , A) , which can and should be enforced at the top-level of the constraint model: 
+
+𝑏 ⇔ 𝐺 (X) ≡ T𝐹 (X , A) ∧ 𝑏 ⇔ V (X , A)   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •15
+
+Indeed, enforcing the definition of auxiliary variables as part of the nested expression is not valid, as shown in the following example. 
+
+Example 4.9 (Invalid decomposition of a reified constraint using auxiliary variables). Consider the constraint 
+
+𝑏 ⇔ Count (( 𝑥, 𝑦, 𝑧 ), 1) ≤ 2, which enforces that the number of occurrences of the value 1 is at most two, if and only if 𝑏 is true. An invalid decomposition would be 𝑏 ⇔ (( 𝑥 = 1) + ( 𝑦 = 1) + ( 𝑧 = 1) = 𝑐 ∧ 𝑐 ≤ 2). Indeed, the assignment {𝑏 ↦ → false , 𝑥 ↦ → 1, 𝑦 ↦ → 2, 𝑧 ↦ → 3, 𝑐 ↦ → 3} satisfies the reformulation, but clearly does not satisfy the original reified constraint: the Boolean reification variable is false , but the original comparison with the Count constraint on the right-hand side is satisfied by the assignment. For this example of the Count constraint, it is easy to see that the auxiliary variable 𝑐 is functionally defined by the variables 𝑥, 𝑦 , and 𝑧 . However, for other decompositions, this is less trivial, as the value of the auxiliary variables is defined through several constraint, as shown in the following example of a reified MDD constraint. 
+
+Example 4.10 (Decomposition of a reified MDD constraint). Consider again the constraint from Example 4.4, but now as a reification: 𝑏 ⇔ MDD (( 𝑥, 𝑦 ), (𝑆, 1, 𝐴 ), (𝑆, 2, 𝐵 ), (𝐴, 1, 𝐹 ), (𝐵, 1, 𝐹 ), (𝐵, 2, 𝐹 ), 𝐹 ). Our previous decomposi-tion is not suited to decompose this reified MDD constraint. Indeed, the assignment {𝑏 ↦ → false , 𝑥 ↦ → 3, 𝑦 ↦ → 2} is not allowed by the decomposition introduced in the previous example, as it enforces variables 𝑥 and 𝑦 to take either value 1 or 2. To circumvent this issue, the MDD must be expanded with a “garbage state” G for each layer in the MDD. This allows to include all remaining domain values from each of the nodes. For 𝐷 𝑥 = 𝐷 𝑦 = [1.. 3] we get: 
+
+𝐸 = {J𝑆 1
+
+−→ 𝐴 K, J𝑆 2
+
+−→ 𝐵 K, J𝐴 1
+
+−→ 𝐹 K, J𝐵 1
+
+−→ 𝐹 K, J𝐵 2
+
+−→ 𝐹 K,
+
+J𝑆 3
+
+−→ 𝐺 𝑥 K, J𝐴 2
+
+−→ 𝐺 𝑦 K, J𝐴 3
+
+−→ 𝐺 𝑦 K, J𝐵 3
+
+−→ 𝐺 𝑦 K,
+
+J𝐺 𝑥 
+
+> 1
+
+−→ 𝐺 𝑦 K, J𝐺 𝑥 
+
+> 2
+
+−→ 𝐺 𝑦 K, J𝐺 𝑥 
+
+> 3
+
+−→ 𝐺 𝑦 K}T𝐹 ({ 𝑥, 𝑦 }, 𝐸 ) = (𝑥 = 1) ⇔ J𝑆 1
+
+−→ 𝐴 K∧
+
+ (𝑥 = 2) ⇔ J𝑆 2
+
+−→ 𝐵 K∧
+
+ (𝑥 = 3) ⇔ J𝑆 3
+
+−→ 𝐺 𝑥 K∧
+
+ (𝑦 = 1) ⇔ J𝐴 1
+
+−→ 𝐹 K ∨ J𝐵 1
+
+−→ 𝐹 K ∨ J𝐺 𝑥 
+
+> 1
+
+−→ 𝐺 𝑦 K∧
+
+ (𝑦 = 2) ⇔ J𝐵 2
+
+−→ 𝐹 K ∨ J𝐴 2
+
+−→ 𝐺 𝑦 K ∨ J𝐺 𝑥 
+
+> 2
+
+−→ 𝐺 𝑦 K∧
+
+ (𝑦 = 3) ⇔ J𝐵 3
+
+−→ 𝐺 𝑦 K ∨ J𝐴 3
+
+−→ 𝐺 𝑦 K ∨ J𝐺 𝑥 
+
+> 3
+
+−→ 𝐺 𝑦 K∧
+
+ J𝑆 1
+
+−→ 𝐴 K = J𝐴 1
+
+−→ 𝐹 K + J𝐴 2
+
+−→ 𝐺 𝑦 K + J𝐴 3
+
+−→ 𝐺 𝑦 K∧
+
+ J𝑆 2
+
+−→ 𝐵 K = J𝐵 1
+
+−→ 𝐹 K + J𝐵 2
+
+−→ 𝐹 K + J𝐵 3
+
+−→ 𝐺 𝑦 K∧
+
+ J𝑆 3
+
+−→ 𝐺 𝑥 K = J𝐺 𝑥 
+
+> 1
+
+−→ 𝐺 𝑦 K + J𝐺 𝑥 
+
+> 2
+
+−→ 𝐺 𝑦 K + J𝐺 𝑥 
+
+> 3
+
+−→ 𝐺 𝑦 K
+
+𝑆 𝐴 𝐵 𝐺 𝑥 
+
+𝐹 𝐺 𝑦 
+
+𝑥 𝑦 
+
+1 21 1,2 31,2,3 2,3 3Now, all edge variables are uniquely defined given any value to the decision variables 𝑥 and 𝑦 . The value constraints can be kept as before, as they enforce a flow matching the MDD constraint. Indeed, if any blue edge is activated, the constraints below cannot be satisfied. 
+
+V ({ 𝑥, 𝑦 }, 𝐸 ) = J𝑆 1
+
+−→ 𝐴 K + J𝑆 2
+
+−→ 𝐵 K = 1∧
+
+ J𝐴 1
+
+−→ 𝐹 K + J𝐵 1
+
+−→ 𝐹 K + J𝐵 2
+
+−→ 𝐹 K = 1  
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 16 •Guns and Bleukx et al.
+
+Note that much of the complexity of decomposing reified or nested global constraints as described in related works (Beldiceanu, Carlsson, Flener, et al. 2012, 2013; Fages and Soliman 2012) can be avoided by not introducing auxiliary variables at all. Indeed, when the auxiliary variables can be defined directly using a simple expression, we adopt the functional form of writing the decomposition for a global constaint or function. For solvers that do not accept nested expressions, the flattening transformation described in Section 4.4 then handles all logic for introducing auxiliary variables and determining their value based on the decision variables. The example below shows how such a functional decomposition can simplify nested decompositions. 
+
+Example 4.11 (Decomposing reified ArgMin constraint). Consider the reified constraint 𝑏 ⇔ ( ArgMin (𝑋 ) = 𝑖 ).Using the naive decomposition with two auxiliary variables, the decomposition of the reification becomes: 
+
+(𝑋 [𝑖 ] = 𝑣 ) ∧ ( Min (𝑋 ) = 𝑤 ) ∧  𝑏 ⇔ ( 𝑣 = 𝑤 ) where the definition of 𝑣 and 𝑤 is enforced at top-level. However, by writing the decomposition functionally, we obtain 𝑏 ⇔ ( Min (𝑋 ) = 𝑋 [𝑖 ]) , which makes the defining expression empty, and we can simply replace the nested global constraint with its (nested) value expression. As described previously, we can use specialized decompositions for some global constraints when targeting an ILP solver. More generally, we allow a solver to specify a set of “custom” decompositions, allowing solvers to deviate from the default decomposition for specific global constraints or functions. However, some of these decompositions, e.g., the decomposition of Circuit by Miller et al. (1960), are only valid when the constraint is at the top-level of the constraint model, not when nested in another expression. Hence, when a Circuit constraint occurs in a nested context, we always decompose it using its “traditional CP” decomposition using order variables instead. We next describe how to detect and use the more efficient decomposition when possible. 
+
+4.3.3 Decomposing global constraints in positive context. As discussed previously, our system supports arbitrary nesting of global constraints. We observe that for some nestings, the global constraint occurs in positive context 
+
+in the expression tree. Common examples of such nesting are half-reified constraints (Feydy, Somogyi, et al. 2011) or constraints occurring in a disjunction (Jefferson et al. 2010). In such cases, the global constraint is never 
+
+enforced to be false. Hence, when decomposing a global constraint in a nested positive context, we can simply re-use the decomposition as if the constraint were posted top-level (Section 4.3.1). Clearly, this is advantageous for many global constraints, as it avoids the requirement that auxiliary variables are functionally defined, and this can avoid extra variables and/or constraints, as Examples 4.4 and 4.10 have shown. 
+
+Reformulation of half-reified global constraints. As a final optimization to the decomposition transformation, we consider the case where a CP solver supports a global constraint at the top-level of the model, but not in a nested context. When the global constraint occurs in a positive context, Bleukx, Verhaeghe, et al. (2026) observed that one can avoid decomposing the global constraint, and instead introduce a set of auxiliary variables and a channeling constraint that uses the original (efficient) global constraint in a non-nested way. To illustrate this, consider the top-level constraint 𝑏 ⇒ AllDifferent (𝑥, 𝑦, 𝑧 ). If the solver does not support the AllDifferent constraint in a nested expression, but does support the top-level AllDifferent constraint (which is the case for most CP solvers), then we can reformulate the constraint as: AllDifferent (𝑥 ′, 𝑦 ′, 𝑧 ′) ∧ ( 𝑏 ⇒ ( 𝑥 = 𝑥 ′ ∧ 𝑦 = 𝑦 ′ ∧ 𝑧 = 𝑧 ′)) where 
+
+𝑥 ′, 𝑦 ′ and 𝑧 ′ are auxiliary variables. When the Boolean variable 𝑏 is set to true , the reified channeling constraint ensures the auxiliary variables are equal to the original decision variables, and the global constraint is asserted to be true . When the indicator variable is set to false , the auxiliary variables are free , and the reformulation is valid as long as AllDifferent (𝑥 ′, 𝑦 ′, 𝑧 ′) is satisfiable. This approach can be implemented generically for any global constraint, with several optimizations possible for functional or total relation constraints (Bleukx, Verhaeghe, et al. 2026). Using the Supp and SuppNested configured for each solver, we can easily determine which global constraints to reformulate using this method.   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •17
+
+4.4 Flattening by substituting expressions with auxiliary variables 
+
+Many (CP) solvers do not accept nested expressions, but rather accept only flat constraints. That is, constraints where all arguments are either constants or variables (= leaf nodes in the expression tree). This step of the transformation pipeline is responsible for eliminating any subexpressions from the arguments of primitive operators and global constraints. This algorithm traverses the entire expression tree of the constraint model and substitutes any nested expression with a freshly introduced auxiliary variable. Then, the auxiliary variable is asserted to be equal to the subexpression it replaces, which is implemented in the helper function GetOrMakeVar shown in Algorithm 2. For Boolean subexpressions, this results in a new reification constraint; for integer subexpressions, an equality constraint links the auxiliary variable with the subexpression it replaces. To avoid introducing unnecessary auxiliary variables, we implement two well-known optimizations: in-place simplification of operators and Common Subexpression Elimination (CSE) over normalized expressions. An implementation with a CSE-map and simplify procedure is shown in Algorithm 1, where 𝐹 collects the flat constraints and 𝐶 ′ those that have to be recursively flattened. The algorithm first tries to simplify the expression by checking its immediate subexpressions and merging/rewriting associative operators. It then checks if it is already in flat normal form; it then normalizes reifications, comparisons, negated global constraints, and other Boolean expressions to the flat normal form described in Grammar 3. This normalization iterates over the arguments of a subexpression and replaces any subexpression with a fresh auxiliary variable. The pseudocode for NormalizeBoolExpr and NormalizeNumExpr is shown in Appendix A. 
+
+In-place simplifications operators. A first optimization is to detect associative n-ary operators ( +, −, ∨, ∧) being used as a subexpression to the same operator. For example, when a Sum constraint uses another Sum as a subexpression, they can clearly be merged, without introducing an auxiliary variable. While it is uncommon for users to explicitly write such nested sum constraints, they are often the result of previous transformations. Additional care is taken to turn a sum where at least one of the terms is a multiplication of a constant and a variable, into a weighted sum, as well as to merge nestings of weighted and unweighted sums into a single weighted sum. 
+
+Example 4.12 (Nested Sum after decomposing Count). Consider the user-constraint 2 𝑎 + Count ({ 𝑥, 𝑦, 𝑧 }, 1) ≥ 3. If the solver does not support the Count constraint, it will be decomposed in-place by the previous transformation. This results in the expression 2 𝑎 + (( 𝑥 = 1) + ( 𝑦 = 1) + ( 𝑧 = 1)) ≥ 3. The simplification method at line 4 in Algorithm 1 will then merge the left-hand side of the sum constraint to a single weighted sum, instead of introducing an auxiliary variable for the decomposition of Count. Secondly, for Boolean operators ⇒ and ∨ and ∧, we also apply distributivity and rewriting rules when they occur together. Table 2 lists all such simplification rules implemented in our flattening transformation.      
+
+> Table 2. Reformulation rules for nested ⇒,∨and ∧operators to avoid unnecessary auxiliary variables
+
+Input Output 
+
+𝑎 ∨ ( 𝑏 ⇒ 𝑐 ) 𝑎 ∨ ¬ 𝑏 ∨ 𝑐 
+
+(𝑎 ∨ 𝑏 ) ⇒ 𝑐 (¬ 𝑐 ⇒ ¬ 𝑎 ) ∧ (¬ 𝑐 ⇒ ¬ 𝑏 )
+
+Input Output 
+
+(𝑎 ⇒ 𝑏 ) ⇒ 𝑐 (¬ 𝑐 ⇒ 𝑎 ) ∧ (¬ 𝑐 ⇒ ¬ 𝑏 )(𝑎 ∧ 𝑏 ) ⇒ 𝑐 ¬𝑎 ∨ ¬ 𝑏 ∨ 𝑐 
+
+Common Subexpression Elimination. In constraint programming models, it is common to use a particular subexpression in multiple places in the model. During the flattening process, we generate new auxiliary variables for each subexpression we encounter. To avoid making duplicate variables, we keep a cache of already introduced auxiliary variables in a “Common Subexpression Elimination Map”, which we refer to as csemap . This map keeps track of which (sub)expression is related to which auxiliary variable. Hence, whenever a new variable needs to   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 18 •Guns and Bleukx et al.
+
+Algorithm 1 Flatten( 𝐶 , csemap ) 
+
+> 1:
+
+Input: set of constraints 𝐶 , CSE map csemap  
+
+> 2:
+
+Output: set of flat constraints  
+
+> 3:
+
+𝐹 ← ∅ ; 𝐶 ′ ← ∅  
+
+> 4:
+
+for 𝑐 ∈ 𝐶 do  
+
+> 5:
+
+𝑐 ← SimplifyOperators (𝑐 ) 
+
+> 6:
+
+if 𝑐 is a ⟨FnfBoolExpr ⟩ then  
+
+> 7:
+
+𝐹 ← 𝐹 ∪ { 𝑐 } continue  
+
+> 8:
+
+if 𝑐 is expr 1 ◦ expr 2 with ◦ ∈ {⇔ , ⇒} then  
+
+> 9:
+
+expr ′
+
+> 1
+
+, 𝑑 1 ← GetOrMakeVar (expr 1, csemap ) 
+
+> 10:
+
+expr ′
+
+> 2
+
+, 𝑑 2 ← NormalizeBoolExpr (expr 2, csemap ) 
+
+> 11:
+
+𝐹 ← 𝐹 ∪ { expr ′ 
+
+> 1
+
+◦ expr ′ 
+
+> 2
+
+} 
+
+> 12:
+
+𝐶 ′ ← 𝐶 ′ ∪ 𝑑 1 ∪ 𝑑 2 
+
+> 13:
+
+else if 𝑐 is 𝑒𝑥𝑝𝑟 1 ◦ expr 2 with ◦ ∈ { =, ≠, <, >, ≤, ≥} then  
+
+> 14:
+
+expr ′
+
+> 1
+
+, 𝑑 1 ← GetOrMakeVar (expr 1, csemap ) 
+
+> 15:
+
+expr ′
+
+> 2
+
+, 𝑑 2 ← NormalizeNumExpr (expr 2, csemap ) 
+
+> 16:
+
+𝐹 ← 𝐹 ∪ { expr ′ 
+
+> 1
+
+◦ expr ′ 
+
+> 2
+
+} 
+
+> 17:
+
+𝐶 ′ ← 𝐶 ′ ∪ 𝑑 1 ∪ 𝑑 2 
+
+> 18:
+
+else if 𝑐 is ¬ expr then ⊲ expr can only be a global constraint after eliminating negation  
+
+> 19:
+
+expr ′, 𝑑 ← NormalizeBoolExpr (expr ′, csemap ) 
+
+> 20:
+
+𝐹 ← 𝐹 ∪ {¬ expr } 
+
+> 21:
+
+𝐶 ′ ← 𝐶 ′ ∪ 𝑑  
+
+> 22:
+
+else ⊲ other ⟨BoolExpr ⟩ 
+
+> 23:
+
+𝑐 ′, 𝑑 ← NormalizeBoolExpr (𝑐, csemap ,) 
+
+> 24:
+
+𝐹 ← 𝐹 ∪ { 𝑐 ′ } 
+
+> 25:
+
+𝐶 ′ ← 𝐶 ′ ∪ 𝑑  
+
+> 26:
+
+if 𝐶 ′ ≠ ∅ then 𝐹 ← 𝐹 ∪ Flatten (𝐶 ′, csemap ) 
+
+> 27:
+
+return 𝐹 
+
+be introduced, we first check whether a variable for the expression already exists in the map. To avoid creating separate auxiliary variables for two expressions that are syntactically different but semantically equivalent, we 
+
+normalize expressions into a normal form. The two simplest normalizations are that a comparison between a constant and an expression always has the constant on the right-hand side; and a multiplication between a constant and an expression has the constant as first argument. The in-place reformulation for associative operators is also performed as part of the normalization. We also implement normalization of expressions of the form ⟨Intvar ⟩ ⟨ Comparison ⟩ ⟨ Constant ⟩ . That is, all comparisons of this form are converted to either 
+
+⟨Intvar ⟩ = ⟨Constant ⟩ or ⟨Intvar ⟩ ≥ ⟨ Constant ⟩ . For example, when flattening (𝑥 ≠ 3) + 𝑦 ≤ 5, we introduce a new Boolean variable to represent 𝑥 = 3, say 𝐵 𝑥 =3, and reformulate the constraint to ¬𝐵 𝑥 =3 + 𝑦 ≤ 5. This approach also improves the linearization of categorical variables, as we will describe later in Section 4.5. Algorithm 2 shows the pseudocode for our lightweight implementation of common subexpression elimina-tion (Rendl et al. 2008). The resulting output is described in Grammar 3, and closely resembles the language most CP solvers accept in their API. That is, we allow linear expressions, clauses, global constraints, and global functions in a comparison. Note that each of these expressions can still occur in a reified context.   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •19
+
+Algorithm 2 GetOrMakeVar( expr , csemap ) 
+
+> 1:
+
+if expr is a variable then return expr , ∅ 
+
+> 2:
+
+expr ← Normalize (expr ) 
+
+> 3:
+
+if expr ∈ csemap then  
+
+> 4:
+
+return csemap .get (expr ), ∅ 
+
+> 5:
+
+if IsBoolExpr (expr ) then  
+
+> 6:
+
+𝑣 ← boolvar ()  
+
+> 7:
+
+𝑑 ≔ 𝑣 ⇔ expr  
+
+> 8:
+
+else  
+
+> 9:
+
+𝑣 ← intvar (lb (expr ), ub (expr ))  
+
+> 10:
+
+𝑑 ≔ 𝑣 = expr  
+
+> 11:
+
+csemap .put (expr , v) 
+
+> 12:
+
+return 𝑣, 𝑑 
+
+Grammar 3 Flat normal form 
+
+⟨Model ⟩ ::= [ ⟨FnfBoolExpr ⟩ (, ⟨FnfBoolExpr ⟩)* ], minimize= ⟨Int ⟩ + ⟨LinExpr ⟩⟨Lit ⟩ ::= ⟨BoolVar ⟩ | ¬ ⟨ BoolVar ⟩⟨FnfBoolExpr ⟩ ::= | ⟨PrimitiveExpr ⟩
+
+| ⟨Lit ⟩ ⇒ ⟨ PrimitiveExpr ⟩
+
+| ⟨Lit ⟩ ⇔ ⟨ PrimitiveExpr ⟩⟨PrimitiveExpr ⟩ ::= | False | ⟨Lit ⟩ (∨ ⟨ Lit ⟩)* | ⟨LinExpr ⟩ ⟨ Comparison ⟩ ⟨ Int ⟩
+
+| ⟨IntVar ⟩ ⟨ Comparison ⟩ ⟨ GlobalFunction ⟩ [ ⟨FnfArg ⟩ (, ⟨FnfArg ⟩)* ]
+
+| ⟨GlobalConstraint ⟩ [ ⟨FnfArg ⟩ (, ⟨FnfArg ⟩)* ]
+
+| ¬ ⟨ GlobalConstraint ⟩ [ ⟨FnfArg ⟩ (, ⟨FnfArg ⟩)* ]
+
+⟨LinExpr ⟩ ::= | ⟨Var ⟩ (+ ⟨Var ⟩)* | ⟨Int ⟩×⟨Var ⟩ (+ ⟨Int ⟩×⟨Var ⟩)* 
+
+⟨Var ⟩ ::= ⟨BoolVar ⟩ | ⟨IntVar ⟩⟨Comparison ⟩ ::= ≤ | < | ≥ | > | = | ≠
+
+⟨FnfArg ⟩ ::= ⟨Int ⟩ | ⟨Var ⟩ | [ ⟨FnfArg ⟩ (, ⟨FnfArg ⟩)* ]
+
+The following two sections describe two additional post-flattening transformations that solvers can choose to activate or not. 
+
+4.4.1 Normalize global functions. The flat normal form allows global functions to be used in arbitrary comparisons and in reified comparisons. E.g., the constraint 𝑏 ⇔ max (𝑥, 𝑦, 𝑧 ) ≤ 𝑝 is a valid flat constraint. However, most   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 20 •Guns and Bleukx et al.
+
+Grammar 4 Primitive expressions after normalizing global functions 
+
+⟨PrimitiveExpr ⟩ :: = | False | ⟨Lit ⟩ (∨ ⟨ Lit ⟩)* | ⟨LinExpr ⟩ ⟨ Comparison ⟩ ⟨ Int ⟩
+
+| ⟨IntVar ⟩ = ⟨GlobalFunction ⟩ [ ⟨FnfArg ⟩ (, ⟨FnfArg ⟩)* ]
+
+| ⟨GlobalConstraint ⟩ [ ⟨FnfArg ⟩ (, ⟨FnfArg ⟩)* ]
+
+| ¬ ⟨ GlobalConstraint ⟩ [ ⟨FnfArg ⟩ (, ⟨FnfArg ⟩)* ]
+
+Grammar 5 Flat Boolean expressions after normalizing reification. 
+
+⟨FnfBoolExpr ⟩ ::= | ⟨PrimitiveExpr ⟩
+
+| ⟨Lit ⟩ ⇒ ⟨ PrimitiveExpr ⟩
+
+| ⟨Lit ⟩ ⇔ ⟨ IntVar ⟩ ⟨ Comparison ⟩ ⟨ Int ⟩
+
+CP-solvers don’t directly support such constraints. Indeed, reified global constraints are rarely supported, and global functions are typically not supported in arbitrary comparisons. Instead, solvers implement a separate global constraint MaxEqal (( 𝑥, 𝑦, 𝑧 ), 𝑝 ), which forces 𝑝 to be the maximum value among variables 𝑥, 𝑦, 𝑧 . This transformation introduces a fresh auxiliary variable (again through GetOrMakeVar) for each global function that should be rewritten to a top-level equality constraint: 
+
+𝐹 (𝑋 ) ⟨ Comparison ⟩ 𝑌 ≡ (𝐹 (𝑋 ) = 𝑌 ′) ∧ ( 𝑌 ′ ⟨Comparison ⟩ 𝑌 )
+
+and 
+
+𝑏 ⇔ 𝐹 (𝑋 ) ⟨ Comparison ⟩ 𝑌 ≡ (𝐹 (𝑋 ) = 𝑌 ′) ∧ ( 𝑏 ⇔ 𝑌 ′ ⟨Comparison ⟩ 𝑌 )
+
+This latter reformulation was first proposed by Beldiceanu, Carlsson, Flener, et al. (2013) as a reformulation for reified total function constraints. Note that some non-equality comparisons are supported by CP-solvers for certain global functions. For example, the constraint NValue (𝑋 ) ≤ 𝑐 maps to the global constraint AtMostNValue (𝑋, 𝑐 ),which is supported by several CP-solvers. Hence, the implementation for normalizing global functions is a separate modular transformation that accepts a list of global functions for which only equality is supported. Grammar 4 describes the resulting set of allowed constraints in case all global functions only support equality. 
+
+4.4.2 Reification to two implications. In this second post-flatten transformation, we transform all reification constraints into a conjunction of two half-reification constraints for solvers that only support the latter. That is, for a reified constraint ⟨Lit ⟩ ⇔ ⟨ PrimitiveExpr ⟩ , we introduce two constraints ⟨Lit ⟩ ⇒ ⟨ PrimitiveExpr ⟩ and 
+
+¬ ⟨ Lit ⟩ ⇒ ¬ ⟨ PrimitiveExpr ⟩ . Note that the negations in the second half-reification are immediately passed to the eliminate negation transformation described in Section 4.2 to ensure everything remains in flat normal form. Additionally, as unsupported nested global constraints have already been decomposed before, introducing the negation of a supported nested global constraint at this stage in the transformation stack does not cause any issues, as the downstream solver supports nested (and hence also negated) global constraints (e.g., Choco (Prud’homme et al. 2016)). Grammar 5 describes the set of constraints allowed after this normalization step. For ILP, PB, and SAT solvers, we pass a flag to this transformation that keeps fully reified comparisons between an integer variable and a constant. More precisely, we allow ⟨Lit ⟩ ⇔ ⟨Intvar ⟩ ⟨ Comparison ⟩ ⟨ Int ⟩ constraints to remain. This allows for detecting integer variable encodings, which will benefit the “linearize” transformation described in the next section.   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •21
+
+4.5 Linearization 
+
+We now describe how to further transform a set of flat normal form expressions into a format suitable for ILP-solvers. The output of this transformation phase will also serve as input for further processing required for PB and SAT solvers, which we describe in Section 4.6 We will assume any global constraints not supported by the ILP solver at hand are already decomposed in previous stages, that all full-reification constraints (except for ⟨Var ⟩ ⟨ Comparison ⟩ ⟨ Constant ⟩ ) have been split up into half-reifications, and that supported global functions are only used in compatible comparisons. E.g., ILP solvers like SCIP (Achterberg et al. 2008) and Gurobi (Optimization 2026) allow to post a Max-equality constraint and a limited set of other global operators and constraints. Disjunctions are trivially linearized by transforming to greater than 1 comparison , e.g., 𝑥 ∨ 𝑦 ∨ 𝑧 ≡ 𝑥 + 𝑦 + 𝑧 ≥ 1. Strictly less-than and greater-than comparisons are eliminated by offsetting the right-hand side of the integer comparison with +1 and -1, respectively. This leaves us with disequality constraints between a linear expression and a constant, half-reified linear constraints, and fully-reified equals and not-equals comparisons between a variable and a constant. In the following two subsections we discuss how to linearlize these remaining constraints. 
+
+4.5.1 Linearization of half-reified linear inequality constraints. We first consider implication constraints of the form ⟨Lit ⟩ ⇒ ⟨ LinExpr ⟩ ≥ ⟨ Int ⟩ . As a generalization for any linear expression, we will write such a constraint as 𝑏 ⇒ Í𝑖 =1..𝑛 𝑤 𝑖 𝑥 𝑖 ≥ 𝑣 in this section. Thus, we assume that the right-hand side of any half-reification in the output of the flat normal form in Grammar 3 is already linearized by rewriting unsupported comparisons or by rewriting disjunctions to a linear constraint, and we just focus on linearizing the half-reification itself. To linearize this constraint, we rely on a big-M reformulation (Dantzig 1963). The main idea is to convert the expression above to 𝑀 · ¬ 𝑏 + Í𝑖 =1..𝑛 𝑤 𝑖 𝑥 𝑖 ≥ 𝑣 . Here, 𝑀 is a large integer constant that ensures the inequality is satisfied when 𝑏 is false , regardless of the values assigned to decision variables 𝑥 𝑖 . When 𝑏 is true , the first term of the sum on the left-hand side of the inequality is 0, and the right-hand side of the half-reification is asserted to hold. 
+
+4.5.2 Linearization of disequality. Constraints of the form 𝑥 ≠ 𝑦 are reformulated using two half-reification constraints. That is, we linearize any disequality constraint by introducing an auxiliary Boolean variable 𝑏 , and introduce the constraints 𝑏 ⇒ 𝑥 − 𝑦 ≤ − 1 and ¬𝑏 ⇒ 𝑥 − 𝑦 ≥ 1. These constraints are then linearized using a big-M reformulation as described above. This results in two big-M constraints, one for each side of the disequality. 
+
+4.5.3 Encoding categorical integer variables. During flattening, we introduce an auxiliary Boolean variable for any comparison that is used as a subexpression in a constraint. E.g., after decomposing, Count (( 𝑥, 𝑦, 𝑧 ), 3) = 1to (𝑥 = 3) + ( 𝑦 = 3) + ( 𝑧 = 3) = 1, it is flattened to {𝑎 1 + 𝑎 2 + 𝑎 3 = 1, 𝑎 1 ⇔ ( 𝑥 = 3), 𝑎 2 ⇔ ( 𝑦 = 3), 𝑎 3 ⇔ ( 𝑧 = 3)} .
+
+Grammar 6 Linear normal form 
+
+⟨Model ⟩ ::= [ ⟨LinCons ⟩ (, ⟨LinCons ⟩)* ], minimize= ⟨Int ⟩ + ⟨LinExpr ⟩⟨LinCons ⟩ ::= | False | ⟨LinExpr ⟩ ⟨ Comparison ⟩ ⟨ Int ⟩⟨LinExpr ⟩ ::= | ⟨Var ⟩ (+ ⟨Var ⟩)* | ⟨Int ⟩×⟨Var ⟩ (+ ⟨Int ⟩×⟨Var ⟩)* 
+
+⟨Var ⟩ ::= ⟨BoolVar ⟩ | ⟨IntVar ⟩⟨Comparison ⟩ ::= = | ≤ | ≥  
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 22 •Guns and Bleukx et al.
+
+Such structures are common when integer variables are used as categorical variables, and each integer value represents an item of an enumerated type (Stuckey and Tack 2022). Naively linearizing each of the reification constraints separately would introduce 4 big-M constraints for each reification. Indeed, let’s consider the first constraint 𝑎 1 ⇔ ( 𝑥 = 3). This requires two big-M constraints to model the half-reifications 𝑎 1 ⇒ 𝑥 ≤ 3 and 
+
+𝑎 1 ⇒ 𝑥 ≥ 3, and another two big-M constraints, and an auxiliary variable to linearize ¬𝑎 1 ⇒ 𝑥 ≠ 3: 
+
+𝑎 1 ⇔ ( 𝑥 = 3) ≡  𝑎 1 ⇒ ( 𝑥 ≤ 3) ∧  𝑎 1 ⇒ ( 𝑥 ≥ 3) ∧  ¬𝑎 1 ⇒ ( 𝑥 ≠ 3)
+
+and 
+
+𝑎 1 ⇒ ( 𝑥 ≤ 3) ≡ 𝑀 1¬𝑎 1 + 𝑥 ≤ 3
+
+𝑎 1 ⇒ ( 𝑥 ≥ 3) ≡ 𝑀 2¬𝑎 1 + 𝑥 ≥ 3
+
+¬𝑎 1 ⇒ ( 𝑥 ≠ 3) ≡  ¬𝑎 1 ⇒ ( 𝑏 ⇒ 𝑥 ≤ 2) ∧  ¬𝑎 1 ⇒ (¬ 𝑏 ⇒ 𝑥 ≥ 4)
+
+≡  ¬𝑎 1 ⇒ ( 𝑀 3¬𝑏 + 𝑥 ≤ 2) ∧  ¬𝑎 1 ⇒ ( 𝑀 4𝑏 + 𝑥 ≥ 4)
+
+≡  𝑀 5𝑎 1 + 𝑀 3¬𝑏 + 𝑥 ≤ 2 ∧  𝑀 6𝑎 1 + 𝑀 4𝑏 + 𝑥 ≥ 4
+
+As these Big-M constraints can hurt performance in ILP solvers due to their weak linear relaxation, this is to be avoided. Instead, we wish to detect and use the direct encoding for integer variables whenever a categorical integer variable is used. That is, instead of linearizing the expression 𝑎 1 ⇔ ( 𝑥 = 3), we encode the variable 𝑥 as 1 · J𝑥 = 1K + 2 · J𝑥 = 2K + 3 · 𝑎 1 + 4 · J𝑥 = 4K + 5 · J𝑥 = 5K = 𝑥 . Notice that we do not introduce another variable 
+
+J𝑥 = 3K, but simply reuse the already introduced variable 𝑎 1 to represent that 𝑥 is equal to 3. In practice, this involves iterating over the csemap and extracting all auxiliary Boolean variables that map to an expression of the form ⟨IntVar ⟩ = ⟨Int ⟩ . We allow the user to set the minimum number of values before the direct encoding is created; by default, this is set to 2. We implement a similar optimization for integer variables that occur frequently in a ≤ comparison to a constant. That is, given enough ⟨IntVar ⟩ ≥ ⟨Int ⟩ expressions for the same integer variable in the csemap , we encode the integer variable using its order encoding (see Section 4.6). This again avoids linearizing reified inequality constraints with Big-M constraints when such inequalities are used in logical constraints. An example of such a case is when using the time-decomposition of the Cumulative constraint (Feydy, Stuckey, et al. 2009). Currently, we eagerly select the direct encoding when for a single integer variable both ⟨IntVar ⟩ = ⟨Int ⟩
+
+and ⟨IntVar ⟩ ≥ ⟨ Int ⟩ expressions are present. Future optimization could include encoding the integer variable twice and channeling the encodings to achieve better solving times (Bierlee, Gange, et al. 2022). Note that most ILP solvers do not support negated Boolean variables (i.e., negative literals). Hence, as an additional transformation, we replace any literals ¬𝑏 with (1 − 𝑏 ). This is trivial to do for linear constraints, as weighted terms of a sum can simply be multiplied by −1, and constants can be subtracted from the right-hand side of the comparisons. E.g., 3 (¬ 𝑥 ) + 4𝑦 ≥ 2 can be rewritten to 3 (1 − 𝑥 ) + 4𝑦 ≥ 2 and normalized to −3𝑥 + 4𝑦 ≥ − 1. 
+
+4.6 Encoding All Integer Variables as Boolean Literals 
+
+To transform constraints in our language for (Pseudo-)Boolean solvers, all integer variables must be encoded into Boolean literals. For this, we reuse most of the modular transformation stack as done for ILP solvers, without the final conversion of negative to positive literals. We currently support the most common encodings: direct encod-ing (Walsh 2000), order encoding (Tamura et al. 2009), and log-encoding (also known as binary encoding) (Ernst et al. 1997). These are all implemented through a common interface with three main functionalities: (1) Encoding a term of the form ⟨Int ⟩ × ⟨ Var ⟩ ,  
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •23
+
+(2) encoding a comparison of the form ⟨Var ⟩ ⟨ Comparison ⟩ ⟨ Int ⟩ and (3) formulating the consistency constraints to ensure the encoding is valid. 
+
+Direct encoding. The direct encoding of integer variables introduces a Boolean literal for each of the values in the integer variable domain. To encode a term 𝑘 × 𝑥 , we simply return the weighted sum 𝑘 × Í𝑖 ∈𝐷 𝑥 (𝑖 × J𝑥 = 𝑖 K)
+
+Encoding a = or ≠ constraint is as trivial as returning the matching Boolean literal, to encode a ≤ or ≥ constraint, we construct a conjunction of negative literals of the excluded part of the domain. To ensure the encoding is consistent, we add the constraint Í𝑖 ∈𝐷 𝑥 J𝑥 = 𝑖 K = 1. This results in a total of |𝐷 𝑥 | literals. 
+
+Order encoding. The order (or thermometer) encoding of an integer variable uses a Boolean “inequality” variable for each value in the domain. That is, we introduce a literal J𝑥 ≥ 𝑖 K to represent that 𝑥 is greater than or equal to the value 𝑖 . Similar to the direct encoding, encoding a weighted term involves simply weighting each literal in the encoding: 𝑘 × ( lb (𝑥 ) + Í𝑖 ∈ [ lb (𝑥 )+ 1.. ub (𝑥 ) ] J𝑥 ≥ 𝑖 K). The encodings for ≤ and ≥ constraints are now a single literal, while = and ≠ constraints are encoded by first rewriting them to combinations of ≤ and ≥ constraints. To ensure consistency of the encoding, we require J𝑥 ≥ 𝑖 K ⇒ J𝑥 ≥ 𝑖 − 1K for all values 𝑖 in 𝐷 𝑥 . This results in a total of |𝐷 𝑥 | − 1 literals. 
+
+Log encoding. The log encoding for integer variables is based on the binary representation of the value assigned to the integer. That is, we use a list of 𝑚 Boolean literals, where Jbit (𝑥, 𝑖 )K is set to true if the offset binary representation of the value of 𝑥 is set to true (Soh et al. 2015). To encode a term, we construct the sum Í0..𝑚 −1 (𝑘 × 2𝑖 × Jbit (𝑥, 𝑖 )K) + lb (𝑥 ). Comparisons are encoded as-is, by using the above sum as the left-hand side in place of the integer variable. For consistency, we ensure the encoding is always smaller than or equal to the upper bound of the integer variable. This results in ⌈log 2 (| 𝐷 𝑥 |)⌉ literals to encode 𝑥 .The output of the encoding step is a set of pseudo-Boolean constraints. Our modular encoding module allows for future improvements to this encoding step, for example, to use multiple encodings of the same integer variable depending on which types of constraints it is used in (Bierlee, Gange, et al. 2022; Soh et al. 2015). 
+
+4.7 To Conjunctive Normal Form (CNF) 
+
+For SAT solvers, which require CNF input, we reuse the modular transformations as for Pseudo-Boolean solvers, except that in the linearisation transformation we indicate that half-reified constraints are supported and hence need not be encoded with Big-M constraints. After the transformation to Pseudo-Boolean, what is left to do is to rewrite the implications as disjunctions and to formulate the weighted linear constraints into CNF. This step has been well studied (Aavani 2011; Bierlee, Dekker, and Stuckey 2025; Marques-Silva and Lynce 2007; Prestwich 2021), and in our framework, we use external libraries that implement this, such as PyPBlib (Philipp and Steinke 2015) and Pindakaas (Bierlee and Dekker n.d.) The to-CNF transformation allows indicating that unweighted sums (cardinality constraints) are supported and hence need not be encoded for SAT solvers that support this natively, such as Minicard (Liffiton and Maglalang 2012). 
+
+5 Experimental results 
+
+We use our implementation of the above transformations to investigate the following experimental questions. 
+
+EQ1. How does the model for a finite domain constraint model change throughout the transformation stack? 
+
+EQ2. What is the impact of the transformation optimizations on solving time for ILP, PB and SAT solvers? 
+
+EQ2.1. What is the impact of using ILP-friendly decompositions for global constraints? 
+
+EQ2.2. What is the effect of encoding categorical integer variables with a direct Boolean encoding? 
+
+EQ2.3. What is the impact of using positive-only decompositions for global constraints?   
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 24 •Guns and Bleukx et al.
+
+We consider all 250 instances of the COP track of the 2024 edition of the XCSP3 competition. These optimization models consider a wide variety of constraints, including global constraints and functions. The instances are parsed into CPMpy v1.0.0 using the built-in datasets and IO tools (Sergeys et al. 2026). To answer the second experimental question, we run these benchmark instances on three different solvers integrated in the framework: MIP solver Gurobi v.13.0.2 (Optimization 2026), Pseudo-Boolean solver Exact v2.3.0 (Devriendt 2023), and MaxSAT solver RC2 via PySAT v1.9.dev5 (Ignatiev et al. 2018). All experiments were run on a single thread of an Intel(R) Xeon(R) Silver 4514Y and with a memory limit of 8GB. 
+
+5.1 EQ1: effect of transformation stack on constraint model 
+
+In this first experimental question, we transform each of the instances in the benchmark set using the entire transformation stack as described in Section 4. Figure 5 shows the distribution of the number of constraints and variables after each step in the transformation stack. Note that both safening of partial functions and elimination of negation do not introduce any new constraints or variables into the model. Indeed, for the XCSP3 instances, all partial functions are at the top-level of the constraint model, and hence do not need to be safened before they are decomposed. For eliminating negation, we identify only one case where additional constraints can be introduced: namely, applying DeMorgan’s law of rewriting negated disjunctions. For the XCSP3 instances we considered, this rule was never applied, and hence no new constraints or variables were introduced by the transformation. As expected, decomposing global constraints introduced a large number of additional constraints and variables into the model. While in general we try to avoid introducing functionally defined variables as discussed in Section 4.3, for some global constraints and functions we are required to use auxiliary variables. During flattening, we introduce an auxiliary variable for each nested expression in the model. Hence, we notice a significant increase in both the number of variables and the number of constraints in the model in Figure 5. Clearly, a large number of these constraints are reification constraints for when Boolean expressions were used as subexpressions (e.g., as part of a decomposition). This is also confirmed by the resulting number of constraints after applying our detection algorithm for categorical variables (see Section 4.5.3). Indeed, after encoding all categorical variables, all constraints of the form ⟨Lit ⟩ ⇔ ⟨IntVar ⟩ ⟨ Comparison ⟩ ⟨ Int ⟩ are eliminated, and we instead post a single constraint that channels the integer variable to a Boolean encoding. Interestingly, as shown in Table 3, the number of Boolean variables increased by only a minor amount after constructing the Boolean encoding. This means that almost all values in the integer variable’s domain are already used in a variable-equals-value subexpression elsewhere in the model. Still, the average number of constraints is reduced by 63% for the models we tested. Note that the number of integer variables also slightly decreases after this transformation. Indeed, when interfacing to a purely Boolean solver, we do not post the channeling constraint between the Boolean encoding and the integer variable at this stage of the transformation stack. Hence, if an integer variable only occurs in reified comparisons with a constant, it will be removed from the model after encoding the categorical variables with a direct encoding. During linearization of the constraints, no new integer variables are introduced, as all linear constraints can easily be normalized by altering the coefficients of linear terms and/or by swapping comparisons. All constraints and Boolean variables introduced by this transformation are due to introducing big-M constraints for linearizing half-reified linear inequalities and encoding disequality constraints, as discussed in Section 4.5. In the final step of the transformation waterfall, we encode all integer variables with an appropriate Boolean encoding. Interestingly, both the number of constraints and Boolean variables increase only moderately compared to the linear formulation of the constraint model. Overall, we conclude that reformulating a high-level constraint model to a low-level formulation such as Pseudo-Boolean constraints can significantly increase the number of constraints and auxiliary variables, and that 
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD.
+
+Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy • 25 
+
+Table 3. Average increase in number of top-level constraints and variables compared to the input and previous transformation stage. Top-level conjunctions are split into their individual arguments and counted as individual constraints. 
+
+Number of constraints Number of integer variables Number of Boolean variables Compared to Input Previous Input Previous Input Previous Input ×1.0 ×1.0 ×1.0 ×1.0 ×1.0 ×1.0No partial functions ×1.0 ×1.0 ×1.0 ×1.0 ×1.0 ×1.0Eliminate negation ×1.0 ×1.0 ×1.0 ×1.0 ×1.0 ×1.0Decompose global ×3.9 ×3.9 ×1.4 ×1.4 ×4.9 ×4.9Flatten ×27 .5 ×7.0 ×1.8 ×1.3 ×53 .7 ×11 .1Detect categorical ×10 .3 ×0.4 ×1.8 ×1.0 ×54 .5 ×1.0Linearize ×31 .1 ×3.0 ×1.8 ×1.0 ×57 .2 ×1.1Integer to Boolean ×32 .8 ×1.1 ×0.0 ×0.0 ×85 .2 ×1.5After transformation Input No partial functions Eliminate negation Decompose global Flatten Detect categorical Linearize Integer to Boolean 10 1 10 3 10 5     
+
+> max nb of toplevel constraints 050 100 150 200 250 Nb of instances Nb of toplevel constraints 10 010 210 4
+> max nb of integer variables Nb of integer variables 10 010 210 410 6
+> max nb of boolean variables Nb of Boolean variables
+
+Fig. 5. Cumulative distribution plots on the number of constraints (left), number of integer variables (center), and number of Boolean variables (right) after each stage in the transformation waterfall when interfacing to a pseudo-Boolean solver. 
+
+detecting categorical variables as part of the linearization transformation is essential to avoid an explosion in the number of constraints and Boolean variables during the final encoding step. 
+
+5.2 EQ2: impact of transformation optimizations on solve time for ILP, PB and SAT Solvers 
+
+In this second experimental question, we evaluate the impact of the transformation optimizations described in Section 4 on the solving time of lower-level solvers. Figure 6 shows the runtime until proven optimal for the constraint optimization models in our benchmark. The time limit was set to 1h. We now discuss the effects of different optimizations for each solver. 
+
+Integer Linear Programming solvers. We first focus on the results for ILP solvers on the left-side of Figure 6. Here we generally notice a positive effect for any of the optimizations we implemented. Indeed, compared to the baseline (blue), using specialized positive decompositions improves the solving performance, as well as using specialized ILP-friendly decompositions that are known to have a good linear relaxation. Interestingly, this is even the case without automatically encoding the categorical variables using their direct encoding (Section 4.5.3). Note that Gurobi supports implication constraints in their API and does the big-M encoding of these constraints internally. Therefore, it is likely that Gurobi encodes some of the categorical variables itself when the solver detects it. Still, combining our own direct encoding for categorical variables, in combination with the ILP-friendly decompositions 
+
+Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 26 • Guns and Bleukx et al. Variant baseline categorical ilp-friendly positive decomp categorical + ilp-friendly all 0 1000 2000 3000 runtime (seconds) 020 40 60 80 100 Nb of instances solved Gurobi 0 1000 2000 3000 runtime (seconds) Exact    
+
+> lp parameter all (lp=0) all (lp=0.1)
+> 01000 2000 3000 runtime (seconds) RC2 (via PySAT)
+
+Fig. 6. Runtime to proven optimal solution when enabling different optimizations in the transformation pipeline. 
+
+result in the most instances solved to optimality overall. Adding the specialized positive decompositions on top have little to no impact, as most ILP-friendly decompositions work in both positive and nested contexts. 
+
+Pseudo-Boolean solvers. Compared to the results for ILP solvers, the optimizations implemented in our pipeline have a smaller impact on the result for PB solvers. Indeed, even the combination of all optimizations perform only marginally better compared to the baseline. Note that Exact also supports to use an LP-solver during the solving process, which is used to solve the linear relaxation of the constraint model to provide (strong) bounds. When we allow the solver to spend 10% of the solving time in the LP-solver (lp = 0.1), the solving time is slightly improved when using all optimizations in our pipeline. 
+
+Max-SAT solvers. Finally, we discuss the results for Max-SAT solvers as shown on the right-hand side of Figure 6. A surprising result here is the negative impact of using ILP-friendly decompositions for global constraints. Indeed, especially in the absence of eagerly encoding categorical variables using a direct encoding, the solver performance degrades compared to the baseline CP-style decompositions. This is likely due to the large domains that can be induced by some ILP-friendly decompositions. For example, our pipeline rewrites constraint [10 , 20 , 30 ] [ 𝑖 ] ≥ 𝑟 
+
+to {10 J𝑖 = 1K + 20 J𝑖 = 2K + 30 J𝑖 = 3K = 𝑟 ′, 𝑟 ′ ≥ 𝑟 }, the auxiliary variable 𝑟 ′ will have domain [0..60], and the direct encoding will make a Boolean literal for each of these domain values. Naturally, while the consistency constraints will exclude all except 10, 20 and 30 from its domain, the Boolean literals are still posted to the solver. Further optimizations to the transformation pipeline could include automatically detecting such cases and already shrinking the domain of 𝑟 ′ during the reformulation process. Overall, the current best combination is to use the eager encoding for categorical variables in combination with standard CP-style decompositions. 
+
+6 Conclusion 
+
+We presented a modular end-to-end transformation pipeline for finite-domain constraint models. It can target CP, SMT, ILP, PB, MaxSAT, and SAT solvers by incrementally rewriting high-level Boolean and integer expressions into the subset of the language supported by each solver. The pipeline is organized as a waterfall of reusable transformations: eliminating partial functions, eliminating negation, decomposing unsupported global constraints and functions, flattening nested expressions, linearizing constraints, encoding integer variables as Boolean literals, and translating pseudo-Boolean constraints to CNF as needed. The main challenges involved correctly preserving the semantics of negated and nested expressions, while avoiding unnecessary creation of auxiliary variables. In particular, partial functions must be safened before later transformations change their Boolean context and decompositions must remain valid when global constraints occur in nested contexts. To keep the reformulated models compact, we delayed the explicit introduction of 
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD.
+
+Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy • 27 
+
+auxiliary variables where possible, used functional decompositions for global functions and constraints, and applied common subexpression elimination and normalization throughout. We experimentally evaluated the transformation pipeline on 250 optimization instances from the XCSP3 competition. The results show that constraint models change substantially throughout the transformation stack, especially during decomposition, flattening, and linearization. We also observe that transformation optimizations are important for solving performance: ILP-friendly decompositions, direct encodings for categorical integer variables, and positive-context decompositions can significantly reduce model size and improve solving behavior for ILP, PB, and SAT-based backends. Future work can extend the input language, for example to floating-point decision variables. It can also improve individual transformations, such as normalization, half-reification-aware decompositions, and CSE, or investigate different hierarchical transformation architectures altogether. As the experimental results show, the encoding to (Max)SAT does not necessarily benefit from the same transformations as ILP/PB solvers. Hence, a more direct path from integer expressions, like PicatSAT (Zhou et al. 2015) implements, could be of benefit. Finally, we notice a trend that more and more solvers support limited forms of nested expressions, for example nested affine transformations of integers for OR-Tools CP-SAT (Perron and Furnon 2022), nested integer expressions for Gurobi 13 (Optimization 2026), and nested Boolean expressions for PySDD (Darwiche et al. 2017) and Paramita (Alòs et al. 2026). This encourages further reducing the importance and work of the flatten step, which has been a central component of previous CP modeling languages. 
+
+Acknowledgments 
+
+This research is partly funded by the European Research Council (ERC) under the EU Horizon 2020 research and innovation programme (Grant No 101002802, CHAT-Opt). Additionally, this research received funding from the framework of H.F.R.I call “4th Call for H.F.R.I.’s Research Projects to Support Postdoctoral Researchers” (H.F.R.I. Project Number: 28553). 
+
+References 
+
+A. Aavani. 2011. “Translating Pseudo-Boolean Constraints into CNF.” In: SAT (Lecture Notes in Computer Science). Vol. 6695. Springer, 357–359. T. Achterberg, T. Berthold, T. Koch, and K. Wolter. 2008. “Constraint Integer Programming: A New Approach to Integrate CP and MIP.” In: 
+
+Integration of AI and OR Techniques in Constraint Programming for Combinatorial Optimization Problems . Ed. by L. Perron and M. A. Trick. Springer Berlin Heidelberg, Berlin, Heidelberg, 6–20. isbn: 978-3-540-68155-7. doi:https://doi.org/10.1007/978-3-540-68155-7_4. R. K. Ahuja, T. L. Magnanti, and J. B. Orlin. 1993. Network Flows - Theory, Algorithms and Applications . Prentice Hall. Ö. Akgün, A. M. Frisch, I. P. Gent, C. Jefferson, I. Miguel, and P. Nightingale. 2022. “Conjure: Automatic Generation of Constraint Models from Problem Specifications.” Artificial Intelligence , 310, 103751. J. Alòs, C. Ansótegui, J. L. Esteban, and E. Torres. 2026. “Paramita: An Extensible Framework for SATisfiability Solving.” In: ModRef 2026 .G. Audemard, C. Lecoutre, and E. Lonca. 2024. “Proceedings of the 2024 XCSP3 Competition.” CoRR , abs/2412.00117. G. Audemard, C. Lecoutre, and E. Lonca. 2025. “Proceedings of the 2025 XCSP3 Competition.” CoRR , abs/2511.06918. C. Barrett, A. Stump, C. Tinelli, et al.. 2010. “The SMT-LIB Standard: Version 2.0.” In: Proceedings of the 8th International Workshop on Satisfiability Modulo Theories (Edinburgh, UK) . Vol. 13, 14. C. W. Barrett, R. Sebastiani, S. A. Seshia, and C. Tinelli. 2021. “Satisfiability Modulo Theories.” In: Handbook of Satisfiability . Frontiers in Artificial Intelligence and Applications. Vol. 336. IOS Press, 1267–1329. N. Beldiceanu, M. Carlsson, P. Flener, and J. Pearson. 2012. On the Reification of Global Constraints . Technical report T2012:02. N. Beldiceanu, M. Carlsson, P. Flener, and J. Pearson. 2013. “On the Reification of Global Constraints.” Constraints An Int. J. , 18, 1, 1–6. N. Beldiceanu, M. Carlsson, and J.-X. Rampon. 2012. Global Constraint Catalog, (Revision a) . (2012). G. Belov, P. J. Stuckey, G. Tack, and M. Wallace. 2016. “Improved Linearization of Constraint Programming Models.” In: CP (Lecture Notes in Computer Science). Vol. 9892. Springer, 49–65. C. Bessiere, G. Katsirelos, N. Narodytska, C.-G. Quimper, and T. Walsh. 2010. “Decomposition of the NValue Constraint.” In: International Conference on Principles and Practice of Constraint Programming . Springer, 114–128. Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 28 • Guns and Bleukx et al. 
+
+C. Bessiere and P. Van Hentenryck. 2003. “To Be or Not to Be... a Global Constraint.” In: International Conference on Principles and Practice of Constraint Programming . Springer, 789–794. A. Biere, M. Heule, H. van Maaren, and T. Walsh, (Eds.) . 2021. Handbook of Satisfiability - Second Edition . Frontiers in Artificial Intelligence and Applications. Vol. 336. IOS Press. [SW] H. Bierlee and J. J. Dekker, Pindakaas . doi:10.5281/zenodo.10851855, url: https://doi.org/10.5281/zenodo.10851855. H. Bierlee, J. J. Dekker, and P. J. Stuckey. 2025. “Revisiting Pseudo-Boolean Encodings from an Integer Perspective.” In: CPAIOR (1) (Lecture Notes in Computer Science). Vol. 15762. Springer, 113–133. H. Bierlee, G. Gange, G. Tack, J. J. Dekker, and P. J. Stuckey. 2022. “Coupling Different Integer Encodings for SAT.” In: CPAIOR (Lecture Notes in Computer Science). Springer, 44–63. I. Bleukx, R. Boumazouza, T. Guns, N. Laage, and G. Povéda. 2025. “Modeling and Explaining an Industrial Workforce Allocation and Scheduling Problem.” In: CP (LIPIcs). Vol. 340. Schloss Dagstuhl - Leibniz-Zentrum für Informatik, 6:1–6:24. I. Bleukx, H. Verhaeghe, D. Tsouros, and T. Guns. 2026. “Efficient Reformulations of Half-Reified Global Constraints Using Auxiliary Variables.” 
+
+J. Artif. Intell. Res. to appear. F. Clautiaux, A. Jouglet, J. Carlier, and A. Moukrim. 2008. “A New Constraint Programming Approach for the Orthogonal Packing Problem.” 
+
+Comput. Oper. Res. , 35, 3, 944–959. F. Contaldo, P. Trentin, and R. Sebastiani. 2020. “From MiniZinc to Optimization Modulo Theories, and Back.” In: CPAIOR (Lecture Notes in Computer Science). Vol. 12296. Springer, 148–166. G. B. Dantzig. 1963. Linear Programming and Extensions . eng. Princeton university press, Princeton (N.J.) A. Darwiche, P. Marquis, D. Suciu, and S. Szeider. 2017. “Recent Trends in Knowledge Compilation (Dagstuhl Seminar 17381).” Dagstuhl Reports , 7, 9, 62–85. B. De Backer, V. Furnon, P. Shaw, P. Kilby, and P. Prosser. 2000. “Solving Vehicle Routing Problems Using Constraint Programming and Metaheuristics.” J. Heuristics , 6, 4, 501–523. A. De Morgan. 1864. “"On the Syllogism", No. III., "and on Logic in General".” eng. Transactions of the Cambridge Philosophical Society , 10, 1, 173–. J. Devriendt. 2023. Exact Solver . (2023). https://gitlab.com/JoD/exact. M. D. Ernst, T. D. Millstein, and D. S. Weld. 1997. “Automatic SAT-Compilation of Planning Problems.” In: IJCAI . Morgan Kaufmann, 1169–1177. F. Fages and S. Soliman. 2012. “Reifying Global Constraints.” Ph.D. Dissertation. INRIA. T. Feydy, Z. Somogyi, and P. J. Stuckey. 2011. “Half Reification and Flattening.” In: CP (Lecture Notes in Computer Science). Vol. 6876. Springer, 286–301. T. Feydy, P. J. Stuckey, and M. Wallace. 2009. “Why Cumulative Decomposition Is Not as Bad as It Sounds.” In: Principles and Practice of Constraint Programming - CP 2009, 15th International Conference, CP 2009, Lisbon, Portugal, September 20-24, 2009, Proceedings (Lecture Notes in Computer Science). Ed. by I. P. Gent. Vol. 5732. Springer, 746–761. doi:10.1007/978-3-642-04244-7_58. M. Foschini, E. Gamba, L. Kletzander, and T. Guns. 2026. “From CP Modeling to Preference Elicitation in HMLV Assembly Problems.” In: CP 
+
+(LIPIcs). to appear. Schloss Dagstuhl - Leibniz-Zentrum für Informatik. A. M. Frisch and P. J. Stuckey. 2009. “The Proper Treatment of Undefinedness in Constraint Languages.” In: International Conference on Principles and Practice of Constraint Programming . Springer, 367–382. M. P. J. Fromherz. 2001. “Constraint-Based Scheduling.” In: ACC . IEEE, 3231–3244. W. E. Hart, J. Watson, and D. L. Woodruff. 2011. “Pyomo: Modeling and Solving Mathematical Programs in Python.” Math. Program. Comput. ,3, 3, 219–260. A. Ignatiev, A. Morgado, and J. Marques-Silva. 2018. “PySAT: A Python Toolkit for Prototyping with SAT Oracles.” In: SAT (Lecture Notes in Computer Science). Vol. 10929. Springer, 428–437. C. Jefferson, N. C. A. Moore, P. Nightingale, and K. E. Petrie. 2010. “Implementing Logical Connectives in Constraint Programming.” Artif. Intell. , 174, 16-17, 1407–1429. C. M. Li and F. Manyà. 2021. “MaxSAT, Hard and Soft Constraints.” In: Handbook of Satisfiability . Frontiers in Artificial Intelligence and Applications. Vol. 336. IOS Press, 903–927. M. H. Liffiton and J. C. Maglalang. 2012. “A Cardinality Solver: More Expressive Constraints for Free - (Poster Presentation).” In: SAT (Lecture Notes in Computer Science). Vol. 7317. Springer, 485–486. J. Marques-Silva and I. Lynce. 2007. “Towards Robust CNF Encodings of Cardinality Constraints.” In: CP (Lecture Notes in Computer Science). Vol. 4741. Springer, 483–497. C. E. Miller, A. W. Tucker, and R. A. Zemlin. 1960. “Integer Programming Formulation of Traveling Salesman Problems.” J. ACM , 7, 4, 326–329. N. Nethercote, P. J. Stuckey, R. Becket, S. Brand, G. J. Duck, and G. Tack. 2007. “MiniZinc: Towards a Standard CP Modelling Language.” In: 
+
+International Conference on Principles and Practice of Constraint Programming . Springer, 529–543. P. Nightingale. 2022. “Savile Row Manual.” CoRR , abs/2201.03472. G. Optimization. 2026. Gurobi Optimizer Reference Manual . (2026). https://www.gurobi.com. [SW] L. Perron and V. Furnon, OR-Tools version v9.6, Nov. 2022. Google. url: https://developers.google.com/optimization/. Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy • 29 
+
+T. Philipp and P. Steinke. 2015. “PBLib – A Library for Encoding Pseudo-Boolean Constraints into CNF.” In: Theory and Applications of Satisfiability Testing – SAT 2015 . Lecture Notes in Computer Science. Vol. 9340. Ed. by M. Heule and S. Weaver. Springer International Publishing, 9–16. isbn: 978-3-319-24317-7. doi:10.1007/978-3-319-24318-4_2. S. D. Prestwich. 2021. “CNF Encodings.” In: Handbook of Satisfiability . Frontiers in Artificial Intelligence and Applications. Vol. 336. IOS Press, 75–100. C. Prud’homme, J.-G. Fages, and X. Lorca. 2016. “Choco Solver Documentation.” TASC, INRIA Rennes, LINA CNRS UMR , 6241, 102–106. A. Rendl, I. P. Gent, and I. Miguel. 2008. “Eliminating Common Subexpressions during Flattening.” URL: http://www-circa. mcs. st-and. ac. uk/Preprints/ERCIMCSE08. pdf .F. Rossi, P. van Beek, and T. Walsh, (Eds.) . 2006. Handbook of Constraint Programming . Foundations of Artificial Intelligence. Vol. 2. Elsevier. isbn: 978-0-444-52726-4. https://www.sciencedirect.com/science/bookseries/15746526/2. O. Roussel and V. Manquinho. 2021. “Pseudo-Boolean and Cardinality Constraints.” In: Handbook of Satisfiability . Frontiers in Artificial Intelligence and Applications. Vol. 336. IOS Press, 1087–1129. P. Schwerin and G. Wäscher. 1997. “The Bin-Packing Problem: A Problem Generator and Some Numerical Experiments with FFD Packing and MTP.” International transactions in operational research , 4, 5-6, 377–389. T. Sergeys, I. Bleukx, and T. Guns. 2026. “Unified Programmatic Access to CO Benchmarks, to Connect Constraint Solving Communities.” In: 
+
+SAT (LIPIcs). to appear. Schloss Dagstuhl - Leibniz-Zentrum fur Informatik. B. M. Smith. 2006. “Modelling.” In: Handbook of Constraint Programming . Foundations of Artificial Intelligence. Vol. 2. Ed. by F. Rossi, P. van Beek, and T. Walsh. Elsevier, 377–406. doi:10.1016/S1574-6526(06)80015-5. T. Soh, M. Banbara, and N. Tamura. 2015. “A Hybrid Encoding of CSP to SAT Integrating Order and Log Encodings.” In: ICTAI . IEEE Computer Society, 421–428. P. J. Stuckey and G. Tack. 2022. “Enumerated Types and Type Extensions for MiniZinc.” In: CPAIOR (Lecture Notes in Computer Science). Vol. 13292. Springer, 374–389. P. J. Stuckey and G. Tack. 2013. “MiniZinc with Functions.” In: CPAIOR (Lecture Notes in Computer Science). Vol. 7874. Springer, 268–283. N. Tamura, A. Taga, S. Kitagawa, and M. Banbara. 2009. “Compiling Finite Linear CSP into SAT.” Constraints An Int. J. , 14, 2, 254–272. P. van Beek and X. Chen. 1999. “CPlan: A Constraint Programming Approach to Planning.” In: AAAI/IAAI . AAAI Press / The MIT Press, 585–590. P. Van Hentenryck and L. D. Michel. 2014. “Domain Views for Constraint Programming.” In: CP (Lecture Notes in Computer Science). Springer, 705–720. W.-J. van Hoeve. 2001. “The AllDifferent Constraint: A Survey.” CoRR , cs.PL/0105015. W.-J. van Hoeve and I. Katriel. 2006. “Global Constraints.” In: Handbook of Constraint Programming . Foundations of Artificial Intelligence. Vol. 2. Ed. by F. Rossi, P. van Beek, and T. Walsh. Elsevier, 169–208. doi:10.1016/S1574-6526(06)80010-6. W.-J. van Hoeve and J. Régin. 2006. “Open Constraints in a Closed World.” In: CPAIOR (Lecture Notes in Computer Science). Vol. 3990. Springer, 244–257. J. P. Vielma. 2015. “Mixed Integer Linear Programming Formulation Techniques.” SIAM Rev. , 57, 1, 3–57. T. Walsh. 2000. “SAT v CSP.” In: CP (Lecture Notes in Computer Science). Vol. 1894. Springer, 441–456. N. Zhou, H. Kjellerstrand, and J. Fruhman. 2015. Constraint Solving and Planning with Picat . Springer Briefs in Intelligent Systems. Springer. Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. 30 • Guns and Bleukx et al. 
+
+A Pseudocode for Normalization of Arguments During Flattening 
+
+Algorithm 3 NormalizeBoolExpr (expr , csemap ) 
+
+> 1:
+
+if expr is a variable or constant then  
+
+> 2:
+
+return (expr , ∅) 
+
+> 3:
+
+else if expr is a ⟨Comparison ⟩ expr 𝑙 ◦ expr 𝑟 then  
+
+> 4:
+
+expr ′ 
+
+> 𝑙
+
+, 𝑑 𝑙 ← GetOrMakeVar (expr 𝑙 , csemap ) 
+
+> 5:
+
+expr ′ 
+
+> 𝑟
+
+, 𝑑 𝑟 ← NormalizeNumExpr (expr 𝑟 , csemap ) 
+
+> 6:
+
+if expr 𝑟 is not a ⟨GlobalFunction ⟩ then  
+
+> 7:
+
+expr ′ 
+
+> 𝑙
+
+, expr ′ 
+
+> 𝑟
+
+← CanonicalizedLinear (expr ′ 
+
+> 𝑙
+
+, expr ′ 
+
+> 𝑟
+
+) 
+
+> 8:
+
+return (expr ′ 
+
+> 𝑙
+
+◦ expr ′ 
+
+> 𝑟
+
+, 𝑑 𝑙 ∪ 𝑑 𝑟 ) 
+
+> 9:
+
+else if expr is expr 1 ⇒ expr 2 then  
+
+> 10:
+
+expr ′
+
+> 1
+
+, 𝑑 1 ← GetOrMakeVar (expr 1, csemap ) 
+
+> 11:
+
+expr ′
+
+> 2
+
+, 𝑑 2 ← GetOrMakeVar (expr 2, csemap ) 
+
+> 12:
+
+return (¬ expr ′ 
+
+> 1
+
+∨ expr ′
+
+> 2
+
+, 𝑑 1 ∪ 𝑑 2) 
+
+> 13:
+
+else if expr is expr 1 ⇔ expr 2 then  
+
+> 14:
+
+expr ′
+
+> 1
+
+, 𝑑 1 ← GetOrMakeVar (expr 1, csemap ) 
+
+> 15:
+
+expr ′
+
+> 2
+
+, 𝑑 2 ← GetOrMakeVar (expr 2, csemap ) 
+
+> 16:
+
+return (1 × expr ′ 
+
+> 1
+
++ − 1 × expr ′ 
+
+> 2
+
+= 0, 𝑑 1 ∪ 𝑑 2) 
+
+> 17:
+
+else if expr is ¬ expr 0 then ⊲ Negation of global constraint  
+
+> 18:
+
+expr ′
+
+> 0
+
+, 𝑑 ← NormalizeBoolExpr (expr 0, csemap ) 
+
+> 19:
+
+return (¬ expr ′
+
+> 0
+
+, 𝑑 )
+
+⊲∨, ⇔ and global constraints  
+
+> 20:
+
+for each argument 𝑎 𝑖 of expr do  
+
+> 21:
+
+𝑣 𝑖 , 𝑑 𝑖 ← GetOrMakeVar (𝑎 𝑖 , csemap ) 
+
+> 22:
+
+return (expr [𝑣 𝑖 /𝑎 𝑖 ], Ð𝑖 𝑑 𝑖 )  
+
+> Journal of Artificial Intelligence Research, Vol. TBD, Article TBD. Publication date: TBD. Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy •31
+
+Algorithm 4 NormalizeNumExpr ( expr , csemap ) 
+
+> 1:
+
+if expr is a variable or constant then  
+
+> 2:
+
+return (expr , ∅)  
+
+> 3:
+
+else if expr is a Boolean expression then  
+
+> 4:
+
+return GetOrMakeVar (expr , csemap ) 
+
+> 5:
+
+else if expr is −expr 0 then  
+
+> 6:
+
+expr ′
+
+> 0
+
+, 𝑑 0 ← GetOrMakeVar (expr 0, csemap ) 
+
+> 7:
+
+return (−1 × expr ′
+
+> 0
+
+, 𝑑 0) 
+
+> 8:
+
+else if expr is expr 1 − expr 2 then  
+
+> 9:
+
+expr ′
+
+> 1
+
+, 𝑑 1 ← GetOrMakeVar (expr 1, csemap ) 
+
+> 10:
+
+expr ′
+
+> 2
+
+, 𝑑 2 ← GetOrMakeVar (expr 2, csemap ) 
+
+> 11:
+
+return (1 × expr ′ 
+
+> 1
+
++ − 1 × expr ′
+
+> 2
+
+, 𝑑 1 ∪ 𝑑 2) 
+
+> 12:
+
+else if expr is Í𝑖 𝑤 𝑖 × expr 𝑖 then  
+
+> 13:
+
+for each argument expr 𝑖 do  
+
+> 14:
+
+expr ′ 
+
+> 𝑖
+
+, 𝑑 𝑖 ← GetOrMakeVar (expr 𝑖 , csemap ) 
+
+> 15:
+
+return (Í 𝑤 𝑖 × expr ′ 
+
+> 𝑖
+
+, Ð𝑖 𝑑 𝑖 )
+
+⊲+ and global functions  
+
+> 16:
+
+for each argument 𝑎 𝑖 of expr do  
+
+> 17:
+
+𝑣 𝑖 , 𝑑 𝑖 ← GetOrMakeVar (𝑎 𝑖 , csemap ) 
+
+> 18:
+
+return (expr [𝑣 𝑖 /𝑎 𝑖 ], Ð𝑖 𝑑 𝑖 )
+
+Received 07/08/2026
