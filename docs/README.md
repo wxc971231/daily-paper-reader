@@ -6,35 +6,47 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-18
-- 运行时间：2026-08-18 20:55:34 UTC
+- 最新运行日期：2026-08-19
+- 运行时间：2026-08-19 20:20:47 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：4
-- 速读区：1
+- 本次总论文数：9
+- 精读区：5
+- 速读区：4
 
 ### 今日简报（AI）
-今日共读5篇论文，精读4篇、速读1篇，聚焦神经符号约束求解与模型转换。最值得关注的是两篇9.0分工作：最小核心引导的神经符号约束修复，以及用CPMpy统一翻译约束模型到多类求解器。下一步可优先精读这两篇，快速掌握约束修复与多求解器对接的实用方法。
-- 详情：[/202608/18/README](/202608/18/README)
+今日聚焦 LLM 算法合成与优化建模：精读《ATLAS》（9.0）以嵌入引导的质量多样性搜索实现免脚手架算法生成，《Admission Without Answers》（9.0）则探索无标签场景下 LLM 优化建模的认证与经验学习，均值得深读。速读方向涵盖 PDDL 生成（7.0）、测试驱动代码生成（7.0）与机器人技能复用（6.0），可作扩展参考。建议普通读者优先精读两篇高分论文，并留意速读中的 TDD-Agent 辅助代码生成实践。
+- 详情：[/202608/19/README](/202608/19/README)
 
 ### 精读区论文标签
-1. [From Errors to Proofs: Minimal-Core-Guided Repair for Neuro-Symbolic Constraint Solving](/202608/18/2608.14771v1-from-errors-to-proofs-minimal-core-guided-repair-for-neuro-symbolic-constraint-solving)  
+1. [ATLAS: Scaffold-Free Algorithm Synthesis by LLMs via Embedding-Guided Quality-Diversity Search](/202608/19/2608.15546v2-atlas-scaffold-free-algorithm-synthesis-by-llms-via-embedding-guided-quality-diversity-search)  
    标签：评分：9.0/10、query:llm-opt-code
-   evidence：针对LLM将约束问题转写为形式规约的建模流程，用最小不可满足核修复错误翻译，直接相关
-2. [Translating finite-domain integer constraint models to CP/SMT/ILP/PB/SAT solvers with CPMpy](/202608/18/2608.15143v1-translating-finite-domain-integer-constraint-models-to-cpsmtilppbsat-solvers-with-cpmpy)  
+   evidence：LLM从问题规约无脚手架综合组合优化完整算法
+2. [Admission Without Answers: Label-Free Certification and Experience Learning for LLM-Based Optimization Modeling](/202608/19/2608.15565v2-admission-without-answers-label-free-certification-and-experience-learning-for-llm-based-optimization-modeling)  
    标签：评分：9.0/10、query:llm-opt-code
-   evidence：将高层约束模型翻译为CP/SMT/ILP/PB/SAT等运筹求解器
-3. [ATLAS: Scaffold-Free Algorithm Synthesis by LLMs via Embedding-Guided Quality-Diversity Search](/202608/18/2608.15546v1-atlas-scaffold-free-algorithm-synthesis-by-llms-via-embedding-guided-quality-diversity-search)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：LLM直接从目标和约束合成组合优化完整算法代码
-4. [Admission Without Answers: Label-Free Certification and Experience Learning for LLM-Based Optimization Modeling](/202608/18/2608.15565v1-admission-without-answers-label-free-certification-and-experience-learning-for-llm-based-optimization-modeling)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：直接研究LLM优化建模的无标签认证与经验学习
+   evidence：为LLM生成的优化模型提供无标签认证门控以支持经验学习
+3. [LLM-Guided Graph Generation for Structure-Based Local Improvement Methods](/202608/19/2608.13333v3-llm-guided-graph-generation-for-structure-based-local-improvement-methods)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：基于LLM为MiniZinc优化问题生成引导图以改进搜索
+4. [Constraint-Aware Synthetic Tabular Data Generation via Inter-Column Constraint Discovery with LLM Agents](/202608/19/2608.15109v1-constraint-aware-synthetic-tabular-data-generation-via-inter-column-constraint-discovery-with-llm-agents)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：利用LLM智能体发现并强制数据生成中的列间约束（等式、线性不等式、逻辑依赖），与基于LLM的约束建模直接相关
+5. [Synthesizing Feature Extractors: An Agentic Approach for Algorithm Selection](/202608/19/2608.17170v1-synthesizing-feature-extractors-an-agentic-approach-for-algorithm-selection)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：LLM智能体从MiniZinc约束模型合成特征提取器代码
 
 ### 速读区论文标签
-1. [T-LLM Compiler: Trusted LLM-based Code Optimization and Verification Framework](/202608/18/2608.14953v1-t-llm-compiler-trusted-llm-based-code-optimization-and-verification-framework)  
+1. [PDDLCoder: Agentic PDDL Generation for LLM-Assisted Symbolic Planning](/202608/19/2608.16637v1-pddlcoder-agentic-pddl-generation-for-llm-assisted-symbolic-planning)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：智能体式LLM生成规划问题的PDDL形式化模型
+2. [TDD-Agent: Test-Driven Reasoning for Code Generation](/202608/19/2608.16742v1-tdd-agent-test-driven-reasoning-for-code-generation)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：面向LLM测试驱动的代码生成与精化方法，可迁移用于优化求解代码生成
+3. [SkillComposer: Learning Reusable Skills for Natural-Language Robot Programming](/202608/19/2608.14944v1-skillcomposer-learning-reusable-skills-for-natural-language-robot-programming)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：可信的基于LLM的代码优化与验证框架，是生成可靠优化代码的支撑方法。
+   evidence：生成-测试架构与可复用程序技能学习，可服务于运筹优化代码生成
+4. [ACTS-SQL: Agentic and Critic-Oriented Tree-Structured SQL Correctness with Large Language Models](/202608/19/2608.15145v1-acts-sql-agentic-and-critic-oriented-tree-structured-sql-correctness-with-large-language-models)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：基于智能体与树状结构的LLM代码修正，可迁移至优化代码调试
 
 
 <div class="dpr-home-promo-card">
