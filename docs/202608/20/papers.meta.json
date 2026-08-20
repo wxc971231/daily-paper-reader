@@ -1,0 +1,69 @@
+{
+  "label": "2026-08-20",
+  "date": "2026-08-20",
+  "generated_at": "2026-08-20T20:53:10",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202608/20/2608.15565v3-admission-without-answers-label-free-certification-and-experience-learning-for-llm-based-optimization-modeling",
+      "section": "deep",
+      "title_en": "Admission Without Answers: Label-Free Certification and Experience Learning for LLM-Based Optimization Modeling",
+      "authors": "Junbo Jacob Lian, Huiling Chen, Hanzhang Qin, Chung-Piaw Teo",
+      "date": "2026-08-16",
+      "pdf": "https://arxiv.org/pdf/2608.15565v3",
+      "score": "9.0",
+      "evidence": "面向LLM优化建模的无标签验证与经验学习",
+      "tldr": "现有优化建模智能体依赖已知答案验证技能，真实票流无标签，而执行成功等无标签方法会毒化约1/4候选。AdmitOR通过从参数域重采样实例，综合多模型族、提示策略和求解器的值函数轨迹一致性，经校准阈值返回接受/弃权/升级。在SOTA技能学习器上，AdmitOR将准入精度提升至0.927，相比多数投票和执行成功分别减少3.1倍和8.0倍毒化准入，并取得58.4的最高宏准确率。这是首个面向明确校准假发现目标的无标签准入机制，但野外流上的迁移失败揭示了必要条件。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Experience-learning agents for optimization modeling improve by storing verified skills, but existing learners admit knowledge by checking against known answers, which real ticket streams do not provide. The natural label-free alternatives are unreliable: on a 300-problem label-blind stream, admitting every executable model poisons roughly one admission in four, while single-instance agreement accepts models that match at one value but differ elsewhere. We propose AdmitOR, an admission gate built on calibrated external behavioral evidence. Candidates from three model families, prompting strategies, and solver stacks are run on instances resampled from an extracted parameter domain; agreement across the resulting value-function traces is summarized by a cross-family clique, and a calibrated threshold returns accept, abstain, or escalate. The preregistered false-discovery criterion holds on calibration data but not on the wild stream. We report this negative result in full and trace most failures to benchmark texts that do not faithfully encode their labeled instances. Comparing four admission judges on one collection of logs inside a state-of-the-art skill learner, AdmitOR raises admission precision to 0.927, against 0.871 for majority vote and 0.726 for execution success, yielding 3.1x and 8.0x fewer poisoned admissions. Its library is the smallest and attains the highest macro accuracy across five public benchmarks, 58.4 against 54.8 for majority vote and 53.9 for the ground-truth-labeled library. The 3.5-point gain over majority vote is supported by a paired bootstrap and survives correction for a host-side anomaly. To our knowledge, AdmitOR is the first label-free admission mechanism designed around an explicitly calibrated false-discovery target. The transfer failure identifies a necessary condition for extending it to wild streams.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/20/2608.18409v1-improving-natural-language-combinatorial-optimization-accuracy-in-resource-constrained-language-models-via-formal-abstractions",
+      "section": "deep",
+      "title_en": "Improving Natural-Language Combinatorial-Optimization Accuracy in Resource-Constrained Language Models via Formal Abstractions",
+      "authors": "Shrenil Shaun Sharma, Avi Sharma",
+      "date": "2026-08-19",
+      "pdf": "https://arxiv.org/pdf/2608.18409v1",
+      "score": "9.0",
+      "evidence": "将自然语言调度问题转换为求解器对齐的组合优化模型",
+      "tldr": "组合调度对语言模型构成挑战，资源受限的小模型直接生成可行解尤为困难。为此提出SDDL神经符号框架，将自然语言调度问题翻译为紧凑的求解器对齐表示，由确定性编译器和外部求解器处理底层搜索。在300实例多族调度上，最强配置可行性达55.3%和28.3%，远超直接生成与求解器代码基线，可行调度最优性差距中位数为0.0%。通过表达问题结构而非生成解，小模型可接近大模型配置，显著提升可行性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Combinatorial scheduling poses a significant challenge for language models, requiring them to identify feasible solutions within exponentially large search spaces while satisfying complex constraints. This challenge is especially pronounced in resource-constrained settings, where larger language models are impractical and selection is limited to smaller models which often fail to preserve feasibility when scheduling directly from natural language. To address these limitations, we introduce SDDL, a neuro-symbolic framework that translates natural-language scheduling problems into compact, solver-aligned representations of tasks, resources, constraints, and objectives, while delegating low-level modeling and search to a deterministic compiler and external solver. On a 300-instance, multi-family subset of scheduling problems, SDDL improves independently verified feasibility for every resource-constrained model tested. The two strongest SDDL configurations reach 55.3% and 28.3%, up from direct-generation baselines of 23.7% and 1.3% and solver-code baselines of 21.7% and 7.0%, with a 0.0% median optimality gap among feasible schedules. By expressing problem structure rather than generating solutions or solver code, SDDL enables smaller models to approach the strongest evaluated direct- and solver-code configurations, including substantially larger frontier models.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/20/2608.16416v1-evolving-executable-pipeline-programs-for-automl-with-language-models",
+      "section": "quick",
+      "title_en": "Evolving Executable Pipeline Programs for AutoML with Language Models",
+      "authors": "Sofoklis Kitharidis, Cor J. Veenman, Jan N. van Rijn, Thomas Bäck, Niki van Stein",
+      "date": "2026-08-17",
+      "pdf": "https://arxiv.org/pdf/2608.16416v1",
+      "score": "7.0",
+      "evidence": "LLM进化可执行流水线程序实现自动化优化求解",
+      "tldr": "传统AutoML在预先定义的流水线空间中搜索，只能选择或调参已知组件，无法产生结构外的新形式。LACE首次将表格流水线AutoML建模为可执行程序搜索：进化循环维护scikit-learn兼容Python类种群，由大语言模型充当变异算子生成候选。在68个OpenML分类任务上，LACE（GPT-5.4-mini）显著超越auto-sklearn、H2O和固定XGBoost，与最强搜索系统AutoGluon无显著差异，并完整覆盖基准。其核心贡献不是原始精度，而是代码定义的搜索空间：流水线可检查、可直接复用，组件集通过编辑提示扩展而非修改框架。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Automated machine learning (AutoML) systems search for pipelines within a space of preprocessing operators, learners, and hyper-parameters specified in advance: they can select and tune known components, but cannot produce structure outside that space. We present LACE, an AutoML framework that instead searches over complete executable pipeline programs: an evolutionary loop maintains a population of scikit-learn-compatible Python classes, and a large language model acts as the variation operator. To our knowledge, LACE is the first to formulate general tabular pipeline AutoML this way, evaluated on standardized OpenML tasks under a leakage-controlled protocol that withholds dataset identity from the generator. Because every candidate is ordinary Python, the returned pipeline and the search that produced it can be inspected and edited directly, rather than only through a framework's model objects. On 68 OpenML classification tasks, LACE with GPT-5.4-mini significantly outperforms auto-sklearn, H2O, and a fixed XGBoost baseline, with no detectable difference against AutoGluon, the strongest search-based system evaluated, while covering the full benchmark. Newer tabular foundation models are more accurate on the subset of tasks they support, but apply a fixed pretrained predictor rather than returning an editable task-specific program. LACE's contribution is therefore not raw accuracy but a search space defined by code: complete coverage, pipelines practitioners can reuse directly, and a component set extended by editing the prompt rather than the framework.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/20/2608.17341v1-llm-only-pddl-domain-repair-with-open-weight-models",
+      "section": "quick",
+      "title_en": "LLM-Only PDDL Domain Repair with Open-Weight Models",
+      "authors": "Nader Karimi Bavandpour, Pascal Bercher",
+      "date": "2026-08-18",
+      "pdf": "https://arxiv.org/pdf/2608.17341v1",
+      "score": "7.0",
+      "evidence": "开放权重LLM根据正负测试样例修复PDDL领域模型",
+      "tldr": "AI规划依赖PDDL模型，模型错误需自动修复。本文评估开源权重LLM仅用LLM完成PDDL领域修复。符号基线F1为0.49，最优LLM在高推理努力下达0.87，绝对提升0.38。但测试通过率仅0.82，Thoughtful域仅0.06，包含测试轨迹也仅0.92，无法保证约束满足。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "AI planning is concerned with finding a sequence of actions that achieves a specified goal. It relies on explicit models of the world, commonly represented in the Planning Domain Definition Language (PDDL). An active line of research investigates how errors in such models can be detected and repaired. For example, users may provide positive test plans that are solutions, and negative test plans that fail during execution. Automated repair methods then modify the PDDL model to satisfy these constraints. In this paper, we evaluate the ability of recent open-weight large language models to perform this repair task using an LLM-only approach. Our experiments show that the symbolic baseline achieves an $F_1$ score of $.49$, while the best-performing LLM reaches $.87$ with high reasoning effort, an absolute improvement of $.38$. However, that setting has a mean test pass rate of only $.82$, falling to $.06$ on the Thoughtful domain; even the best setting that includes the test traces reaches only $.92$. Thus, current open-weight models cannot guarantee satisfaction of the test constraints required for reliable automated model repair.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
