@@ -1,0 +1,91 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-21T20:09:03.012940+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.17172v1",
+      "source": "arxiv",
+      "title": "Automating Parent Selection Configuration in Genetic Programming with Agentic AI",
+      "abstract": "We investigate whether agentic artificial intelligence can automate parts of the process of designing genetic programming systems by introducing an agentic framework that identifies and implements parent selection algorithms using large language model (LLM) reasoning and retrieval-augmented generation. Using symbolic regression as a test bed, we first conduct an ablation study across four LLM types to evaluate the effects of agentic reasoning and retrieval on generated algorithm categories, validity, implementation similarity, and downstream performance. Results show that these components substantially influence the types of algorithms generated, but their downstream performance largely depends on the underlying LLM. The strongest configuration, the full agentic setup with 5 mini (5 mini--AR), consistently generated established $ε$-lexicase implementations while maintaining competitive downstream performance. We then benchmark this configuration against fixed implementations of tournament selection and semi-dynamic MAD $ε$-lexicase. Across six symbolic regression problems, 5 mini--AR performed similarly to $ε$-lexicase while generally outperforming tournament selection. These findings demonstrate the potential of agentic AI to translate domain knowledge into generating executable components, providing a step toward automated configuration and design of evolutionary systems.",
+      "authors": [
+        "Jose Guadalupe Hernandez",
+        "Jui-Hsuan Chang",
+        "Anil Kumar Saini",
+        "Xi Li",
+        "Jason H. Moore"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE"
+      ],
+      "published": "2026-08-17T22:15:04+00:00",
+      "link": "https://arxiv.org/pdf/2608.17172v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Agentic LLM framework generates and implements parent selection algorithms for genetic programming, automating algorithm design for optimization",
+      "llm_evidence_cn": "基于LLM的智能体框架自动生成并实现遗传编程的父代选择算法，推动优化算法自动设计",
+      "llm_evidence": "基于LLM的智能体框架自动生成并实现遗传编程的父代选择算法，推动优化算法自动设计",
+      "canonical_evidence": "基于LLM的智能体框架自动生成并实现遗传编程的父代选择算法，推动优化算法自动设计",
+      "llm_tldr_en": "This paper uses an agentic LLM with retrieval-augmented generation to automate parent selection design in genetic programming. Ablation across four LLM types shows the framework strongly influences generated algorithm categories, while downstream performance depends largely on the underlying LLM. Supports automatic algorithm generation for optimization.",
+      "llm_tldr_cn": "遗传编程系统设计中的父代选择配置通常依赖人工经验。作者提出一个由LLM推理和检索增强驱动的智能体框架，自动识别并实现父代选择算法，并以符号回归为测试床开展四类LLM的消融实验。结果表明，检索与推理能显著改变生成算法类型，但求解性能在很大程度上取决于底层LLM，最强配置可取得最佳效果。",
+      "llm_tldr": "遗传编程系统设计中的父代选择配置通常依赖人工经验。作者提出一个由LLM推理和检索增强驱动的智能体框架，自动识别并实现父代选择算法，并以符号回归为测试床开展四类LLM的消融实验。结果表明，检索与推理能显著改变生成算法类型，但求解性能在很大程度上取决于底层LLM，最强配置可取得最佳效果。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.17876v1",
+      "source": "arxiv",
+      "title": "Exact and Heuristic Methods for $Γ$-Robust Min-Max Problems",
+      "abstract": "Bilevel optimization is a powerful tool for modeling hierarchical decision-making processes, which arise in various real-world applications. Due to their nested structure, however, bilevel problems are intrinsically hard to solve, even if all variables are continuous and all parameters of the problem are exactly known. Further challenges arise if mixed-integer aspects and problems under uncertainty are considered. In this article, we summarize selected results from the author's dissertation. We study mixed-integer linear min-max problems with a $Γ$-robust treatment of uncertain data, for which we present exact and heuristic solution approaches. The performance of the methods is assessed in a computational study on 560 instances of the knapsack interdiction problem. Our results show that the heuristic closes the optimality gap for a significant portion of the considered instances and often practically outperforms both heuristic and exact benchmark approaches.",
+      "authors": [
+        "Yasmine Beck"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-08-18T15:08:45+00:00",
+      "link": "https://arxiv.org/pdf/2608.17876v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Operations research modeling of robust bilevel min-max problems and solution methods.",
+      "llm_evidence_cn": "针对鲁棒双层最小最大问题的运筹学建模与求解方法。",
+      "llm_evidence": "针对鲁棒双层最小最大问题的运筹学建模与求解方法。",
+      "canonical_evidence": "针对鲁棒双层最小最大问题的运筹学建模与求解方法。",
+      "llm_tldr_en": "This OR paper studies mixed-integer linear min-max bilevel problems under Gamma-robust uncertainty, proposing exact and heuristic solution approaches and demonstrating their performance on 560 knapsack interdiction instances.",
+      "llm_tldr_cn": "针对不确定性下的双层混合整数线性最小最大问题，本文引入Γ-鲁棒处理不确定数据，提出精确与启发式两类求解方法。作者将该方法应用于背包拦截问题，并在560个实例上进行系统计算实验。该研究为鲁棒双层优化的建模与求解提供了可复用的方法基础，可作为LLM生成运筹优化建模代码的领域知识来源。虽未使用LLM，其建模与求解流程对自动生成优化代码有直接参考价值。",
+      "llm_tldr": "针对不确定性下的双层混合整数线性最小最大问题，本文引入Γ-鲁棒处理不确定数据，提出精确与启发式两类求解方法。作者将该方法应用于背包拦截问题，并在560个实例上进行系统计算实验。该研究为鲁棒双层优化的建模与求解提供了可复用的方法基础，可作为LLM生成运筹优化建模代码的领域知识来源。虽未使用LLM，其建模与求解流程对自动生成优化代码有直接参考价值。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

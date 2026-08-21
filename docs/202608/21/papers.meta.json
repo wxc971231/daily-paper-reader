@@ -1,0 +1,39 @@
+{
+  "label": "2026-08-21",
+  "date": "2026-08-21",
+  "generated_at": "2026-08-21T20:09:52",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202608/21/2608.17172v1-automating-parent-selection-configuration-in-genetic-programming-with-agentic-ai",
+      "section": "quick",
+      "title_en": "Automating Parent Selection Configuration in Genetic Programming with Agentic AI",
+      "authors": "Jose Guadalupe Hernandez, Jui-Hsuan Chang, Anil Kumar Saini, Xi Li, Jason H. Moore",
+      "date": "2026-08-17",
+      "pdf": "https://arxiv.org/pdf/2608.17172v1",
+      "score": "7.0",
+      "evidence": "基于LLM的智能体框架自动生成并实现遗传编程的父代选择算法，推动优化算法自动设计",
+      "tldr": "遗传编程系统的设计依赖专家经验，本文探索用agentic AI自动化父代选择算法的配置。方法采用大语言模型推理与检索增强生成，在符号回归测试床上进行消融实验，发现推理和检索显著影响生成算法类型，但下游性能主要取决于底层模型。最强配置5 mini-AR稳定生成ε-lexicase，并在多个基准上媲美固定实现、优于锦标赛选择。该工作展示了agentic AI将领域知识转化为可执行组件的潜力，朝自动化进化系统设计迈进一步。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "We investigate whether agentic artificial intelligence can automate parts of the process of designing genetic programming systems by introducing an agentic framework that identifies and implements parent selection algorithms using large language model (LLM) reasoning and retrieval-augmented generation. Using symbolic regression as a test bed, we first conduct an ablation study across four LLM types to evaluate the effects of agentic reasoning and retrieval on generated algorithm categories, validity, implementation similarity, and downstream performance. Results show that these components substantially influence the types of algorithms generated, but their downstream performance largely depends on the underlying LLM. The strongest configuration, the full agentic setup with 5 mini (5 mini--AR), consistently generated established $ε$-lexicase implementations while maintaining competitive downstream performance. We then benchmark this configuration against fixed implementations of tournament selection and semi-dynamic MAD $ε$-lexicase. Across six symbolic regression problems, 5 mini--AR performed similarly to $ε$-lexicase while generally outperforming tournament selection. These findings demonstrate the potential of agentic AI to translate domain knowledge into generating executable components, providing a step toward automated configuration and design of evolutionary systems.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/21/2608.17876v1-exact-and-heuristic-methods-for--robust-min-max-problems",
+      "section": "quick",
+      "title_en": "Exact and Heuristic Methods for $Γ$-Robust Min-Max Problems",
+      "authors": "Yasmine Beck",
+      "date": "2026-08-18",
+      "pdf": "https://arxiv.org/pdf/2608.17876v1",
+      "score": "7.0",
+      "evidence": "针对鲁棒双层最小最大问题的运筹学建模与求解方法。",
+      "tldr": "双层优化建模层级决策，但嵌套结构使其求解困难，混合整数与不确定性问题更具挑战。本文研究混合整数线性min-max问题，引入Γ-鲁棒处理不确定性，提出精确与启发式求解方法。在560个背包拦截问题上测试，启发式大幅缩小最优间隙，常优于启发式和精确基准方法，展现出良好实际性能与实用价值。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Bilevel optimization is a powerful tool for modeling hierarchical decision-making processes, which arise in various real-world applications. Due to their nested structure, however, bilevel problems are intrinsically hard to solve, even if all variables are continuous and all parameters of the problem are exactly known. Further challenges arise if mixed-integer aspects and problems under uncertainty are considered. In this article, we summarize selected results from the author's dissertation. We study mixed-integer linear min-max problems with a $Γ$-robust treatment of uncertain data, for which we present exact and heuristic solution approaches. The performance of the methods is assessed in a computational study on 560 instances of the knapsack interdiction problem. Our results show that the heuristic closes the optimality gap for a significant portion of the considered instances and often practically outperforms both heuristic and exact benchmark approaches.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

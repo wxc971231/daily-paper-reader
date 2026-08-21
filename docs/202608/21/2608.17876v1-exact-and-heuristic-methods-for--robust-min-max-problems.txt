@@ -1,0 +1,278 @@
+Title: Exact and Heuristic Methods for Γ-Robust Min-Max Problems
+
+URL Source: https://arxiv.org/pdf/2608.17876v1
+
+Published Time: Wed, 19 Aug 2026 01:05:47 GMT
+
+Number of Pages: 6
+
+Markdown Content:
+EXACT AND HEURISTIC METHODS FOR 
+
+Γ-ROBUST MIN-MAX PROBLEMS 
+
+YASMINE BECK 
+
+Abstract. Bilevel optimization is a powerful tool for modeling hierarchical decision-making processes, which arise in various real-world applications. Due to their nested structure, however, bilevel problems are intrinsically hard to solve—even if all variables are continuous and all parameters of the problem are exactly known. Further challenges arise if mixed-integer aspects and problems under uncertainty are considered. In this article, we summarize selected results from the author’s dissertation (Beck 2024). We study mixed-integer linear min-max problems with a Γ-robust treatment of uncertain data, for which we present exact and heuristic solution approaches. The performance of the methods is assessed in a computational study on 560 instances of the knapsack interdiction problem. Our results show that the heuristic closes the optimality gap for a significant portion of the considered instances and often practically outperforms both heuristic and exact benchmark approaches. 
+
+1. Introduction 
+
+Over the last years and decades, bilevel problems have gained increasing atten-tion because of their ability to model hierarchical interactions between two decision-makers—the leader and the follower. For an overview of the many applications of bilevel optimization, we refer to Dempe (2020) and to the recent surveys in Kleinert et al. (2021) and Beck et al. (2023b). The latter focuses on bilevel problems under uncertainty, which is also at the core of this article. In what follows, we consider mixed-integer linear min-max problems of the form min  
+
+> x,y
+
+c⊤x + f ⊤y (1a) s.t. x ∈ X, (1b) 
+
+y ∈ arg max 
+
+> y′
+
+f ⊤y′ : y′ ∈ Y (x) (1c) with Y (x) ⊆ { 0, 1}ny , X := {x ∈ RnC × ZnD : Ax ≥ a}, nx = nC + nD, c ∈ Rnx ,
+
+f ∈ Rny , A ∈ Rl×nx , and a ∈ Rl. We refer to (1a)–(1b) as the upper-level (or the leader’s) problem and to (1c) as the lower-level (or the follower’s) problem. To ensure that an optimal solution to Problem (1) exists, we impose the following for the remainder of this article. 
+
+Assumption 1. (1) For all x ∈ X, the set Y (x) is non-empty. 
+
+(2) The set {(x, y ) : x ∈ X, y ∈ Y (x)} is non-empty and compact. 
+
+(3) All variables x that appear in the lower-level constraints are bounded inte-gers. 
+
+In this article, we study Problem (1) with uncertainty in the objective function coefficients f . For all i ∈ [ny ] := {1, . . . , n y }, we thus consider ¯fi ∈ [fi − ∆fi, f i]
+
+Date : August 19, 2026. 2020 Mathematics Subject Classification. 90C11, 90C27, 90C57, 90C70. 
+
+Key words and phrases. Bilevel optimization, Robust optimization, Mixed-integer program-ming, Branch-and-Cut, Knapsack interdiction.  
+
+> 1arXiv:2608.17876v1 [math.OC] 18 Aug 2026 EXACT AND HEURISTIC METHODS FOR Γ-ROBUST MIN-MAX PROBLEMS 2
+
+instead of fi. Here, fi is the nominal value of the ith objective function coefficient and ∆ fi ≥ 0 is its maximum deviation from the nominal value. We address this kind of uncertainty using a Γ-robust approach (Bertsimas and Sim 2003) in which the follower hedges against at most Γ ∈ [ny ] deviations that adversely affect his optimal objective function value. This leads us to considering the bilevel problem min  
+
+> x,y
+
+c⊤x + f ⊤y s.t. x ∈ X, y ∈ SΓ(x), (2) where SΓ(x) is the set of optimal solutions to the Γ-robust lower-level problem Φrob (x) := max  
+
+> y∈Y(x)
+
+(
+
+f ⊤y − max   
+
+> {S⊆[ny] : |S|≤ Γ}
+
+X
+
+> i∈S
+
+∆fiyi
+
+)
+
+. (3) Using the optimal-value function Φ rob (x), we can re-state Problem (2) as min  
+
+> x,η
+
+c⊤x + η s.t. x ∈ X, η ≥ Φrob (x). (4) In the dissertation (Beck 2024), two solution approaches have been derived—an exact branch-and-cut method and a heuristic—which are the first to tackle Prob-lem (2) directly. The methods have been published in Beck et al. (2023a) and Beck et al. (2025), respectively, and they rely on the following auxiliary result. For further details and a proof of this result, we refer to Lemma 1 and the respective discussion in Beck et al. (2025). 
+
+Lemma 1. Let x ∈ X be given arbitrarily and suppose that the indices are ordered such that ∆fi ≥ ∆fi+1 holds for all i ∈ [ny ] with ∆fny +1 := 0 . Then, the Γ-robust counterpart (3) of the lower-level problem can be solved by solving 
+
+Φrob (x) = max  
+
+> ℓ∈L
+
+{Φℓ(x)} ,
+
+where L = {Γ + 1 , Γ + 3 , Γ + 5 , . . . , Γ + γ, n y + 1 } with γ being the largest odd integer such that Γ + γ < n y + 1 , and 
+
+Φℓ(x) := −Γ∆ fℓ + max  
+
+> y∈Y(x)
+
+( ℓX
+
+> i=1
+
+(fi − ∆fi + ∆ fℓ)yi +
+
+> ny
+
+X
+
+> i=ℓ+1
+
+fiyi
+
+)
+
+, ℓ ∈ L .
+
+2. An Exact Branch-and-Cut Approach 
+
+At the root node of the branch-and-cut search tree, we solve the linear problem min  
+
+> x,η
+
+c⊤x + η s.t. (x, η ) ∈ Ω0 := {(x′, η ′) ∈ ¯X × R : η′ ≥ η−}, (5) which is obtained from Problem (4) by omitting the constraint η ≥ Φrob (x) and by relaxing the integrality restrictions for the leader’s variables x. In (5), we use ¯X to denote the continuous relaxation of X. Moreover, η− ∈ R is a given lower bound on Φ rob (x) for all x ∈ X. Details on how to obtain such a bound are given in Beck et al. (2023a). After considering Problem (5), we iteratively add valid inequalities or branch to separate integer-infeasible points, and we also add valid inequalities to cut off bilevel-infeasible points. At node k of the branch-and-cut search tree, we consider the problem min  
+
+> x,η
+
+c⊤x + η s.t. (x, η ) ∈ Ωk ⊆ ¯X × R. (6) Here, Ω k is obtained from Ω 0 by adding all valid inequalities that have been gen-erated at nodes along the path from the root node to node k and by imposing all branching decisions that have been made along that path. If Problem (6) is infeasi-ble or if the objective function value corresponding to an optimal solution ( xk, η k)exceeds the current upper bound U , we can prune node k. Otherwise, we pro-ceed as follows. First, we check if the leader’s variables xk satisfy all integrality EXACT AND HEURISTIC METHODS FOR Γ-ROBUST MIN-MAX PROBLEMS 3
+
+constraints ( xk ∈ X). If this is not the case, we separate the current solution by either exploiting standard cutting planes from mixed-integer programming or by branching. If xk ∈ X holds, we check for bilevel feasibility, that is (i.e.), we check if ηk ≥ Φrob (xk) is satisfied. To this end, we need to solve the Γ-robust lower-level problem (3), which can be done by solving |L| deterministic lower-level sub-problems; see Lemma 1. If there is at least one such sub-problem ℓ ∈ L for which ηk < Φℓ(xk) holds, the current solution ( xk, η k) is not bilevel feasible and we add a cut to separate this point. Problem-tailored cuts for the important class of monotone interdiction problems that can be used for this purpose have been de-rived in the author’s dissertation; see Section 3.3 in Beck (2024) for the details. To sum up, the method to process node k of the branch-and-cut search tree is formally stated in Algorithm 1. 
+
+Algorithm 1 Processing Node k of the Branch-and-Cut Search Tree  
+
+> 1:
+
+Solve Problem (6).  
+
+> 2:
+
+if Problem (6) is infeasible then  
+
+> 3:
+
+Prune the current node and return to the main method.  
+
+> 4:
+
+Let ( xk, η k) denote the solution to Problem (6).  
+
+> 5:
+
+if c⊤xk + ηk ≥ U then  
+
+> 6:
+
+Prune the current node and return to the main method.  
+
+> 7:
+
+if xk /∈ X then  
+
+> 8:
+
+Either generate a cut valid for Ω k ∩ (X × R), augment Ω k, and go to Line 1, or branch.  
+
+> 9:
+
+for all ℓ ∈ L do  
+
+> 10:
+
+Compute Φ ℓ(xk).  
+
+> 11:
+
+if ηk < Φℓ(xk) then  
+
+> 12:
+
+Generate a valid cut that excludes ( xk, η k) from Ω k and augment Ω k. 
+
+> 13:
+
+Set Φ rob (xk) ← max ℓ∈L {Φℓ(xk)} and U ← min {U, c ⊤xk + Φ rob (xk)}. 
+
+> 14:
+
+If at least one cut has been added in Line 12, go to Line 1. 
+
+Theorem 1 (See Theorem 1 in Beck et al. (2023a)) . If we embed Algorithm 1 in a classic branch-and-bound framework, we obtain a method that terminates with a globally optimal solution (x∗, η ∗) to Problem (4) after investigating a finite number of nodes and after adding an overall finite number of cuts. 
+
+3. A Heuristic in the Spirit of Bertsimas & Sim 
+
+Given the overall hardness of Γ-robust min-max problems, which are Σ p
+
+> 2
+
+-hard in general, we also derive a heuristic for these problems. The method relies on the so-lution of a linear number of appropriately chosen deterministic min-max problems. More formally, we have the following result. For a proof of this result, we refer to Proposition 1 in Beck et al. (2025). 
+
+Proposition 1. For all ℓ ∈ L , let vℓ := min x∈X {c⊤x + Φ ℓ(x)}. Then, vℓ is a valid lower bound for the optimal objective function value of Problem (2) .
+
+The heuristic for Problem (2) is formally stated in Algorithm 2. The method starts by solving |L| deterministic min-max problems. Afterward, we use the solu-tions ( xℓ)ℓ∈L to these problems to compute upper bounds for Problem (2). 
+
+Theorem 2 (See Theorem 1 in Beck et al. (2025)) . Algorithm 2 returns a fea-sible leader’s decision x∗ as well as valid lower and upper bounds L and U for Problem (2) .EXACT AND HEURISTIC METHODS FOR Γ-ROBUST MIN-MAX PROBLEMS 4
+
+Algorithm 2 Heuristic for Γ-Robust Min-Max Problems  
+
+> 1:
+
+Set x∗ ← None , L ← −∞ , and U ← ∞ . 
+
+> 2:
+
+for all ℓ ∈ L do  
+
+> 3:
+
+Compute a solution xℓ to the deterministic min-max problem 
+
+vℓ ← min 
+
+> x∈X
+
+c⊤x + Φ ℓ(x) . 
+
+> 4:
+
+Set L ← max ℓ∈L {vℓ} and i ← 1.  
+
+> 5:
+
+while i ≤ |L| and L < U do  
+
+> 6:
+
+Use Lemma 1 to compute Φ rob (xℓi ).  
+
+> 7:
+
+if c⊤xℓi + Φ rob (xℓi ) < U then  
+
+> 8:
+
+Set x∗ ← xℓi and U ← c⊤x∗ + Φ rob (x∗).  
+
+> 9:
+
+Set i ← i + 1.  
+
+> 10:
+
+return x∗, L, U 
+
+Table 1. The number of instances for which a feasible point with finite gap is found (“feasible”) and the number of instances solved to global optimality (“optimal”) for E, H-BKP , H-IC , and H-GI . For those instances with finite but non-zero gap (“open gap”), also the average gap (“average gap”; in %) is shown. feasible optimal open gap average gap 
+
+E 560 524 36 7.03 
+
+H-BKP 560 554 6 0.08 
+
+H-IC 481 476 5 0.10 
+
+H-GI 560 4 556 100.00 In Beck (2024) and Beck et al. (2025), we further derive sufficient conditions under which Algorithm 2 terminates with a provably globally optimal solution after Line 3, i.e., after only solving deterministic min-max problems. Note that this extends the famous result by Bertsimas and Sim (Bertsimas and Sim 2003) to the Γ-robust min-max setting. 4. Computational Results 
+
+In this article, we report numerical results for 560 instances of the Γ-robust knapsack interdiction problem with continuous deviations ∆ f . Details regarding the generation of the instances and the computational setup can be found in Beck et al. (2025). We compare four solution approaches. The first is the exact branch-and-cut method presented in Section 2 in which we use the problem-tailored cuts derived in Beck et al. (2023a). We refer to this method as E. Moreover, we consider two variants of the heuristic in Algorithm 2—one using the bkpsolver (Weninger and Fukasawa 2023) and one using the branch-and-cut method in Fischetti et al. (2019) to solve the deterministic min-max problems. We refer to these approaches as H-BKP and H-IC , respectively. Finally, we compare our methods to the “Greedy Interdiction” heuristic presented in DeNegre (2011), which we abbreviate as H-GI .Table 1 and Figure 1 summarize our numerical results. All methods except for H-IC find feasible points for all 560 instances within 1 h. On the subset of instances that H-IC can tackle, H-IC performs slightly better than E
+
+in terms of runtimes. Overall, H-GI achieves the smallest runtimes, but its solution quality is rather poor. In contrast, H-BKP not only outperforms E by significant orders of magnitude in terms of runtimes, it also proves global optimality for almost all considered instances. These results indicate that, if efficient black-box solvers REFERENCES 5
+
+(79) 
+
+## E H-BKP H-IC H-GI 
+
+## 0.1 110 100 1000 
+
+Figure 1. Box-plots of the runtimes for E, H-BKP , H-IC , and H-GI . Runtimes (in s) are depicted on a log-scaled y-axis. are available for the deterministic min-max problems, our heuristic can outperform both exact and heuristic benchmark approaches. 5. Summary 
+
+In this article, we summarize selected results from the author’s dissertation (Beck 2024). To this end, we present exact and heuristic solution approaches for mixed-integer linear min-max problems with a Γ-robust treatment of objective uncertainty. The performance of the methods is assessed in a computational study on 560 in-stances of the knapsack interdiction problem. Our results show that the heuristic closes the optimality gap for a significant portion of the considered instances and often practically outperforms both heuristic and exact benchmark approaches. 
+
+References 
+
+Beck, Y. (2024). “Mixed-Integer Optimization Techniques for Robust Bilevel Prob-lems with Here-and-Now Followers”. PhD thesis. Trier University, Department of Mathematics. doi : 10.25353/ubtr- 923d- 98c6- ddfc . url : https://ubt. opus.hbz-nrw.de/frontdoor/index/index/docId/2432 .Beck, Y., I. Ljubi´ c, and M. Schmidt (2023a). “Exact methods for discrete Γ-robust interdiction problems with an application to the bilevel knapsack problem”. In: 
+
+Mathematical Programming Computation 15.4, pp. 733–782. doi : 10 . 1007 / s12532-023-00244-6 .Beck, Y., I. Ljubi´ c, and M. Schmidt (2025). “Heuristic Methods for Γ-Robust Mixed-Integer Linear Bilevel Problems”. In: INFORMS Journal on Computing .
+
+doi : 10.1287/ijoc.2023.0239 .Beck, Y., I. Ljubi´ c, and M. Schmidt (2023b). “A survey on bilevel optimization un-der uncertainty”. In: European Journal of Operational Research 311.2, pp. 401– 426. doi : 10.1016/j.ejor.2023.01.008 .Bertsimas, D. and M. Sim (2003). “Robust discrete optimization and network flows”. In: Mathematical Programming 98, pp. 49–71. doi : 10.1007/s10107-003-0396-4 .Dempe, S. (2020). “Bilevel Optimization: Theory, Algorithms, Applications and a Bibliography”. In: Bilevel Optimization: Advances and Next Challenges . Ed. by S. Dempe and A. Zemkoho. Springer International Publishing, pp. 581–672. doi :
+
+10.1007/978-3-030-52119-6_20 .REFERENCES 6
+
+DeNegre, S. T. (2011). “Interdiction and Discrete Bilevel Linear Programming”. PhD thesis. Lehigh University. url : https://coral.ise.lehigh.edu/~ted/ files/papers/ScottDeNegreDissertation11.pdf .Fischetti, M., I. Ljubi´ c, M. Monaci, and M. Sinnl (2019). “Interdiction Games and Monotonicity, with Application to Knapsack Problems”. In: INFORMS Journal on Computing 31.2, pp. 390–410. doi : 10.1287/ijoc.2018.0831 .Kleinert, T., M. Labb´ e, I. Ljubi´ c, and M. Schmidt (2021). “A Survey on Mixed-Integer Programming Techniques in Bilevel Optimization”. In: EURO Journal on Computational Optimization 9. doi : 10.1016/j.ejco.2021.100007 .Weninger, N. and R. Fukasawa (2023). “A Fast Combinatorial Algorithm for the Bilevel Knapsack Problem with Interdiction Constraints”. In: Integer Program-ming and Combinatorial Optimization . Ed. by A. Del Pia and V. Kaibel. Vol. 13904. Lecture Notes in Computer Science, pp. 438–452. doi : 10.1007/978- 3- 031-32726-1_31 .
