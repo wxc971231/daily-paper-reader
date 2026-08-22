@@ -1,0 +1,39 @@
+{
+  "label": "2026-08-22",
+  "date": "2026-08-22",
+  "generated_at": "2026-08-22T20:18:33",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202608/22/2608.16265v1-examodelsjl-an-algebraic-modeling-system-for-nonlinear-programming-on-gpus",
+      "section": "deep",
+      "title_en": "ExaModels.jl: an Algebraic Modeling System for Nonlinear Programming on GPUs",
+      "authors": "Sungho Shin, Michel Schanen, François Pacaud, Alexis Montoison, Mihai Anitescu",
+      "date": "2026-08-17",
+      "pdf": "https://arxiv.org/pdf/2608.16265v1",
+      "score": "8.0",
+      "evidence": "面向非线性规划建模的代数建模系统，利用重复可分结构提升求解速度",
+      "tldr": "大规模非线性规划常具备部分可分和重复结构，但现有代数建模系统未加以利用。ExaModels.jl基于Julia，通过单指令多数据抽象将问题表示为少量重复模式，并在编译期生成专用评估核，从而在GPU上并行计算目标、约束及导数。在最大Luksan-Vlcek实例上，GPU稀疏Hessian评估比单线程CPU快76倍，COPS快30倍，PGLIB-OPF快7.3倍。该并行化策略使评估时间随数据点数量呈O(1)增长，展示了结合编译期结构分析与GPU并行能极大提升非线性规划评估性能。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large-scale nonlinear programs almost always exhibit partially separable and repetitive structure, yet most existing algebraic modeling systems do not take advantage of it. A nonlinear optimization solver queries the objective, the constraints, and their derivatives at every iteration, so the speed of these evaluations bears directly on the overall solution time. We present ExaModels.jl, a Julia-based algebraic modeling system that exploits this structure to evaluate the objective, the constraints, and their derivatives in parallel. At its core is a single-instruction, multiple-data abstraction that represents a nonlinear program as a small number of algebraic patterns, each repeated over many data points. Because the patterns are visible at compile time, a specialized model and derivative evaluation kernel is compiled for each pattern. Applying that kernel independently across the data points maps naturally onto GPU parallelism and, with sufficiently many threads, yields O(1) evaluation time regardless of the number of data points. On the largest instances of the Luksan-Vlcek library, GPU execution speeds up sparse Hessian evaluation by 76x over single-threaded CPU evaluation, and by 30x on COPS and 7.3x on PGLIB-OPF.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/22/2608.14953v1-t-llm-compiler-trusted-llm-based-code-optimization-and-verification-framework",
+      "section": "quick",
+      "title_en": "T-LLM Compiler: Trusted LLM-based Code Optimization and Verification Framework",
+      "authors": "Zahra Fazel, Sunanda Gamage, Shayan Shirahmad Gale Bagi, Amir H. Ashouri, Tomasz S. Czajkowski, Bryan Chan, Reza Azimi, Yaoqing Gao",
+      "date": "2026-08-15",
+      "pdf": "https://arxiv.org/pdf/2608.14953v1",
+      "score": "6.0",
+      "evidence": "利用大语言模型自动进行代码变换与优化，并结合验证保证正确性",
+      "tldr": "LLM在代码优化领域展现出潜力，但现有方法无法独立验证变换正确性。T-LLM Compiler提出协作机制，融合LLM高层变换、传统编译器和形式化验证工具，支持迭代优化中的纠正操作。在PolyBench/C基准测试中，优化正确率高达83.3%，相对标准基线平均加速26.7%。该框架提升了LLM代码优化的可信度，并已开源供社区使用。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Recent advances in Large Language Models (LLMs) have opened opportunities to apply high-level code transformations to the field of code optimization, and it has since emerged as one of the most fundamental tasks for LLMs to perform; however, at present, LLMs struggle to apply wide-ranging code optimization tasks due to both the complexity of the code and the inability to independently verify the correctness of the transformations. In this paper, we present the Trusted LLM (T-LLM) Compiler, which proposes an advancement in compiler technology through a collaborative effort involving high-level LLM code transformations, traditional compilers, and verification tools. Experimental results reveal that it can significantly improve code correctness when tested on a set of PolyBench/C benchmarks. Our approach facilitates iterative code optimization efforts with verification strategies that enable corrective actions. Through this approach, T-LLM Compiler achieves code optimization accuracy of up to 83.3% and a speedup of up to 16.1\\% on the PolyBench/C benchmarks, with the transformed code reaching an average of 26.7% speedup wrt standard baselines. Additionally, we release the project's source code to the open-source community.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
