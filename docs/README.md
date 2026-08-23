@@ -6,26 +6,24 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-22
-- 运行时间：2026-08-22 20:18:28 UTC
+- 最新运行日期：2026-08-23
+- 运行时间：2026-08-23 19:55:26 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：1
+- 本次总论文数：1
+- 精读区：0
 - 速读区：1
 
 ### 今日简报（AI）
-今日精读GPU非线性规划建模系统ExaModels.jl（8.0/10），并速读LLM代码优化与验证框架T-LLM Compiler（6.0/10）。最值得关注的是ExaModels.jl在GPU上代数建模的高效实现，或可大幅提升大规模优化问题求解体验。建议普通读者优先了解该工具的实际应用场景，后续可深入对比其与现有建模语言的性能差异。
-- 详情：[/202608/22/README](/202608/22/README)
+今日速读1篇论文，核心聚焦物理设计算法的目标驱动演化。值得关注的方向：用目标驱动替代手工算法先验来演进设计算法。建议后续可精读该文，并结合自身场景评估实用性。
+- 详情：[/202608/23/README](/202608/23/README)
 
 ### 精读区论文标签
-1. [ExaModels.jl: an Algebraic Modeling System for Nonlinear Programming on GPUs](/202608/22/2608.16265v1-examodelsjl-an-algebraic-modeling-system-for-nonlinear-programming-on-gpus)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：面向非线性规划建模的代数建模系统，利用重复可分结构提升求解速度
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [T-LLM Compiler: Trusted LLM-based Code Optimization and Verification Framework](/202608/22/2608.14953v1-t-llm-compiler-trusted-llm-based-code-optimization-and-verification-framework)  
+1. [GoalEvolve: From Handcrafted Algorithm Priors to Goal-Driven Evolution of Physical Design Algorithms](/202608/23/2608.16733v1-goalevolve-from-handcrafted-algorithm-priors-to-goal-driven-evolution-of-physical-design-algorithms)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：利用大语言模型自动进行代码变换与优化，并结合验证保证正确性
+   evidence：面向多阶段优化流程的算法自动进化与目标驱动改进
 
 
 <div class="dpr-home-promo-card">

@@ -1,0 +1,24 @@
+{
+  "label": "2026-08-23",
+  "date": "2026-08-23",
+  "generated_at": "2026-08-23T19:55:30",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202608/23/2608.16733v1-goalevolve-from-handcrafted-algorithm-priors-to-goal-driven-evolution-of-physical-design-algorithms",
+      "section": "quick",
+      "title_en": "GoalEvolve: From Handcrafted Algorithm Priors to Goal-Driven Evolution of Physical Design Algorithms",
+      "authors": "Haixu Liu, Lei Zhou, Yuhao Ren, Yumao Wu, Zhiang Wang",
+      "date": "2026-08-17",
+      "pdf": "https://arxiv.org/pdf/2608.16733v1",
+      "score": "6.0",
+      "evidence": "面向多阶段优化流程的算法自动进化与目标驱动改进",
+      "tldr": "物理设计算法在多阶段流程中，阶段局部优化可能最终失效，现有演化框架依赖局部目标或模糊反馈，难以保证最终QoR。GoalEvolve将未满足的QoR目标转为归一化差距，定位瓶颈阶段，经LLM教师指导搜索，学生代理全流程验证。在ASAP7设计上平均改善TNS 30.67%，降低泄漏和动态功耗21.18%与9.42%，优于默认OpenROAD及Codex模式。由此使演化对最终质量负责，为物理设计优化提供新路径。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Physical design algorithms operate within tightly coupled, multi-stage optimization flows, where stage-local gains may vanish or induce downstream degradation. Existing program-evolution frameworks often rely on stage-local objectives or undifferentiated multi-metric feedback, which neither guarantee better final results nor identify which unmet requirement should guide the next iteration. We present GoalEvolve, a goal-driven framework that makes physical design algorithm evolution accountable for the final quality of results (QoR) of the complete flow. Given a multi-objective QoR target region, GoalEvolve converts unmet requirements into normalized target gaps, identifies the dominant bottleneck, and uses stage-resolved checkpoint evidence to locate the responsible stage. An LLM-based Teacher then narrows the search to a relevant algorithmic decision and source region, while parallel Student agents implement and validate hypotheses through full-flow evaluation. Local effects, optimization debt, and downstream retention are retained as mechanism evidence for subsequent evolution. Across eight ASAP7 designs, GoalEvolve improves post-route TNS by 30.67% on average and reduces leakage and dynamic power by 21.18% and 9.42% versus default OpenROAD. Relative to commercial-tool goals, it closes 62.20% of the normalized power gap on power-dominant designs, surpasses the TNS goals on both timing-dominant designs, and closes 32.48% of the equal-weight timing-power gap on joint designs. Across all three designs evaluated against Codex goal mode under matched budgets, GoalEvolve further improves TNS by 26.46% while reducing leakage and dynamic power by 12.38% and 0.76%, respectively.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

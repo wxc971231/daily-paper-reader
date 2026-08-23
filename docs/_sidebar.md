@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-08-23 <!--dpr-date:20260823-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/23/2608.16733v1-goalevolve-from-handcrafted-algorithm-priors-to-goal-driven-evolution-of-physical-design-algorithms" data-sidebar-item="{&quot;title&quot;: &quot;GoalEvolve: From Handcrafted Algorithm Priors to Goal-Driven Evolution of Physical Design Algorithms&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.16733v1-goalevolve-from-handcrafted-algorithm-priors-to-goal-driven-evolution-of-physical-design-algorithms&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;面向多阶段优化流程的算法自动进化与目标驱动改进&quot;}">GoalEvolve: From Handcrafted Algorithm Priors to Goal-Driven Evolution of Physical Design Algorithms</a>
   * 2026-08-22 <!--dpr-date:20260822-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/22/2608.16265v1-examodelsjl-an-algebraic-modeling-system-for-nonlinear-programming-on-gpus" data-sidebar-item="{&quot;title&quot;: &quot;ExaModels.jl: an Algebraic Modeling System for Nonlinear Programming on GPUs&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.16265v1-examodelsjl-an-algebraic-modeling-system-for-nonlinear-programming-on-gpus&quot;, &quot;score&quot;: &quot;8.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;面向非线性规划建模的代数建模系统，利用重复可分结构提升求解速度&quot;}">ExaModels.jl: an Algebraic Modeling System for Nonlinear Programming on GPUs</a>

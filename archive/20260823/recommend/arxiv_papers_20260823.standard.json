@@ -1,0 +1,57 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-23T19:54:44.670155+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.16733v1",
+      "source": "arxiv",
+      "title": "GoalEvolve: From Handcrafted Algorithm Priors to Goal-Driven Evolution of Physical Design Algorithms",
+      "abstract": "Physical design algorithms operate within tightly coupled, multi-stage optimization flows, where stage-local gains may vanish or induce downstream degradation. Existing program-evolution frameworks often rely on stage-local objectives or undifferentiated multi-metric feedback, which neither guarantee better final results nor identify which unmet requirement should guide the next iteration. We present GoalEvolve, a goal-driven framework that makes physical design algorithm evolution accountable for the final quality of results (QoR) of the complete flow. Given a multi-objective QoR target region, GoalEvolve converts unmet requirements into normalized target gaps, identifies the dominant bottleneck, and uses stage-resolved checkpoint evidence to locate the responsible stage. An LLM-based Teacher then narrows the search to a relevant algorithmic decision and source region, while parallel Student agents implement and validate hypotheses through full-flow evaluation. Local effects, optimization debt, and downstream retention are retained as mechanism evidence for subsequent evolution. Across eight ASAP7 designs, GoalEvolve improves post-route TNS by 30.67% on average and reduces leakage and dynamic power by 21.18% and 9.42% versus default OpenROAD. Relative to commercial-tool goals, it closes 62.20% of the normalized power gap on power-dominant designs, surpasses the TNS goals on both timing-dominant designs, and closes 32.48% of the equal-weight timing-power gap on joint designs. Across all three designs evaluated against Codex goal mode under matched budgets, GoalEvolve further improves TNS by 26.46% while reducing leakage and dynamic power by 12.38% and 0.76%, respectively.",
+      "authors": [
+        "Haixu Liu",
+        "Lei Zhou",
+        "Yuhao Ren",
+        "Yumao Wu",
+        "Zhiang Wang"
+      ],
+      "primary_category": "cs.AR",
+      "categories": [
+        "cs.AR",
+        "cs.AI"
+      ],
+      "published": "2026-08-17T15:45:33+00:00",
+      "link": "https://arxiv.org/pdf/2608.16733v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "automatic goal-driven evolution of optimization algorithms for multi-stage flows",
+      "llm_evidence_cn": "面向多阶段优化流程的算法自动进化与目标驱动改进",
+      "llm_evidence": "面向多阶段优化流程的算法自动进化与目标驱动改进",
+      "canonical_evidence": "面向多阶段优化流程的算法自动进化与目标驱动改进",
+      "llm_tldr_en": "GoalEvolve makes evolution of physical design algorithms accountable to final flow QoR by converting unmet requirements into target gaps and identifying dominant bottlenecks. Goal-driven feedback replaces handcrafted priors, improving multi-stage optimization.",
+      "llm_tldr_cn": "物理设计算法常运行在多阶段紧密耦合的优化流程中，阶段局部改进可能失效甚至损害最终结果，因此需要能对最终质量负责的算法进化机制。作者提出GoalEvolve，将未满足的多目标需求转换为归一化目标差距，识别主导瓶颈并在阶段层面生成目标驱动的进化反馈，替代手工设计的算法先验。该方法让算法进化以完整流程的最终QoR为核心，减轻对手工先验的依赖，为自动生成更优优化算法提供了新范式。",
+      "llm_tldr": "物理设计算法常运行在多阶段紧密耦合的优化流程中，阶段局部改进可能失效甚至损害最终结果，因此需要能对最终质量负责的算法进化机制。作者提出GoalEvolve，将未满足的多目标需求转换为归一化目标差距，识别主导瓶颈并在阶段层面生成目标驱动的进化反馈，替代手工设计的算法先验。该方法让算法进化以完整流程的最终QoR为核心，减轻对手工先验的依赖，为自动生成更优优化算法提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
