@@ -6,24 +6,22 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-23
-- 运行时间：2026-08-23 19:55:26 UTC
+- 最新运行日期：2026-08-24
+- 运行时间：2026-08-24 20:22:12 UTC
 - 运行状态：成功
-- 本次总论文数：1
+- 本次总论文数：0
 - 精读区：0
-- 速读区：1
+- 速读区：0
 
 ### 今日简报（AI）
-今日速读1篇论文，核心聚焦物理设计算法的目标驱动演化。值得关注的方向：用目标驱动替代手工算法先验来演进设计算法。建议后续可精读该文，并结合自身场景评估实用性。
-- 详情：[/202608/23/README](/202608/23/README)
+> 今日无新推荐，系统未产出可展示论文。
+- 详情：[/202608/24/README](/202608/24/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [GoalEvolve: From Handcrafted Algorithm Priors to Goal-Driven Evolution of Physical Design Algorithms](/202608/23/2608.16733v1-goalevolve-from-handcrafted-algorithm-priors-to-goal-driven-evolution-of-physical-design-algorithms)  
-   标签：评分：6.0/10、query:llm-opt-code
-   evidence：面向多阶段优化流程的算法自动进化与目标驱动改进
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
