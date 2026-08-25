@@ -1,0 +1,54 @@
+{
+  "label": "2026-08-25",
+  "date": "2026-08-25",
+  "generated_at": "2026-08-25T20:45:29",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202608/25/2608.23353v1-formuevo-llm-guided-evolution-for-discovering-solver-efficient-mixed-integer-programming-formulations",
+      "section": "deep",
+      "title_en": "FormuEvo: LLM-Guided Evolution for Discovering Solver-Efficient Mixed-Integer Programming Formulations",
+      "authors": "Haofeng Yuan, Jianing Peng, Jieyi Bi, Ni Zhang, Shiji Song, Zhiguang Cao",
+      "date": "2026-08-24",
+      "pdf": "https://arxiv.org/pdf/2608.23353v1",
+      "score": "9.0",
+      "evidence": "直接针对运筹学中LLM引导的高效混合整数规划形式发现",
+      "tldr": "混合整数规划（MIP）是运筹与工业优化的核心。现有LLM自动建模侧重语义正确性而忽视求解效率。FormuEvo提出LLM引导的进化框架，将MIP公式设计视为符号空间进化优化，通过求解器统计作为语言梯度进行定向改进，并利用记忆实现策略复用。实验表明其发现的公式较专家设计和LLM方法最高加速5.5倍，并能跨问题迁移。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Mixed-integer programming (MIP) lies at the core of operations research and industrial optimization. While large language models (LLMs) have recently shown promise in automated MIP modeling from natural language, they prioritize semantic correctness but overlook formulation strength, severely bottlenecking the efficiency of downstream solvers. We propose FormuEvo, an LLM-guided evolutionary framework for automated discovery of solver-efficient MIP formulations. FormuEvo frames MIP formulation design as evolutionary optimization over the symbolic space of MIP formulations, represented as executable modeling programs, by iteratively generating, evaluating, and selecting stronger candidates via LLM-driven crossover, mutation, and repair operations. To move beyond blind exploration, FormuEvo introduces a solver-informed diagnosis mechanism that exploits fine-grained solver statistics as verbal gradients for targeted refinement. Additionally, a structured memory abstracts prior experience into reusable modeling strategies, avoiding redundant exploration while enabling zero-shot transfer to unseen problems and bootstrapping smaller LLMs. Experiments across diverse linear and non-linear problems demonstrate that FormuEvo discovers formulations that significantly outperform both expert-designed formulations and existing LLM-based approaches, accelerating solvers by up to 5.5$\\times$, with distilled knowledge transferring effectively across problems and model scales.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/25/2608.21897v1-from-solver-feedback-to-faithful-plans-multi-role-reinforcement-learning-for-symbolic-planning",
+      "section": "deep",
+      "title_en": "From Solver Feedback to Faithful Plans: Multi-Role Reinforcement Learning for Symbolic Planning",
+      "authors": "Chenghao Zhang, Yikai Mao, Shanqi Liu, Haoyu Gao, SaiSai Hu, Dan Roth",
+      "date": "2026-08-22",
+      "pdf": "https://arxiv.org/pdf/2608.21897v1",
+      "score": "8.0",
+      "evidence": "利用求解器反馈将自然语言转换为PDDL符号规划，符合基于LLM的约束规划建模",
+      "tldr": "可靠规划需要将自然语言指令转换为可执行的符号规范，但大语言模型在没有人工PDDL标注时表现脆弱，且可能利用求解器成功而非语义忠实。本文提出一种基于求解器反馈的多角色强化学习框架，让单个语言模型同时充当Actor、Judge和Editor，分别负责生成、验证和有界诊断修正。在PlanBench基准上，平均成功率从基线LLM+P的35.5%提升到70.8%，忠实成功率达到66.3%，语义漂移率降至6.4%。通过将求解器反馈分解为生成、验证和修复角色，该方法在无需人工演示的情况下实现了更可扩展和忠实的符号规划。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Reliable planning requires converting natural-language instructions into executable symbolic specifications, yet large language models remain brittle without costly PDDL annotations and may exploit solver success in semantically unfaithful ways. We study how to learn faithful natural-language-to-PDDL formalization using only solver feedback, without human-written demonstrations. We propose a solvergrounded multi-role reinforcement learning framework where a single language model acts as an Actor, Judge, and Editor for generation, verification, and repair. The Actor proposes PDDL specifications, the Judge provides a solver-calibrated quality signal, and the Editor performs bounded diagnostic-conditioned refinement. On PlanBench, our method improves average success from 35.5% for LLM+P to 70.8%, achieves 66.3% faithful success, and reduces semantic drift to 6.4%. These results show that organizing solver feedback into generation, verification, and repair roles enables more scalable and faithful annotation-free symbolic planning",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/25/2608.19784v1-praxis-graph-grounded-tacit-knowledge-for-domain-code-generation",
+      "section": "quick",
+      "title_en": "PRAXIS: Graph-Grounded Tacit Knowledge for Domain Code Generation",
+      "authors": "Xue Jiang, Tianyu Zhang, Lingwei Wu, Ziyu Wang, Ge Li, Yuan Sui, Hao Zhu, Wenpin Jiao, Zhi Jin, Yihong Dong",
+      "date": "2026-08-20",
+      "pdf": "https://arxiv.org/pdf/2608.19784v1",
+      "score": "6.0",
+      "evidence": "通过图形化隐性知识提取提升领域代码生成能力，可支撑优化问题专用代码生成",
+      "tldr": "LLM智能体通用代码生成能力强，但缺乏领域隐性知识而难以生成领域代码。PRAXIS通过模拟人类开发流程从代码库中提取隐性知识，将其结构化表示在依赖图上，并在编码时主动召回。实验证明其在领域代码生成上超越现有SOTA方法，可无缝集成多种智能体框架，性能随实践积累持续提升。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "LLM agents have achieved strong performance on general software engineering tasks, yet struggle with domain-specific code generation. We identify the root cause as the agent's lack of tacit knowledge, including domain-specific business rules, interface contracts, and operational conventions that developers internalize through practice but never document. This knowledge is deeply buried beneath the domain code, dispersed across code entities and their dependency relations, and invisible to the agent that lacks it. These properties make tacit knowledge inherently difficult to retrieve or learn. In this work, we propose PRAXIS, a framework that enables agents to systematically extract, represent, and reuse tacit knowledge for domain code generation. PRAXIS acquires tacit knowledge by simulating human development workflows within the target codebase, distills it into structured units organized on the code dependency graph, and proactively surfaces it to the agent at the point of code interaction. Extensive experiments demonstrate that PRAXIS outperforms state-of-the-art agents equipped with powerful agentic search capabilities, as well as experience-based and skill-based methods. The approach integrates seamlessly into various agent frameworks and LLMs with consistent performance improvements, and supports continual evolution with performance steadily scaling as practice accumulates.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

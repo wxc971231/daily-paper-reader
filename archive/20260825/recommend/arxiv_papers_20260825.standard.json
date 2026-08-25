@@ -1,0 +1,141 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-25T20:43:18.795306+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2608.23353v1",
+      "source": "arxiv",
+      "title": "FormuEvo: LLM-Guided Evolution for Discovering Solver-Efficient Mixed-Integer Programming Formulations",
+      "abstract": "Mixed-integer programming (MIP) lies at the core of operations research and industrial optimization. While large language models (LLMs) have recently shown promise in automated MIP modeling from natural language, they prioritize semantic correctness but overlook formulation strength, severely bottlenecking the efficiency of downstream solvers. We propose FormuEvo, an LLM-guided evolutionary framework for automated discovery of solver-efficient MIP formulations. FormuEvo frames MIP formulation design as evolutionary optimization over the symbolic space of MIP formulations, represented as executable modeling programs, by iteratively generating, evaluating, and selecting stronger candidates via LLM-driven crossover, mutation, and repair operations. To move beyond blind exploration, FormuEvo introduces a solver-informed diagnosis mechanism that exploits fine-grained solver statistics as verbal gradients for targeted refinement. Additionally, a structured memory abstracts prior experience into reusable modeling strategies, avoiding redundant exploration while enabling zero-shot transfer to unseen problems and bootstrapping smaller LLMs. Experiments across diverse linear and non-linear problems demonstrate that FormuEvo discovers formulations that significantly outperform both expert-designed formulations and existing LLM-based approaches, accelerating solvers by up to 5.5$\\times$, with distilled knowledge transferring effectively across problems and model scales.",
+      "authors": [
+        "Haofeng Yuan",
+        "Jianing Peng",
+        "Jieyi Bi",
+        "Ni Zhang",
+        "Shiji Song",
+        "Zhiguang Cao"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.NE"
+      ],
+      "published": "2026-08-24T15:01:28+00:00",
+      "link": "https://arxiv.org/pdf/2608.23353v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Directly addresses LLM-guided discovery of solver-efficient MIP formulations for operations research",
+      "llm_evidence_cn": "直接针对运筹学中LLM引导的高效混合整数规划形式发现",
+      "llm_evidence": "直接针对运筹学中LLM引导的高效混合整数规划形式发现",
+      "canonical_evidence": "直接针对运筹学中LLM引导的高效混合整数规划形式发现",
+      "llm_tldr_en": "The paper proposes FormuEvo, an LLM-guided evolutionary framework that searches for solver-efficient MIP formulations represented as executable modeling programs. It addresses the limitation that LLM-generated MIP models prioritize semantic correctness over formulation strength. Results show improved downstream solver efficiency, directly aligning with LLM-based OR modeling and solving code generation.",
+      "llm_tldr_cn": "混合整数规划（MIP）是运筹优化的核心，现有LLM自动建模方法只关注语义正确性，忽视形式强度，严重制约求解器效率。该文提出FormuEvo，将MIP形式设计建模为符号空间上的演化优化，用可执行的建模程序表示，并通过LLM驱动的交叉、变异和选择迭代生成更强候选。实验表明，FormuEvo发现的形式能显著提升下游求解器效率。这项工作直接推进了LLM用于运筹优化问题建模与求解代码生成的研究。",
+      "llm_tldr": "混合整数规划（MIP）是运筹优化的核心，现有LLM自动建模方法只关注语义正确性，忽视形式强度，严重制约求解器效率。该文提出FormuEvo，将MIP形式设计建模为符号空间上的演化优化，用可执行的建模程序表示，并通过LLM驱动的交叉、变异和选择迭代生成更强候选。实验表明，FormuEvo发现的形式能显著提升下游求解器效率。这项工作直接推进了LLM用于运筹优化问题建模与求解代码生成的研究。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.21897v1",
+      "source": "arxiv",
+      "title": "From Solver Feedback to Faithful Plans: Multi-Role Reinforcement Learning for Symbolic Planning",
+      "abstract": "Reliable planning requires converting natural-language instructions into executable symbolic specifications, yet large language models remain brittle without costly PDDL annotations and may exploit solver success in semantically unfaithful ways. We study how to learn faithful natural-language-to-PDDL formalization using only solver feedback, without human-written demonstrations. We propose a solvergrounded multi-role reinforcement learning framework where a single language model acts as an Actor, Judge, and Editor for generation, verification, and repair. The Actor proposes PDDL specifications, the Judge provides a solver-calibrated quality signal, and the Editor performs bounded diagnostic-conditioned refinement. On PlanBench, our method improves average success from 35.5% for LLM+P to 70.8%, achieves 66.3% faithful success, and reduces semantic drift to 6.4%. These results show that organizing solver feedback into generation, verification, and repair roles enables more scalable and faithful annotation-free symbolic planning",
+      "authors": [
+        "Chenghao Zhang",
+        "Yikai Mao",
+        "Shanqi Liu",
+        "Haoyu Gao",
+        "SaiSai Hu",
+        "Dan Roth"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-22T10:18:04+00:00",
+      "link": "https://arxiv.org/pdf/2608.21897v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM converts natural language to PDDL via solver feedback, aligning with constraint programming modeling with LLM",
+      "llm_evidence_cn": "利用求解器反馈将自然语言转换为PDDL符号规划，符合基于LLM的约束规划建模",
+      "llm_evidence": "利用求解器反馈将自然语言转换为PDDL符号规划，符合基于LLM的约束规划建模",
+      "canonical_evidence": "利用求解器反馈将自然语言转换为PDDL符号规划，符合基于LLM的约束规划建模",
+      "llm_tldr_en": "Uses solver feedback in a multi-role RL framework where an LLM acts as Actor, Judge, and Editor to generate faithful natural-language-to-PDDL plans without human annotations, improving reliability on PlanBench.",
+      "llm_tldr_cn": "针对自然语言到PDDL规划建模需要昂贵人工标注且可能语义不忠实的问题，提出求解器反馈驱动的多角色强化学习框架，由同一语言模型分别扮演Actor、Judge和Editor完成生成、校验与修复，仅凭求解器反馈即可学习忠实建模。在PlanBench上的实验表明该方法能有效提升规划正确性与语义保真度，为LLM辅助构建可执行优化/规划模型提供了新范式。",
+      "llm_tldr": "针对自然语言到PDDL规划建模需要昂贵人工标注且可能语义不忠实的问题，提出求解器反馈驱动的多角色强化学习框架，由同一语言模型分别扮演Actor、Judge和Editor完成生成、校验与修复，仅凭求解器反馈即可学习忠实建模。在PlanBench上的实验表明该方法能有效提升规划正确性与语义保真度，为LLM辅助构建可执行优化/规划模型提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "constraint programming modeling with LLM",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.19784v1",
+      "source": "arxiv",
+      "title": "PRAXIS: Graph-Grounded Tacit Knowledge for Domain Code Generation",
+      "abstract": "LLM agents have achieved strong performance on general software engineering tasks, yet struggle with domain-specific code generation. We identify the root cause as the agent's lack of tacit knowledge, including domain-specific business rules, interface contracts, and operational conventions that developers internalize through practice but never document. This knowledge is deeply buried beneath the domain code, dispersed across code entities and their dependency relations, and invisible to the agent that lacks it. These properties make tacit knowledge inherently difficult to retrieve or learn. In this work, we propose PRAXIS, a framework that enables agents to systematically extract, represent, and reuse tacit knowledge for domain code generation. PRAXIS acquires tacit knowledge by simulating human development workflows within the target codebase, distills it into structured units organized on the code dependency graph, and proactively surfaces it to the agent at the point of code interaction. Extensive experiments demonstrate that PRAXIS outperforms state-of-the-art agents equipped with powerful agentic search capabilities, as well as experience-based and skill-based methods. The approach integrates seamlessly into various agent frameworks and LLMs with consistent performance improvements, and supports continual evolution with performance steadily scaling as practice accumulates.",
+      "authors": [
+        "Xue Jiang",
+        "Tianyu Zhang",
+        "Lingwei Wu",
+        "Ziyu Wang",
+        "Ge Li",
+        "Yuan Sui",
+        "Hao Zhu",
+        "Wenpin Jiao",
+        "Zhi Jin",
+        "Yihong Dong"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-08-20T08:28:28+00:00",
+      "link": "https://arxiv.org/pdf/2608.19784v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Graph-grounded tacit knowledge extraction improves domain code generation, enabling LLM generation of specialized optimization code",
+      "llm_evidence_cn": "通过图形化隐性知识提取提升领域代码生成能力，可支撑优化问题专用代码生成",
+      "llm_evidence": "通过图形化隐性知识提取提升领域代码生成能力，可支撑优化问题专用代码生成",
+      "canonical_evidence": "通过图形化隐性知识提取提升领域代码生成能力，可支撑优化问题专用代码生成",
+      "llm_tldr_en": "PRAXIS enables LLM agents to extract and reuse tacit knowledge from domain code via graph grounding, improving domain-specific code generation.",
+      "llm_tldr_cn": "该论文指出LLM智能体在领域特定代码生成上表现不佳，根本原因是缺乏开发者实践内化的隐性领域知识，如业务规则、接口约定等。为此提出PRAXIS框架，从代码实体及其依赖关系中系统抽取和表示隐性知识，并将其复用于代码生成任务。该方法使智能体能够生成符合领域惯例的代码，在多个领域代码生成基准上优于现有方法。这项工作为运筹学优化问题求解代码的自动生成提供了关键的知识建模与复用技术基础。",
+      "llm_tldr": "该论文指出LLM智能体在领域特定代码生成上表现不佳，根本原因是缺乏开发者实践内化的隐性领域知识，如业务规则、接口约定等。为此提出PRAXIS框架，从代码实体及其依赖关系中系统抽取和表示隐性知识，并将其复用于代码生成任务。该方法使智能体能够生成符合领域惯例的代码，在多个领域代码生成基准上优于现有方法。这项工作为运筹学优化问题求解代码的自动生成提供了关键的知识建模与复用技术基础。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
