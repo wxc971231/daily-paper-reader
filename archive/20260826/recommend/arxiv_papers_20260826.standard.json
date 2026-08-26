@@ -1,0 +1,212 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-26T21:05:17.137592+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.20966v1",
+      "source": "arxiv",
+      "title": "Structured but Fragile: On the Limits of LLMs in Cybersecurity Decision-Making",
+      "abstract": "Large language models (LLMs) are increasingly used in cybersecurity workflows, yet it remains unclear whether they can perform structured security reasoning or merely rely on superficial cues and prior knowledge. We study this question in the context of defence selection over attack graphs derived from real-world threat scenarios, including ransomware, supply-chain compromise, cloud abuse, Kubernetes attacks, POS malware, and ICS/OT intrusion. Given a budget constraint, LLMs must select security controls to minimise attacker success. We compare their strategies against each other and against a game-theoretic optimization baseline used as a normative reference for structured reasoning. Our results show that LLMs exhibit conditional competence. When explicit attack-graph structure is provided, they often produce coherent strategies close to the optimization baseline. However, their capabilities are fragile. LLM behaviour becomes increasingly fragile with graph complexity and is highly sensitive to framing. Small prompt changes can substantially alter rankings, and merely relabeling a poor strategy as ``optimal'' dramatically improves its evaluation. We further observe a non-monotonic relationship between formal risk and LLM judgement: strategies closest to the optimum are not necessarily ranked highest by LLM evaluators. To further probe reasoning ability, we ask LLMs to generate solvers for the same optimization problem. While the generated implementations recover the correct high-level formulation, they scale poorly compared to a purpose-built solver. Overall, our findings show that LLMs can approximate structured cybersecurity reasoning under controlled representations, but do not apply it robustly. This has important implications for the design and evaluation of AI-assisted security decision-support systems.",
+      "authors": [
+        "Pasquale Malacaria",
+        "Yunxiao Zhang"
+      ],
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.AI"
+      ],
+      "published": "2026-08-21T10:39:42+00:00",
+      "link": "https://arxiv.org/pdf/2608.20966v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM generates solutions to a budget-constrained optimization problem",
+      "llm_evidence_cn": "LLM为预算约束优化问题生成解",
+      "llm_evidence": "LLM为预算约束优化问题生成解",
+      "canonical_evidence": "LLM为预算约束优化问题生成解",
+      "llm_tldr_en": "Evaluates LLMs on a budgeted security-control selection optimization problem; they show conditional competence but are fragile compared to a game-theoretic optimization baseline, revealing limitations in structured reasoning.",
+      "llm_tldr_cn": "网络安全防御选择本质上是一个预算约束下的组合优化问题。该文在真实攻击图上要求LLM选取安全控制以最小化攻击者成功率，并与博弈论优化基线对比。结果显示LLM表现出条件性能力，但结构化推理依然脆弱，难以稳定达到最优解。研究揭示LLM直接求解运筹优化问题时需要与符号方法和代码生成结合才能可靠应用。",
+      "llm_tldr": "网络安全防御选择本质上是一个预算约束下的组合优化问题。该文在真实攻击图上要求LLM选取安全控制以最小化攻击者成功率，并与博弈论优化基线对比。结果显示LLM表现出条件性能力，但结构化推理依然脆弱，难以稳定达到最优解。研究揭示LLM直接求解运筹优化问题时需要与符号方法和代码生成结合才能可靠应用。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.17947v1",
+      "source": "arxiv",
+      "title": "Procedural Content Metageneration via Program Search and Continual Abstraction Discovery",
+      "abstract": "Large language models can generate executable programs, which makes it possible to search directly over procedural content generators rather than individual levels. We study this approach in Sokoban, Zelda, Dangerous Dave, and Lode Runner. Each run evolves complete Python generators through language-model mutation and crossover. We introduce Continual Abstraction Discovery, or CAD, which extracts reusable primitives from high-fitness programs into a run-specific helper module. A 2x2 experiment crosses CAD with access to a fixed hand-written domain API. The completed data set contains 160 complete runs, with at least ten 50-generation runs in every cell. CAD raises mean final best fitness in all eight domain and API comparisons. Across all CAD runs, learned libraries are adopted by most later programs and repeatedly rediscover validation, reachability, and structural utilities. These results support that discovering reusable primitives improves evolutionary program search for content generators.",
+      "authors": [
+        "Matthew Siper",
+        "Ahmed Khalifa",
+        "Julian Togelius"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.NE"
+      ],
+      "published": "2026-08-18T16:03:22+00:00",
+      "link": "https://arxiv.org/pdf/2608.17947v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM program search and mutation optimize executable generators",
+      "llm_evidence_cn": "LLM程序搜索与变异优化可执行生成器",
+      "llm_evidence": "LLM程序搜索与变异优化可执行生成器",
+      "canonical_evidence": "LLM程序搜索与变异优化可执行生成器",
+      "llm_tldr_en": "Uses LLM mutation and crossover to evolve Python procedural content generators, with continual abstraction discovery improving mean final fitness in all domain/API comparisons, showing LLM-driven program search can optimize code.",
+      "llm_tldr_cn": "该文利用LLM变异和交叉直接进化完整的Python过程化内容生成器，并提出持续抽象发现(CAD)将高适应度程序中的可复用原语提取到辅助模块。在Sokoban、Zelda等四个游戏域的实验中，CAD在所有八种比较中提升平均最终适应度。结果显示LLM驱动的程序搜索能够自主优化生成代码，该方法可迁移至运筹优化求解代码的自动生成与改进。",
+      "llm_tldr": "该文利用LLM变异和交叉直接进化完整的Python过程化内容生成器，并提出持续抽象发现(CAD)将高适应度程序中的可复用原语提取到辅助模块。在Sokoban、Zelda等四个游戏域的实验中，CAD在所有八种比较中提升平均最终适应度。结果显示LLM驱动的程序搜索能够自主优化生成代码，该方法可迁移至运筹优化求解代码的自动生成与改进。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "large language model optimization code generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.19790v1",
+      "source": "arxiv",
+      "title": "LLMs as Acquisition Policies for Finite-Pool Materials Optimization: A Controlled Study",
+      "abstract": "Discovering materials with desirable properties often requires searching large candidate spaces while experimental or computational evaluations remain costly. Active learning addresses this challenge by using previous observations to select which candidate to evaluate next, typically through probabilistic surrogate models. We investigate whether open-weight large language models (LLMs) can serve as standalone acquisition policies in this setting. We evaluate five LLMs across four retrospective finite-pool materials optimization tasks under different candidate-presentation strategies and compare them with random selection and conventional Gaussian-process methods. LLM policies generally reach the global optimum in fewer iterations than random selection, indicating that they provide a useful acquisition signal without task-specific training. Their performance relative to Gaussian-process methods is mixed: conventional acquisition performs better on most tasks, while LLMs match or outperform it in some settings. Performance varies substantially across tasks, models, initializations, and candidate presentations, with no LLM approach performing best across all tasks. Overall, open-weight LLMs show potential as acquisition policies for finite-pool materials search, although their reliability remains sensitive to the task and to how candidates and scientific context are presented.",
+      "authors": [
+        "Dino-Rober Demir",
+        "Florian Le Bronnec",
+        "Rio Yokota"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-20T08:37:02+00:00",
+      "link": "https://arxiv.org/pdf/2608.19790v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLMs as acquisition policies for finite-pool optimization decision-making",
+      "llm_evidence_cn": "LLM作为有限池优化决策的采集策略",
+      "llm_evidence": "LLM作为有限池优化决策的采集策略",
+      "canonical_evidence": "LLM作为有限池优化决策的采集策略",
+      "llm_tldr_en": "In materials optimization, open-weight LLMs act as acquisition policies to pick the next candidate evaluation, matching or beating random and Gaussian-process baselines on many tasks, though performance depends on candidate presentation.",
+      "llm_tldr_cn": "材料发现中评估候选代价高昂，传统主动学习依赖概率代理模型。该文研究开放权重LLM能否直接作为采集策略，在四个有限池材料优化任务、多种候选呈现策略下与随机和高斯过程基线比较。LLM策略通常以更少迭代找到全局最优，但受呈现方式影响，说明LLM可独立承担优化决策角色，为自动生成优化解开辟新途径。",
+      "llm_tldr": "材料发现中评估候选代价高昂，传统主动学习依赖概率代理模型。该文研究开放权重LLM能否直接作为采集策略，在四个有限池材料优化任务、多种候选呈现策略下与随机和高斯过程基线比较。LLM策略通常以更少迭代找到全局最优，但受呈现方式影响，说明LLM可独立承担优化决策角色，为自动生成优化解开辟新途径。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.21074v1",
+      "source": "arxiv",
+      "title": "PromptResponse: Optimizing Prompts for LLM Coding Tasks",
+      "abstract": "Large language models (LLMs) are increasingly used in research workflows and software development pipelines, yet their output remains sensitive to input prompt variations. This paper presents $\\unicode{x00AB}$PromptResponse$\\unicode{x00BB}$, a controlled study examining how formatting and LLM-based tuning of coding task prompts affect the resulting code's performance, efficiency, and stability. Using five semantically identical yet syntactically distinct variants of the HumanEval dataset$\\unicode{x2014}$baseline, JSON, Markdown, YAML, and an LLM-tuned version$\\unicode{x2014}$we had GPT-4o solve its coding problems over 8200$\\unicode{x00A0}$executions. Our results show that consistent formatting$\\unicode{x2014}$especially JSON$\\unicode{x2014}$improves generation efficiency and syntactic stability, with minor gains in task performance. Conversely, the LLM-tuned prompts resulted in significantly degraded task performance without significant improvements in any other dimension. These findings suggest that low-effort reformatting alone can yield measurable improvements, while tuning must account for model alignment. We conclude our work with providing a set of practical recommendations informed by our results as well as releasing our dataset variants and evaluation pipeline for future work.",
+      "authors": [
+        "Erik Thureck",
+        "Robert Kühnen",
+        "Tim Jacobowitz"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.HC",
+        "cs.SE"
+      ],
+      "published": "2026-08-21T13:16:48+00:00",
+      "link": "https://arxiv.org/pdf/2608.21074v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Controlled study on how prompt formatting and LLM-based tuning affect generated code's performance and stability, directly relevant to code generation using LLM",
+      "llm_evidence_cn": "针对LLM编码任务提示词格式与调优影响的受控研究，直接关系到基于LLM的代码生成",
+      "llm_evidence": "针对LLM编码任务提示词格式与调优影响的受控研究，直接关系到基于LLM的代码生成",
+      "canonical_evidence": "针对LLM编码任务提示词格式与调优影响的受控研究，直接关系到基于LLM的代码生成",
+      "llm_tldr_en": "PromptResponse systematically compares five prompt variants for HumanEval, showing consistent formatting like JSON improves efficiency and stability of LLM-generated code.",
+      "llm_tldr_cn": "该论文针对LLM编码任务对提示词变体高度敏感的问题，设计了受控实验：在HumanEval数据集上构造了五种语义相同但句法不同的提示变体（基线、JSON、Markdown、YAML和LLM调优版），用GPT-4o执行超过8200次求解。结果显示，一致性的格式（特别是JSON）能提升代码生成的效率和稳定性。该发现为面向优化问题求解代码生成的提示工程提供了实证基础和方法论参考。",
+      "llm_tldr": "该论文针对LLM编码任务对提示词变体高度敏感的问题，设计了受控实验：在HumanEval数据集上构造了五种语义相同但句法不同的提示变体（基线、JSON、Markdown、YAML和LLM调优版），用GPT-4o执行超过8200次求解。结果显示，一致性的格式（特别是JSON）能提升代码生成的效率和稳定性。该发现为面向优化问题求解代码生成的提示工程提供了实证基础和方法论参考。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.21631v1",
+      "source": "arxiv",
+      "title": "OpenSCvx: An Open-Source Modular and Extensible Nonlinear Trajectory Planning Package",
+      "abstract": "Trajectory optimization computes dynamically feasible motions that enable autonomous systems to accomplish complex tasks while satisfying operational and environmental constraints. This tutorial presents OpenSCvx, an open-source Python framework that bridges the gap between high-level problem specification and efficient numerical optimization. Rather than requiring users to derive solver-specific mathematical formulations, OpenSCvx provides a symbolic modeling interface that automatically constructs and solves trajectory optimization problems from modular descriptions of objectives, dynamics, and constraints. Beyond simplifying problem formulation, OpenSCvx supports (i) continuous-time constraint modeling, (ii) temporal and logical specifications, (iii) automatic vectorization for scalable and batched optimization, and (iv) a modular architecture that enables new algorithms, models, and solver backends to be incorporated with minimal effort. These capabilities allow researchers and practitioners to rapidly prototype, solve, and extend state-of-the-art trajectory optimization methods.",
+      "authors": [
+        "Christopher R. Hayner",
+        "Griffin J. Norris",
+        "Fabio Spada",
+        "Samet Uzun",
+        "Avi Mittal",
+        "Behcet Acıkmese",
+        "Karen Leung"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "math.OC"
+      ],
+      "published": "2026-08-21T21:04:36+00:00",
+      "link": "https://arxiv.org/pdf/2608.21631v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Symbolic modeling interface automatically builds and solves trajectory optimization problems from high-level descriptions",
+      "llm_evidence_cn": "符号化建模接口从高层描述自动构建并求解轨迹优化问题",
+      "llm_evidence": "符号化建模接口从高层描述自动构建并求解轨迹优化问题",
+      "canonical_evidence": "符号化建模接口从高层描述自动构建并求解轨迹优化问题",
+      "llm_tldr_en": "OpenSCvx is an open-source Python framework whose symbolic modeling interface automatically constructs and solves trajectory optimization problems from modular objectives, dynamics, and constraints, avoiding solver-specific formulations and supporting continuous-time constraints and temporal/logical specifications.",
+      "llm_tldr_cn": "轨迹优化问题往往需要用户为特定求解器推导数学形式，建模门槛高且难以复用。本文介绍开源Python包OpenSCvx，提供符号化建模接口，能够从目标、动力学和约束的模块化描述自动构建并求解轨迹优化问题，无需用户手写求解器特化公式。工具还支持连续时间约束、时间与逻辑规范等高级建模需求，缩短了高层问题描述与数值优化之间的鸿沟。该工作可作为优化问题自动建模与求解代码生成的通用基础设施和对比基准。",
+      "llm_tldr": "轨迹优化问题往往需要用户为特定求解器推导数学形式，建模门槛高且难以复用。本文介绍开源Python包OpenSCvx，提供符号化建模接口，能够从目标、动力学和约束的模块化描述自动构建并求解轨迹优化问题，无需用户手写求解器特化公式。工具还支持连续时间约束、时间与逻辑规范等高级建模需求，缩短了高层问题描述与数值优化之间的鸿沟。该工作可作为优化问题自动建模与求解代码生成的通用基础设施和对比基准。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

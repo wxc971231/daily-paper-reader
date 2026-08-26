@@ -6,31 +6,38 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-25
-- 运行时间：2026-08-25 20:45:24 UTC
+- 最新运行日期：2026-08-26
+- 运行时间：2026-08-26 21:07:57 UTC
 - 运行状态：成功
-- 本次总论文数：3
-- 精读区：2
-- 速读区：1
+- 本次总论文数：5
+- 精读区：0
+- 速读区：5
 
 ### 今日简报（AI）
-今日精读2篇、速读1篇，聚焦LLM引导的优化与符号规划领域。  
-最值得关注FormuEvo（9.0/10）：用LLM引导进化自动发现求解器友好的混合整数规划公式；Multi-Role RL则为符号规划生成更忠实的计划。  
-建议优先精读FormuEvo，了解如何结合LLM与进化算法提升求解效率。
-- 详情：[/202608/25/README](/202608/25/README)
+- 今日共生成 5 篇推荐（精读 0 篇，速读 5 篇）
+- 速读：《Structured but Fragile: On the Limits of LLMs in Cybersecurity Decision-Making》（7.0/10）, 《Procedural Content Metageneration via Program Search and Continual Abstraction Discovery》（6.0/10）, 《LLMs as Acquisition Policies for Finite-Pool Materials Optimization: A Controlled Study》（6.0/10）
+- 这些结果覆盖了当下较热的方向，建议先看精读区论文的关键问题与方法。
+- 详情：[/202608/26/README](/202608/26/README)
 
 ### 精读区论文标签
-1. [FormuEvo: LLM-Guided Evolution for Discovering Solver-Efficient Mixed-Integer Programming Formulations](/202608/25/2608.23353v1-formuevo-llm-guided-evolution-for-discovering-solver-efficient-mixed-integer-programming-formulations)  
-   标签：评分：9.0/10、query:llm-opt-code
-   evidence：直接针对运筹学中LLM引导的高效混合整数规划形式发现
-2. [From Solver Feedback to Faithful Plans: Multi-Role Reinforcement Learning for Symbolic Planning](/202608/25/2608.21897v1-from-solver-feedback-to-faithful-plans-multi-role-reinforcement-learning-for-symbolic-planning)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：利用求解器反馈将自然语言转换为PDDL符号规划，符合基于LLM的约束规划建模
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [PRAXIS: Graph-Grounded Tacit Knowledge for Domain Code Generation](/202608/25/2608.19784v1-praxis-graph-grounded-tacit-knowledge-for-domain-code-generation)  
+1. [Structured but Fragile: On the Limits of LLMs in Cybersecurity Decision-Making](/202608/26/2608.20966v1-structured-but-fragile-on-the-limits-of-llms-in-cybersecurity-decision-making)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：LLM为预算约束优化问题生成解
+2. [Procedural Content Metageneration via Program Search and Continual Abstraction Discovery](/202608/26/2608.17947v1-procedural-content-metageneration-via-program-search-and-continual-abstraction-discovery)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：通过图形化隐性知识提取提升领域代码生成能力，可支撑优化问题专用代码生成
+   evidence：LLM程序搜索与变异优化可执行生成器
+3. [LLMs as Acquisition Policies for Finite-Pool Materials Optimization: A Controlled Study](/202608/26/2608.19790v1-llms-as-acquisition-policies-for-finite-pool-materials-optimization-a-controlled-study)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：LLM作为有限池优化决策的采集策略
+4. [PromptResponse: Optimizing Prompts for LLM Coding Tasks](/202608/26/2608.21074v1-promptresponse-optimizing-prompts-for-llm-coding-tasks)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：针对LLM编码任务提示词格式与调优影响的受控研究，直接关系到基于LLM的代码生成
+5. [OpenSCvx: An Open-Source Modular and Extensible Nonlinear Trajectory Planning Package](/202608/26/2608.21631v1-openscvx-an-open-source-modular-and-extensible-nonlinear-trajectory-planning-package)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：符号化建模接口从高层描述自动构建并求解轨迹优化问题
 
 
 <div class="dpr-home-promo-card">
