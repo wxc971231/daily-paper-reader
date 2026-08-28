@@ -6,38 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-26
-- 运行时间：2026-08-26 21:07:57 UTC
+- 最新运行日期：2026-08-28
+- 运行时间：2026-08-28 04:00:52 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：0
-- 速读区：5
+- 本次总论文数：3
+- 精读区：1
+- 速读区：2
 
 ### 今日简报（AI）
-- 今日共生成 5 篇推荐（精读 0 篇，速读 5 篇）
-- 速读：《Structured but Fragile: On the Limits of LLMs in Cybersecurity Decision-Making》（7.0/10）, 《Procedural Content Metageneration via Program Search and Continual Abstraction Discovery》（6.0/10）, 《LLMs as Acquisition Policies for Finite-Pool Materials Optimization: A Controlled Study》（6.0/10）
-- 这些结果覆盖了当下较热的方向，建议先看精读区论文的关键问题与方法。
-- 详情：[/202608/26/README](/202608/26/README)
+今日共读3篇论文，其中1篇精读、2篇速读。最值得关注的是精读的《FLARE》，用LLM定理证明验证MILP重构，思路新颖且评分满分；另两篇分别涉及LLM动态算法调度与基于故障代码的鲁棒RL训练。建议优先深入复现FLARE方法，再顺带浏览其余两篇以拓展LLM在优化与代码生成中的交叉应用。
+- 详情：[/202608/28/README](/202608/28/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [FLARE: Verifying MILP Reformulations with LLM-Based Theorem Proving](/202608/28/2608.25220v1-flare-verifying-milp-reformulations-with-llm-based-theorem-proving)  
+   标签：评分：10.0/10、query:llm-opt-code
+   evidence：基于LLM的定理证明验证MILP重构，直接支持运筹建模
 
 ### 速读区论文标签
-1. [Structured but Fragile: On the Limits of LLMs in Cybersecurity Decision-Making](/202608/26/2608.20966v1-structured-but-fragile-on-the-limits-of-llms-in-cybersecurity-decision-making)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：LLM为预算约束优化问题生成解
-2. [Procedural Content Metageneration via Program Search and Continual Abstraction Discovery](/202608/26/2608.17947v1-procedural-content-metageneration-via-program-search-and-continual-abstraction-discovery)  
+1. [Data-Driven Dynamic Algorithm Dispatch with Large Language Models](/202608/28/2608.21584v1-data-driven-dynamic-algorithm-dispatch-with-large-language-models)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：LLM程序搜索与变异优化可执行生成器
-3. [LLMs as Acquisition Policies for Finite-Pool Materials Optimization: A Controlled Study](/202608/26/2608.19790v1-llms-as-acquisition-policies-for-finite-pool-materials-optimization-a-controlled-study)  
+   evidence：用LLM生成动态算法分派启发式
+2. [Robust Code RL via Faulty-Code-Driven Test case Synthesis and Dense Reward Shaping](/202608/28/2608.24135v2-robust-code-rl-via-faulty-code-driven-test-case-synthesis-and-dense-reward-shaping)  
    标签：评分：6.0/10、query:llm-opt-code
-   evidence：LLM作为有限池优化决策的采集策略
-4. [PromptResponse: Optimizing Prompts for LLM Coding Tasks](/202608/26/2608.21074v1-promptresponse-optimizing-prompts-for-llm-coding-tasks)  
-   标签：评分：6.0/10、query:llm-opt-code
-   evidence：针对LLM编码任务提示词格式与调优影响的受控研究，直接关系到基于LLM的代码生成
-5. [OpenSCvx: An Open-Source Modular and Extensible Nonlinear Trajectory Planning Package](/202608/26/2608.21631v1-openscvx-an-open-source-modular-and-extensible-nonlinear-trajectory-planning-package)  
-   标签：评分：6.0/10、query:llm-opt-code
-   evidence：符号化建模接口从高层描述自动构建并求解轨迹优化问题
+   evidence：鲁棒的代码强化学习方法，含测试用例合成与稠密奖励，可直接适用于基于大模型的优化问题代码生成
 
 
 <div class="dpr-home-promo-card">
