@@ -1,0 +1,52 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-29T02:38:57.722797+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2608.27296v1",
+      "source": "arxiv",
+      "title": "LLMs Can Design Near-Optimal OR Algorithms",
+      "abstract": "We ask whether large language models (LLMs) can design effective algorithms for well-specified operations research (OR) problems. We study inventory control, queueing network control, and assortment optimization. We evaluate two levels of LLM use: at level 1, the model receives one problem instance and returns a solution for that instance; at level 2, it receives only the problem class description and broad parameter ranges, and returns an algorithm that maps instance parameters to solutions. Human input is minimal: we give one untuned prompt that describes the problem, and the model has access to a Python sandbox tool with a fixed compute budget.   The strongest model we test, gpt-5.6-sol, matches or outperforms the best existing method on almost all evaluated instances. This holds even at level 2, where the returned algorithm is fixed before seeing the evaluation instances. Performance also improves sharply across models released less than eight months apart, suggesting that this capability is moving quickly. Thus, for the well-specified operations problems we study, a single untuned LLM query can already produce algorithms competitive with specialized methods. These results suggest that frontier LLMs can be a serious empirical baseline for algorithm design in well-specified OR problems.",
+      "authors": [
+        "Jackie Baek"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-08-27T16:01:11+00:00",
+      "link": "https://arxiv.org/pdf/2608.27296v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "LLM generates algorithms that solve OR problems directly from problem class descriptions",
+      "llm_evidence_cn": "LLM仅凭问题类别描述即可生成求解运筹问题的算法",
+      "llm_evidence": "LLM仅凭问题类别描述即可生成求解运筹问题的算法",
+      "canonical_evidence": "LLM仅凭问题类别描述即可生成求解运筹问题的算法",
+      "llm_tldr_en": "Shows LLMs can design near-optimal algorithms for inventory control, queueing networks, and assortment optimization, with gpt-5.6-sol matching or beating existing methods.",
+      "llm_tldr_cn": "论文研究LLM能否为定义良好的运筹问题设计有效算法，覆盖库存控制、排队网络控制和商品组合优化。在仅给定问题类别描述和大致参数范围的二级使用方式下，LLM返回从实例参数到解的映射算法。最强模型gpt-5.6-sol在几乎所有测试实例上达到或超越现有最优方法。这表明LLM能够自动生成求解运筹优化问题的代码/算法，直接契合主题。",
+      "llm_tldr": "论文研究LLM能否为定义良好的运筹问题设计有效算法，覆盖库存控制、排队网络控制和商品组合优化。在仅给定问题类别描述和大致参数范围的二级使用方式下，LLM返回从实例参数到解的映射算法。最强模型gpt-5.6-sol在几乎所有测试实例上达到或超越现有最优方法。这表明LLM能够自动生成求解运筹优化问题的代码/算法，直接契合主题。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

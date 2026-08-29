@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-08-29 <!--dpr-date:20260829-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/29/2608.27296v1-llms-can-design-near-optimal-or-algorithms" data-sidebar-item="{&quot;title&quot;: &quot;LLMs Can Design Near-Optimal OR Algorithms&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.27296v1-llms-can-design-near-optimal-or-algorithms&quot;, &quot;score&quot;: &quot;10.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;LLM仅凭问题类别描述即可生成求解运筹问题的算法&quot;}">LLMs Can Design Near-Optimal OR Algorithms</a>
   * 2026-08-28 <!--dpr-date:20260828-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/28/2608.25220v1-flare-verifying-milp-reformulations-with-llm-based-theorem-proving" data-sidebar-item="{&quot;title&quot;: &quot;FLARE: Verifying MILP Reformulations with LLM-Based Theorem Proving&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.25220v1-flare-verifying-milp-reformulations-with-llm-based-theorem-proving&quot;, &quot;score&quot;: &quot;10.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;基于LLM的定理证明验证MILP重构，直接支持运筹建模&quot;}">FLARE: Verifying MILP Reformulations with LLM-Based Theorem Proving</a>

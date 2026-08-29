@@ -1,0 +1,24 @@
+{
+  "label": "2026-08-29",
+  "date": "2026-08-29",
+  "generated_at": "2026-08-29T02:41:59",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202608/29/2608.27296v1-llms-can-design-near-optimal-or-algorithms",
+      "section": "deep",
+      "title_en": "LLMs Can Design Near-Optimal OR Algorithms",
+      "authors": "Jackie Baek",
+      "date": "2026-08-27",
+      "pdf": "https://arxiv.org/pdf/2608.27296v1",
+      "score": "10.0",
+      "evidence": "LLM仅凭问题类别描述即可生成求解运筹问题的算法",
+      "tldr": "针对库存控制、排队网络控制和品种优化等运筹问题，本工作以极小的人为干预，仅用单个未调优提示词和Python沙箱工具，让大语言模型在实例级或算法级设计求解方案。结果显示，最强模型gpt-5.6-sol几乎在所有测试实例上匹配或超越现有专门方法，甚至在仅见问题描述和参数范围时也能达到该表现。此外，模型能力随发布代际快速提升，说明前沿LLM已可成为良好规范OR问题算法设计的严肃经验基线。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "We ask whether large language models (LLMs) can design effective algorithms for well-specified operations research (OR) problems. We study inventory control, queueing network control, and assortment optimization. We evaluate two levels of LLM use: at level 1, the model receives one problem instance and returns a solution for that instance; at level 2, it receives only the problem class description and broad parameter ranges, and returns an algorithm that maps instance parameters to solutions. Human input is minimal: we give one untuned prompt that describes the problem, and the model has access to a Python sandbox tool with a fixed compute budget.   The strongest model we test, gpt-5.6-sol, matches or outperforms the best existing method on almost all evaluated instances. This holds even at level 2, where the returned algorithm is fixed before seeing the evaluation instances. Performance also improves sharply across models released less than eight months apart, suggesting that this capability is moving quickly. Thus, for the well-specified operations problems we study, a single untuned LLM query can already produce algorithms competitive with specialized methods. These results suggest that frontier LLMs can be a serious empirical baseline for algorithm design in well-specified OR problems.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
