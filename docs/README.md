@@ -7,25 +7,34 @@
 
 ## 每次日报
 - 最新运行日期：2026-08-29
-- 运行时间：2026-08-29 02:41:53 UTC
+- 运行时间：2026-08-29 22:39:52 UTC
 - 运行状态：成功
-- 本次总论文数：1
-- 精读区：1
-- 速读区：0
+- 本次总论文数：4
+- 精读区：2
+- 速读区：2
 
 ### 今日简报（AI）
-今日精读1篇满分论文：大模型设计近最优运筹算法。  
-核心结论：LLM能生成接近最优的OR算法，展现自动化算法设计潜力。  
-下一步可泛读该文具体方法，或关注其对比基准与适用场景。
+- 今日共生成 4 篇推荐（精读 2 篇，速读 2 篇）
+- 精读：《Convexification of mixed-integer quadratic optimization via decision diagrams》（9.0/10）, 《LLMs Can Design Near-Optimal OR Algorithms》（9.0/10）
+- 速读：《Narcissus: Program Synthesis Using Context-Aware LLM Approximations》（7.0/10）, 《Robust Code RL via Faulty-Code-Driven Test case Synthesis and Dense Reward Shaping》（6.0/10）
+- 这些结果覆盖了当下较热的方向，建议先看精读区论文的关键问题与方法。
 - 详情：[/202608/29/README](/202608/29/README)
 
 ### 精读区论文标签
-1. [LLMs Can Design Near-Optimal OR Algorithms](/202608/29/2608.27296v1-llms-can-design-near-optimal-or-algorithms)  
-   标签：评分：10.0/10、query:llm-opt-code
-   evidence：LLM仅凭问题类别描述即可生成求解运筹问题的算法
+1. [Convexification of mixed-integer quadratic optimization via decision diagrams](/202608/29/2608.22815v1-convexification-of-mixed-integer-quadratic-optimization-via-decision-diagrams)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：通过决策图与凸包构造进行运筹优化建模
+2. [LLMs Can Design Near-Optimal OR Algorithms](/202608/29/2608.27296v1-llms-can-design-near-optimal-or-algorithms)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：直接研究LLM为库存控制、排队网络控制、品类优化等运筹问题设计近似最优算法。
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [Narcissus: Program Synthesis Using Context-Aware LLM Approximations](/202608/29/2608.25657v1-narcissus-program-synthesis-using-context-aware-llm-approximations)  
+   标签：评分：7.0/10、query:llm-opt-code
+   evidence：结合上下文感知LLM近似的程序合成；解决罕见语法代码生成，对优化求解器API生成至关重要
+2. [Robust Code RL via Faulty-Code-Driven Test case Synthesis and Dense Reward Shaping](/202608/29/2608.24135v1-robust-code-rl-via-faulty-code-driven-test-case-synthesis-and-dense-reward-shaping)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：提出基于错误代码驱动测试合成与密集奖励塑形的稳健代码RL框架，可迁移至优化求解代码生成。
 
 
 <div class="dpr-home-promo-card">

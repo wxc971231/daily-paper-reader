@@ -1,9 +1,24 @@
 {
   "label": "2026-08-29",
   "date": "2026-08-29",
-  "generated_at": "2026-08-29T02:41:59",
-  "count": 1,
+  "generated_at": "2026-08-29T22:40:01",
+  "count": 4,
   "papers": [
+    {
+      "paper_id": "202608/29/2608.22815v1-convexification-of-mixed-integer-quadratic-optimization-via-decision-diagrams",
+      "section": "deep",
+      "title_en": "Convexification of mixed-integer quadratic optimization via decision diagrams",
+      "authors": "Soobin Choi, Salar Fattahi, Andres Gomez, Shaoning Han, Leonardo Lozano",
+      "date": "2026-08-24",
+      "pdf": "https://arxiv.org/pdf/2608.22815v1",
+      "score": "9.0",
+      "evidence": "通过决策图与凸包构造进行运筹优化建模",
+      "tldr": "混合整数二次优化问题因指示变量而难以凸化，现有方法缺乏统一框架且计算代价高。本文提出基于决策图的通用凸化方法，适用于任意二次型与动态规划可表示的组合约束。在低秩或海森矩阵支撑图为树时，凸包描述具有多项式大小；对稀疏结构，近似决策图线性规模且最优性间隙可任意小。大量实验验证了其高效实用性，并为相关凸化研究提供了新思路。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "We study mixed-integer quadratic optimization (MIQO) problems with indicator variables. We propose a unified framework, based on decision diagrams, that serves both to solve the associated optimization problems and to construct ideal conic quadratic extended formulations of the closure of the convex hull of the underlying mixed-integer set. The construction applies to arbitrary quadratics and to any combinatorial constraints admitting a tractable dynamic programming representation. The resulting diagrams and the ensuing convex hull descriptions are of polynomial size when the quadratic is low-rank, or when the support graph of the Hessian or of its inverse is a tree, recovering and generalizing several results from the literature. For structured sparse and inverse-sparse quadratics, we show that approximate decision diagrams have size linear in the dimension while yielding solutions with arbitrarily low optimality gap. Computational experiments demonstrate the effectiveness of the proposed approach.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
     {
       "paper_id": "202608/29/2608.27296v1-llms-can-design-near-optimal-or-algorithms",
       "section": "deep",
@@ -16,6 +31,36 @@
       "tldr": "针对库存控制、排队网络控制和品种优化等运筹问题，本工作以极小的人为干预，仅用单个未调优提示词和Python沙箱工具，让大语言模型在实例级或算法级设计求解方案。结果显示，最强模型gpt-5.6-sol几乎在所有测试实例上匹配或超越现有专门方法，甚至在仅见问题描述和参数范围时也能达到该表现。此外，模型能力随发布代际快速提升，说明前沿LLM已可成为良好规范OR问题算法设计的严肃经验基线。",
       "tags": "query:llm-opt-code",
       "abstract_en": "We ask whether large language models (LLMs) can design effective algorithms for well-specified operations research (OR) problems. We study inventory control, queueing network control, and assortment optimization. We evaluate two levels of LLM use: at level 1, the model receives one problem instance and returns a solution for that instance; at level 2, it receives only the problem class description and broad parameter ranges, and returns an algorithm that maps instance parameters to solutions. Human input is minimal: we give one untuned prompt that describes the problem, and the model has access to a Python sandbox tool with a fixed compute budget.   The strongest model we test, gpt-5.6-sol, matches or outperforms the best existing method on almost all evaluated instances. This holds even at level 2, where the returned algorithm is fixed before seeing the evaluation instances. Performance also improves sharply across models released less than eight months apart, suggesting that this capability is moving quickly. Thus, for the well-specified operations problems we study, a single untuned LLM query can already produce algorithms competitive with specialized methods. These results suggest that frontier LLMs can be a serious empirical baseline for algorithm design in well-specified OR problems.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/29/2608.25657v1-narcissus-program-synthesis-using-context-aware-llm-approximations",
+      "section": "quick",
+      "title_en": "Narcissus: Program Synthesis Using Context-Aware LLM Approximations",
+      "authors": "Tilman Hinnerichs, Sebastijan Dumancic, Neil Yorke-Smith",
+      "date": "2026-08-26",
+      "pdf": "https://arxiv.org/pdf/2608.25657v1",
+      "score": "7.0",
+      "evidence": "结合上下文感知LLM近似的程序合成；解决罕见语法代码生成，对优化求解器API生成至关重要",
+      "tldr": "大语言模型在目标语法罕见时生成的程序常不合语法或规范，枚举合成器依赖静态规则频率引导会丢失上下文并修剪错误规则。Narcissus将LLM提议保留为语法树，在候选展开的上下文中评估其连续性，并用正则化确保所有规则可达。在五个领域及两种搜索后端上性能优于静态引导和重新提示，ARC任务解决率从13%提升至40%，且搜索过程无需LLM调用。该方法展示了上下文感知近似在LLM引导程序合成中的有效性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language models (LLMs) excel at programming, but not when the task fixes the target language: prompted with a grammar rare in their training data, their programs usually break the grammar or fail the given specification. Enumerative synthesizers search the space of syntactically correct programs systematically guided by LLMs; the state of the art guides them by approximating LLM proposals into rule frequencies, which loses where each construct belongs and prunes every rule the proposals miss, exactly when the proposals are wrong. We present Narcissus, a synthesizer that keeps the proposals as syntax trees and scores each expansion of a candidate program in its context: does a proposal with the same surrounding structure continue the same way, and does the expansion rebuild a fragment the proposals repeat? A regularization term keeps every rule reachable, so wrong proposals delay the solution but cannot hide it. Across five domains and two search backends, Narcissus beats static guidance at every budget and consistently outperforms re-prompting the LLM to fix its own proposals; it reaches proposal-like programs an order of magnitude sooner and solves $40\\%$ of ARC tasks where the raw proposals solve $13\\%$, all without a single LLM call during search.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/29/2608.24135v1-robust-code-rl-via-faulty-code-driven-test-case-synthesis-and-dense-reward-shaping",
+      "section": "quick",
+      "title_en": "Robust Code RL via Faulty-Code-Driven Test case Synthesis and Dense Reward Shaping",
+      "authors": "Yiwen Zhang, Xiaodong Yan, Zhenyu Huang, Deng Zhao, Liang Jiang, Qing Cui, Zujie Wen, Zhiqiang Zhang, Jun Zhou",
+      "date": "2026-08-25",
+      "pdf": "https://arxiv.org/pdf/2608.24135v1",
+      "score": "6.0",
+      "evidence": "提出基于错误代码驱动测试合成与密集奖励塑形的稳健代码RL框架，可迁移至优化求解代码生成。",
+      "tldr": "基于可验证奖励的强化学习在代码生成中受限于测试用例覆盖不全，易致奖励黑客与策略退化。本文提出RobustTests框架，利用近正确故障代码驱动测试用例合成，并结合验证器代理与行为特征聚类过滤无效用例，同时采用基于通过率的逐步稠密奖励缓解假阴性。在CodeContests中等难度子集上微调Qwen3-32B，于LiveCodeBench取得绝对3%提升，有效增强代码生成鲁棒性。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Reinforcement learning from verifiable rewards (RLVR) has emerged as a pivotal technique for enhancing the code generation capabilities of Large Language Models (LLMs). However, the efficacy of RLVR in coding implementations is fundamentally limited by the comprehensiveness of test cases, because insufficient test coverage in code validation often causes false positives, further leading to reward hacking and policy degradation. To mitigate the reward bias stemming from the suboptimal quality of current automated generation methods, we propose the RobustTests framework, which introduces a faulty-code-driven test case synthesis strategy that leverages \"near correct\" faulty codes to guide the model in precisely capturing latent logical discrepancies and further integrates validator agents with behavioral feature clustering to facilitate the granular filtering of invalid and redundant test cases. To address false negatives caused by inherent hallucination noise in synthetic test cases, RobustTests also incorporates a stepwise dense reward function based on pass rates, bolstering training robustness through fine-grained feedback. By employing this pipeline, we construct a high-quality dataset that augmented the test cases in CodeContests, encompassing a broader spectrum of faulty code scenarios and significantly enhances diagnostic utility. Experimental results demonstrate that, by leveraging a moderately challenging subset of problems from CodeContests for training, RL fine-tuning of Qwen3-32B via RobustTests achieves an absolute 3% performance gain on the LiveCodeBench benchmark compared to baseline methods, confirming the effectiveness of the RobustTests framework in advancing the code generation proficiency of LLMs.",
       "source": "arxiv",
       "selection_source": "fresh_fetch"
     }

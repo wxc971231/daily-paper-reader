@@ -1,17 +1,55 @@
 {
   "mode": "standard",
-  "generated_at": "2026-08-29T02:38:57.722797+00:00",
+  "generated_at": "2026-08-29T22:34:02.100640+00:00",
   "stats": {
     "mode": "standard",
     "tag_count": 1,
-    "deep_divecandidates": 1,
+    "deep_divecandidates": 2,
     "deep_cap": 6,
-    "deep_selected": 1,
-    "quick_candidates": 0,
+    "deep_selected": 2,
+    "quick_candidates": 2,
     "quick_skim_target": 11,
-    "quick_selected": 0
+    "quick_selected": 2
   },
   "deep_dive": [
+    {
+      "id": "2608.22815v1",
+      "source": "arxiv",
+      "title": "Convexification of mixed-integer quadratic optimization via decision diagrams",
+      "abstract": "We study mixed-integer quadratic optimization (MIQO) problems with indicator variables. We propose a unified framework, based on decision diagrams, that serves both to solve the associated optimization problems and to construct ideal conic quadratic extended formulations of the closure of the convex hull of the underlying mixed-integer set. The construction applies to arbitrary quadratics and to any combinatorial constraints admitting a tractable dynamic programming representation. The resulting diagrams and the ensuing convex hull descriptions are of polynomial size when the quadratic is low-rank, or when the support graph of the Hessian or of its inverse is a tree, recovering and generalizing several results from the literature. For structured sparse and inverse-sparse quadratics, we show that approximate decision diagrams have size linear in the dimension while yielding solutions with arbitrarily low optimality gap. Computational experiments demonstrate the effectiveness of the proposed approach.",
+      "authors": [
+        "Soobin Choi",
+        "Salar Fattahi",
+        "Andres Gomez",
+        "Shaoning Han",
+        "Leonardo Lozano"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-08-24T05:23:49+00:00",
+      "link": "https://arxiv.org/pdf/2608.22815v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "operations research optimization modeling via decision diagrams and convex hull formulations",
+      "llm_evidence_cn": "通过决策图与凸包构造进行运筹优化建模",
+      "llm_evidence": "通过决策图与凸包构造进行运筹优化建模",
+      "canonical_evidence": "通过决策图与凸包构造进行运筹优化建模",
+      "llm_tldr_en": "Proposes a decision-diagram-based framework for mixed-integer quadratic optimization that both solves the problem and constructs ideal conic quadratic extended formulations of the convex hull, with polynomial-size guarantees for low-rank or tree-structured Hessians.",
+      "llm_tldr_cn": "本文针对带指示变量的混合整数二次优化问题，提出一种基于决策图的统一框架。该框架既能直接求解相关优化问题，又能构造混合整数集凸包的理想锥二次扩展公式，适用于任意二次函数及可动态规划表示的组合约束。在低秩二次或黑森矩阵支撑图为树等条件下，决策图与凸包描述具有多项式规模。该工作统一并推广了多种已有结论，为混合整数二次优化的建模与求解提供了通用工具。",
+      "llm_tldr": "本文针对带指示变量的混合整数二次优化问题，提出一种基于决策图的统一框架。该框架既能直接求解相关优化问题，又能构造混合整数集凸包的理想锥二次扩展公式，适用于任意二次函数及可动态规划表示的组合约束。在低秩二次或黑森矩阵支撑图为树等条件下，决策图与凸包描述具有多项式规模。该工作统一并推广了多种已有结论，为混合整数二次优化的建模与求解提供了通用工具。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
     {
       "id": "2608.27296v1",
       "source": "arxiv",
@@ -31,14 +69,14 @@
         "keyword:llm-opt-code",
         "query:llm-opt-code"
       ],
-      "llm_score": 10.0,
-      "llm_evidence_en": "LLM generates algorithms that solve OR problems directly from problem class descriptions",
-      "llm_evidence_cn": "LLM仅凭问题类别描述即可生成求解运筹问题的算法",
-      "llm_evidence": "LLM仅凭问题类别描述即可生成求解运筹问题的算法",
-      "canonical_evidence": "LLM仅凭问题类别描述即可生成求解运筹问题的算法",
-      "llm_tldr_en": "Shows LLMs can design near-optimal algorithms for inventory control, queueing networks, and assortment optimization, with gpt-5.6-sol matching or beating existing methods.",
-      "llm_tldr_cn": "论文研究LLM能否为定义良好的运筹问题设计有效算法，覆盖库存控制、排队网络控制和商品组合优化。在仅给定问题类别描述和大致参数范围的二级使用方式下，LLM返回从实例参数到解的映射算法。最强模型gpt-5.6-sol在几乎所有测试实例上达到或超越现有最优方法。这表明LLM能够自动生成求解运筹优化问题的代码/算法，直接契合主题。",
-      "llm_tldr": "论文研究LLM能否为定义良好的运筹问题设计有效算法，覆盖库存控制、排队网络控制和商品组合优化。在仅给定问题类别描述和大致参数范围的二级使用方式下，LLM返回从实例参数到解的映射算法。最强模型gpt-5.6-sol在几乎所有测试实例上达到或超越现有最优方法。这表明LLM能够自动生成求解运筹优化问题的代码/算法，直接契合主题。",
+      "llm_score": 9.0,
+      "llm_evidence_en": "Directly studies LLM design of near-optimal algorithms for operations research problems, including inventory control, queueing control, and assortment optimization.",
+      "llm_evidence_cn": "直接研究LLM为库存控制、排队网络控制、品类优化等运筹问题设计近似最优算法。",
+      "llm_evidence": "直接研究LLM为库存控制、排队网络控制、品类优化等运筹问题设计近似最优算法。",
+      "canonical_evidence": "直接研究LLM为库存控制、排队网络控制、品类优化等运筹问题设计近似最优算法。",
+      "llm_tldr_en": "This paper tests whether LLMs can produce effective algorithms for OR problems at both instance and class levels, showing gpt-5.6-sol matches or outperforms existing methods on most evaluated instances.",
+      "llm_tldr_cn": "该论文评估LLM能否为明确描述的运筹优化问题设计高效算法，涵盖库存控制、排队网络控制和品类优化。在实例级和问题类别级两种使用水平下，仅需一个未调优提示和Python沙箱工具，最强模型gpt-5.6-sol在几乎所有测试实例上匹配或超越现有最佳方法。研究表明LLM有潜力自动生成近似最优的运筹算法，为基于LLM的优化建模与求解代码生成奠定了基础。",
+      "llm_tldr": "该论文评估LLM能否为明确描述的运筹优化问题设计高效算法，涵盖库存控制、排队网络控制和品类优化。在实例级和问题类别级两种使用水平下，仅需一个未调优提示和Python沙箱工具，最强模型gpt-5.6-sol在几乎所有测试实例上匹配或超越现有最佳方法。研究表明LLM有潜力自动生成近似最优的运筹算法，为基于LLM的优化建模与求解代码生成奠定了基础。",
       "llm_tags": [
         "query:llm-opt-code"
       ],
@@ -48,5 +86,90 @@
       "selection_source": "fresh_fetch"
     }
   ],
-  "quick_skim": []
+  "quick_skim": [
+    {
+      "id": "2608.25657v1",
+      "source": "arxiv",
+      "title": "Narcissus: Program Synthesis Using Context-Aware LLM Approximations",
+      "abstract": "Large language models (LLMs) excel at programming, but not when the task fixes the target language: prompted with a grammar rare in their training data, their programs usually break the grammar or fail the given specification. Enumerative synthesizers search the space of syntactically correct programs systematically guided by LLMs; the state of the art guides them by approximating LLM proposals into rule frequencies, which loses where each construct belongs and prunes every rule the proposals miss, exactly when the proposals are wrong. We present Narcissus, a synthesizer that keeps the proposals as syntax trees and scores each expansion of a candidate program in its context: does a proposal with the same surrounding structure continue the same way, and does the expansion rebuild a fragment the proposals repeat? A regularization term keeps every rule reachable, so wrong proposals delay the solution but cannot hide it. Across five domains and two search backends, Narcissus beats static guidance at every budget and consistently outperforms re-prompting the LLM to fix its own proposals; it reaches proposal-like programs an order of magnitude sooner and solves $40\\%$ of ARC tasks where the raw proposals solve $13\\%$, all without a single LLM call during search.",
+      "authors": [
+        "Tilman Hinnerichs",
+        "Sebastijan Dumancic",
+        "Neil Yorke-Smith"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.PL",
+        "cs.SE"
+      ],
+      "published": "2026-08-26T11:38:24+00:00",
+      "link": "https://arxiv.org/pdf/2608.25657v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Program synthesis with context-aware LLM approximations; addresses rare grammar code generation, key for optimization solver APIs",
+      "llm_evidence_cn": "结合上下文感知LLM近似的程序合成；解决罕见语法代码生成，对优化求解器API生成至关重要",
+      "llm_evidence": "结合上下文感知LLM近似的程序合成；解决罕见语法代码生成，对优化求解器API生成至关重要",
+      "canonical_evidence": "结合上下文感知LLM近似的程序合成；解决罕见语法代码生成，对优化求解器API生成至关重要",
+      "llm_tldr_en": "Narcissus is a program synthesizer that uses context-aware LLM approximations to generate syntactically correct programs in rare target languages. It keeps proposals as syntax trees and scores expansions contextually, improving over rule-frequency methods. This directly supports generating code for specialized optimization modeling languages.",
+      "llm_tldr_cn": "针对LLM在罕见目标语言上生成程序容易破坏语法或不符合规范的问题，Narcissus提出一种程序合成方法，保留LLM提议为语法树，并在候选程序扩展时进行上下文感知评分。该方法弥补了基于规则频率近似方法的不足，显著提升了语法正确性和规范符合率。该技术对生成运筹优化问题的求解代码，尤其是Gurobi、CP-SAT等专用建模语言代码，具有重要支撑作用。",
+      "llm_tldr": "针对LLM在罕见目标语言上生成程序容易破坏语法或不符合规范的问题，Narcissus提出一种程序合成方法，保留LLM提议为语法树，并在候选程序扩展时进行上下文感知评分。该方法弥补了基于规则频率近似方法的不足，显著提升了语法正确性和规范符合率。该技术对生成运筹优化问题的求解代码，尤其是Gurobi、CP-SAT等专用建模语言代码，具有重要支撑作用。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.24135v1",
+      "source": "arxiv",
+      "title": "Robust Code RL via Faulty-Code-Driven Test case Synthesis and Dense Reward Shaping",
+      "abstract": "Reinforcement learning from verifiable rewards (RLVR) has emerged as a pivotal technique for enhancing the code generation capabilities of Large Language Models (LLMs). However, the efficacy of RLVR in coding implementations is fundamentally limited by the comprehensiveness of test cases, because insufficient test coverage in code validation often causes false positives, further leading to reward hacking and policy degradation. To mitigate the reward bias stemming from the suboptimal quality of current automated generation methods, we propose the RobustTests framework, which introduces a faulty-code-driven test case synthesis strategy that leverages \"near correct\" faulty codes to guide the model in precisely capturing latent logical discrepancies and further integrates validator agents with behavioral feature clustering to facilitate the granular filtering of invalid and redundant test cases. To address false negatives caused by inherent hallucination noise in synthetic test cases, RobustTests also incorporates a stepwise dense reward function based on pass rates, bolstering training robustness through fine-grained feedback. By employing this pipeline, we construct a high-quality dataset that augmented the test cases in CodeContests, encompassing a broader spectrum of faulty code scenarios and significantly enhances diagnostic utility. Experimental results demonstrate that, by leveraging a moderately challenging subset of problems from CodeContests for training, RL fine-tuning of Qwen3-32B via RobustTests achieves an absolute 3% performance gain on the LiveCodeBench benchmark compared to baseline methods, confirming the effectiveness of the RobustTests framework in advancing the code generation proficiency of LLMs.",
+      "authors": [
+        "Yiwen Zhang",
+        "Xiaodong Yan",
+        "Zhenyu Huang",
+        "Deng Zhao",
+        "Liang Jiang",
+        "Qing Cui",
+        "Zujie Wen",
+        "Zhiqiang Zhang",
+        "Jun Zhou"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.SE"
+      ],
+      "published": "2026-08-25T07:00:08+00:00",
+      "link": "https://arxiv.org/pdf/2608.24135v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Presents a robust RL framework for LLM code generation via faulty-code-driven test synthesis and dense reward shaping, transferable to optimization solving code.",
+      "llm_evidence_cn": "提出基于错误代码驱动测试合成与密集奖励塑形的稳健代码RL框架，可迁移至优化求解代码生成。",
+      "llm_evidence": "提出基于错误代码驱动测试合成与密集奖励塑形的稳健代码RL框架，可迁移至优化求解代码生成。",
+      "canonical_evidence": "提出基于错误代码驱动测试合成与密集奖励塑形的稳健代码RL框架，可迁移至优化求解代码生成。",
+      "llm_tldr_en": "RobustTests addresses insufficient test coverage in RLVR for code generation by synthesizing test cases from faulty codes and shaping rewards, reducing reward hacking and improving code correctness.",
+      "llm_tldr_cn": "该论文指出基于可验证奖励的强化学习用于代码生成时会受测试覆盖不足的影响，产生奖励欺骗和策略退化。为此提出RobustTests框架，利用接近正确的错误代码引导模型合成测试用例，并结合密集奖励塑造来精准捕获逻辑偏差。实验表明该方法显著减少误判、提升生成代码的正确性与稳定性，为优化问题求解代码等LLM代码生成任务提供了通用增强手段。",
+      "llm_tldr": "该论文指出基于可验证奖励的强化学习用于代码生成时会受测试覆盖不足的影响，产生奖励欺骗和策略退化。为此提出RobustTests框架，利用接近正确的错误代码引导模型合成测试用例，并结合密集奖励塑造来精准捕获逻辑偏差。实验表明该方法显著减少误判、提升生成代码的正确性与稳定性，为优化问题求解代码等LLM代码生成任务提供了通用增强手段。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
 }
