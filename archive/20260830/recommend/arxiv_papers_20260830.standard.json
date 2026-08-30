@@ -1,0 +1,179 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-30T21:25:32.789717+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2608.23918v1",
+      "source": "arxiv",
+      "title": "MARS: Multi-Specialist LLM Relay System for Competitive Programming",
+      "abstract": "Large Language Models excel at code generation, yet competitive programming exposes a persistent failure mode: existing multi-agent pipelines distribute work over generic planner, coder, and debugger roles and delegate the choice of algorithmic technique to the backbone alone. We present MARS (Multi-Agent Relay of Specialized LLMs), a prompt-only framework in which each agent is a topic specialist---dynamic programming, graphs, strings, geometry, and so on---grounded by retrieval-augmented generation over an algorithm-theory corpus. Given a problem, retrieval selects a small team of relevant specialists; a starter writes an initial C++17 solution, and each subsequent turn runs the candidate against public examples in a sandbox, lets the active specialist keep, repair, or hand off the draft, and forwards a structured packet to the next specialist. A single infrastructure-fixer pass normalizes boilerplate at the end. On the CodeContests test split with Gemma 4, MARS reaches $0.624 \\pm 0.006$ pass rate at $2.3$ recorded pipeline stages per task ($+14.4$ percentage points over direct prompting), closing most of the gap to CodeSIM ($0.731$) at $3.3{\\times}$ lower wall-clock cost and substantially smaller variance in per-task token spend. The source code is available on GitHub: https://github.com/fckand/mars.",
+      "authors": [
+        "Andrei Mikhailov",
+        "Mikhail Burtsev",
+        "Alsu Sagirova"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.MA",
+        "cs.PL"
+      ],
+      "published": "2026-08-24T23:51:02+00:00",
+      "link": "https://arxiv.org/pdf/2608.23918v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Multi-agent LLM framework with retrieval generates C++ solutions for competitive programming problems, which are often optimization problems.",
+      "llm_evidence_cn": "多智能体LLM框架结合检索为编程竞赛问题生成C++解决方案，这类问题常为优化问题。",
+      "llm_evidence": "多智能体LLM框架结合检索为编程竞赛问题生成C++解决方案，这类问题常为优化问题。",
+      "canonical_evidence": "多智能体LLM框架结合检索为编程竞赛问题生成C++解决方案，这类问题常为优化问题。",
+      "llm_tldr_en": "MARS uses a relay of topic-specialist LLM agents grounded by an algorithm-theory corpus to generate C++17 solutions for competitive programming tasks, with sandboxed iterative refinement.",
+      "llm_tldr_cn": "针对竞赛编程中通用智能体难以选择合适算法的问题，提出MARS框架，将智能体按动态规划、图论等主题专业化，并通过检索增强的算法理论语料和沙盒测试迭代生成C++17解决方案。实验显示该方法能有效提升解题成功率。该工作展示了LLM自动生成优化问题求解代码的潜力，与用户需求高度相关。",
+      "llm_tldr": "针对竞赛编程中通用智能体难以选择合适算法的问题，提出MARS框架，将智能体按动态规划、图论等主题专业化，并通过检索增强的算法理论语料和沙盒测试迭代生成C++17解决方案。实验显示该方法能有效提升解题成功率。该工作展示了LLM自动生成优化问题求解代码的潜力，与用户需求高度相关。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.25657v1",
+      "source": "arxiv",
+      "title": "Narcissus: Program Synthesis Using Context-Aware LLM Approximations",
+      "abstract": "Large language models (LLMs) excel at programming, but not when the task fixes the target language: prompted with a grammar rare in their training data, their programs usually break the grammar or fail the given specification. Enumerative synthesizers search the space of syntactically correct programs systematically guided by LLMs; the state of the art guides them by approximating LLM proposals into rule frequencies, which loses where each construct belongs and prunes every rule the proposals miss, exactly when the proposals are wrong. We present Narcissus, a synthesizer that keeps the proposals as syntax trees and scores each expansion of a candidate program in its context: does a proposal with the same surrounding structure continue the same way, and does the expansion rebuild a fragment the proposals repeat? A regularization term keeps every rule reachable, so wrong proposals delay the solution but cannot hide it. Across five domains and two search backends, Narcissus beats static guidance at every budget and consistently outperforms re-prompting the LLM to fix its own proposals; it reaches proposal-like programs an order of magnitude sooner and solves $40\\%$ of ARC tasks where the raw proposals solve $13\\%$, all without a single LLM call during search.",
+      "authors": [
+        "Tilman Hinnerichs",
+        "Sebastijan Dumancic",
+        "Neil Yorke-Smith"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.PL",
+        "cs.SE"
+      ],
+      "published": "2026-08-26T11:38:24+00:00",
+      "link": "https://arxiv.org/pdf/2608.25657v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Context-aware LLM-driven program synthesis for constrained grammars, transferable to generating solver-compatible optimization model code",
+      "llm_evidence_cn": "面向受限语法的上下文感知LLM程序合成，可迁移到生成求解器兼容的优化模型代码",
+      "llm_evidence": "面向受限语法的上下文感知LLM程序合成，可迁移到生成求解器兼容的优化模型代码",
+      "canonical_evidence": "面向受限语法的上下文感知LLM程序合成，可迁移到生成求解器兼容的优化模型代码",
+      "llm_tldr_en": "Narcissus keeps LLM proposals as syntax trees and scores candidate expansions in context, guiding enumerative synthesis to produce grammar-conforming programs even for rare target languages.",
+      "llm_tldr_cn": "现有LLM在训练数据中稀有语法的目标语言下生成程序时容易出错，枚举式合成器用规则频率近似LLM建议会丢失结构上下文。本文提出Narcissus，将LLM建议保留为语法树，并在候选程序的上下文中评分扩展，从而更准确地引导搜索。在稀有语法程序合成任务上相较现有方法有明显提升。该方法可推广到需要严格语法约束的面向领域的优化问题求解代码生成。",
+      "llm_tldr": "现有LLM在训练数据中稀有语法的目标语言下生成程序时容易出错，枚举式合成器用规则频率近似LLM建议会丢失结构上下文。本文提出Narcissus，将LLM建议保留为语法树，并在候选程序的上下文中评分扩展，从而更准确地引导搜索。在稀有语法程序合成任务上相较现有方法有明显提升。该方法可推广到需要严格语法约束的面向领域的优化问题求解代码生成。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.22938v1",
+      "source": "arxiv",
+      "title": "Execution-Anchored Hallucination Calibration Reranking for Verilog Code Generation",
+      "abstract": "Large Language Models (LLMs) have demonstrated remarkable capabilities in code generation, yet their performance degrades significantly on low-resource Hardware Description Languages such as Verilog. While multi-candidate sampling improves the likelihood of generating correct solutions, au-tomatically selecting the optimal candidate remains an open challenge. Through a systematic empirical study across nine models and two benchmarks, we identify two critical limitations:(1) existing execution-based reranking methods, which rely on testbench pass/fail outcomes, exhibit poor domain transferability due to low-quality generated testbenches; and (2) LLM-as-a-Judge suffers from reasoning hallucination, producing incon-sistent judgments for execution-equivalent code. These findings reveal two signal types with orthogonal errors: execution signals(deterministic but testbench coverage limited)and reasoning signals (semantically rich but hallucination-prone). Their orthog-onality suggests combining the two signals, yet in our experiments letting the reasoner directly observe execution results merely anchors its judgments on test outcomes; we therefore acquire the two signals independently and fuse them only at the decision stage. Based on these insights, we propose EAHC, an Execution-Anchored Hallucination Calibration reranking framework that anchors reasoning judgments to execution behavior so that execution-equivalent candidates receive consistent scores, which implements a dual-channel architecture: EAHC-R, a 4B reasoning discriminator; and EAHC-T, a testbench generator leveraging RAG for execution verification.",
+      "authors": [
+        "Guang Yang",
+        "Xing Hu",
+        "Xiang Chen",
+        "Terry Yue Zhuo",
+        "Xin Xia"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AR"
+      ],
+      "published": "2026-08-24T08:11:43+00:00",
+      "link": "https://arxiv.org/pdf/2608.22938v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Code generation reranking method anchored on execution to correct LLM hallucinations, transferable to choosing correct optimization solver code candidates",
+      "llm_evidence_cn": "基于执行锚定的幻觉校准重排序方法，可迁移到从多个候选优化求解代码中选择正确实现",
+      "llm_evidence": "基于执行锚定的幻觉校准重排序方法，可迁移到从多个候选优化求解代码中选择正确实现",
+      "canonical_evidence": "基于执行锚定的幻觉校准重排序方法，可迁移到从多个候选优化求解代码中选择正确实现",
+      "llm_tldr_en": "For low-resource languages like Verilog, execution-based reranking and LLM-as-judge are unreliable; an execution-anchored hallucination calibration reranker substantially improves candidate selection for generated code.",
+      "llm_tldr_cn": "在Verilog等低资源硬件描述语言上，LLM代码生成正确率低，而现有基于测试台执行的重排序和LLM裁判均存在迁移性差与幻觉问题。本文通过系统研究提出执行锚定的幻觉校准重排序方法，结合执行反馈校准打分，从而在多个模型与基准上显著提升正确候选代码的选择能力。该方法提供了一种通用的代码生成校准范式，可用于筛选LLM生成的高质量优化求解代码。",
+      "llm_tldr": "在Verilog等低资源硬件描述语言上，LLM代码生成正确率低，而现有基于测试台执行的重排序和LLM裁判均存在迁移性差与幻觉问题。本文通过系统研究提出执行锚定的幻觉校准重排序方法，结合执行反馈校准打分，从而在多个模型与基准上显著提升正确候选代码的选择能力。该方法提供了一种通用的代码生成校准范式，可用于筛选LLM生成的高质量优化求解代码。",
+      "llm_tags": [
+        "query:llm-opt-code:composite"
+      ],
+      "matched_query_tag": "query:llm-opt-code:composite",
+      "matched_query_text": "Papers central to 基于LLM进行运筹优化问题建模和求解代码生成的论文, especially work that connects or combines: large language model optimization code generation; operations research optimization modeling; code generation for optimization problems using LLM; problem modeling for operations research; automatic solution generation for optimization; constraint programming modeling with LLM; Large language models for modeling operations research optimization problems; Papers about generating optimization problem solving code using LLMs.",
+      "matched_requirement_id": "req-composite-llm-opt-code",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.25061v2",
+      "source": "arxiv",
+      "title": "DataKernelBench: Can LLMs Optimize Database Queries on GPUs?",
+      "abstract": "GPUs increasingly accelerate database systems, but query-specific peak performance still often relies on hand-written kernels. Existing LLM kernel benchmarks focus on machine learning operators, leaving irregular, heterogeneous, data-movement-heavy database-style operators untested. We introduce DataKernelBench, which translates SQL into validated PyTorch TorchPlan programs and evaluates LLMs that optimize either the core tensor-bounded snippet or the full query in CUDA or Triton through execution-guided repair. Across ten proprietary and open-weight models on TPC-H SF10 with an H100 GPU, the strongest full-query CUDA configuration achieves $2.11\\times$ speedup over the TorchPlan baseline at full pass rate. We find that higher-performing implementations commonly use kernel fusion and execution-strategy changes, stronger models benefit most from full-query specialization, and workload context matters more than hardware context. To handle data larger than GPU memory, we extend TorchPlan with Dask-cuDF for on-demand partition loading on TPC-H SF100 with four H100 GPUs, achieving $2.54\\times$ speedup.   Project page: https://kerneldf.github.io/datakernelbench",
+      "authors": [
+        "Gokul Karthik Kumar",
+        "Yotam Perlitz",
+        "Corey Lammie",
+        "Andrea Giovannini",
+        "Katja Hose"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.DB",
+        "cs.LG",
+        "cs.PL"
+      ],
+      "published": "2026-08-25T18:57:39+00:00",
+      "link": "https://arxiv.org/pdf/2608.25061v2",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM code optimization via execution-guided repair; transferable to OR code generation",
+      "llm_evidence_cn": "LLM通过执行引导修复优化GPU内核代码，基准与流程可迁移至OR求解代码生成",
+      "llm_evidence": "LLM通过执行引导修复优化GPU内核代码，基准与流程可迁移至OR求解代码生成",
+      "canonical_evidence": "LLM通过执行引导修复优化GPU内核代码，基准与流程可迁移至OR求解代码生成",
+      "llm_tldr_en": "LLMs optimize database kernels in CUDA/Triton via execution-guided repair, showing strong speedups and benchmark value transferable to OR solver code generation.",
+      "llm_tldr_cn": "针对LLM在数据库查询性能优化上的能力，论文提出DataKernelBench基准，将SQL转换为TorchPlan程序并评测LLM通过执行引导修复生成CUDA/Triton内核。实验显示最强配置相比基线获得2.11倍加速且全部通过。该工作证明了LLM能生成并修复高性能代码，其评估与修复范式对运筹优化问题求解代码的自动生成具有迁移价值。",
+      "llm_tldr": "针对LLM在数据库查询性能优化上的能力，论文提出DataKernelBench基准，将SQL转换为TorchPlan程序并评测LLM通过执行引导修复生成CUDA/Triton内核。实验显示最强配置相比基线获得2.11倍加速且全部通过。该工作证明了LLM能生成并修复高性能代码，其评估与修复范式对运筹优化问题求解代码的自动生成具有迁移价值。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "label": "2026-08-30",
+  "date": "2026-08-30",
+  "generated_at": "2026-08-30T21:28:52",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202608/30/2608.23918v1-mars-multi-specialist-llm-relay-system-for-competitive-programming",
+      "section": "deep",
+      "title_en": "MARS: Multi-Specialist LLM Relay System for Competitive Programming",
+      "authors": "Andrei Mikhailov, Mikhail Burtsev, Alsu Sagirova",
+      "date": "2026-08-24",
+      "pdf": "https://arxiv.org/pdf/2608.23918v1",
+      "score": "8.0",
+      "evidence": "多智能体LLM框架结合检索为编程竞赛问题生成C++解决方案，这类问题常为优化问题。",
+      "tldr": "竞争编程中现有LLM多智能体流水线多采用通用规划、编码、调试角色，算法选择依赖骨干模型，性能受限。MARS提出一种纯提示词框架，将每个智能体设为特定算法主题专家（如动态规划、图论），基于检索增强生成从算法语料中挑选相关专家协同解题。测试中MARS在CodeContests上达到0.624±0.006的通过率，比直接提示高14.4个百分点，以仅3.3倍更低的计算代价接近CodeSIM的0.731，且令牌消耗方差更小。该工作展示专业化分工和检索指导的成功结合，为竞赛编程提供高效方案。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large Language Models excel at code generation, yet competitive programming exposes a persistent failure mode: existing multi-agent pipelines distribute work over generic planner, coder, and debugger roles and delegate the choice of algorithmic technique to the backbone alone. We present MARS (Multi-Agent Relay of Specialized LLMs), a prompt-only framework in which each agent is a topic specialist---dynamic programming, graphs, strings, geometry, and so on---grounded by retrieval-augmented generation over an algorithm-theory corpus. Given a problem, retrieval selects a small team of relevant specialists; a starter writes an initial C++17 solution, and each subsequent turn runs the candidate against public examples in a sandbox, lets the active specialist keep, repair, or hand off the draft, and forwards a structured packet to the next specialist. A single infrastructure-fixer pass normalizes boilerplate at the end. On the CodeContests test split with Gemma 4, MARS reaches $0.624 \\pm 0.006$ pass rate at $2.3$ recorded pipeline stages per task ($+14.4$ percentage points over direct prompting), closing most of the gap to CodeSIM ($0.731$) at $3.3{\\times}$ lower wall-clock cost and substantially smaller variance in per-task token spend. The source code is available on GitHub: https://github.com/fckand/mars.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/30/2608.25657v1-narcissus-program-synthesis-using-context-aware-llm-approximations",
+      "section": "quick",
+      "title_en": "Narcissus: Program Synthesis Using Context-Aware LLM Approximations",
+      "authors": "Tilman Hinnerichs, Sebastijan Dumancic, Neil Yorke-Smith",
+      "date": "2026-08-26",
+      "pdf": "https://arxiv.org/pdf/2608.25657v1",
+      "score": "7.0",
+      "evidence": "面向受限语法的上下文感知LLM程序合成，可迁移到生成求解器兼容的优化模型代码",
+      "tldr": "LLM在固定罕见目标语言下生成的程序常不合语法，现有枚举合成器将提议近似为规则频率会丢失上下文且易剪枝。Narcissus保留提议树并在上下文中评估候选扩展，通过正则化保持规则可达，使错误提议仅延迟解而不隐藏。在五个领域上优于静态引导，并超越重新提示LLM，搜索零LLM调用；ARC任务解决率从13%提升至40%，达到提议类程序快一个数量级。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language models (LLMs) excel at programming, but not when the task fixes the target language: prompted with a grammar rare in their training data, their programs usually break the grammar or fail the given specification. Enumerative synthesizers search the space of syntactically correct programs systematically guided by LLMs; the state of the art guides them by approximating LLM proposals into rule frequencies, which loses where each construct belongs and prunes every rule the proposals miss, exactly when the proposals are wrong. We present Narcissus, a synthesizer that keeps the proposals as syntax trees and scores each expansion of a candidate program in its context: does a proposal with the same surrounding structure continue the same way, and does the expansion rebuild a fragment the proposals repeat? A regularization term keeps every rule reachable, so wrong proposals delay the solution but cannot hide it. Across five domains and two search backends, Narcissus beats static guidance at every budget and consistently outperforms re-prompting the LLM to fix its own proposals; it reaches proposal-like programs an order of magnitude sooner and solves $40\\%$ of ARC tasks where the raw proposals solve $13\\%$, all without a single LLM call during search.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/30/2608.22938v1-execution-anchored-hallucination-calibration-reranking-for-verilog-code-generation",
+      "section": "quick",
+      "title_en": "Execution-Anchored Hallucination Calibration Reranking for Verilog Code Generation",
+      "authors": "Guang Yang, Xing Hu, Xiang Chen, Terry Yue Zhuo, Xin Xia",
+      "date": "2026-08-24",
+      "pdf": "https://arxiv.org/pdf/2608.22938v1",
+      "score": "6.0",
+      "evidence": "基于执行锚定的幻觉校准重排序方法，可迁移到从多个候选优化求解代码中选择正确实现",
+      "tldr": "LLM在Verilog等低资源HDL代码生成中性能欠佳，多候选选择是难题。现有执行重排序受测试台质量限制，LLM评判有推理幻觉。提出EAHC，将推理判断锚定到执行行为，独立获取两信号后仅在决策阶段融合，以4B判别器和RAG测试台生成器实现。在9模型2基准上验证，提升评分一致性与选择准确率，为HDL代码生成提供可靠候选方案。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large Language Models (LLMs) have demonstrated remarkable capabilities in code generation, yet their performance degrades significantly on low-resource Hardware Description Languages such as Verilog. While multi-candidate sampling improves the likelihood of generating correct solutions, au-tomatically selecting the optimal candidate remains an open challenge. Through a systematic empirical study across nine models and two benchmarks, we identify two critical limitations:(1) existing execution-based reranking methods, which rely on testbench pass/fail outcomes, exhibit poor domain transferability due to low-quality generated testbenches; and (2) LLM-as-a-Judge suffers from reasoning hallucination, producing incon-sistent judgments for execution-equivalent code. These findings reveal two signal types with orthogonal errors: execution signals(deterministic but testbench coverage limited)and reasoning signals (semantically rich but hallucination-prone). Their orthog-onality suggests combining the two signals, yet in our experiments letting the reasoner directly observe execution results merely anchors its judgments on test outcomes; we therefore acquire the two signals independently and fuse them only at the decision stage. Based on these insights, we propose EAHC, an Execution-Anchored Hallucination Calibration reranking framework that anchors reasoning judgments to execution behavior so that execution-equivalent candidates receive consistent scores, which implements a dual-channel architecture: EAHC-R, a 4B reasoning discriminator; and EAHC-T, a testbench generator leveraging RAG for execution verification.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/30/2608.25061v2-datakernelbench-can-llms-optimize-database-queries-on-gpus",
+      "section": "quick",
+      "title_en": "DataKernelBench: Can LLMs Optimize Database Queries on GPUs?",
+      "authors": "Gokul Karthik Kumar, Yotam Perlitz, Corey Lammie, Andrea Giovannini, Katja Hose",
+      "date": "2026-08-25",
+      "pdf": "https://arxiv.org/pdf/2608.25061v2",
+      "score": "6.0",
+      "evidence": "LLM通过执行引导修复优化GPU内核代码，基准与流程可迁移至OR求解代码生成",
+      "tldr": "现有LLM内核基准多聚焦机器学习算子，未覆盖数据库查询中不规则、异构、数据搬运密集的算子。为填补空白，提出DataKernelBench，将TPC-H SQL转为可执行TorchPlan，让十种开源及闭源LLM用CUDA或Triton优化核心片段或完整查询，并以执行引导修复保证正确性。在H100上，最强完整查询CUDA配置对SF10取得2.11倍加速且全通过，扩展到SF100四卡取得2.54倍。结果表明kernel融合与执行策略改变是主要提速手段，强模型更受益于完整查询特化，工作负载上下文比硬件上下文更重要。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "GPUs increasingly accelerate database systems, but query-specific peak performance still often relies on hand-written kernels. Existing LLM kernel benchmarks focus on machine learning operators, leaving irregular, heterogeneous, data-movement-heavy database-style operators untested. We introduce DataKernelBench, which translates SQL into validated PyTorch TorchPlan programs and evaluates LLMs that optimize either the core tensor-bounded snippet or the full query in CUDA or Triton through execution-guided repair. Across ten proprietary and open-weight models on TPC-H SF10 with an H100 GPU, the strongest full-query CUDA configuration achieves $2.11\\times$ speedup over the TorchPlan baseline at full pass rate. We find that higher-performing implementations commonly use kernel fusion and execution-strategy changes, stronger models benefit most from full-query specialization, and workload context matters more than hardware context. To handle data larger than GPU memory, we extend TorchPlan with Dask-cuDF for on-demand partition loading on TPC-H SF100 with four H100 GPUs, achieving $2.54\\times$ speedup.   Project page: https://kerneldf.github.io/datakernelbench",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
