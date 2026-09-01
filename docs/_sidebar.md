@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-09-01 <!--dpr-date:20260901-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/01/2608.29690v1-transformer-based-flow-shop-scheduling-using-milp-generated-training-data" data-sidebar-item="{&quot;title&quot;: &quot;Transformer-Based Flow Shop Scheduling Using MILP-Generated Training Data&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.29690v1-transformer-based-flow-shop-scheduling-using-milp-generated-training-data&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;面向流水车间调度这一运筹优化问题，用MILP数据训练Transformer自动生成调度方案，属于运筹优化建模与自动求解&quot;}">Transformer-Based Flow Shop Scheduling Using MILP-Generated Training Data</a>
   * 2026-08-31 <!--dpr-date:20260831-->
     * 速读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/31/2608.25457v2-macgen-toward-functionally-correct-and-secure-code-generation-via-multi-agent-collaboration" data-sidebar-item="{&quot;title&quot;: &quot;MACGen: Toward Functionally Correct and Secure Code Generation via Multi-Agent Collaboration&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.25457v2-macgen-toward-functionally-correct-and-secure-code-generation-via-multi-agent-collaboration&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;llm-opt-code&quot;}], &quot;evidence&quot;: &quot;面向LLM代码生成的多智能体协作框架，融合规划以提升功能正确性与安全性，可直接迁移到优化建模与求解代码生成&quot;}">MACGen: Toward Functionally Correct and Secure Code Generation via Multi-Agent Collaboration</a>

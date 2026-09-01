@@ -1,0 +1,52 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-01T22:11:46.067585+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2608.29690v1",
+      "source": "arxiv",
+      "title": "Transformer-Based Flow Shop Scheduling Using MILP-Generated Training Data",
+      "abstract": "Advances in machine learning (ML) have created new opportunities to complement traditional operations research (OR) methods. In particular, transformer models can capture complex interactions in token sequences by mapping tokens into a high-dimensional embedding space and propagating contextual information via attention. This makes them a candidate to model non-permutation flow shop scheduling with secondary resources as a next-token prediction task, where tokens represent job-machine-secondary resource tuples. For training, mixed-integer linear programming (MILP)-generated schedules are tokenized and used as next-token prediction data. During inference, partial token sequences (prefixes) are randomly generated and completed by the trained transformer through constrained decoding. A computational study is conducted on a flow shop with 8 jobs, 4 machines, and 3 secondary resources, where jobs are selected from a fixed pool of 20 jobs that is sampled during training and provides the candidates during prefix completion. The transformer achieves better solution quality (smaller makespans) compared to a genetic algorithm (GA), the NEH heuristic, and random search. It is outperformed only by the MILP model and the iterated greedy (IG) heuristic. The study concludes that transformer models can, to some extent, learn patterns from MILP-optimized non-permutation flow shop schedules and that transformer-based scheduling represents an interesting direction for future research, particularly in settings with a fixed, recurring job set.",
+      "authors": [
+        "Roderich Wallrath"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cs.LG"
+      ],
+      "published": "2026-08-30T09:58:30+00:00",
+      "link": "https://arxiv.org/pdf/2608.29690v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Directly addresses operations research optimization modeling and automatic solution generation for flow shop scheduling with MILP-generated data",
+      "llm_evidence_cn": "面向流水车间调度这一运筹优化问题，用MILP数据训练Transformer自动生成调度方案，属于运筹优化建模与自动求解",
+      "llm_evidence": "面向流水车间调度这一运筹优化问题，用MILP数据训练Transformer自动生成调度方案，属于运筹优化建模与自动求解",
+      "canonical_evidence": "面向流水车间调度这一运筹优化问题，用MILP数据训练Transformer自动生成调度方案，属于运筹优化建模与自动求解",
+      "llm_tldr_en": "Proposes a transformer that models non-permutation flow shop scheduling with secondary resources as next-token prediction, trained on MILP-generated schedules; inference completes partial prefixes. Shows ML can complement classic OR for scheduling.",
+      "llm_tldr_cn": "针对带辅助资源的非置换流水车间调度问题，论文提出将调度构建为词元序列的下一词预测任务，并利用MILP生成的高质量调度数据进行训练。推理时随机生成部分前缀，由训练好的Transformer自动补全完整调度方案。实验表明该方法能够有效学习复杂调度结构，为机器学习与传统运筹方法的结合提供了新路径，有助于实现调度问题的高效自动求解。",
+      "llm_tldr": "针对带辅助资源的非置换流水车间调度问题，论文提出将调度构建为词元序列的下一词预测任务，并利用MILP生成的高质量调度数据进行训练。推理时随机生成部分前缀，由训练好的Transformer自动补全完整调度方案。实验表明该方法能够有效学习复杂调度结构，为机器学习与传统运筹方法的结合提供了新路径，有助于实现调度问题的高效自动求解。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

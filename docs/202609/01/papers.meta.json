@@ -1,0 +1,24 @@
+{
+  "label": "2026-09-01",
+  "date": "2026-09-01",
+  "generated_at": "2026-09-01T22:17:31",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202609/01/2608.29690v1-transformer-based-flow-shop-scheduling-using-milp-generated-training-data",
+      "section": "deep",
+      "title_en": "Transformer-Based Flow Shop Scheduling Using MILP-Generated Training Data",
+      "authors": "Roderich Wallrath",
+      "date": "2026-08-30",
+      "pdf": "https://arxiv.org/pdf/2608.29690v1",
+      "score": "9.0",
+      "evidence": "面向流水车间调度这一运筹优化问题，用MILP数据训练Transformer自动生成调度方案，属于运筹优化建模与自动求解",
+      "tldr": "针对带次级资源的非排列流水车间调度问题，提出用变压器模型将其建模为下一令牌预测任务。训练数据由混合整数线性规划生成的调度方案经令牌化得到，推理时采用受限解码完成随机前缀。在8工件4机器3资源的算例中，变压器优于遗传算法、NEH和随机搜索，仅逊于MILP和迭代贪婪算法，表明其能学习MILP优化模式。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Advances in machine learning (ML) have created new opportunities to complement traditional operations research (OR) methods. In particular, transformer models can capture complex interactions in token sequences by mapping tokens into a high-dimensional embedding space and propagating contextual information via attention. This makes them a candidate to model non-permutation flow shop scheduling with secondary resources as a next-token prediction task, where tokens represent job-machine-secondary resource tuples. For training, mixed-integer linear programming (MILP)-generated schedules are tokenized and used as next-token prediction data. During inference, partial token sequences (prefixes) are randomly generated and completed by the trained transformer through constrained decoding. A computational study is conducted on a flow shop with 8 jobs, 4 machines, and 3 secondary resources, where jobs are selected from a fixed pool of 20 jobs that is sampled during training and provides the candidates during prefix completion. The transformer achieves better solution quality (smaller makespans) compared to a genetic algorithm (GA), the NEH heuristic, and random search. It is outperformed only by the MILP model and the iterated greedy (IG) heuristic. The study concludes that transformer models can, to some extent, learn patterns from MILP-optimized non-permutation flow shop schedules and that transformer-based scheduling represents an interesting direction for future research, particularly in settings with a fixed, recurring job set.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
