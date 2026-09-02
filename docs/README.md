@@ -6,28 +6,37 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-01
-- 运行时间：2026-09-01 22:17:26 UTC
+- 最新运行日期：2026-09-02
+- 运行时间：2026-09-02 22:07:35 UTC
 - 运行状态：成功
-- 本次总论文数：1
-- 精读区：1
-- 速读区：0
+- 本次总论文数：5
+- 精读区：4
+- 速读区：1
 
 ### 今日简报（AI）
-今日精读1篇高价值论文，聚焦Transformer在流水车间调度中的应用。
-
-最值得关注的是利用MILP生成训练数据来训练Transformer模型，为调度优化提供了新思路。
-
-建议普通读者优先了解其训练数据生成方式，这对理解模型效果至关重要。
-- 详情：[/202609/01/README](/202609/01/README)
+今日精读4篇、速读1篇，重点关注自动启发式设计与优化验证两大方向。
+最值得看的是《ES-AHD》与《SOVER》，均获9.0高分，分别涉及演化策略自动设计启发式及LLM辅助SMT验证优化重写。
+普通读者可优先精读这两篇，速读篇仅作扩展，无需深究。
+- 详情：[/202609/02/README](/202609/02/README)
 
 ### 精读区论文标签
-1. [Transformer-Based Flow Shop Scheduling Using MILP-Generated Training Data](/202609/01/2608.29690v1-transformer-based-flow-shop-scheduling-using-milp-generated-training-data)  
+1. [ES-AHD: An Evolution Strategy Framework for Automatic Heuristic Design](/202609/02/2609.00023v1-es-ahd-an-evolution-strategy-framework-for-automatic-heuristic-design)  
    标签：评分：9.0/10、query:llm-opt-code
-   evidence：面向流水车间调度这一运筹优化问题，用MILP数据训练Transformer自动生成调度方案，属于运筹优化建模与自动求解
+   evidence：面向优化问题自动生成启发式求解代码的LLM进化策略框架
+2. [SOVER: Formal Certification of Optimization Reformulations via LLM-Assisted SMT Verification](/202609/02/2609.00728v1-sover-formal-certification-of-optimization-reformulations-via-llm-assisted-smt-verification)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：LLM辅助SMT验证优化问题重述的语义正确性，直接服务于运筹优化建模
+3. [Reinforcement Learning Enhanced LLM Agents for Complex Vehicle Routing Problems](/202609/02/2609.00859v1-reinforcement-learning-enhanced-llm-agents-for-complex-vehicle-routing-problems)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：LLM智能体面向求解器自动完成复杂车辆路径问题的运筹优化建模
+4. [Solution Methods for Infinite-Dimensional Generalized Disjunctive Programming](/202609/02/2608.27707v1-solution-methods-for-infinite-dimensional-generalized-disjunctive-programming)  
+   标签：评分：8.0/10、query:llm-opt-code
+   evidence：针对广义析取规划这一运筹优化建模范式提出多种求解方法，直接对应运筹优化建模需求，但不涉及LLM
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [Development of an Autonomous AI Coding Agent using Monte Carlo Tree Search (MCTS) and Gemini LLM Frameworks](/202609/02/2608.29096v1-development-of-an-autonomous-ai-coding-agent-using-monte-carlo-tree-search-mcts-and-gemini-llm-frameworks)  
+   标签：评分：6.0/10、query:llm-opt-code
+   evidence：将LLM与定制化MCTS结合，从自然语言自动生成可靠代码；可迁移到优化求解代码管线，但未专门针对运筹优化问题
 
 
 <div class="dpr-home-promo-card">

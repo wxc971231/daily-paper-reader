@@ -1,0 +1,207 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-02T22:03:11.928598+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 4,
+    "deep_cap": 6,
+    "deep_selected": 4,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2609.00023v1",
+      "source": "arxiv",
+      "title": "ES-AHD: An Evolution Strategy Framework for Automatic Heuristic Design",
+      "abstract": "In this paper, we introduce ES-AHD, a novel framework that fundamentally integrates Evolution Strategy (ES) into Large Language Model (LLM)-driven Automatic Heuristic Design (AHD). Existing evolutionary approaches predominantly rely on random, individual-level mutation, leading to blind search and an imbalance between exploration and exploitation. To address these issues, ES-AHD introduces two core mechanisms. First, Semantic Recombination via LLMs discards traditional point-to-point reproduction. By leveraging the LLM's contextual reasoning to explicitly extract core insights from top-performing individuals, the algorithm establishes a promising semantic search direction. This transforms random code mutation into targeted, center-guided sampling inspired by ES. Second, Stochastic Covariance Adaptation via Temperature Sampling dynamically addresses the exploration-exploitation dilemma. By mapping the covariance matrix in ES to the LLM's sampling temperature, the framework employs a stochastic random walk mechanism with momentum. This approach primarily shrinks the search radius for micro-level code refinement, while retaining the critical ability to occasionally sample higher temperatures to escape semantic local optima. Ultimately, ES-AHD provides a highly directional, robust, and efficient search paradigm, significantly accelerating the generation of high-quality heuristic algorithms. The source code is available at: https://github.com/Mriya0306/ES-AHD.",
+      "authors": [
+        "Yutao Lai",
+        "Kezhao Lai",
+        "Hai-Lin Liu",
+        "Yuping Wang",
+        "Ping Guo"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE",
+        "cs.LG"
+      ],
+      "published": "2026-08-26T06:43:31+00:00",
+      "link": "https://arxiv.org/pdf/2609.00023v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-driven automatic heuristic design framework for optimization solvers",
+      "llm_evidence_cn": "面向优化问题自动生成启发式求解代码的LLM进化策略框架",
+      "llm_evidence": "面向优化问题自动生成启发式求解代码的LLM进化策略框架",
+      "canonical_evidence": "面向优化问题自动生成启发式求解代码的LLM进化策略框架",
+      "llm_tldr_en": "Introduces ES-AHD, integrating evolution strategy into LLM-based automatic heuristic design. Semantic recombination extracts insights from top candidates and turns random code mutation into guided center-based sampling, improving exploration-exploitation balance for optimization heuristic generation.",
+      "llm_tldr_cn": "现有基于LLM的自动启发式设计常使用随机个体级变异，导致搜索盲目且探索与利用不均衡。论文提出ES-AHD框架，将进化策略引入LLM驱动的自动启发式设计，通过语义重组从高表现个体中提取核心经验，把随机代码变异转化为有目标、围绕中心的采样过程。该机制为优化问题启发式代码的自动生成提供了更系统的搜索方向，有助于提升自动求解方案设计的效率与质量。",
+      "llm_tldr": "现有基于LLM的自动启发式设计常使用随机个体级变异，导致搜索盲目且探索与利用不均衡。论文提出ES-AHD框架，将进化策略引入LLM驱动的自动启发式设计，通过语义重组从高表现个体中提取核心经验，把随机代码变异转化为有目标、围绕中心的采样过程。该机制为优化问题启发式代码的自动生成提供了更系统的搜索方向，有助于提升自动求解方案设计的效率与质量。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "automatic solution generation for optimization",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.00728v1",
+      "source": "arxiv",
+      "title": "SOVER: Formal Certification of Optimization Reformulations via LLM-Assisted SMT Verification",
+      "abstract": "Large Language Models (LLMs) have shown remarkable promise in translating and reformulating complex mathematical optimization problems across modeling languages. However, validating such transformations through empirical solver executions alone is unreliable, as solver outcomes may be affected by local minima, structural timeouts, numerical artifacts, and subtle semantic divergence between formulations. We introduce SOVER, an LLM-assisted SMT framework that separates semantic mapping from formal certification: Z3 checks domain cross-feasibility and global objective-order preservation for mixed-integer linear formulations, while dReal provides tolerance-aware feasibility/range and $ε$-argmin checks for continuous nonlinear formulations. We also introduce NLEquiv-150, a public benchmark of 100 equivalent and 50 deliberately hard non-equivalent nonlinear reformulation pairs. With LLM-extracted mappings, SOVER classifies 149/150 pairs (99.33%) correctly, including all 50 hard negatives; the sole error is an incomplete mapping extraction.",
+      "authors": [
+        "Swapnil Bhattacharyya",
+        "Mayank Baranwal"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "math.OC"
+      ],
+      "published": "2026-09-01T05:05:12+00:00",
+      "link": "https://arxiv.org/pdf/2609.00728v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-assisted SMT verification of optimization reformulations across modeling languages directly supports OR modeling reliability",
+      "llm_evidence_cn": "LLM辅助SMT验证优化问题重述的语义正确性，直接服务于运筹优化建模",
+      "llm_evidence": "LLM辅助SMT验证优化问题重述的语义正确性，直接服务于运筹优化建模",
+      "canonical_evidence": "LLM辅助SMT验证优化问题重述的语义正确性，直接服务于运筹优化建模",
+      "llm_tldr_en": "LLMs may reformulate math optimization problems across modeling languages, but solver-run validation is unreliable; SOVER separates semantic mapping from certification, using Z3/dReal SMT checks for correctness.",
+      "llm_tldr_cn": "针对LLM在跨建模语言翻译和重构复杂数学优化问题时仅靠求解器试运行无法保证语义正确的难点，该文提出SOVER框架，将LLM的语义映射与形式化认证分离。Z3负责检查混合整数线性模型的域交叉可行性和全局目标序保持，dReal为连续非线性模型提供容差敏感的可行性、范围及ε-argmin检查。这样做可替代不可靠的数值运行验证。虽然不直接生成求解代码，但它是LLM辅助运筹优化建模与重述的代表性可靠化技术。",
+      "llm_tldr": "针对LLM在跨建模语言翻译和重构复杂数学优化问题时仅靠求解器试运行无法保证语义正确的难点，该文提出SOVER框架，将LLM的语义映射与形式化认证分离。Z3负责检查混合整数线性模型的域交叉可行性和全局目标序保持，dReal为连续非线性模型提供容差敏感的可行性、范围及ε-argmin检查。这样做可替代不可靠的数值运行验证。虽然不直接生成求解代码，但它是LLM辅助运筹优化建模与重述的代表性可靠化技术。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.00859v1",
+      "source": "arxiv",
+      "title": "Reinforcement Learning Enhanced LLM Agents for Complex Vehicle Routing Problems",
+      "abstract": "Vehicle Routing Problems (VRPs) are fundamental combinatorial optimization problems with widespread applications in various scenarios. The advanced optimization solvers can effectively solve such problems. However, modeling complex VRP variants for solvers often requires substantial domain expertise, which limits the accessibility of advanced optimization technologies. In this paper, we propose Reinforcement Learning Enhanced LLMAgents(RLEA), a multi-agent framework designed to automate the modeling of complex VRPs. RLEA introduces a lightweight neural Planner trained with Soft Q-learning to efficiently orchestrate the actions of LLM-based agents. In addition, we equip the system with an evolutionary memory module and retrieval-augmented generation, enabling the agent to leverage both accumulated experience and external solver knowledge during program generation and refinement for solving VRPs. We evaluated 48 distinct VRP variants across various solvers. The experimental results demonstrate that RLEA outperforms the previous state-of-the-ar method, achieving a 16.67% higher success rate while significantly reducing runtime errors. These results validate that integrating reinforcement learning with LLM-based reasoning is highly effective for automated optimization modeling. The appendix is available at: https://doi.org/10.5281/zenodo.19134435.",
+      "authors": [
+        "Yi Chen",
+        "Zikang Yu",
+        "Jiahai Wang",
+        "Jinbiao Chen",
+        "Jianpeng Zhou",
+        "Zizhen Zhang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-09-01T07:56:15+00:00",
+      "link": "https://arxiv.org/pdf/2609.00859v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM agents automate modeling of complex VRPs for optimization solvers",
+      "llm_evidence_cn": "LLM智能体面向求解器自动完成复杂车辆路径问题的运筹优化建模",
+      "llm_evidence": "LLM智能体面向求解器自动完成复杂车辆路径问题的运筹优化建模",
+      "canonical_evidence": "LLM智能体面向求解器自动完成复杂车辆路径问题的运筹优化建模",
+      "llm_tldr_en": "RLEA uses a Soft Q-learning planner to orchestrate LLM agents, with evolutionary memory and retrieval-augmented generation, to automatically convert complex VRP variants into solver-ready models and reduce OR modeling expertise barriers.",
+      "llm_tldr_cn": "复杂车辆路径问题的建模通常需要较强的运筹学专业背景，限制了优化求解器的普及。作者提出RLEA多智能体框架，利用软Q学习训练的轻量级神经规划器调度LLM智能体，并结合进化记忆与检索增强机制，自动为求解器完成复杂VRP变体的建模。实验表明该方法可显著降低建模领域知识门槛，为运筹优化问题建模和求解代码的自动化生成提供了可行途径。",
+      "llm_tldr": "复杂车辆路径问题的建模通常需要较强的运筹学专业背景，限制了优化求解器的普及。作者提出RLEA多智能体框架，利用软Q学习训练的轻量级神经规划器调度LLM智能体，并结合进化记忆与检索增强机制，自动为求解器完成复杂VRP变体的建模。实验表明该方法可显著降低建模领域知识门槛，为运筹优化问题建模和求解代码的自动化生成提供了可行途径。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.27707v1",
+      "source": "arxiv",
+      "title": "Solution Methods for Infinite-Dimensional Generalized Disjunctive Programming",
+      "abstract": "Generalized disjunctive programming (GDP) expresses mixed discrete-continuous decisions through Boolean indicators and disjunctions, and can be systematically solved via a library of methods proposed in the literature. The recent InfiniteGDP abstraction lifts this modeling layer to continuous domains such as time, space, and uncertainty, but only the big-M and hull reformulations, the two endpoints of the relaxation spectrum, have been generalized to the infinite setting. This work closes this gap by generalizing four other GDP solution methods to infinite-dimensional optimization: the multiple big-M reformulation, P-split reformulation, cutting plane reformulation, and the logic-based outer approximation algorithm. It further proposes MBM-GP, a novel Gaussian-process variant of multiple big-M that learns the big-M function over the infinite domain from a small subset of the subproblem solves. Moreover, these approaches are implemented in the Julia package InfiniteDisjunctiveProgramming.jl. The methods are benchmarked on case studies arising in dynamic and stochastic optimization. The results demonstrate how the generalized solution methods can outperform big-M and hull, with MBM-GP retaining the tightness of multiple big-M at a fraction of its reformulation cost.",
+      "authors": [
+        "Daniel Nguyen",
+        "Joshua L. Pulsipher"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "eess.SY"
+      ],
+      "published": "2026-08-27T20:51:35+00:00",
+      "link": "https://arxiv.org/pdf/2608.27707v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Generalized disjunctive programming modeling and generalized solution methods for infinite-dimensional OR optimization, though without an LLM component",
+      "llm_evidence_cn": "针对广义析取规划这一运筹优化建模范式提出多种求解方法，直接对应运筹优化建模需求，但不涉及LLM",
+      "llm_evidence": "针对广义析取规划这一运筹优化建模范式提出多种求解方法，直接对应运筹优化建模需求，但不涉及LLM",
+      "canonical_evidence": "针对广义析取规划这一运筹优化建模范式提出多种求解方法，直接对应运筹优化建模需求，但不涉及LLM",
+      "llm_tldr_en": "This paper extends four generalized disjunctive programming solution and reformulation methods to infinite-dimensional optimization and proposes MBM-GP, offering essential OR modeling and solving methodology though without an LLM component.",
+      "llm_tldr_cn": "广义析取规划通过布尔指示与析取表达混合离散-连续决策，但无限维广义析取规划此前只有big-M和hull两类重构方法。本文将多big-M、P-split、割平面重构以及基于逻辑的外逼近算法系统推广到无限维优化，并提出MBM-GP方法，填补了该建模层的求解方法空白。这为时间、空间和不确定性上的连续域优化建模提供了更完整的理论和算法支撑，是运筹优化建模与求解的重要基础。由于不涉及大语言模型，它对LLM求解代码生成主题主要起领域方法支撑作用。",
+      "llm_tldr": "广义析取规划通过布尔指示与析取表达混合离散-连续决策，但无限维广义析取规划此前只有big-M和hull两类重构方法。本文将多big-M、P-split、割平面重构以及基于逻辑的外逼近算法系统推广到无限维优化，并提出MBM-GP方法，填补了该建模层的求解方法空白。这为时间、空间和不确定性上的连续域优化建模提供了更完整的理论和算法支撑，是运筹优化建模与求解的重要基础。由于不涉及大语言模型，它对LLM求解代码生成主题主要起领域方法支撑作用。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.29096v1",
+      "source": "arxiv",
+      "title": "Development of an Autonomous AI Coding Agent using Monte Carlo Tree Search (MCTS) and Gemini LLM Frameworks",
+      "abstract": "The ongoing changes in software engineering requirements have created a substantial need for automated tools which can create secure source code from natural language input. The performance of traditional Large Language Models (LLMs) becomes limited by their \"one-shot\" capability which results in logical hallucinations together with reduced algorithmic performance during complicated operations. The research presents an autonomous AI Coding Agent which establishes a connection between LLM-generated content and production-ready software through its organized methodology for decision making. Our framework uses the Gemini 2.5 Flash API for essential reasoning capabilities while employing a tailored Monte Carlo Tree Search (MCTS) method to solve code generation challenges as a search operation. The agent uses a \"Self-Critic\" evaluator system to test different implementation methods which it ranks according to their accuracy and difficulty level before it improves its operational framework through backpropagation. The system operates through a Flask-based web interface which delivers instant feedback together with syntax highlighting features. Our experimental results show that the MCTS-based method achieves a 92% success rate on complex logical prompts while surpassing standard zero-shot generation models.",
+      "authors": [
+        "Pravin Game",
+        "Vipin Ramakrishnan",
+        "Prathamesh Wagh"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-08-29T07:03:55+00:00",
+      "link": "https://arxiv.org/pdf/2608.29096v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Autonomous AI coding agent coupling an LLM with tailored Monte Carlo Tree Search to generate reliable code from natural language; adaptable to solver-code pipelines but not OR-specific",
+      "llm_evidence_cn": "将LLM与定制化MCTS结合，从自然语言自动生成可靠代码；可迁移到优化求解代码管线，但未专门针对运筹优化问题",
+      "llm_evidence": "将LLM与定制化MCTS结合，从自然语言自动生成可靠代码；可迁移到优化求解代码管线，但未专门针对运筹优化问题",
+      "canonical_evidence": "将LLM与定制化MCTS结合，从自然语言自动生成可靠代码；可迁移到优化求解代码管线，但未专门针对运筹优化问题",
+      "llm_tldr_en": "This paper builds an autonomous AI coding agent combining Gemini 2.5 Flash with tailored Monte Carlo Tree Search to generate reliable code from natural language, providing a template for LLM solver-code generation though without OR specificity.",
+      "llm_tldr_cn": "大语言模型一次性生成代码的能力在复杂任务中容易产生逻辑幻觉并降低算法表现。论文开发了一个自主AI编码智能体，将Gemini 2.5 Flash大模型的推理能力与定制的蒙特卡洛树搜索决策框架结合，对备选代码进行有序搜索与评估，从而生成更接近生产质量的源码。这种把MCTS用于组织LLM候选方案的方法可为运筹优化问题的求解代码自动生成提供直接借鉴，但其实验场景是一般软件任务而非运筹优化建模。",
+      "llm_tldr": "大语言模型一次性生成代码的能力在复杂任务中容易产生逻辑幻觉并降低算法表现。论文开发了一个自主AI编码智能体，将Gemini 2.5 Flash大模型的推理能力与定制的蒙特卡洛树搜索决策框架结合，对备选代码进行有序搜索与评估，从而生成更接近生产质量的源码。这种把MCTS用于组织LLM候选方案的方法可为运筹优化问题的求解代码自动生成提供直接借鉴，但其实验场景是一般软件任务而非运筹优化建模。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
