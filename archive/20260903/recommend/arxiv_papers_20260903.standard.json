@@ -1,0 +1,132 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-03T21:23:02.542686+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2609.00644v1",
+      "source": "arxiv",
+      "title": "Disciplined Bilevel Programming",
+      "abstract": "Bilevel optimization provides a natural modeling language for hierarchical decision problems. However, applying existing numerical solvers usually requires substantial manual analysis and reformulation. In this paper, we introduce disciplined bilevel programming (DBLP), a symbolic framework that allows users to specify and solve optimistic bilevel problems in a high-level, human-readable way that is close to the mathematical formulation. For problems with a disciplined nonlinear upper problem and a convex lower problem satisfying the disciplined parameterized programming rules, DBLP automatically canonicalizes the lower problem into conic form and constructs an equivalent single-level reformulation using the conic Karush-Kuhn-Tucker conditions. We relax the resulting complementarity constraint and use a gap continuation procedure to approximately solve a sequence of smooth nonlinear problems. We implement DBLP in the open-source Python package BLVPY, an extension of CVXPY for bilevel programming. We demonstrate the modeling and solution capabilities of BLVPY on a range of bilevel optimization problems from several application domains. The proposed framework and implementation allow users to specify and solve bilevel optimization problems within a few lines of code, without prior expertise in bilevel modeling and numerical optimization.",
+      "authors": [
+        "Hao Zhu",
+        "Joschka Boedecker"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cs.CE",
+        "cs.LG",
+        "cs.MS"
+      ],
+      "published": "2026-09-01T03:22:48+00:00",
+      "link": "https://arxiv.org/pdf/2609.00644v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Presents a symbolic disciplined framework for modeling and solving bilevel optimization, a core OR modeling topic, but without LLM.",
+      "llm_evidence_cn": "提出面向双层优化问题的规范化符号建模与自动求解框架，属于运筹优化建模主题，无LLM。",
+      "llm_evidence": "提出面向双层优化问题的规范化符号建模与自动求解框架，属于运筹优化建模主题，无LLM。",
+      "canonical_evidence": "提出面向双层优化问题的规范化符号建模与自动求解框架，属于运筹优化建模主题，无LLM。",
+      "llm_tldr_en": "Disciplined Bilevel Programming lets users specify optimistic bilevel problems in a high-level, mathematically close form and automatically builds equivalent single-level conic reformulations. It strongly advances operations-research optimization modeling but does not use LLMs.",
+      "llm_tldr_cn": "针对双层优化问题应用现有数值求解器时需要大量人工分析和重表述的困难，论文提出规范化双层规划（DBLP）框架。用户可以用接近数学表达的高层、可读语言描述乐观双层问题；当上层为规范化非线性问题、下层为满足规则的凸问题时，DBLP自动将下层问题规范为锥形式并利用锥KKT条件构造等价单层重构。该框架显著降低建模与求解门槛，是运筹优化建模的重要工具，但不涉及LLM。",
+      "llm_tldr": "针对双层优化问题应用现有数值求解器时需要大量人工分析和重表述的困难，论文提出规范化双层规划（DBLP）框架。用户可以用接近数学表达的高层、可读语言描述乐观双层问题；当上层为规范化非线性问题、下层为满足规则的凸问题时，DBLP自动将下层问题规范为锥形式并利用锥KKT条件构造等价单层重构。该框架显著降低建模与求解门槛，是运筹优化建模的重要工具，但不涉及LLM。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "operations research optimization modeling",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.02353v1",
+      "source": "arxiv",
+      "title": "LLM-Driven Joint Evolution of Coupled Heuristics Components for Routing Optimization",
+      "abstract": "Heuristic design for combinatorial optimization remains heavily reliant on expert knowledge, while existing large language model (LLM)-enhanced evolutionary methods typically evolve isolated algorithmic components, even when one determines the search state on which another operates. This paper proposes LLM-driven Heuristic Components Joint Generation (LLM-HCJG), a population-based framework that jointly generates and co-evolves interdependent heuristic components under a shared design blueprint. Applied to guided local search (GLS), LLM-HCJG couples solution initialization with penalty construction and embeds the generated pair into an enhanced online search mechanism. The resulting form is further transferred from the traveling salesman problem (TSP) to the capacitated vehicle routing problem (CVRP). Theoretical analysis establishes the non-separable state-transition effects between the two components and the advantage in generation consistency. Across synthetic instances and 41 public TSPLIB/CVRPLIB benchmarks, LLM-HCJG attains consistently low optimality gaps, including best or tied-best results on 28 of 29 TSPLIB instances and all 12 CVRPLIB instances. Ablation and structural analyses further indicate that these gains are associated with cross-component compatibility and alignment rather than isolated-component recombination. These results support effective cross-instance transfer within the evaluated routing settings under limited-sample, modest-cost training.",
+      "authors": [
+        "Juntao Wei",
+        "Yangming Zhou",
+        "Zhibin Jiang",
+        "Shan Jiang"
+      ],
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE"
+      ],
+      "published": "2026-09-02T09:25:55+00:00",
+      "link": "https://arxiv.org/pdf/2609.02353v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-driven joint generation of heuristic components for routing optimization; fits generating optimization-solving code via LLMs",
+      "llm_evidence_cn": "LLM联合生成路由优化启发式组件，属于LLM生成优化求解代码范畴",
+      "llm_evidence": "LLM联合生成路由优化启发式组件，属于LLM生成优化求解代码范畴",
+      "canonical_evidence": "LLM联合生成路由优化启发式组件，属于LLM生成优化求解代码范畴",
+      "llm_tldr_en": "LLM-HCJG jointly generates and co-evolves coupled heuristic components for guided local search in routing optimization. It couples initialization and penalty construction, producing transferable heuristic code and advancing LLM-based automatic generation of optimization solutions.",
+      "llm_tldr_cn": "针对现有LLM增强进化方法只演化孤立算法组件的问题，论文提出LLM驱动的启发式组件联合生成框架LLM-HCJG，在共享设计蓝图中同时生成并协同进化相互依赖的解初始化和罚函数构造组件。结合增强型在线搜索机制后，该方法可从旅行商问题迁移到更多路由优化场景，展示LLM自动生成优化启发式代码与求解结构的可行性，为自动求解组合优化问题提供新思路。",
+      "llm_tldr": "针对现有LLM增强进化方法只演化孤立算法组件的问题，论文提出LLM驱动的启发式组件联合生成框架LLM-HCJG，在共享设计蓝图中同时生成并协同进化相互依赖的解初始化和罚函数构造组件。结合增强型在线搜索机制后，该方法可从旅行商问题迁移到更多路由优化场景，展示LLM自动生成优化启发式代码与求解结构的可行性，为自动求解组合优化问题提供新思路。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Papers about generating optimization problem solving code using LLMs",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.01982v1",
+      "source": "arxiv",
+      "title": "Benchmarking Language Models for Statistical Problem Formulation",
+      "abstract": "Large language models (LLMs) are increasingly used as assistants for statistical and data science work, yet existing evaluations largely assume the analysis target is already specified. In practice, users arrive with informal goals and heterogeneous data, leaving the model to decide what statistical task is implied and which data are relevant. We first formalize this upstream step as Statistical Problem Formulation and decompose it into two subtasks: (1) Statistical Problem Classification and (2) Variable Identification & Role Assignment. We then introduce StatFormBench, a benchmark built from five cross-domain statistics textbooks and a data science case library, covering diverse problem types, data representations, and scenario styles. It contains 1,013 samples spanning 20 coarse-grained and 85 fine-grained statistical problem categories. Across 14 open- and closed-source LLMs, the best zero-shot models reach only 72.0 fine-grained classification accuracy and 63.2 variable set overlap. No model performs consistently best across the two subtasks, while enhanced prompting strategies yield only limited or inconsistent gains. We release the benchmark data on Hugging Face at https://huggingface.co/datasets/THU-CongLab/StatFormBench and the evaluation code on GitHub at https://github.com/THU-CongLab/StatFormBench.",
+      "authors": [
+        "Chen Wang",
+        "Junzhe Zhao",
+        "Xin Cong",
+        "Wanlu Deng",
+        "Ke Deng"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-09-02T01:37:17+00:00",
+      "link": "https://arxiv.org/pdf/2609.01982v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM problem-formulation benchmark with task decomposition (classification and variable roles), transferable to OR modeling",
+      "llm_evidence_cn": "将LLM问题形式化评测方法与任务拆解迁移至运筹优化建模领域",
+      "llm_evidence": "将LLM问题形式化评测方法与任务拆解迁移至运筹优化建模领域",
+      "canonical_evidence": "将LLM问题形式化评测方法与任务拆解迁移至运筹优化建模领域",
+      "llm_tldr_en": "Proposes StatFormBench for LLM statistical problem formulation—classifying problem type and identifying variables from informal goals—offering reusable evaluation methods for OR problem modeling.",
+      "llm_tldr_cn": "多数大语言模型评测假定分析目标已预先给定，但真实用户常只提供非正式意图和异构数据，模型需先判断统计任务并选取相关变量。为填补这一空白，作者将统计问题形式化拆分为统计问题分类与变量识别/角色分配两个子任务，并构建了基于多领域教材与案例库的StatFormBench基准。评估显示模型在下游基准上表现良好，但在此上游形式化环节仍易出错；该任务定义与评测框架可迁移至运筹优化问题的自动建模研究。",
+      "llm_tldr": "多数大语言模型评测假定分析目标已预先给定，但真实用户常只提供非正式意图和异构数据，模型需先判断统计任务并选取相关变量。为填补这一空白，作者将统计问题形式化拆分为统计问题分类与变量识别/角色分配两个子任务，并构建了基于多领域教材与案例库的StatFormBench基准。评估显示模型在下游基准上表现良好，但在此上游形式化环节仍易出错；该任务定义与评测框架可迁移至运筹优化问题的自动建模研究。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "problem modeling for operations research",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

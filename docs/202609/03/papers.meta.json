@@ -1,0 +1,54 @@
+{
+  "label": "2026-09-03",
+  "date": "2026-09-03",
+  "generated_at": "2026-09-03T21:29:18",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202609/03/2609.00644v1-disciplined-bilevel-programming",
+      "section": "deep",
+      "title_en": "Disciplined Bilevel Programming",
+      "authors": "Hao Zhu, Joschka Boedecker",
+      "date": "2026-09-01",
+      "pdf": "https://arxiv.org/pdf/2609.00644v1",
+      "score": "8.0",
+      "evidence": "提出面向双层优化问题的规范化符号建模与自动求解框架，属于运筹优化建模主题，无LLM。",
+      "tldr": "双层优化建模层次决策问题，但现有求解器往往需要大量人工分析和重表述。本文提出DBLP符号框架，自动将满足规则条件的问题规范化为锥形式，并利用锥KKT条件构建单层等价形式，再通过互补约束松弛与gap continuation迭代求解。开源Python包BLVPY基于CVXPY实现，用户仅需数行代码即可高效求解多领域问题，显著降低使用门槛。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Bilevel optimization provides a natural modeling language for hierarchical decision problems. However, applying existing numerical solvers usually requires substantial manual analysis and reformulation. In this paper, we introduce disciplined bilevel programming (DBLP), a symbolic framework that allows users to specify and solve optimistic bilevel problems in a high-level, human-readable way that is close to the mathematical formulation. For problems with a disciplined nonlinear upper problem and a convex lower problem satisfying the disciplined parameterized programming rules, DBLP automatically canonicalizes the lower problem into conic form and constructs an equivalent single-level reformulation using the conic Karush-Kuhn-Tucker conditions. We relax the resulting complementarity constraint and use a gap continuation procedure to approximately solve a sequence of smooth nonlinear problems. We implement DBLP in the open-source Python package BLVPY, an extension of CVXPY for bilevel programming. We demonstrate the modeling and solution capabilities of BLVPY on a range of bilevel optimization problems from several application domains. The proposed framework and implementation allow users to specify and solve bilevel optimization problems within a few lines of code, without prior expertise in bilevel modeling and numerical optimization.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/03/2609.02353v1-llm-driven-joint-evolution-of-coupled-heuristics-components-for-routing-optimization",
+      "section": "deep",
+      "title_en": "LLM-Driven Joint Evolution of Coupled Heuristics Components for Routing Optimization",
+      "authors": "Juntao Wei, Yangming Zhou, Zhibin Jiang, Shan Jiang",
+      "date": "2026-09-02",
+      "pdf": "https://arxiv.org/pdf/2609.02353v1",
+      "score": "8.0",
+      "evidence": "LLM联合生成路由优化启发式组件，属于LLM生成优化求解代码范畴",
+      "tldr": "现有LLM增强进化方法常孤立演化启发式组件，忽略组件间依赖。本文提出LLM-HCJG，在共享设计蓝图下联合生成与协同演化耦合组件，应用于GLS时配对解初始化与惩罚构造，并嵌入在线搜索，且可跨TSP/CVRP迁移。理论分析揭示组件间非可分状态转移效应。在合成及41个公开基准上获得极低最优性差距，TSPLIB 28/29、CVRPLIB 12/12最佳，消融证明增益源于跨组件兼容性而非独立重组。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Heuristic design for combinatorial optimization remains heavily reliant on expert knowledge, while existing large language model (LLM)-enhanced evolutionary methods typically evolve isolated algorithmic components, even when one determines the search state on which another operates. This paper proposes LLM-driven Heuristic Components Joint Generation (LLM-HCJG), a population-based framework that jointly generates and co-evolves interdependent heuristic components under a shared design blueprint. Applied to guided local search (GLS), LLM-HCJG couples solution initialization with penalty construction and embeds the generated pair into an enhanced online search mechanism. The resulting form is further transferred from the traveling salesman problem (TSP) to the capacitated vehicle routing problem (CVRP). Theoretical analysis establishes the non-separable state-transition effects between the two components and the advantage in generation consistency. Across synthetic instances and 41 public TSPLIB/CVRPLIB benchmarks, LLM-HCJG attains consistently low optimality gaps, including best or tied-best results on 28 of 29 TSPLIB instances and all 12 CVRPLIB instances. Ablation and structural analyses further indicate that these gains are associated with cross-component compatibility and alignment rather than isolated-component recombination. These results support effective cross-instance transfer within the evaluated routing settings under limited-sample, modest-cost training.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/03/2609.01982v1-benchmarking-language-models-for-statistical-problem-formulation",
+      "section": "quick",
+      "title_en": "Benchmarking Language Models for Statistical Problem Formulation",
+      "authors": "Chen Wang, Junzhe Zhao, Xin Cong, Wanlu Deng, Ke Deng",
+      "date": "2026-09-02",
+      "pdf": "https://arxiv.org/pdf/2609.01982v1",
+      "score": "7.0",
+      "evidence": "将LLM问题形式化评测方法与任务拆解迁移至运筹优化建模领域",
+      "tldr": "语言模型用于统计辅助时，评估常预设分析目标已知，忽略非正式目标开始的上游步骤。本文形式化统计问题表述，分解为统计问题分类与变量识别角色分配，构建含1013个样本的85类StatFormBench基准。14个模型零样本下最佳分类准确率72.0%，变量重叠63.2%，提示增强策略增益有限。基准与代码已开源，促进统计问题表述研究。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Large language models (LLMs) are increasingly used as assistants for statistical and data science work, yet existing evaluations largely assume the analysis target is already specified. In practice, users arrive with informal goals and heterogeneous data, leaving the model to decide what statistical task is implied and which data are relevant. We first formalize this upstream step as Statistical Problem Formulation and decompose it into two subtasks: (1) Statistical Problem Classification and (2) Variable Identification & Role Assignment. We then introduce StatFormBench, a benchmark built from five cross-domain statistics textbooks and a data science case library, covering diverse problem types, data representations, and scenario styles. It contains 1,013 samples spanning 20 coarse-grained and 85 fine-grained statistical problem categories. Across 14 open- and closed-source LLMs, the best zero-shot models reach only 72.0 fine-grained classification accuracy and 63.2 variable set overlap. No model performs consistently best across the two subtasks, while enhanced prompting strategies yield only limited or inconsistent gains. We release the benchmark data on Hugging Face at https://huggingface.co/datasets/THU-CongLab/StatFormBench and the evaluation code on GitHub at https://github.com/THU-CongLab/StatFormBench.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
