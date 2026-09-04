@@ -1,0 +1,39 @@
+{
+  "label": "2026-09-04",
+  "date": "2026-09-04",
+  "generated_at": "2026-09-04T22:44:08",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202609/04/2609.03754v1-automated-priority-rule-design-for-the-resource-constrained-project-scheduling-problem-a-large-language-model-guided-population-based-search",
+      "section": "deep",
+      "title_en": "Automated Priority Rule Design for the Resource-Constrained Project Scheduling Problem: A Large Language Model-Guided Population-Based Search",
+      "authors": "Jingyu Luo, Mario Vanhoucke, José Coelho",
+      "date": "2026-09-03",
+      "pdf": "https://arxiv.org/pdf/2609.03754v1",
+      "score": "9.0",
+      "evidence": "LLM引导种群搜索为资源受限项目调度自动设计规则，属于LLM面向优化问题的求解代码/规则生成",
+      "tldr": "资源受限项目调度问题通常采用优先级规则构造可行调度，但传统规则在不同项目上表现不稳定。本文提出大语言模型引导的基于种群的搜索框架，在离线搜索中由LLM生成并迭代修改候选规则，以训练项目上的调度质量作为适应度反馈。所得规则在测试集上优于传统规则及同等搜索代价下的GP规则，并能与更大规模GP搜索的规则竞争。该工作提供了一种高效且可解释的自动优先级规则设计途径。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "The objective of the resource-constrained project scheduling problem (RCPSP) is to minimize makespan while satisfying precedence and renewable-resource constraints. Priority-rule heuristics construct feasible schedules with low computational cost and explicit decision logic, making them widely used in practice and an attractive alternative to more computationally intensive methods. However, no traditional rule performs consistently well across projects, and researchers have therefore investigated automated priority-rule design. Genetic programming (GP) hyper-heuristics have been the predominant approach to this task, but evolving a high-performing rule may require evaluating many candidate rules on the training projects. Recent advances in large language models (LLMs) make it possible to generate and iteratively revise priority rules using performance feedback.   This paper presents an LLM-guided population-based framework for automated priority-rule design. During the offline search, an LLM generates and revises candidate rules, while schedule quality on training projects determines candidate fitness and guides subsequent revisions. At the end of the search, the best rule is returned and applied directly to unseen projects without further search or LLM calls.   Experiments show that the LLM-designed rules outperform traditional single rules across the test sets and outperform GP-designed rules obtained under comparable search effort, while remaining competitive with rules obtained from a substantially larger GP search. On large projects, selected LLM-designed rules outperform all considered traditional rules and two genetic algorithm configurations on highly parallel projects. An ablation study examines how changes to the main search components affect performance, while rule analyses describe the structure and decision behavior of the LLM-designed rules.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/04/2609.03860v1-adapting-to-evolving-requirements-agentic-ai-for-retail-supply-chain-operations",
+      "section": "deep",
+      "title_en": "Adapting to Evolving Requirements: Agentic AI for Retail Supply Chain Operations",
+      "authors": "Lei Zheng, Liping Yang, Zihao Li, Guodong Lyu, Chaik Ming Koh, Chung-Piaw Teo",
+      "date": "2026-09-03",
+      "pdf": "https://arxiv.org/pdf/2609.03860v1",
+      "score": "8.0",
+      "evidence": "使用LLM智能体处理零售供应链中需求驱动的运营优化管线的调整与重构",
+      "tldr": "零售供应链决策模块相互耦合，需随需求演变而动态调整。现有大语言模型方法多聚焦单一优化问题，难以适配异构决策流水线中多种干预路径。本文提出图约束的智能体框架，由领域智能体暴露可重构接口，中央处理器搜索有界路径并用下游指标验证候选方案。在真实仓库需求上，该方法使正确性和端到端成功率显著提升，优于直接重构的基线，证明其实际部署价值。",
+      "tags": "query:llm-opt-code",
+      "abstract_en": "Retail supply chain operations rely on coupled decision modules that must adapt as requirements evolve. LLMs offer a natural-language interface for this task, but existing methods primarily focus on individual optimization models. Extending them to heterogeneous decision pipelines is challenging because a requirement may admit multiple intervention paths with different downstream effects. We formulate requirement-driven adaptation as the joint selection of an intervention route and an admissible module-level change, and propose a graph-constrained agentic framework in which domain agents expose admissible reformulation interfaces and a central processor searches over bounded intervention paths. Candidates are validated and compared using downstream KPIs. In collaboration with a large retail partner, we evaluate 100 warehouse requirements elicited from practitioner interviews, with GPT, Qwen, and DeepSeek as base LLMs. Relative to direct LLM reformulation, our framework improves correctness and end-to-end success across all three models, raising end-to-end success from 72--76% to 79--83%.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

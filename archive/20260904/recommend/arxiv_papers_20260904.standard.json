@@ -1,0 +1,93 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-04T22:41:42.152320+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2609.03754v1",
+      "source": "arxiv",
+      "title": "Automated Priority Rule Design for the Resource-Constrained Project Scheduling Problem: A Large Language Model-Guided Population-Based Search",
+      "abstract": "The objective of the resource-constrained project scheduling problem (RCPSP) is to minimize makespan while satisfying precedence and renewable-resource constraints. Priority-rule heuristics construct feasible schedules with low computational cost and explicit decision logic, making them widely used in practice and an attractive alternative to more computationally intensive methods. However, no traditional rule performs consistently well across projects, and researchers have therefore investigated automated priority-rule design. Genetic programming (GP) hyper-heuristics have been the predominant approach to this task, but evolving a high-performing rule may require evaluating many candidate rules on the training projects. Recent advances in large language models (LLMs) make it possible to generate and iteratively revise priority rules using performance feedback.   This paper presents an LLM-guided population-based framework for automated priority-rule design. During the offline search, an LLM generates and revises candidate rules, while schedule quality on training projects determines candidate fitness and guides subsequent revisions. At the end of the search, the best rule is returned and applied directly to unseen projects without further search or LLM calls.   Experiments show that the LLM-designed rules outperform traditional single rules across the test sets and outperform GP-designed rules obtained under comparable search effort, while remaining competitive with rules obtained from a substantially larger GP search. On large projects, selected LLM-designed rules outperform all considered traditional rules and two genetic algorithm configurations on highly parallel projects. An ablation study examines how changes to the main search components affect performance, while rule analyses describe the structure and decision behavior of the LLM-designed rules.",
+      "authors": [
+        "Jingyu Luo",
+        "Mario Vanhoucke",
+        "José Coelho"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-09-03T12:24:55+00:00",
+      "link": "https://arxiv.org/pdf/2609.03754v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-guided population-based search automatically designs priority-rule heuristics for RCPSP, directly relevant to LLM-based solution code generation for optimization",
+      "llm_evidence_cn": "LLM引导种群搜索为资源受限项目调度自动设计规则，属于LLM面向优化问题的求解代码/规则生成",
+      "llm_evidence": "LLM引导种群搜索为资源受限项目调度自动设计规则，属于LLM面向优化问题的求解代码/规则生成",
+      "canonical_evidence": "LLM引导种群搜索为资源受限项目调度自动设计规则，属于LLM面向优化问题的求解代码/规则生成",
+      "llm_tldr_en": "An LLM-guided population-based search automatically evolves priority-rule heuristics for RCPSP, offering a promising alternative to genetic-programming hyper-heuristics for optimization rule generation.",
+      "llm_tldr_cn": "在资源受限项目调度问题中，手工设计优先级规则难以普适，传统遗传规划超启发式开销高且性能受限。本文提出由大语言模型引导的种群搜索方法，迭代生成、筛选并演化构造成本低且决策逻辑清晰的优先级规则，替代传统GP主导的自动规则设计方式。实验中该方法能在RCPSP基准实例上获得优于传统规则和GP生成规则的表现。这为LLM在组合优化建模与自动求解规则/代码生成方向提供了新的实证证据。",
+      "llm_tldr": "在资源受限项目调度问题中，手工设计优先级规则难以普适，传统遗传规划超启发式开销高且性能受限。本文提出由大语言模型引导的种群搜索方法，迭代生成、筛选并演化构造成本低且决策逻辑清晰的优先级规则，替代传统GP主导的自动规则设计方式。实验中该方法能在RCPSP基准实例上获得优于传统规则和GP生成规则的表现。这为LLM在组合优化建模与自动求解规则/代码生成方向提供了新的实证证据。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "code generation for optimization problems using LLM",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.03860v1",
+      "source": "arxiv",
+      "title": "Adapting to Evolving Requirements: Agentic AI for Retail Supply Chain Operations",
+      "abstract": "Retail supply chain operations rely on coupled decision modules that must adapt as requirements evolve. LLMs offer a natural-language interface for this task, but existing methods primarily focus on individual optimization models. Extending them to heterogeneous decision pipelines is challenging because a requirement may admit multiple intervention paths with different downstream effects. We formulate requirement-driven adaptation as the joint selection of an intervention route and an admissible module-level change, and propose a graph-constrained agentic framework in which domain agents expose admissible reformulation interfaces and a central processor searches over bounded intervention paths. Candidates are validated and compared using downstream KPIs. In collaboration with a large retail partner, we evaluate 100 warehouse requirements elicited from practitioner interviews, with GPT, Qwen, and DeepSeek as base LLMs. Relative to direct LLM reformulation, our framework improves correctness and end-to-end success across all three models, raising end-to-end success from 72--76% to 79--83%.",
+      "authors": [
+        "Lei Zheng",
+        "Liping Yang",
+        "Zihao Li",
+        "Guodong Lyu",
+        "Chaik Ming Koh",
+        "Chung-Piaw Teo"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "math.OC"
+      ],
+      "published": "2026-09-03T13:50:31+00:00",
+      "link": "https://arxiv.org/pdf/2609.03860v1",
+      "tags": [
+        "keyword:llm-opt-code",
+        "query:llm-opt-code"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Uses LLM agents for requirement-driven adaptation and reformulation of operations research optimization pipelines in retail supply chain",
+      "llm_evidence_cn": "使用LLM智能体处理零售供应链中需求驱动的运营优化管线的调整与重构",
+      "llm_evidence": "使用LLM智能体处理零售供应链中需求驱动的运营优化管线的调整与重构",
+      "canonical_evidence": "使用LLM智能体处理零售供应链中需求驱动的运营优化管线的调整与重构",
+      "llm_tldr_en": "Retail supply chain decision pipelines are adapted by an agentic LLM framework that searches over admissible module-level reformulations, going beyond single optimization models and validating candidates on downstream outcomes",
+      "llm_tldr_cn": "零售供应链运营依赖多个耦合决策模块并需要随需求变化而调整，但现有LLM方法大多只处理单一优化模型。为此作者提出图约束的智能体框架，将需求驱动适应性建模为可选干预路径与模块级合法变更的联合选择，由中央处理器受限搜索并评估下游效果。该框架能扩展到异构决策管线，为LLM在运营优化建模中的应用提供了新范式。",
+      "llm_tldr": "零售供应链运营依赖多个耦合决策模块并需要随需求变化而调整，但现有LLM方法大多只处理单一优化模型。为此作者提出图约束的智能体框架，将需求驱动适应性建模为可选干预路径与模块级合法变更的联合选择，由中央处理器受限搜索并评估下游效果。该框架能扩展到异构决策管线，为LLM在运营优化建模中的应用提供了新范式。",
+      "llm_tags": [
+        "query:llm-opt-code"
+      ],
+      "matched_query_tag": "query:llm-opt-code",
+      "matched_query_text": "Large language models for modeling operations research optimization problems",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

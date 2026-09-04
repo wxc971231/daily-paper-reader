@@ -6,29 +6,27 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-03
-- 运行时间：2026-09-03 21:29:13 UTC
+- 最新运行日期：2026-09-04
+- 运行时间：2026-09-04 22:44:04 UTC
 - 运行状态：成功
-- 本次总论文数：3
+- 本次总论文数：2
 - 精读区：2
-- 速读区：1
+- 速读区：0
 
 ### 今日简报（AI）
-今日精读两篇8分论文，聚焦双层规划与路由优化中的LLM驱动演化，另速读一篇统计建模评测。最值得关注双层规划的理论严谨性，及用大模型联合演化启发式组件以突破路由瓶颈。普通读者可从“双层决策”和“AI自动设计启发式算法”两个视角切入，后续再扫读统计公式化基准测试。
-- 详情：[/202609/03/README](/202609/03/README)
+今日聚焦2篇精读高分论文：一篇用大语言模型引导搜索自动设计资源受限项目调度规则，获9.0分；另一篇探讨智能体AI如何适应零售供应链的演化需求，获8.0分。最值得关注的方向是“大模型+启发式搜索”在项目调度中的自动化决策潜力，以及智能体在动态零售环境中的适应能力。若你感兴趣，可先精读第一篇，看它如何用LLM生成调度规则，再对比第二篇的行业落地思路。
+- 详情：[/202609/04/README](/202609/04/README)
 
 ### 精读区论文标签
-1. [Disciplined Bilevel Programming](/202609/03/2609.00644v1-disciplined-bilevel-programming)  
+1. [Automated Priority Rule Design for the Resource-Constrained Project Scheduling Problem: A Large Language Model-Guided Population-Based Search](/202609/04/2609.03754v1-automated-priority-rule-design-for-the-resource-constrained-project-scheduling-problem-a-large-language-model-guided-population-based-search)  
+   标签：评分：9.0/10、query:llm-opt-code
+   evidence：LLM引导种群搜索为资源受限项目调度自动设计规则，属于LLM面向优化问题的求解代码/规则生成
+2. [Adapting to Evolving Requirements: Agentic AI for Retail Supply Chain Operations](/202609/04/2609.03860v1-adapting-to-evolving-requirements-agentic-ai-for-retail-supply-chain-operations)  
    标签：评分：8.0/10、query:llm-opt-code
-   evidence：提出面向双层优化问题的规范化符号建模与自动求解框架，属于运筹优化建模主题，无LLM。
-2. [LLM-Driven Joint Evolution of Coupled Heuristics Components for Routing Optimization](/202609/03/2609.02353v1-llm-driven-joint-evolution-of-coupled-heuristics-components-for-routing-optimization)  
-   标签：评分：8.0/10、query:llm-opt-code
-   evidence：LLM联合生成路由优化启发式组件，属于LLM生成优化求解代码范畴
+   evidence：使用LLM智能体处理零售供应链中需求驱动的运营优化管线的调整与重构
 
 ### 速读区论文标签
-1. [Benchmarking Language Models for Statistical Problem Formulation](/202609/03/2609.01982v1-benchmarking-language-models-for-statistical-problem-formulation)  
-   标签：评分：7.0/10、query:llm-opt-code
-   evidence：将LLM问题形式化评测方法与任务拆解迁移至运筹优化建模领域
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
